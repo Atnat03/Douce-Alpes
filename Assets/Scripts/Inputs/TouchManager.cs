@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,46 +5,97 @@ public class TouchManager : MonoBehaviour
 {
     public static TouchManager instance;
 
-    private PlayerInput inputs;
+    public PlayerInput playerInput;
+    public float holdThreshold = 1f;
 
     private InputAction touchPositionAction;
     private InputAction touchPressAction;
-    private InputAction holdingAction;
-    
+
+    private GameObject currentTouchedObject;
+    private float pressStartTime;
+    private bool isHolding = false;
+
     private void Awake()
     {
         instance = this;
-        
-        inputs = GetComponent<PlayerInput>();
-        touchPressAction = inputs.actions["TouchPress"];
-        touchPositionAction = inputs.actions["TouchPosition"];
-        holdingAction = inputs.actions["Holding"];
+        touchPressAction = playerInput.actions["TouchPress"];
+        touchPositionAction = playerInput.actions["TouchPosition"];
     }
 
-    public PlayerInput GetPlayerInput(){return inputs;}
-    
-    void OnEnable()
+    private void OnEnable()
     {
-        touchPressAction.performed += TouchPressed;
+        touchPressAction.performed += OnTouchPressed;
+        touchPressAction.canceled += OnTouchReleased;
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
-        touchPressAction.performed -= TouchPressed;
+        touchPressAction.performed -= OnTouchPressed;
+        touchPressAction.canceled -= OnTouchReleased;
     }
-    
-    private void TouchPressed(InputAction.CallbackContext context)
+
+    private void OnTouchPressed(InputAction.CallbackContext context)
     {
-        Ray ray = Camera.main.ScreenPointToRay(touchPositionAction.ReadValue<Vector2>());
+        pressStartTime = Time.time;
+        isHolding = false;
+
+        Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (hit.transform.tag == "Touchable")
+            currentTouchedObject = hit.transform.gameObject;
+        }
+    }
+
+    private void OnTouchReleased(InputAction.CallbackContext context)
+    {
+        if (currentTouchedObject == null) return;
+
+        float pressDuration = Time.time - pressStartTime;
+
+        if (pressDuration < holdThreshold)
+        {
+            TouchableObject touchable = currentTouchedObject.GetComponent<TouchableObject>();
+            if (touchable != null)
+                touchable.TouchEvent();
+        }
+        else if (isHolding)
+        {
+            Sheep sheep = currentTouchedObject.GetComponent<Sheep>();
+            if (sheep != null)
+                sheep.OnTouchEnd();
+        }
+
+        currentTouchedObject = null;
+        isHolding = false;
+    }
+
+    private void Update()
+    {
+        if (currentTouchedObject == null && GameManager.instance.currentCameraState == CamState.Default) return;
+
+        float pressDuration = Time.time - pressStartTime;
+
+        if (!isHolding && pressDuration >= holdThreshold)
+        {
+            Sheep sheep = currentTouchedObject.GetComponent<Sheep>();
+            if (sheep != null)
             {
-                hit.transform.gameObject.GetComponent<TouchableObject>().TouchEvent();
+                sheep.OnTouchStart();
+                isHolding = true;
             }
         }
-        
+
+        if (isHolding)
+        {
+            Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
+            Ray ray = Camera.main.ScreenPointToRay(screenPos);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+            {
+                currentTouchedObject.transform.position = hit.point + Vector3.up * 0.5f;
+            }
+        }
     }
-    
 }

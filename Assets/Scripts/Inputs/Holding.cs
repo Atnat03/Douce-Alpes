@@ -34,7 +34,7 @@ public class Holding : MonoBehaviour
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.transform.CompareTag("Touchable"))
+        if (Physics.Raycast(ray, out RaycastHit hit) && hit.transform.CompareTag("Hold"))
         {
             currentHeldObject = hit.transform.gameObject;
             currentHeldObject.GetComponent<MeshRenderer>().material.color = Color.blue;
