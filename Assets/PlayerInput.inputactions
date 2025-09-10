@@ -3,89 +3,6 @@
     "name": "PlayerInput",
     "maps": [
         {
-            "name": "Move",
-            "id": "ce396578-fddd-4ee9-a10d-5438bba78c8c",
-            "actions": [
-                {
-                    "name": "Move",
-                    "type": "Value",
-                    "id": "1e7cdb9b-8a7f-4236-a8b4-7d8e536f84a3",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "WASD",
-                    "id": "86e63860-15de-4286-a8be-9c1955ee3aed",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "2a57adaf-dd1f-4ae7-a0d3-d183280b2a83",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "ff94997e-1e1b-4fbb-8ad4-56efaa3375a4",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "a40e2096-161b-42b4-a8f1-3c4f3c821053",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "b0fa9a71-0b1f-4935-b7b2-53743dda0724",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "ffcf1b52-ab77-4300-a865-e443a82184e4",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "Touch",
             "id": "400feaf3-5fb3-449c-b827-f8a1c2561cf3",
             "actions": [
@@ -95,7 +12,7 @@
                     "id": "2da8c74e-1208-4c13-81d2-8c48d123b810",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "Press(behavior=1)",
                     "initialStateCheck": true
                 },
                 {
@@ -105,6 +22,24 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "62a2dbfa-95f2-482d-80e2-916341f84682",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Holding",
+                    "type": "Button",
+                    "id": "fc8251ff-c225-4933-b3e1-47c4e5ae744f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold",
                     "initialStateCheck": false
                 }
             ],
@@ -128,6 +63,83 @@
                     "processors": "",
                     "groups": "",
                     "action": "TouchPress",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2ebb7652-f22c-4f7b-8935-2e0b7998ef7a",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "WASD",
+                    "id": "64423661-80de-4990-9969-c99fa81aaf26",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "09d5e94e-b651-4b9c-9ed1-bce3a9eb408f",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "ab3d6e49-e731-43e0-aa87-ff4bdd805dce",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "dddee96d-3cb8-4c4f-807c-bbc46005cf78",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "37566bf8-dccf-4d49-a136-431b45462f44",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c306b0b5-f044-40a4-9b3f-69bb28d38861",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Holding",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

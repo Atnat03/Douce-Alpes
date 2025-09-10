@@ -10,7 +10,7 @@ public class TouchManager : MonoBehaviour
 
     private InputAction touchPositionAction;
     private InputAction touchPressAction;
-    private InputAction moveAction;
+    private InputAction holdingAction;
     
     private void Awake()
     {
@@ -19,8 +19,11 @@ public class TouchManager : MonoBehaviour
         inputs = GetComponent<PlayerInput>();
         touchPressAction = inputs.actions["TouchPress"];
         touchPositionAction = inputs.actions["TouchPosition"];
+        holdingAction = inputs.actions["Holding"];
     }
 
+    public PlayerInput GetPlayerInput(){return inputs;}
+    
     void OnEnable()
     {
         touchPressAction.performed += TouchPressed;

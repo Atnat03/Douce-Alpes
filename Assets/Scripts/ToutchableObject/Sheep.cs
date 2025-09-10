@@ -6,6 +6,6 @@ public class Sheep : TouchableObject
 
     public override void TouchEvent()
     {
-        Debug.Log(name);
+        GameManager.instance.ChangeCameraPos(transform.position);
     }
 }
