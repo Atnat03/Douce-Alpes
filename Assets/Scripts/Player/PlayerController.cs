@@ -9,10 +9,12 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector3 velocity;
     private float gravity = -9.8f;
+    private PlayerInput inputs;
 
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
+        inputs = GetComponent<PlayerInput>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
