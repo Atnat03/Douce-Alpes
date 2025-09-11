@@ -19,6 +19,10 @@ public class GameManager : MonoBehaviour
     
     CameraFollow cameraFollow;
 
+    [SerializeField] private GameObject[] UItoDisableWhenSheepIsOn;
+
+    [SerializeField] private Sheep[] sheepList;
+
     [Header("Bonheur")] 
     [SerializeField] private float currentBonheur;
     [SerializeField] private float maxBonheur;
@@ -29,24 +33,44 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float caresseValue = 10f;
     [SerializeField] private float saturationValue = 0.1f;
     [SerializeField] private float maxSaturation;
-
+    [SerializeField] private GameObject sheepWidow;
+    
     private void Awake()
     {
         instance = this;
         
         cameraFollow = Camera.main.GetComponent<CameraFollow>();
+        sheepWidow.SetActive(false);
     }
 
+    public Sheep GetSheep(int idSheep)
+    {
+        return sheepList[idSheep];
+    }
+    
+    public GameObject GetSheepWindow(){return  sheepWidow;}
+    
     public void ChangeCameraState(CamState newState)
     {
         currentCameraState = newState;
         cameraFollow.enabled = false;
+        ChangePlayerEnvironnement(false);
     }
 
     public void ResetCamera()
     {
         currentCameraState = CamState.Default;
         cameraFollow.enabled = true;
+        ChangePlayerEnvironnement(true);
+        sheepWidow.SetActive(false);
+    }
+
+    public void ChangePlayerEnvironnement(bool state)
+    {
+        foreach (GameObject obj in UItoDisableWhenSheepIsOn)
+        {
+            obj.SetActive(state);
+        }
     }
 
     public void ChangeCameraPos(Vector3 pos, Vector3 rot)

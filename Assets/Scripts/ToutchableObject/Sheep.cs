@@ -2,59 +2,47 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class Sheep : TouchableObject
 {
+    [SerializeField] private int sheepId;
     [SerializeField] private string sheepName;
 
-    private bool isHolding = false;
+    [SerializeField] private int currentSkin;
 
     [SerializeField] private float currentCaressesValue;
-    [SerializeField]  private float maxCaressesValue = 100;
-    [SerializeField] private float holingTimer;
-    private float timer;
-    bool startTimer = false;
-    
+    [SerializeField] private float maxCaressesValue = 100;
+
+    [Header("Timer")]
+    [SerializeField] private float holdingTimer;
+    private float timer; 
+    private bool startTimer = false;
+
     [Header("References")]
-    [SerializeField]  Image currentBonheur;
-    [SerializeField]  Text sheepNameTxt;
     [SerializeField] private Transform cameraPosition;
     [SerializeField] private GameObject wheelTimerUI;
     [SerializeField] private Image valueWheelTimerImage;
-    
-    private void Update()
-    {
-        currentBonheur.fillAmount = currentCaressesValue / maxCaressesValue;
-        sheepNameTxt.text = sheepName;
-        
-        if (isHolding)
-        {
-            Vector2 screenPos = TouchManager.instance.playerInput.actions["TouchPosition"].ReadValue<Vector2>();
-            Ray ray = Camera.main.ScreenPointToRay(screenPos);
-
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
-            {
-                transform.position = hit.point + Vector3.up * 0.5f;
-            }
-        }
-        
-        
-        
-        if (startTimer)
-        {
-            if (timer > 0)
-            {
-                timer -= Time.deltaTime;
-            }
-            else
-            {
-                WidowOpen();
-            }
-        }
-    }
 
     private void Start()
     {
-        holingTimer = TouchManager.instance.holdThreshold;
+        wheelTimerUI.SetActive(false);
+        holdingTimer = TouchManager.instance.holdThreshold;
+    }
+
+    private void Update()
+    {
+        if (startTimer)
+        {
+            timer += Time.deltaTime;
+            valueWheelTimerImage.fillAmount = timer / holdingTimer;
+
+            if (timer >= holdingTimer)
+            {
+                wheelTimerUI.SetActive(false);
+                startTimer = false;
+                WidowOpen();
+            }
+        }
     }
 
     public Vector3 GetCameraPosition()
@@ -75,17 +63,37 @@ public class Sheep : TouchableObject
 
     public void StartHolding()
     {
-        timer = holingTimer;
+        timer = 0f;
         startTimer = true;
+        wheelTimerUI.SetActive(true);
+        valueWheelTimerImage.fillAmount = 0f;
+    }
+
+    public void CancelHolding()
+    {
+        startTimer = false;
+        wheelTimerUI.SetActive(false);
     }
 
     public void WidowOpen()
     {
-        GameManager.instance.ChangeCameraPos(GetCameraPosition(), cameraPosition.transform.rotation.eulerAngles);
+        GameManager.instance.ChangeCameraPos(
+            cameraPosition.transform.position,
+            cameraPosition.transform.rotation.eulerAngles
+        );
+        
+        GameManager.instance.GetSheepWindow().SetActive(true);
+        
+        SheepWindow.instance.Initialize(sheepName, currentSkin, sheepId);
     }
 
     public void OnTouchEnd()
     {
-        isHolding = false;
+        CancelHolding();
+    }
+
+    public void SetCurrentSkin(int skinId)
+    {
+        currentSkin = skinId;
     }
 }
