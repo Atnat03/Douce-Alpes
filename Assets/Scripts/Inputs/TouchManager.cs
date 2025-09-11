@@ -1,6 +1,11 @@
+using System;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
+[DefaultExecutionOrder(-1)]
 public class TouchManager : MonoBehaviour
 {
     public static TouchManager instance;
@@ -13,25 +18,45 @@ public class TouchManager : MonoBehaviour
 
     private GameObject currentTouchedObject;
     private float pressStartTime;
-    private bool isHolding = false;
+    public bool isHolding = false;
 
+    private Swipe swipeInput;
+    
+    #region Events
+    public delegate void StartTouch(Vector2 position, float timer);
+    public event StartTouch OnStartEvent;
+    public delegate void EndTouch(Vector2 position, float timer);
+    public event EndTouch OnEndEvent;
+    #endregion
+    
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }else
+        {
+            Destroy(gameObject);
+        }
+        
         touchPressAction = playerInput.actions["TouchPress"];
         touchPositionAction = playerInput.actions["TouchPosition"];
+
+        swipeInput = new Swipe();
     }
 
     private void OnEnable()
     {
         touchPressAction.performed += OnTouchPressed;
         touchPressAction.canceled += OnTouchReleased;
+        swipeInput.Enable();
     }
 
     private void OnDisable()
     {
         touchPressAction.performed -= OnTouchPressed;
         touchPressAction.canceled -= OnTouchReleased;
+        swipeInput.Disable();
     }
 
     private void OnTouchPressed(InputAction.CallbackContext context)
@@ -77,12 +102,12 @@ public class TouchManager : MonoBehaviour
 
         float pressDuration = Time.time - pressStartTime;
 
-        if (!isHolding && pressDuration >= holdThreshold)
+        if (!isHolding && pressDuration >= holdThreshold && currentTouchedObject != null)
         {
             Sheep sheep = currentTouchedObject.GetComponent<Sheep>();
             if (sheep != null)
             {
-                sheep.OnTouchStart();
+                sheep.StartHolding();
                 isHolding = true;
             }
         }
@@ -94,8 +119,30 @@ public class TouchManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
             {
-                currentTouchedObject.transform.position = hit.point + Vector3.up * 0.5f;
+                currentTouchedObject.GetComponent<Sheep>().WidowOpen();
             }
         }
     }
+    
+    private void Start()
+    {
+        swipeInput.Swiping.PrimaryTouch.started += ctx => StartTouchPrimary(ctx);
+        swipeInput.Swiping.PrimaryTouch.canceled += ctx => EndTouchPrimary(ctx);
+    }
+
+    private void StartTouchPrimary(InputAction.CallbackContext ctx)
+    {
+        OnStartEvent?.Invoke(swipeInput.Swiping.PrimaryPosition.ReadValue<Vector2>(), (float)ctx.startTime);
+    }
+
+    private void EndTouchPrimary(InputAction.CallbackContext ctx)
+    {
+        OnEndEvent?.Invoke(swipeInput.Swiping.PrimaryPosition.ReadValue<Vector2>(), (float)ctx.time);
+    }
+
+    public Vector2 PrimaryPosition()
+    {
+        return swipeInput.Swiping.PrimaryPosition.ReadValue<Vector2>();
+    }
+
 }

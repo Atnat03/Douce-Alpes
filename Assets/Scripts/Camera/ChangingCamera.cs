@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ChangingCamera : MonoBehaviour
 {
     Vector3 startPosition;
+    Vector3 startRotation;
     [SerializeField] private Button quitButton;
 
     private void Start()
@@ -15,19 +16,22 @@ public class ChangingCamera : MonoBehaviour
         quitButton.gameObject.SetActive(false);
     }
 
-    public void ChangeCamera(Vector3 newPosition)
+    public void ChangeCamera(Vector3 newPosition, Vector3 rotation)
     {
         quitButton.gameObject.SetActive(true);
         startPosition = transform.position;
+        startRotation = transform.rotation.eulerAngles;
         
-        Vector3 targetPosition = new Vector3(newPosition.x, newPosition.y + 2, newPosition.z - 5);
-        
-        transform.position = Vector3.Lerp(targetPosition, targetPosition, 1f);
+        Vector3 targetPosition = new Vector3(newPosition.x, newPosition.y, newPosition.z);
+
+        transform.position = targetPosition;
+        transform.rotation = Quaternion.Euler(rotation);
     }
 
     public void ResetPosition()
     {
         transform.position = startPosition;
+        transform.rotation = Quaternion.Euler(startRotation);
 
         GameManager.instance.ResetCamera();
         quitButton.gameObject.SetActive(false);

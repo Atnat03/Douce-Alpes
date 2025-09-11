@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum CamState
 {
@@ -12,11 +13,22 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     
-    public event Action<Vector3> SheepClicked;
+    public event Action<Vector3, Vector3> SheepClicked;
     
     public CamState currentCameraState = CamState.Default;
     
     CameraFollow cameraFollow;
+
+    [Header("Bonheur")] 
+    [SerializeField] private float currentBonheur;
+    [SerializeField] private float maxBonheur;
+    [SerializeField] Text txtBonheur;
+    
+    [Header("Sheep")]
+    [SerializeField] private int SheepCount;
+    [SerializeField] private float caresseValue = 10f;
+    [SerializeField] private float saturationValue = 0.1f;
+    [SerializeField] private float maxSaturation;
 
     private void Awake()
     {
@@ -37,12 +49,26 @@ public class GameManager : MonoBehaviour
         cameraFollow.enabled = true;
     }
 
-    public void ChangeCameraPos(Vector3 pos)
+    public void ChangeCameraPos(Vector3 pos, Vector3 rot)
     {
         if (currentCameraState == CamState.Default)
         {
             ChangeCameraState(CamState.Sheep);
-            SheepClicked?.Invoke(pos);
+            SheepClicked?.Invoke(pos, rot);
         }
+    }
+
+    public void Caresse()
+    {
+        currentBonheur += caresseValue / saturationValue;
+        saturationValue += 0.3f;
+    }
+
+    private void Update()
+    {
+        txtBonheur.text = (int)((currentBonheur / maxBonheur) * 100) + " %";
+        saturationValue -= Time.deltaTime;
+        if (saturationValue >= maxSaturation) saturationValue = maxSaturation;
+        if (saturationValue <= 0.1) saturationValue = 0.1f;
     }
 }
