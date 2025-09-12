@@ -15,6 +15,6 @@ public class SkinSkelete
     public string name;
     public int price;
     public Sprite logo;
-    public GameObject model;
+    public Material model;
 }
 

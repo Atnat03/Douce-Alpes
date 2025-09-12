@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public enum CamState
 {
@@ -21,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject[] UItoDisableWhenSheepIsOn;
 
-    [SerializeField] private Sheep[] sheepList;
+    [SerializeField] private List<Sheep> sheepList;
 
     [Header("Bonheur")] 
     [SerializeField] private float currentBonheur;
@@ -45,7 +47,7 @@ public class GameManager : MonoBehaviour
 
     public Sheep GetSheep(int idSheep)
     {
-        return sheepList[idSheep];
+        return sheepList.FirstOrDefault(s => s.sheepId == idSheep);
     }
     
     public GameObject GetSheepWindow(){return  sheepWidow;}
@@ -61,8 +63,13 @@ public class GameManager : MonoBehaviour
     {
         currentCameraState = CamState.Default;
         cameraFollow.enabled = true;
+        
         ChangePlayerEnvironnement(true);
+
+        GetSheep(SheepWindow.instance.GetCurrentSheepID()).StopAgentAndDesactivateScript(false);
+        
         sheepWidow.SetActive(false);
+        SheepWindow.instance.ResetValue();
     }
 
     public void ChangePlayerEnvironnement(bool state)

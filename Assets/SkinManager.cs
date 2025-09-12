@@ -38,6 +38,8 @@ public class SkinManager : MonoBehaviour
 
             visibleImage[i].sprite = skins[skinIndex].logo;
         }
+        
+        SheepWindow.instance.SetNewCurrentSkin();
     }
     
     public void SetCurrentSkin(int skinId)
@@ -77,4 +79,9 @@ public class SkinManager : MonoBehaviour
     {
         return skins[indexCurrentSkin];
     }
+
+	public Material GetCurrentSkinModel()
+	{
+		return skins[GetCurrentSkinID()].model;
+	}
 }

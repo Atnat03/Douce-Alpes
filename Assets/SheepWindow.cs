@@ -13,6 +13,8 @@ public class SheepWindow : MonoBehaviour
     private int currentSkin;
     private int sheepId;
 
+    public bool isOpen = false;
+
     private void Awake()
     {
         instance = this;
@@ -20,11 +22,18 @@ public class SheepWindow : MonoBehaviour
 
     public void SetNewCurrentSkin()
     {
-        GameManager.instance.GetSheep(sheepId).SetCurrentSkin(skinManager.GetCurrentSkinID());
+        GameManager.instance.GetSheep(sheepId).SetCurrentSkin(skinManager.GetCurrentSkinID(), skinManager.GetCurrentSkinModel());
+    }
+
+    public int GetCurrentSheepID()
+    {
+        return sheepId;
     }
 
     public void Initialize(string name, int currentSkin, int sheepId)
     {
+        isOpen = true;
+        
         nameText.text = name;
         this.currentSkin = currentSkin;
         
@@ -32,5 +41,12 @@ public class SheepWindow : MonoBehaviour
         
         this.sheepId = sheepId;
         skinManager.SetCurrentSkin(this.currentSkin);
+    }
+
+    public void ResetValue()
+    {
+        isOpen = false;
+        currentSkin = -1;
+        sheepId = -1;
     }
 }

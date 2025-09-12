@@ -66,7 +66,6 @@ public class SwipeDetection : MonoBehaviour
             {
                 isSwipe = true;
                 trail.SetActive(true);
-                Debug.Log("Swipe validé → activation du trail");
             }
 
             if (isSwipe)
@@ -159,6 +158,6 @@ public class SwipeDetection : MonoBehaviour
             return hit.point + Vector3.up * 0.1f;
         }
 
-        return ray.GetPoint(5f);
+        return ray.GetPoint(9f);
     }
 }

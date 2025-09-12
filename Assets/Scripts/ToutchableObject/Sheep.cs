@@ -1,18 +1,19 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 
 public class Sheep : TouchableObject
 {
-    [SerializeField] private int sheepId;
+    [SerializeField] public int sheepId;
     [SerializeField] private string sheepName;
 
     [SerializeField] private int currentSkin;
 
     [SerializeField] private float currentCaressesValue;
     [SerializeField] private float maxCaressesValue = 100;
-
+    
     [Header("Timer")]
     [SerializeField] private float holdingTimer;
     private float timer; 
@@ -22,11 +23,17 @@ public class Sheep : TouchableObject
     [SerializeField] private Transform cameraPosition;
     [SerializeField] private GameObject wheelTimerUI;
     [SerializeField] private Image valueWheelTimerImage;
+    [SerializeField] private MeshRenderer model;
+    [SerializeField] private ParticleSystem heartParticle;
+    [SerializeField] private Transform spawnParticleCaresse;
+    
+    private SheepAI sheepAI;
 
     private void Start()
     {
         wheelTimerUI.SetActive(false);
         holdingTimer = TouchManager.instance.holdThreshold;
+        sheepAI = GetComponent<SheepAI>();
     }
 
     private void Update()
@@ -45,6 +52,12 @@ public class Sheep : TouchableObject
         }
     }
 
+    public void StopAgentAndDesactivateScript(bool state)
+    {
+        sheepAI.StopAgent(state);
+        sheepAI.enabled = !state;
+    }
+
     public Vector3 GetCameraPosition()
     {
         return cameraPosition.transform.position;
@@ -53,6 +66,9 @@ public class Sheep : TouchableObject
     public void AddCaresse()
     {
         currentCaressesValue += 1f;
+        
+        heartParticle.Play();
+        
         GameManager.instance.Caresse();
     }
 
@@ -67,12 +83,16 @@ public class Sheep : TouchableObject
         startTimer = true;
         wheelTimerUI.SetActive(true);
         valueWheelTimerImage.fillAmount = 0f;
+        StopAgentAndDesactivateScript(true);
     }
 
     public void CancelHolding()
     {
         startTimer = false;
         wheelTimerUI.SetActive(false);
+        
+        if(!SheepWindow.instance.isOpen)
+            StopAgentAndDesactivateScript(false);
     }
 
     public void WidowOpen()
@@ -83,6 +103,7 @@ public class Sheep : TouchableObject
         );
         
         GameManager.instance.GetSheepWindow().SetActive(true);
+        StopAgentAndDesactivateScript(true);
         
         SheepWindow.instance.Initialize(sheepName, currentSkin, sheepId);
     }
@@ -92,8 +113,9 @@ public class Sheep : TouchableObject
         CancelHolding();
     }
 
-    public void SetCurrentSkin(int skinId)
+    public void SetCurrentSkin(int skinId, Material newObj)
     {
         currentSkin = skinId;
+        model.material = newObj;
     }
 }
