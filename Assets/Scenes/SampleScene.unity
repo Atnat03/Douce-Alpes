@@ -169,15 +169,36 @@ MonoBehaviour:
   maxBonheur: 10000
   txtBonheur: {fileID: 518830269}
   SheepCount: 0
-  caresseValue: 2
-  saturationValue: 0.1
-  maxSaturation: 10
   sheepWidow: {fileID: 619361967}
   miniGameCamPos: {fileID: 163850082}
   grange: {fileID: 1591031781}
   sheepPrefab: {fileID: 2722875930628605413, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
   sheepSpawn: {fileID: 1970725544}
   uiMiniGame: {fileID: 2046544720}
+  caresseBaseValue: 2
+  saturationCarrese: 2
+  recoveryTime: 3
+  caresseCurveValues:
+  - 2
+  - 3.2130613
+  - 3.94882
+  - 4.3950806
+  - 4.665751
+  - 4.829921
+  - 4.929495
+  - 4.9898896
+  - 5.0265207
+  - 5.048739
+  - 5.062215
+  - 5.0703883
+  - 5.075346
+  - 5.078353
+  - 5.080177
+  - 5.081283
+  - 5.081954
+  - 5.0823607
+  - 5.0826077
+  - 5.0827575
 --- !u!4 &105322137
 Transform:
   m_ObjectHideFlags: 0
@@ -5164,6 +5185,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 606120119166536806, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: model
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2722875930628605413, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_Name
       value: "\U0001F411 Mouton"
@@ -5182,19 +5207,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9959014
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.09044564
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5202,7 +5227,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -10.378
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

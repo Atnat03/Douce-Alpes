@@ -60,7 +60,6 @@ public class Sheep : TouchableObject
         sheepName = newName;
     }
 
-
     public void StopAgentAndDesactivateScript(bool state)
     {
         sheepAI.StopAgent(state);
@@ -78,7 +77,7 @@ public class Sheep : TouchableObject
         
         heartParticle.Play();
         
-        GameManager.instance.Caresse();
+        GameManager.instance.Caresse(this);
     }
 
     public override void TouchEvent()

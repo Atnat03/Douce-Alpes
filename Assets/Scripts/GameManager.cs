@@ -49,9 +49,6 @@ public class GameManager : MonoBehaviour
     
     [Header("Sheep")]
     [SerializeField] private int SheepCount;
-    [SerializeField] private float caresseValue = 10f;
-    [SerializeField] private float saturationValue = 0.1f;
-    [SerializeField] private float maxSaturation;
     [SerializeField] private GameObject sheepWidow;
     
     [Header("Grange Mini Game")]
@@ -60,6 +57,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject sheepPrefab;
     [SerializeField] private Transform sheepSpawn;
     [SerializeField] private GameObject uiMiniGame;
+    
+    [Header("Caresse Config")]
+    [SerializeField] public float caresseBaseValue = 1f;
+    [SerializeField] public float saturationCarrese = 2f;    
+    [SerializeField] private float recoveryTime = 3f;        
+
+    private Dictionary<int, int> sheepSwipeCount = new Dictionary<int, int>();
+    private Dictionary<int, float> sheepLastSwipeTime = new Dictionary<int, float>();
+    
+    [Header("Caresse Visualizer")]
+    public float[] caresseCurveValues;
     
     private void Awake()
     {
@@ -127,20 +135,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Caresse()
+    public void Caresse(Sheep sheep)
     {
-        currentBonheur += caresseValue / saturationValue;
-        saturationValue += 0.3f;
+        if (sheep == null) return;
+
+        int id = sheep.sheepId;
+
+        if (!sheepSwipeCount.ContainsKey(id)) sheepSwipeCount[id] = 0;
+        if (!sheepLastSwipeTime.ContainsKey(id)) sheepLastSwipeTime[id] = -999f;
+
+        float timeSinceLastSwipe = Time.time - sheepLastSwipeTime[id];
+        float recoveryMultiplier = Mathf.Clamp01(timeSinceLastSwipe / recoveryTime);
+        float bonus = caresseBaseValue / (1f + saturationCarrese * Mathf.Log(1f + sheepSwipeCount[id]));
+        float deltaBonheur = bonus * recoveryMultiplier;
+        
+        if(deltaBonheur > 0.05f)
+            currentBonheur += deltaBonheur;
+
+        sheepSwipeCount[id] += 1;
+        sheepLastSwipeTime[id] = Time.time;
+
+        Debug.Log($"{sheep.name} : +{deltaBonheur} bonheur (total {currentBonheur})");
     }
+
 
     private void Update()
     {
         //txtBonheur.text = (int)((currentBonheur / maxBonheur) * 100) + " %";
         txtBonheur.text = currentBonheur.ToString();
         
+        /*
         saturationValue -= Time.deltaTime;
         if (saturationValue >= maxSaturation) saturationValue = maxSaturation;
-        if (saturationValue <= 0.1) saturationValue = 0.1f;
+        if (saturationValue <= 0.1) saturationValue = 0.1f;*/
         
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
     }
