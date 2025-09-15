@@ -1,78 +1,125 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
-public class PatrolObjets :  MonoBehaviour
+public class PatrolObjets : MonoBehaviour
 {
-    private int currentPatrolPointIndex;
-
     private NavMeshAgent agent;
 
-    private float currentWaintingTime;
-    float maxWaintingTime;
-    public float maxValueTime = 8;
-    public float minValueTime = 3;
+    [Header("Patrol")]
+    public float patrolRadius = 5f;
+    public float patrolSpeed = 3.5f;
+    public float minWaitTime = 1f;
+    public float maxWaitTime = 3f;
 
-    public float raduisCercle = 5;
+    [Header("Flee")]
+    public float fleeDistance = 6f;
+    public float fleeSpeed = 6f;
+    public float fleeTriggerDistance = 2f;
+    public float fleeRecalcInterval = 0.35f;
 
-    public void Start()
+    private GameObject predator;
+    private bool isFleeing;
+    private float lastFleeTime;
+
+    private float waitTimer = 0f;
+    private float waitDuration = 0f;
+
+    void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        
-        currentPatrolPointIndex = -1;
+        if (!agent) { enabled = false; return; }
 
-        currentWaintingTime = 0;
-        maxWaintingTime = 0;
+        agent.speed = patrolSpeed;
+        agent.stoppingDistance = 0.2f;
+
+        SetWaitTime();
+        GoToRandomPatrolPoint();
     }
 
     void Update()
     {
-        if (agent.remainingDistance < 0.5f)
-        {
-            if (maxWaintingTime == 0)
-            {
-                maxWaintingTime = Random.Range(minValueTime, maxValueTime);
-            }
-            else
-            {
-                //WaitingAction();
-            }
+        predator = (GameManager.instance?.currentCameraState == CamState.MiniGame && TouchManager.instance != null)
+            ? TouchManager.instance.sphereSheepLeak
+            : null;
 
-            if (currentWaintingTime >= maxWaintingTime)
+        // Fuite
+        if (predator != null && Vector3.Distance(transform.position, predator.transform.position) < fleeTriggerDistance)
+            Flee(predator.transform.position);
+
+        if (isFleeing)
+        {
+            CheckFlee();
+            return;
+        }
+
+        Patrol();
+    }
+
+    // ---------- PATROL ----------
+    void Patrol()
+    {
+        if (agent.pathPending) return;
+
+        // Si le mouton est arrivé à destination
+        if (agent.remainingDistance <= agent.stoppingDistance)
+        {
+            waitTimer += Time.deltaTime;
+            if (waitTimer >= waitDuration)
             {
-                maxWaintingTime = 0;
-                currentWaintingTime = 0;
-                GoNextPoint();
-            }
-            else
-            {
-                currentWaintingTime += Time.deltaTime;
+                waitTimer = 0f;
+                SetWaitTime();
+                GoToRandomPatrolPoint();
             }
         }
     }
-
-    public virtual void WaitingAction()
-    {
-        Debug.Log($"{transform.name} attend");
-    }
-
+    
     public void StopAgent(bool state)
     {
-        agent.SetDestination(transform.position);
         agent.isStopped = state;
     }
-    
-    void GoNextPoint()
+
+    void GoToRandomPatrolPoint()
     {
-        Vector3 randomPos = Random.insideUnitSphere * raduisCercle;
-        Vector3 newPos = new Vector3(transform.position.x + randomPos.x, transform.position.y, transform.position.z + randomPos.z);
-        agent.SetDestination(newPos);
+        Vector3 randomOffset = Random.insideUnitSphere * patrolRadius;
+        randomOffset.y = 0;
+        Vector3 target = transform.position + randomOffset;
+
+        agent.speed = patrolSpeed;
+        agent.SetDestination(target);
     }
 
-    public void OnDrawGizmos()
+    void SetWaitTime()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, raduisCercle);
+        waitDuration = Random.Range(minWaitTime, maxWaitTime);
+    }
+
+    // ---------- FLEE ----------
+    void Flee(Vector3 predatorPos)
+    {
+        if (Time.time - lastFleeTime < fleeRecalcInterval) return;
+        lastFleeTime = Time.time;
+
+        Vector3 dir = (transform.position - predatorPos).normalized;
+        if (dir.sqrMagnitude < 0.001f) dir = Random.insideUnitSphere.normalized;
+
+        Vector3 target = transform.position + dir * fleeDistance;
+
+        agent.speed = fleeSpeed;
+        agent.SetDestination(target);
+        isFleeing = true;
+    }
+
+    void CheckFlee()
+    {
+        if (agent.pathPending || agent.remainingDistance > agent.stoppingDistance) return;
+
+        if (predator != null && Vector3.Distance(transform.position, predator.transform.position) < fleeTriggerDistance)
+            Flee(predator.transform.position);
+        else
+        {
+            isFleeing = false;
+            SetWaitTime();
+            GoToRandomPatrolPoint();
+        }
     }
 }

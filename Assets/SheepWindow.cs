@@ -22,8 +22,10 @@ public class SheepWindow : MonoBehaviour
 
     public void SetNewCurrentSkin()
     {
-        GameManager.instance.GetSheep(sheepId).SetCurrentSkin(skinManager.GetCurrentSkinID(), skinManager.GetCurrentSkinModel());
+        GameManager.instance.GetSheep(sheepId).SetCurrentSkin(skinManager.GetCurrentSkinID());
     }
+    
+    public InputField GetInputField(){return nameText;}
 
     public int GetCurrentSheepID()
     {

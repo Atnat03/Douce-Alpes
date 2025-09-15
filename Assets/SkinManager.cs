@@ -79,9 +79,4 @@ public class SkinManager : MonoBehaviour
     {
         return skins[indexCurrentSkin];
     }
-
-	public Material GetCurrentSkinModel()
-	{
-		return skins[GetCurrentSkinID()].model;
-	}
 }

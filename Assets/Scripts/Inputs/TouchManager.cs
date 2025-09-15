@@ -22,6 +22,8 @@ public class TouchManager : MonoBehaviour
 
     private Swipe swipeInput;
 
+    public GameObject sphereSheepLeak;
+
     #region Events
     public delegate void StartTouch(Vector2 position, float timer);
     public event StartTouch OnStartEvent;
@@ -43,6 +45,8 @@ public class TouchManager : MonoBehaviour
         touchPositionAction = playerInput.actions["TouchPosition"];
 
         swipeInput = new Swipe();
+        
+        sphereSheepLeak.SetActive(false);
     }
 
     private void OnEnable()
@@ -110,6 +114,25 @@ public class TouchManager : MonoBehaviour
                 sheep.StartHolding();
                 isHolding = true;
             }
+        }
+
+        if (GameManager.instance.currentCameraState == CamState.MiniGame)
+        {
+            Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
+            Ray ray = Camera.main.ScreenPointToRay(screenPos);
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                if (hit.transform.CompareTag("Field"))
+                {
+                    sphereSheepLeak.SetActive(true);
+                    sphereSheepLeak.transform.position = hit.point;
+                }
+            }
+        }
+        else
+        {
+            sphereSheepLeak.SetActive(false);
         }
     }
     

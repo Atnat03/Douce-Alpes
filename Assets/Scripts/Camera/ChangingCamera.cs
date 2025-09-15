@@ -12,6 +12,7 @@ public class ChangingCamera : MonoBehaviour
     private void Start()
     {
         GameManager.instance.SheepClicked += ChangeCamera;
+        GameManager.instance.GrangeClicked += ChangeCamera;
         
         quitButton.gameObject.SetActive(false);
     }
@@ -35,5 +36,10 @@ public class ChangingCamera : MonoBehaviour
 
         GameManager.instance.ResetCamera();
         quitButton.gameObject.SetActive(false);
+
+        if (GameManager.instance.currentCameraState == CamState.MiniGame)
+        {
+            GameManager.instance.grange.EndMiniGame();
+        }
     }
 }

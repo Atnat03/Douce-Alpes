@@ -9,7 +9,7 @@ public class Sheep : TouchableObject
     [SerializeField] public int sheepId;
     [SerializeField] private string sheepName;
 
-    [SerializeField] private int currentSkin;
+    [SerializeField] public int currentSkin;
 
     [SerializeField] private float currentCaressesValue;
     [SerializeField] private float maxCaressesValue = 100;
@@ -26,6 +26,7 @@ public class Sheep : TouchableObject
     [SerializeField] private MeshRenderer model;
     [SerializeField] private ParticleSystem heartParticle;
     [SerializeField] private Transform spawnParticleCaresse;
+    [SerializeField] private SkinListManager skinListManager;
     
     private SheepAI sheepAI;
 
@@ -50,7 +51,15 @@ public class Sheep : TouchableObject
                 WidowOpen();
             }
         }
+        
+        SheepWindow.instance.GetInputField().onValueChanged.AddListener(ChangeName);
     }
+
+    void ChangeName(string newName)
+    {
+        sheepName = newName;
+    }
+
 
     public void StopAgentAndDesactivateScript(bool state)
     {
@@ -79,6 +88,9 @@ public class Sheep : TouchableObject
 
     public void StartHolding()
     {
+        if(GameManager.instance.currentCameraState != CamState.Default)
+            return;
+        
         timer = 0f;
         startTimer = true;
         wheelTimerUI.SetActive(true);
@@ -97,6 +109,7 @@ public class Sheep : TouchableObject
 
     public void WidowOpen()
     {
+        GameManager.instance.ChangeCameraState(CamState.Sheep);
         GameManager.instance.ChangeCameraPos(
             cameraPosition.transform.position,
             cameraPosition.transform.rotation.eulerAngles
@@ -113,9 +126,9 @@ public class Sheep : TouchableObject
         CancelHolding();
     }
 
-    public void SetCurrentSkin(int skinId, Material newObj)
+    public void SetCurrentSkin(int skinId)
     {
         currentSkin = skinId;
-        model.material = newObj;
+        skinListManager.UpdateSkinList(currentSkin);
     }
 }
