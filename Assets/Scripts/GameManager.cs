@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using UnityEditor.Rendering.LookDev;
 
 public enum CamState
 {
@@ -47,16 +46,26 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float maxBonheur;
     [SerializeField] Text txtBonheur;
     
+    [Header("Money")]
+    [SerializeField] private int currentMoney;
+    [SerializeField] Text txtMoney;
+    
     [Header("Sheep")]
     [SerializeField] private int SheepCount;
     [SerializeField] private GameObject sheepWidow;
     
     [Header("Grange Mini Game")]
     [SerializeField] private Transform miniGameCamPos;
+    [SerializeField] private Transform miniGameZoomCamPos;
     [SerializeField] public Grange grange;
     [SerializeField] private GameObject sheepPrefab;
     [SerializeField] private Transform sheepSpawn;
     [SerializeField] private GameObject uiMiniGame;
+        
+    [Header("Shop")]
+    [SerializeField] private GameObject shopUI;
+
+    public bool shopOpen = false;
     
     [Header("Caresse Config")]
     [SerializeField] public float caresseBaseValue = 1f;
@@ -80,6 +89,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         sheepDestroyData = new List<SheepData>();
+        
+        shopUI.SetActive(false);
     }
 
     public Sheep GetSheep(int idSheep)
@@ -98,19 +109,24 @@ public class GameManager : MonoBehaviour
 
     public void ResetCamera()
     {
-        currentCameraState = CamState.Default;
         cameraFollow.enabled = true;
         
         ChangePlayerEnvironnement(true);
 
-        Sheep sheep = GetSheep(SheepWindow.instance.GetCurrentSheepID());
-        if(sheep != null) sheep.StopAgentAndDesactivateScript(false);
+        if (currentCameraState == CamState.Sheep)
+        {
+            Sheep sheep = GetSheep(SheepWindow.instance.GetCurrentSheepID());
+            if(sheep != null) sheep.StopAgentAndDesactivateScript(false);
+                    
+            sheepWidow.SetActive(false);
+            SheepWindow.instance.ResetValue();
+        }
         
-        sheepWidow.SetActive(false);
-        SheepWindow.instance.ResetValue();
+        currentCameraState = CamState.Default;
     }
 
     public Transform GetMiniGameCamPos() { return miniGameCamPos; }
+    public Transform GetMiniGameZoomCamPos() { return miniGameZoomCamPos; }
 
     public void ChangePlayerEnvironnement(bool state)
     {
@@ -135,39 +151,42 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private Dictionary<int, float> sheepFatigue = new Dictionary<int, float>();
+
     public void Caresse(Sheep sheep)
     {
         if (sheep == null) return;
 
         int id = sheep.sheepId;
 
-        if (!sheepSwipeCount.ContainsKey(id)) sheepSwipeCount[id] = 0;
-        if (!sheepLastSwipeTime.ContainsKey(id)) sheepLastSwipeTime[id] = -999f;
+        if (!sheepFatigue.ContainsKey(id)) sheepFatigue[id] = 0f;
+        if (!sheepLastSwipeTime.ContainsKey(id)) sheepLastSwipeTime[id] = Time.time;
 
         float timeSinceLastSwipe = Time.time - sheepLastSwipeTime[id];
-        float recoveryMultiplier = Mathf.Clamp01(timeSinceLastSwipe / recoveryTime);
-        float bonus = caresseBaseValue / (1f + saturationCarrese * Mathf.Log(1f + sheepSwipeCount[id]));
-        float deltaBonheur = bonus * recoveryMultiplier;
-        
-        if(deltaBonheur > 0.05f)
-            currentBonheur += deltaBonheur;
 
-        sheepSwipeCount[id] += 1;
+        sheepFatigue[id] = Mathf.Max(0f, sheepFatigue[id] - (timeSinceLastSwipe / recoveryTime));
+
+        float bonus = caresseBaseValue * Mathf.Exp(-sheepFatigue[id] / saturationCarrese);
+
+        if (bonus > 0.01f) 
+        {
+            currentBonheur = Mathf.Min(maxBonheur, currentBonheur + bonus);
+            sheepFatigue[id] += 1f; 
+        }
+
         sheepLastSwipeTime[id] = Time.time;
 
-        Debug.Log($"{sheep.name} : +{deltaBonheur} bonheur (total {currentBonheur})");
+        Debug.Log($"{sheep.name} : +{bonus:F2} bonheur (total {currentBonheur:F2}) | Fatigue: {sheepFatigue[id]:F2}");
     }
+
+
 
 
     private void Update()
     {
-        //txtBonheur.text = (int)((currentBonheur / maxBonheur) * 100) + " %";
-        txtBonheur.text = currentBonheur.ToString();
-        
-        /*
-        saturationValue -= Time.deltaTime;
-        if (saturationValue >= maxSaturation) saturationValue = maxSaturation;
-        if (saturationValue <= 0.1) saturationValue = 0.1f;*/
+        int bonheur = (int)((currentBonheur / maxBonheur) * 100);
+        txtBonheur.text = bonheur + " %";
+        txtMoney.text = currentMoney.ToString();
         
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
     }
@@ -182,6 +201,8 @@ public class GameManager : MonoBehaviour
 
         sheepList.Remove(sheep);
         Destroy(sheep.gameObject);
+        
+        grange.AddSheepInGrange();
 
         if (sheepList.Count == 0)
             sheepList = new List<Sheep>();
@@ -205,5 +226,20 @@ public class GameManager : MonoBehaviour
         }
 
         sheepDestroyData = new List<SheepData>();
+    }
+    
+    //Shop
+    public void ActivateShop()
+    {
+        shopOpen = true;
+        shopUI.SetActive(true);
+        ChangePlayerEnvironnement(false);
+    }
+
+    public void DeactivateShop()
+    {
+        shopOpen = false;
+        shopUI.SetActive(false);
+        ChangePlayerEnvironnement(true);
     }
 }

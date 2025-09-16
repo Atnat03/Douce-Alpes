@@ -71,18 +71,14 @@ public class SheepCaresseVisualizerEditor : Editor
 
     void RecalculateCaresseCurve(GameManager gm)
     {
-        int sampleSwipes = 20; // nombre de points à calculer
+        int sampleSwipes = 20;
         gm.caresseCurveValues = new float[sampleSwipes];
-        float tempBonheur = 0f;
-        int swipeCount = 0;
-
+    
         for (int i = 0; i < sampleSwipes; i++)
         {
-            // Calcul exponentiel décroissant pour refléter le système actuel
-            float bonus = gm.caresseBaseValue * Mathf.Exp(-swipeCount / gm.saturationCarrese);
-            tempBonheur += bonus;
-            gm.caresseCurveValues[i] = tempBonheur;
-            swipeCount++;
+            float bonus = gm.caresseBaseValue * Mathf.Exp(-i / gm.saturationCarrese);
+            gm.caresseCurveValues[i] = bonus;
         }
     }
+
 }

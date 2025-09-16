@@ -11,7 +11,6 @@ public class Sheep : TouchableObject
 
     [SerializeField] public int currentSkin;
 
-    [SerializeField] private float currentCaressesValue;
     [SerializeField] private float maxCaressesValue = 100;
     
     [Header("Timer")]
@@ -23,7 +22,6 @@ public class Sheep : TouchableObject
     [SerializeField] private Transform cameraPosition;
     [SerializeField] private GameObject wheelTimerUI;
     [SerializeField] private Image valueWheelTimerImage;
-    [SerializeField] private MeshRenderer model;
     [SerializeField] private ParticleSystem heartParticle;
     [SerializeField] private Transform spawnParticleCaresse;
     [SerializeField] private SkinListManager skinListManager;
@@ -52,7 +50,7 @@ public class Sheep : TouchableObject
             }
         }
         
-        SheepWindow.instance.GetInputField().onValueChanged.AddListener(ChangeName);
+        //SheepWindow.instance.GetInputField().onValueChanged.AddListener(ChangeName);
     }
 
     void ChangeName(string newName)
@@ -73,8 +71,6 @@ public class Sheep : TouchableObject
 
     public void AddCaresse()
     {
-        currentCaressesValue += 1f;
-        
         heartParticle.Play();
         
         GameManager.instance.Caresse(this);

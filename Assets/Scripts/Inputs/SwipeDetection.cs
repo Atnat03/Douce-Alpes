@@ -8,6 +8,9 @@ public class SwipeDetection : MonoBehaviour
     [SerializeField] float maxTime = 1f;
     [SerializeField, Range(0,1)] float directionThreshold = .9f;
 
+    [SerializeField] private Vector2 swipeAreaSize = new Vector2(600, 400); 
+    private Rect swipeArea;
+    
     TouchManager touchManager;
 
     private Vector2 startPosition;
@@ -23,9 +26,23 @@ public class SwipeDetection : MonoBehaviour
 
     private bool isSwipe = false;
 
+    [SerializeField] private Poutre poutre;
+
     private void Awake()
     {
         touchManager = TouchManager.instance;
+    }
+    
+    private void Start()
+    {
+        float screenW = Screen.width;
+        float screenH = Screen.height;
+        swipeArea = new Rect(
+            (screenW - swipeAreaSize.x) / 2f,
+            (screenH - swipeAreaSize.y) / 2f,
+            swipeAreaSize.x,
+            swipeAreaSize.y
+        );
     }
 
     private void OnEnable()
@@ -42,8 +59,14 @@ public class SwipeDetection : MonoBehaviour
 
     private void SwipeStart(Vector2 position, float time)
     {
+        if (!swipeArea.Contains(position))
+        {
+            Debug.Log("Swipe ignoré : hors zone centrale");
+            return;
+        }
+
         if (TouchManager.instance.isHolding) return;
-        
+
         startPosition = position;
         startTime = time;
         endPosition = position;
@@ -55,6 +78,7 @@ public class SwipeDetection : MonoBehaviour
 
         coroutine = StartCoroutine(CheckSwipeProgress());
     }
+
 
     private IEnumerator CheckSwipeProgress()
     {
@@ -80,6 +104,8 @@ public class SwipeDetection : MonoBehaviour
 
     private void DetectHover(Vector2 screenPos)
     {
+        if (GameManager.instance.currentCameraState != CamState.Default) return;
+        
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f))
@@ -134,6 +160,9 @@ public class SwipeDetection : MonoBehaviour
         if (Vector2.Dot(Vector2.up, direction) > directionThreshold)
         {
             Debug.Log("Swipe Up");
+
+            if (poutre != null)
+                poutre.GetOffPoutre();
         }
         else if (Vector2.Dot(Vector2.down, direction) > directionThreshold)
         {
@@ -159,5 +188,16 @@ public class SwipeDetection : MonoBehaviour
         }
 
         return ray.GetPoint(9f);
+    }
+    
+    private void OnGUI()
+    {
+        if (Application.isPlaying)
+        {
+            Color old = GUI.color;
+            GUI.color = new Color(1, 0, 0, 0.2f);
+            GUI.Box(swipeArea, GUIContent.none);
+            GUI.color = old;
+        }
     }
 }

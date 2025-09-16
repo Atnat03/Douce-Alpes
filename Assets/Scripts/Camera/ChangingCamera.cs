@@ -36,10 +36,5 @@ public class ChangingCamera : MonoBehaviour
 
         GameManager.instance.ResetCamera();
         quitButton.gameObject.SetActive(false);
-
-        if (GameManager.instance.currentCameraState == CamState.MiniGame)
-        {
-            GameManager.instance.grange.EndMiniGame();
-        }
     }
 }
