@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,18 +9,14 @@ public class SkinManager : MonoBehaviour
     private List<SkinSkelete> skins = new List<SkinSkelete>();
 
     [Header("UI")]
-    [SerializeField] Button leftArrow;
-    [SerializeField] Button rightArrow;
     [SerializeField] private Image[] visibleImage; 
 
     [SerializeField] private int indexCurrentSkin = 0; 
+    [SerializeField] private RectTransform swipeZone;
 
     void Start()
     {
         skins.AddRange(skinData.skins);
-
-        leftArrow.onClick.AddListener(LeftArrow);
-        rightArrow.onClick.AddListener(RightArrow);
 
         UpdateUI();
     }
@@ -54,6 +49,16 @@ public class SkinManager : MonoBehaviour
 
     public void LeftArrow()
     {
+        SwipeLeft();
+    }
+
+    public void RightArrow()
+    {
+        SwipeRight();
+    }
+
+    public void SwipeRight()
+    {
         indexCurrentSkin--;
         if (indexCurrentSkin < 0)
             indexCurrentSkin = skins.Count - 1;
@@ -61,7 +66,7 @@ public class SkinManager : MonoBehaviour
         UpdateUI();
     }
 
-    public void RightArrow()
+    public void SwipeLeft()
     {
         indexCurrentSkin++;
         if (indexCurrentSkin >= skins.Count)
@@ -78,5 +83,10 @@ public class SkinManager : MonoBehaviour
     public SkinSkelete GetCurrentSkin()
     {
         return skins[indexCurrentSkin];
+    }
+
+    public bool IsInsideSwipeArea(Vector2 screenPosition)
+    {
+        return RectTransformUtility.RectangleContainsScreenPoint(swipeZone, screenPosition);
     }
 }

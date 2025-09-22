@@ -8,31 +8,39 @@ public class ChangingCamera : MonoBehaviour
     Vector3 startPosition;
     Vector3 startRotation;
     [SerializeField] private Button quitButton;
+    CameraControl control;
 
     private void Start()
     {
         GameManager.instance.SheepClicked += ChangeCamera;
         GameManager.instance.GrangeClicked += ChangeCamera;
+        GameManager.instance.AbreuvoirClicked += ChangeCamera;
+        
+        control = GetComponent<CameraControl>();
         
         quitButton.gameObject.SetActive(false);
     }
 
     public void ChangeCamera(Vector3 newPosition, Vector3 rotation)
     {
+        control.enabled = false;
+        
         quitButton.gameObject.SetActive(true);
-        startPosition = transform.position;
-        startRotation = transform.rotation.eulerAngles;
+        startPosition = gameObject.transform.position;
+        startRotation = gameObject.transform.rotation.eulerAngles;
         
         Vector3 targetPosition = new Vector3(newPosition.x, newPosition.y, newPosition.z);
 
-        transform.position = targetPosition;
-        transform.rotation = Quaternion.Euler(rotation);
+        gameObject.transform.position = targetPosition;
+        gameObject.transform.rotation = Quaternion.Euler(rotation);
     }
 
     public void ResetPosition()
     {
-        transform.position = startPosition;
-        transform.rotation = Quaternion.Euler(startRotation);
+        gameObject.transform.position = startPosition;
+        gameObject.transform.rotation = Quaternion.Euler(startRotation);
+        
+        control.enabled = true;
 
         GameManager.instance.ResetCamera();
         quitButton.gameObject.SetActive(false);

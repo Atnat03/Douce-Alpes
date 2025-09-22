@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
+using System.Numerics;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public class SwipeDetection : MonoBehaviour
 {
@@ -8,7 +11,7 @@ public class SwipeDetection : MonoBehaviour
     [SerializeField] float maxTime = 1f;
     [SerializeField, Range(0,1)] float directionThreshold = .9f;
 
-    [SerializeField] private Vector2 swipeAreaSize = new Vector2(600, 400); 
+    [SerializeField] private Vector2 swipeAreaSize = new Vector2(600, 600); 
     private Rect swipeArea;
     
     TouchManager touchManager;
@@ -28,6 +31,10 @@ public class SwipeDetection : MonoBehaviour
 
     [SerializeField] private Poutre poutre;
 
+    [Header("Skins")]
+    [SerializeField] private SkinManager skinManager;
+    private bool isSkinMenu = false;
+
     private void Awake()
     {
         touchManager = TouchManager.instance;
@@ -45,6 +52,11 @@ public class SwipeDetection : MonoBehaviour
         );
     }
 
+    private void Update()
+    {
+        isSkinMenu = skinManager.gameObject.activeSelf;
+    }
+
     private void OnEnable()
     {
         touchManager.OnStartEvent += SwipeStart;
@@ -59,18 +71,12 @@ public class SwipeDetection : MonoBehaviour
 
     private void SwipeStart(Vector2 position, float time)
     {
-        if (!swipeArea.Contains(position))
-        {
-            Debug.Log("Swipe ignoré : hors zone centrale");
-            return;
-        }
-
         if (TouchManager.instance.isHolding) return;
 
         startPosition = position;
         startTime = time;
         endPosition = position;
-
+        
         isSwipe = false;
 
         trail.SetActive(false); 
@@ -85,6 +91,12 @@ public class SwipeDetection : MonoBehaviour
         while (true)
         {
             Vector2 screenPos = TouchManager.instance.PrimaryPosition();
+            
+            if (!swipeArea.Contains(screenPos))
+            {
+                Debug.Log("Swipe ignoré : hors zone centrale");
+                break;
+            }
 
             if (!isSwipe && Vector2.Distance(startPosition, screenPos) >= miniDistance)
             {
@@ -151,11 +163,11 @@ public class SwipeDetection : MonoBehaviour
         {
             Debug.Log("SwipeDetected");
             Vector2 direction = (endPosition - startPosition).normalized;
-            SwipeDirection(direction);
+            SwipeDirection(direction, startPosition);
         }
     }
 
-    private void SwipeDirection(Vector2 direction)
+    private void SwipeDirection(Vector2 direction, Vector2 startPos)
     {
         if (Vector2.Dot(Vector2.up, direction) > directionThreshold)
         {
@@ -167,14 +179,37 @@ public class SwipeDetection : MonoBehaviour
         else if (Vector2.Dot(Vector2.down, direction) > directionThreshold)
         {
             Debug.Log("Swipe Down");
+
+            if (GameManager.instance.currentCameraState == CamState.Drink)
+            {
+                if (startPos.x > Screen.width * 0.66f)
+                {
+                    Debug.Log("Swipe Down sur la zone droite");
+                    
+                    Abreuvoir.instance.AddWater();
+                }
+                else
+                {
+                    Debug.Log("Swipe ignoré : pas sur la zone droite");
+                }
+
+            }
         }
         else if (Vector2.Dot(Vector2.right, direction) > directionThreshold)
         {
             Debug.Log("Swipe Right");
+            if (isSkinMenu && skinManager.IsInsideSwipeArea(startPos))
+            {
+                skinManager.RightArrow();
+            }
         }
         else if (Vector2.Dot(Vector2.left, direction) > directionThreshold)
         {
             Debug.Log("Swipe Left");
+            if (isSkinMenu && skinManager.IsInsideSwipeArea(startPos))
+            {
+                skinManager.LeftArrow();
+            }
         }
     }
 

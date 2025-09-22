@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 
-[CustomEditor(typeof(GameManager))]
-public class SheepCaresseVisualizerEditor : Editor
+public class SheepCaresseVisualizerEditor
 {
+    /*
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
@@ -80,5 +80,5 @@ public class SheepCaresseVisualizerEditor : Editor
             gm.caresseCurveValues[i] = bonus;
         }
     }
-
+*/
 }

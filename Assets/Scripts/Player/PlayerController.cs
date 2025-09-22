@@ -21,9 +21,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.instance.currentCameraState != CamState.Default) return;
-        if (GameManager.instance.shopOpen) return;
-        
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
         Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
 

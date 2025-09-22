@@ -4,21 +4,20 @@ using System.Collections.Generic;
 
 public class SkinListManager : MonoBehaviour
 {
-    [Header("Mettre tout les skins en enfant de l'objet")]
     List<SkinUnit> skinList;
 
     private Sheep parentSheep;
     
     private void Start()
     {
+        parentSheep =  transform.parent.GetComponent<Sheep>();
+     
         skinList = new List<SkinUnit>();
 
         for (int i = 0; i < transform.childCount; i++)
         {
             skinList.Add(transform.GetChild(i).GetComponent<SkinUnit>());
         }
-        
-        parentSheep =  transform.parent.GetComponent<Sheep>();
         
         UpdateSkinList(parentSheep.currentSkin);
     }

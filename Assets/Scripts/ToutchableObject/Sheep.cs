@@ -12,6 +12,8 @@ public class Sheep : TouchableObject
     [SerializeField] public int currentSkin;
 
     [SerializeField] private float maxCaressesValue = 100;
+
+    [SerializeField] public bool hasLaine = true;
     
     [Header("Timer")]
     [SerializeField] private float holdingTimer;
@@ -25,6 +27,7 @@ public class Sheep : TouchableObject
     [SerializeField] private ParticleSystem heartParticle;
     [SerializeField] private Transform spawnParticleCaresse;
     [SerializeField] private SkinListManager skinListManager;
+    [SerializeField] private GameObject laine;
     
     private SheepAI sheepAI;
 
@@ -37,6 +40,8 @@ public class Sheep : TouchableObject
 
     private void Update()
     {
+        laine.SetActive(hasLaine);
+        
         if (startTimer)
         {
             timer += Time.deltaTime;

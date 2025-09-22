@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public enum CamState
 {
     Default,
     Sheep,
-    MiniGame
+    MiniGame,
+    Drink,
 }
 
 public class SheepData
@@ -31,15 +33,17 @@ public class GameManager : MonoBehaviour
     
     public event Action<Vector3, Vector3> SheepClicked;
     public event Action<Vector3, Vector3> GrangeClicked;
+    public event Action<Vector3, Vector3> AbreuvoirClicked;
     
     public CamState currentCameraState = CamState.Default;
     
-    CameraFollow cameraFollow;
+    CameraControl cameraFollow;
 
     [SerializeField] private GameObject[] UItoDisableWhenSheepIsOn;
 
     [SerializeField] public List<Sheep> sheepList;
     [SerializeField] private List<SheepData> sheepDestroyData;
+    public bool isSheepOutside = true;
 
     [Header("Bonheur")] 
     [SerializeField] private float currentBonheur;
@@ -61,6 +65,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject sheepPrefab;
     [SerializeField] private Transform sheepSpawn;
     [SerializeField] private GameObject uiMiniGame;
+
+    [Header("Abreuvoir")]
+    [SerializeField] private Abreuvoir abreuvoir;
+    [SerializeField] private Transform cameraPosAbreuvoir;
         
     [Header("Shop")]
     [SerializeField] private GameObject shopUI;
@@ -78,16 +86,20 @@ public class GameManager : MonoBehaviour
     [Header("Caresse Visualizer")]
     public float[] caresseCurveValues;
     
+    int RealTime = System.DateTime.Now.Hour;
+    
     private void Awake()
     {
         instance = this;
         
-        cameraFollow = Camera.main.GetComponent<CameraFollow>();
+        cameraFollow = Camera.main.GetComponent<CameraControl>();
         sheepWidow.SetActive(false);
     }
 
     private void Start()
     {
+        print(RealTime);
+        
         sheepDestroyData = new List<SheepData>();
         
         shopUI.SetActive(false);
@@ -127,6 +139,7 @@ public class GameManager : MonoBehaviour
 
     public Transform GetMiniGameCamPos() { return miniGameCamPos; }
     public Transform GetMiniGameZoomCamPos() { return miniGameZoomCamPos; }
+    public Transform GetAbreuvoirCameraPosition() { return cameraPosAbreuvoir;}
 
     public void ChangePlayerEnvironnement(bool state)
     {
@@ -145,6 +158,9 @@ public class GameManager : MonoBehaviour
                 break;
             case CamState.MiniGame:
                 GrangeClicked?.Invoke(pos, rot);
+                break;
+            case CamState.Drink:
+                AbreuvoirClicked?.Invoke(pos, rot);
                 break;
             case CamState.Default:
                 break;
@@ -179,9 +195,6 @@ public class GameManager : MonoBehaviour
         Debug.Log($"{sheep.name} : +{bonus:F2} bonheur (total {currentBonheur:F2}) | Fatigue: {sheepFatigue[id]:F2}");
     }
 
-
-
-
     private void Update()
     {
         int bonheur = (int)((currentBonheur / maxBonheur) * 100);
@@ -189,6 +202,8 @@ public class GameManager : MonoBehaviour
         txtMoney.text = currentMoney.ToString();
         
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
+
+        isSheepOutside = sheepList.Count != 0;
     }
     
     //GrangeMiniGame
@@ -241,5 +256,12 @@ public class GameManager : MonoBehaviour
         shopOpen = false;
         shopUI.SetActive(false);
         ChangePlayerEnvironnement(true);
+    }
+    
+    //Abreuvoir
+    public void ActivateAbreuvoir()
+    {
+        ChangeCameraState(CamState.Drink);
+        ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles);
     }
 }
