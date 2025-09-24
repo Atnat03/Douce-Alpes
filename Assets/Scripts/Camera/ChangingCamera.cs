@@ -12,7 +12,8 @@ public class ChangingCamera : MonoBehaviour
 
     private void Start()
     {
-        GameManager.instance.SheepClicked += ChangeCamera;
+        GameManager.instance.SheepClicked += LockCamOnSheep;
+        GameManager.instance.SheepHold += ChangeCamera;
         GameManager.instance.GrangeClicked += ChangeCamera;
         GameManager.instance.AbreuvoirClicked += ChangeCamera;
         
@@ -33,6 +34,31 @@ public class ChangingCamera : MonoBehaviour
 
         gameObject.transform.position = targetPosition;
         gameObject.transform.rotation = Quaternion.Euler(rotation);
+    }
+    
+    public void LockCamOnSheep(Sheep sheep)
+    {
+        print(sheep.laine.GetComponent<Outline>());
+        
+        CameraFollow cameraFollow = gameObject.GetComponent<CameraFollow>();
+        CameraControl cameraControl = gameObject.GetComponent<CameraControl>();
+        cameraControl.enabled = false;
+        cameraFollow.enabled = true;
+        
+        cameraFollow.target = sheep.transform;
+        cameraFollow.offset = gameObject.transform.position;
+
+        sheep.ChangeOutlineState(true);
+    }
+
+    public void ResetCameraLock(Sheep sheep)
+    {
+        CameraFollow cameraFollow = gameObject.GetComponent<CameraFollow>();
+        CameraControl cameraControl = gameObject.GetComponent<CameraControl>();
+        cameraControl.enabled = true;
+        cameraFollow.enabled = false;
+        
+        sheep.ChangeOutlineState(false);
     }
 
     public void ResetPosition()

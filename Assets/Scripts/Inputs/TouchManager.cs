@@ -23,6 +23,9 @@ public class TouchManager : MonoBehaviour
     private Swipe swipeInput;
 
     public GameObject sphereSheepLeak;
+    
+    [SerializeField] private Vector2 delockAreaSize = new Vector2(600, 600); 
+    private Rect delockArea;
 
     #region Events
     public delegate void StartTouch(Vector2 position, float timer);
@@ -48,6 +51,8 @@ public class TouchManager : MonoBehaviour
         
         sphereSheepLeak.SetActive(false);
     }
+    
+    
 
     private void OnEnable()
     {
@@ -72,7 +77,12 @@ public class TouchManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
-        {
+        {            
+            if (GameManager.instance.isLock && !delockArea.Contains(screenPos))
+            {
+                Debug.Log("Force delock");
+                GameManager.instance.DelockSheep();
+            }
             currentTouchedObject = hit.transform.gameObject;
         }
     }
@@ -138,6 +148,15 @@ public class TouchManager : MonoBehaviour
     
     private void Start()
     {
+        float screenW = Screen.width;
+        float screenH = Screen.height;
+        delockArea = new Rect(
+            (screenW - delockAreaSize.x) / 2f,
+            (screenH - delockAreaSize.y) / 2f,
+            delockAreaSize.x,
+            delockAreaSize.y
+        );
+        
         swipeInput.Swiping.PrimaryTouch.started += ctx => StartTouchPrimary(ctx);
         swipeInput.Swiping.PrimaryTouch.canceled += ctx => EndTouchPrimary(ctx);
     }
@@ -156,5 +175,15 @@ public class TouchManager : MonoBehaviour
     {
         return swipeInput.Swiping.PrimaryPosition.ReadValue<Vector2>();
     }
-
+    
+    /*private void OnGUI()
+    {
+        if (Application.isPlaying)
+        {
+            Color old = GUI.color;
+            GUI.color = new Color(1, 1, 0, 0.2f);
+            GUI.Box(delockArea, GUIContent.none);
+            GUI.color = old;
+        }
+    }*/
 }

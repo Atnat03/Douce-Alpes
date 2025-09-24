@@ -11,28 +11,20 @@ public class CameraControl : MonoBehaviour
 
     private Movements inputs;
 
-    private bool zooming = false;
-
     private float boundUp, boundDown, boundLeft, boundRight;
     private float angle;
     private float zoom;
     private float zoomMax;
     private float zoomMin;
-
-    private Vector2 zoomPositionOnScreen = Vector2.zero;
-    private Vector3 zoomPositionInWorld = Vector3.zero;
-    private float zoomBaseValue = 0;
-    private float zoomBaseDistance = 0;
-
+    private bool isZooming = false;
+    
     private Vector3 center = Vector3.zero;
 
     public Transform centerPoint;
     public Transform root;
     public Transform pivot;
     public Transform target;
-
-    public Text nbInputText;
-
+    
     private void Awake()
     {
         inputs = new Movements();
@@ -73,113 +65,63 @@ public class CameraControl : MonoBehaviour
     private void OnEnable()
     {
         inputs.Enable();
-        inputs.Main.TouchZoom.started += _ => ZoomPressed();
-        inputs.Main.TouchZoom.canceled += _ => zooming = false;
     }
 
     private void OnDisable()
     {
-        inputs.Main.TouchZoom.started -= _ => ZoomPressed();
-        inputs.Main.TouchZoom.canceled -= _ => zooming = false;
         inputs.Disable();
     }
 
-    private void ZoomPressed()
-    {
-        Vector2 touch0 = inputs.Main.TouchPosition0.ReadValue<Vector2>();
-        Vector2 touch1 = inputs.Main.TouchPosition1.ReadValue<Vector2>();
-
-        if (touch0 == Vector2.zero || touch1 == Vector2.zero) 
-            return;
-
-        zoomPositionOnScreen = Vector2.Lerp(touch0, touch1, 0.5f);
-        zoomPositionInWorld = ScreenToWorldPointOnPlane(zoomPositionOnScreen);
-        zoomBaseValue = zoom;
-
-        touch0 /= new Vector2(Screen.width, Screen.height);
-        touch1 /= new Vector2(Screen.width, Screen.height);
-
-        zoomBaseDistance = Vector2.Distance(touch0, touch1);
-        zooming = true;
-    }
-
-
     private void Update()
     {
-        // Smooth follow
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, zoom, zoomSmooth * Time.deltaTime);
-        cam.transform.position = Vector3.Lerp(cam.transform.position, root.position + target.localPosition, moveSmooth * Time.deltaTime);
-        cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, target.rotation, moveSmooth * Time.deltaTime);
+        cam.fieldOfView = zoom;
+        cam.transform.position = root.position + target.localPosition;
+        cam.transform.rotation = target.rotation;
 
         if (GameManager.instance.currentCameraState != CamState.Default) return;
         if (GameManager.instance.shopOpen) return;
 
-        HandleTwoFingerGestures();   // 👉 remplace HandleMove + HandleZoomTouch
-        HandleZoomMouse();
+        HandleGestures();
         ApplyBounds();
     }
 
-    private void HandleTwoFingerGestures()
+    public void ResetFOV()
     {
-        if (!TwoFingersActive() || !zooming)
-            return;
-
-        Vector2 touch0 = inputs.Main.TouchPosition0.ReadValue<Vector2>();
-        Vector2 touch1 = inputs.Main.TouchPosition1.ReadValue<Vector2>();
-
-        if (touch0 == Vector2.zero || touch1 == Vector2.zero) 
-            return;
-
-        Vector2 t0Norm = touch0 / new Vector2(Screen.width, Screen.height);
-        Vector2 t1Norm = touch1 / new Vector2(Screen.width, Screen.height);
-
-        float currentDistance = Vector2.Distance(t0Norm, t1Norm);
-        float deltaDistance = currentDistance - zoomBaseDistance;
-
-        Vector2 delta0 = inputs.Main.PrimaryTouchDelta.ReadValue<Vector2>();
-        Vector2 delta1 = inputs.Main.SecondaryTouchDelta.ReadValue<Vector2>();
-
-        float dot = 0f;
-        if (delta0.sqrMagnitude > 0.001f && delta1.sqrMagnitude > 0.001f)
-            dot = Vector2.Dot(delta0.normalized, delta1.normalized);
-
-        if (Mathf.Abs(deltaDistance) > 0.01f && dot < 0.7f)
-        {
-            zoom = Mathf.Clamp(zoomBaseValue - deltaDistance * zoomSpeed, zoomMin, zoomMax);
-            Vector3 zoomCenter = ScreenToWorldPointOnPlane(Vector2.Lerp(touch0, touch1, 0.5f));
-            root.position += (zoomPositionInWorld - zoomCenter);
-        }
-        else if (dot > 0.7f)
-        {
-            // → Déplacement caméra
-            Vector2 avgDelta = (delta0 + delta1) / 2f;
-            Vector3 moveDelta = new Vector3(-avgDelta.x * moveSpeed * Time.deltaTime, 0, -avgDelta.y * moveSpeed * Time.deltaTime);
-            root.position += moveDelta;
-        }
+        zoom = 60;
     }
 
-    private void HandleZoomMouse()
+    private void HandleGestures()
     {
-        float scroll = inputs.Main.MouseScroll.ReadValue<float>();
-        if (scroll != 0)
+        // Lis les infos des deux doigts via Input System
+        Vector2 primaryDelta = inputs.Main.PrimaryTouchDelta.ReadValue<Vector2>();
+        bool primaryPressed = inputs.Main.PrimaryTouchPress.ReadValue<float>() > 0.5f;
+
+        Vector2 secondaryDelta = inputs.Main.SecondaryTouchDelta.ReadValue<Vector2>();
+        bool secondaryPressed = inputs.Main.SecondaryTouchPress.ReadValue<float>() > 0.5f;
+
+        // 👉 Si deux doigts → zoom (pinch)
+        if (primaryPressed && secondaryPressed)
         {
-            zoom -= scroll * 300f * Time.deltaTime;
+            Vector2 p1 = inputs.Main.PrimaryTouchPosition.ReadValue<Vector2>();
+            Vector2 p2 = inputs.Main.SecondaryTouchPosition.ReadValue<Vector2>();
+
+            Vector2 prevP1 = p1 - primaryDelta;
+            Vector2 prevP2 = p2 - secondaryDelta;
+
+            float prevDist = (prevP1 - prevP2).magnitude;
+            float currDist = (p1 - p2).magnitude;
+
+            float delta = prevDist - currDist;
+
+            zoom += delta * zoomSpeed * Time.deltaTime;
             zoom = Mathf.Clamp(zoom, zoomMin, zoomMax);
         }
-    }
-
-    private bool TwoFingersActive()
-    {
-        bool first = inputs.Main.PrimaryTouchPress.ReadValue<float>() > 0.5f;
-        bool second = inputs.Main.SecondaryTouchPress.ReadValue<float>() > 0.5f;
-        return first && second;
-    }
-
-    private bool OneFingerActive()
-    {
-        bool first = inputs.Main.PrimaryTouchPress.ReadValue<float>() > 0.5f;
-        bool second = inputs.Main.SecondaryTouchPress.ReadValue<float>() > 0.5f;
-        return first && !second;
+        // 👉 Sinon si un seul doigt → déplacement
+        else if (primaryPressed && primaryDelta != Vector2.zero)
+        {
+            Vector3 moveDelta = new Vector3(-primaryDelta.x * moveSpeed * Time.deltaTime, 0, -primaryDelta.y * moveSpeed * Time.deltaTime);
+            root.position += moveDelta;
+        }
     }
 
     private void ApplyBounds()
@@ -189,14 +131,5 @@ public class CameraControl : MonoBehaviour
             root.position.y,
             Mathf.Clamp(root.position.z, center.z - boundDown, center.z + boundUp)
         );
-    }
-
-    private Vector3 ScreenToWorldPointOnPlane(Vector2 screenPos)
-    {
-        Ray ray = cam.ScreenPointToRay(screenPos);
-        Plane plane = new Plane(Vector3.up, root.position);
-        if (plane.Raycast(ray, out float distance))
-            return ray.GetPoint(distance);
-        return Vector3.zero;
     }
 }

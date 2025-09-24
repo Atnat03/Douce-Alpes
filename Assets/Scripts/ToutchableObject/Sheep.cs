@@ -15,6 +15,9 @@ public class Sheep : TouchableObject
 
     [SerializeField] public bool hasLaine = true;
     
+    [SerializeField] private bool isBeingCaressed = false;
+    public bool IsBeingCaressed => isBeingCaressed;
+    
     [Header("Timer")]
     [SerializeField] private float holdingTimer;
     private float timer; 
@@ -27,7 +30,7 @@ public class Sheep : TouchableObject
     [SerializeField] private ParticleSystem heartParticle;
     [SerializeField] private Transform spawnParticleCaresse;
     [SerializeField] private SkinListManager skinListManager;
-    [SerializeField] private GameObject laine;
+    [SerializeField] public GameObject laine;
     
     private SheepAI sheepAI;
 
@@ -36,6 +39,8 @@ public class Sheep : TouchableObject
         wheelTimerUI.SetActive(false);
         holdingTimer = TouchManager.instance.holdThreshold;
         sheepAI = GetComponent<SheepAI>();
+        
+        laine.GetComponent<Outline>().enabled = false;
     }
 
     private void Update()
@@ -74,22 +79,42 @@ public class Sheep : TouchableObject
         return cameraPosition.transform.position;
     }
 
+    public void ChangeOutlineState(bool state)
+    {
+        laine.gameObject.GetComponent<Outline>().enabled = state;
+    }
+
     public void AddCaresse()
     {
+        isBeingCaressed = true;   
         heartParticle.Play();
-        
         GameManager.instance.Caresse(this);
+
+        CancelInvoke(nameof(StopCaresse));
+        Invoke(nameof(StopCaresse), 0.2f);
     }
+
+    private void StopCaresse()
+    {
+        isBeingCaressed = false;
+    }
+
 
     public override void TouchEvent()
     {
-        print(gameObject.name + " touched");
+        GameManager.instance.LockCamOnSheep(this);
     }
 
     public void StartHolding()
     {
         if(GameManager.instance.currentCameraState != CamState.Default)
             return;
+        
+        if (isBeingCaressed) 
+        {
+            Debug.Log("Impossible d’ouvrir la fenêtre : le mouton est en train d’être caressé");
+            return;
+        }
         
         timer = 0f;
         startTimer = true;
@@ -109,11 +134,16 @@ public class Sheep : TouchableObject
 
     public void WidowOpen()
     {
+        if(GameManager.instance.getCurLockSheep() != null)
+            GameManager.instance.DelockSheep();
+        
         GameManager.instance.ChangeCameraState(CamState.Sheep);
         GameManager.instance.ChangeCameraPos(
             cameraPosition.transform.position,
             cameraPosition.transform.rotation.eulerAngles
         );
+        
+        Camera.main.gameObject.GetComponent<CameraControl>().ResetFOV();
         
         GameManager.instance.GetSheepWindow().SetActive(true);
         StopAgentAndDesactivateScript(true);

@@ -126,6 +126,9 @@ public class SwipeDetection : MonoBehaviour
 
             if (sheep != null)
             {
+                if (GameManager.instance.isLock == false) 
+                    return;
+                
                 if (currentHoveredSheep != sheep)
                 {
                     sheep.AddCaresse();
@@ -172,6 +175,9 @@ public class SwipeDetection : MonoBehaviour
         if (Vector2.Dot(Vector2.up, direction) > directionThreshold)
         {
             Debug.Log("Swipe Up");
+            
+            if (GameManager.instance.currentCameraState == CamState.StatingGame)
+                GameManager.instance.StartGameCameraTravelling();
 
             if (poutre != null)
                 poutre.GetOffPoutre();
@@ -225,7 +231,7 @@ public class SwipeDetection : MonoBehaviour
         return ray.GetPoint(9f);
     }
     
-    private void OnGUI()
+    /*private void OnGUI()
     {
         if (Application.isPlaying)
         {
@@ -234,5 +240,5 @@ public class SwipeDetection : MonoBehaviour
             GUI.Box(swipeArea, GUIContent.none);
             GUI.color = old;
         }
-    }
+    }*/
 }

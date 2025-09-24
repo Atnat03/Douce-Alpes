@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,8 +8,10 @@ using UnityEngine.SceneManagement;
 
 public enum CamState
 {
+    StatingGame,
     Default,
     Sheep,
+    LockSheep,
     MiniGame,
     Drink,
 }
@@ -31,11 +34,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     
-    public event Action<Vector3, Vector3> SheepClicked;
+    public event Action<Vector3, Vector3> SheepHold;
+    public event Action<Sheep> SheepClicked;
     public event Action<Vector3, Vector3> GrangeClicked;
     public event Action<Vector3, Vector3> AbreuvoirClicked;
     
-    public CamState currentCameraState = CamState.Default;
+    public CamState currentCameraState = CamState.StatingGame;
     
     CameraControl cameraFollow;
 
@@ -44,7 +48,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] public List<Sheep> sheepList;
     [SerializeField] private List<SheepData> sheepDestroyData;
     public bool isSheepOutside = true;
+    
+    [Header("Starting Game")]
+    [SerializeField] GameObject[] elementsToDisable;
 
+    [SerializeField] private GameObject uiStart;
+    
     [Header("Bonheur")] 
     [SerializeField] private float currentBonheur;
     [SerializeField] private float maxBonheur;
@@ -57,6 +66,8 @@ public class GameManager : MonoBehaviour
     [Header("Sheep")]
     [SerializeField] private int SheepCount;
     [SerializeField] private GameObject sheepWidow;
+    [SerializeField] private Sheep curLockSheep = null;
+    [SerializeField] public bool isLock = false;
     
     [Header("Grange Mini Game")]
     [SerializeField] private Transform miniGameCamPos;
@@ -98,17 +109,52 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        print(RealTime);
-        
         sheepDestroyData = new List<SheepData>();
+
+        currentCameraState = CamState.StatingGame;
         
         shopUI.SetActive(false);
+
+        ActivateElementsBeforeStart(false);
+    }
+
+    public void StartGameCameraTravelling()
+    {
+        StartCoroutine(WaitBeoreStart());
+    }
+
+    IEnumerator WaitBeoreStart()
+    {
+        Camera.main.GetComponent<Animator>().SetBool("Starting", true);
+        Camera.main.GetComponent<CameraControl>().enabled = false;
+        
+        yield return new WaitForSeconds(3f);
+        
+        Debug.Log("Game start !");
+        
+        Camera.main.GetComponent<CameraControl>().enabled = true;
+        Camera.main.GetComponent<Animator>().enabled = false;
+        
+        uiStart.SetActive(false);
+        currentCameraState = CamState.Default;
+        
+        ActivateElementsBeforeStart(true);
+    }
+    
+    void ActivateElementsBeforeStart(bool state)
+    {
+        foreach (GameObject go in elementsToDisable)
+        {
+            go.SetActive(state);
+        }
     }
 
     public Sheep GetSheep(int idSheep)
     {
         return sheepList.FirstOrDefault(s => s.sheepId == idSheep);
     }
+
+    public Sheep getCurLockSheep() { return curLockSheep;}
     
     public GameObject GetSheepWindow(){return  sheepWidow;}
     
@@ -154,8 +200,8 @@ public class GameManager : MonoBehaviour
         switch (currentCameraState)
         {
             case CamState.Sheep:
-                SheepClicked?.Invoke(pos, rot);
-                break;
+                SheepHold?.Invoke(pos, rot);
+                break; 
             case CamState.MiniGame:
                 GrangeClicked?.Invoke(pos, rot);
                 break;
@@ -165,6 +211,29 @@ public class GameManager : MonoBehaviour
             case CamState.Default:
                 break;
         }
+    }
+
+    public void LockCamOnSheep(Sheep sheep)
+    {
+        if(curLockSheep == null)
+        {
+            isLock = true;
+
+            SheepClicked?.Invoke(sheep);
+
+            curLockSheep = sheep;
+        }
+    }
+
+    public void DelockSheep()
+    {
+        Debug.Log("DelockSheep");
+        
+        cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetCameraLock(curLockSheep);
+        
+        curLockSheep = null;
+        
+        isLock = false;
     }
 
     private Dictionary<int, float> sheepFatigue = new Dictionary<int, float>();
