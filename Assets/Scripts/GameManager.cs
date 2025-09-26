@@ -16,7 +16,7 @@ public enum CamState
     Drink,
 }
 
-[Serializable]
+[System.Serializable]
 public class SheepData
 {
     public int id;
