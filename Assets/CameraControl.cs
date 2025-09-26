@@ -92,14 +92,12 @@ public class CameraControl : MonoBehaviour
 
     private void HandleGestures()
     {
-        // Lis les infos des deux doigts via Input System
         Vector2 primaryDelta = inputs.Main.PrimaryTouchDelta.ReadValue<Vector2>();
         bool primaryPressed = inputs.Main.PrimaryTouchPress.ReadValue<float>() > 0.5f;
 
         Vector2 secondaryDelta = inputs.Main.SecondaryTouchDelta.ReadValue<Vector2>();
         bool secondaryPressed = inputs.Main.SecondaryTouchPress.ReadValue<float>() > 0.5f;
 
-        // 👉 Si deux doigts → zoom (pinch)
         if (primaryPressed && secondaryPressed)
         {
             Vector2 p1 = inputs.Main.PrimaryTouchPosition.ReadValue<Vector2>();
@@ -116,7 +114,6 @@ public class CameraControl : MonoBehaviour
             zoom += delta * zoomSpeed * Time.deltaTime;
             zoom = Mathf.Clamp(zoom, zoomMin, zoomMax);
         }
-        // 👉 Sinon si un seul doigt → déplacement
         else if (primaryPressed && primaryDelta != Vector2.zero)
         {
             Vector3 moveDelta = new Vector3(-primaryDelta.x * moveSpeed * Time.deltaTime, 0, -primaryDelta.y * moveSpeed * Time.deltaTime);

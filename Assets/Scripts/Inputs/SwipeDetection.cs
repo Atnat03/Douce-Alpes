@@ -1,12 +1,20 @@
 using System;
 using System.Collections;
-using System.Numerics;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
+
+public enum SwipeType
+{
+    Up,
+    Down,
+    Left,
+    Right
+}
 
 public class SwipeDetection : MonoBehaviour
 {
+    public static SwipeDetection instance;
+    public event Action<SwipeType> OnSwipeDetected;
+    
     [SerializeField] private float miniDistance = .5f;
     [SerializeField] float maxTime = 1f;
     [SerializeField, Range(0,1)] float directionThreshold = .9f;
@@ -37,6 +45,11 @@ public class SwipeDetection : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+        
         touchManager = TouchManager.instance;
     }
     
@@ -54,7 +67,8 @@ public class SwipeDetection : MonoBehaviour
 
     private void Update()
     {
-        isSkinMenu = skinManager.gameObject.activeSelf;
+        if(skinManager != null)
+            isSkinMenu = skinManager.gameObject.activeSelf;
     }
 
     private void OnEnable()
@@ -71,8 +85,6 @@ public class SwipeDetection : MonoBehaviour
 
     private void SwipeStart(Vector2 position, float time)
     {
-        if (TouchManager.instance.isHolding) return;
-
         startPosition = position;
         startTime = time;
         endPosition = position;
@@ -175,9 +187,7 @@ public class SwipeDetection : MonoBehaviour
         if (Vector2.Dot(Vector2.up, direction) > directionThreshold)
         {
             Debug.Log("Swipe Up");
-            
-            if (GameManager.instance.currentCameraState == CamState.StatingGame)
-                GameManager.instance.StartGameCameraTravelling();
+            OnSwipeDetected?.Invoke(SwipeType.Up);
 
             if (poutre != null)
                 poutre.GetOffPoutre();
@@ -185,25 +195,26 @@ public class SwipeDetection : MonoBehaviour
         else if (Vector2.Dot(Vector2.down, direction) > directionThreshold)
         {
             Debug.Log("Swipe Down");
+            OnSwipeDetected?.Invoke(SwipeType.Down);
 
             if (GameManager.instance.currentCameraState == CamState.Drink)
             {
                 if (startPos.x > Screen.width * 0.66f)
                 {
                     Debug.Log("Swipe Down sur la zone droite");
-                    
                     Abreuvoir.instance.AddWater();
                 }
                 else
                 {
                     Debug.Log("Swipe ignoré : pas sur la zone droite");
                 }
-
             }
         }
         else if (Vector2.Dot(Vector2.right, direction) > directionThreshold)
         {
             Debug.Log("Swipe Right");
+            OnSwipeDetected?.Invoke(SwipeType.Right);
+
             if (isSkinMenu && skinManager.IsInsideSwipeArea(startPos))
             {
                 skinManager.RightArrow();
@@ -212,6 +223,8 @@ public class SwipeDetection : MonoBehaviour
         else if (Vector2.Dot(Vector2.left, direction) > directionThreshold)
         {
             Debug.Log("Swipe Left");
+            OnSwipeDetected?.Invoke(SwipeType.Left);
+
             if (isSkinMenu && skinManager.IsInsideSwipeArea(startPos))
             {
                 skinManager.LeftArrow();
@@ -230,15 +243,4 @@ public class SwipeDetection : MonoBehaviour
 
         return ray.GetPoint(9f);
     }
-    
-    /*private void OnGUI()
-    {
-        if (Application.isPlaying)
-        {
-            Color old = GUI.color;
-            GUI.color = new Color(1, 0, 0, 0.2f);
-            GUI.Box(swipeArea, GUIContent.none);
-            GUI.color = old;
-        }
-    }*/
 }

@@ -46,7 +46,7 @@ public class Abreuvoir : MonoBehaviour
         {
             isEmptyWater = true;
             
-            if(GameManager.instance.isSheepOutside)
+            if(!GameData.instance.isSheepInside)
                 currentWater -= Time.deltaTime * 0.5f;
         }
     }

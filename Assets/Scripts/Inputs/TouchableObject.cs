@@ -4,6 +4,6 @@ public class TouchableObject : MonoBehaviour
 {
     public virtual void TouchEvent()
     {
-        Debug.Log("Touch");
+        Debug.Log("Touch : " + gameObject.name);
     }
 }

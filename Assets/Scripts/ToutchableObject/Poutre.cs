@@ -8,6 +8,29 @@ public class Poutre : MonoBehaviour
     [SerializeField] private Cadenas[] cadenas;
     [SerializeField] SwipeDetection swipeDetection;
     [SerializeField] private Grange grange;
+    
+    Vector3 Startpos;
+
+    private void Start()
+    {
+        Startpos = transform.position;
+    }
+
+    public void ResetPoutre()
+    {
+        foreach (Cadenas cadena in cadenas)
+        {
+            cadena.transform.gameObject.SetActive(true);
+            cadena.hp = cadena.maxHp;
+        }
+
+        if (gameObject.GetComponent<Rigidbody>())
+        {
+            Destroy(gameObject.GetComponent<Rigidbody>());
+        }
+
+        gameObject.transform.position = Startpos;
+    }
 
     public void GetOffPoutre()
     {
