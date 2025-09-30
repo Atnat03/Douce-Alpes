@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1598328452820971920
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -7,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mouton course
-  m_Shader: {fileID: -6465566751694194690, guid: 37ed1ba561fd350458e89edf05e00f49, type: 3}
+  m_Name: Rainbow_Blue
+  m_Shader: {fileID: -6465566751694194690, guid: 80698a510b1e31243a235d9ac04bf3b0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -30,6 +43,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Clay_texture:
+        m_Texture: {fileID: 2800000, guid: f02a3af85b42b344d824c062fffc0b16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -68,6 +85,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _texture_doigh:
+        m_Texture: {fileID: 2800000, guid: 1b9ba38212854ab4589072c67548fb68, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -92,56 +113,43 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _Density_bumps: 1.23
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Divide_truncate: 2
+    - _Divide_du_voronoir: 1.48
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _JumpFrequency: 0.74
-    - _Jump_Amplitude: -0.01
-    - _Jump_Vertical_offset: 0.77
-    - _Legs_amplitude: 0.08
-    - _Legs_frequency: 9.6
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Scale: 0.57
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed_truncate: 10
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
+    - _Strenght_clay_texture: 0.33
     - _Surface: 0
-    - _Tail_swing: 0
+    - _Vitesse_des_bumps: 2
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _ujumpspeed: 3.17
+    - _smoothness: 0
+    - _speed: 0.42
+    - _strenght_fingerprints: 0.34
+    - _tiling_text: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color_doggo: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 0.30277678, g: 0.53971684, b: 0.7924528, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Grid: {r: 4, g: 4, b: 0, a: 0}
+    - _Gridsize: {r: 2, g: 2, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _Tiling_voronoi: {r: 25.86, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &648782686584219447
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 10
