@@ -42,7 +42,6 @@ public class PatrolObjets : MonoBehaviour
             ? TouchManager.instance.sphereSheepLeak
             : null;
 
-        // Fuite
         if (predator != null && Vector3.Distance(transform.position, predator.transform.position) < fleeTriggerDistance)
             Flee(predator.transform.position);
 
@@ -55,12 +54,10 @@ public class PatrolObjets : MonoBehaviour
         Patrol();
     }
 
-    // ---------- PATROL ----------
     void Patrol()
     {
         if (agent.pathPending) return;
 
-        // Si le mouton est arrivé à destination
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
             waitTimer += Time.deltaTime;
@@ -92,8 +89,7 @@ public class PatrolObjets : MonoBehaviour
     {
         waitDuration = Random.Range(minWaitTime, maxWaitTime);
     }
-
-    // ---------- FLEE ----------
+    
     void Flee(Vector3 predatorPos)
     {
         if (Time.time - lastFleeTime < fleeRecalcInterval) return;

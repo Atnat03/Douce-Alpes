@@ -287,6 +287,9 @@ MonoBehaviour:
   sheepList:
   - {fileID: 28194379}
   - {fileID: 1468433213}
+  isSheepOutside: 1
+  elementsToDisable: []
+  uiStart: {fileID: 0}
   currentBonheur: 0
   maxBonheur: 1000
   txtBonheur: {fileID: 518830269}
@@ -294,12 +297,16 @@ MonoBehaviour:
   txtMoney: {fileID: 852230147}
   SheepCount: 0
   sheepWidow: {fileID: 619361967}
+  curLockSheep: {fileID: 0}
+  isLock: 0
   miniGameCamPos: {fileID: 163850082}
   miniGameZoomCamPos: {fileID: 858172238}
   grange: {fileID: 1591031781}
   sheepPrefab: {fileID: 2722875930628605413, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
   sheepSpawn: {fileID: 1970725544}
   uiMiniGame: {fileID: 2046544720}
+  abreuvoir: {fileID: 0}
+  cameraPosAbreuvoir: {fileID: 0}
   shopUI: {fileID: 229419274}
   shopOpen: 0
   caresseBaseValue: 2
@@ -613,7 +620,7 @@ MonoBehaviour:
   articlesList: []
   listArticleParent: {fileID: 1834089216}
   articlePrefab: {fileID: 2741527200333764106, guid: 9bc427489ec8b404b844d96609a53669, type: 3}
-  articleData: {fileID: 11400000, guid: c514bd288a24e3046a5d85bdcb8a73c8, type: 2}
+  sheepDataArticles: {fileID: 0}
 --- !u!1001 &274029228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1648,7 +1655,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 319585835}
   m_HandleRect: {fileID: 319585834}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5965,8 +5972,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skinData: {fileID: 11400000, guid: 1f286dd367615f144b488550093c98ff, type: 2}
-  leftArrow: {fileID: 938257443}
-  rightArrow: {fileID: 2034518868}
   visibleImage:
   - {fileID: 999226415}
   - {fileID: 848670681}
@@ -5974,6 +5979,7 @@ MonoBehaviour:
   - {fileID: 990393135}
   - {fileID: 1651673488}
   indexCurrentSkin: 0
+  swipeZone: {fileID: 0}
 --- !u!1 &1739507140
 GameObject:
   m_ObjectHideFlags: 0
@@ -6092,7 +6098,7 @@ MonoBehaviour:
     space: 0
   m_DeprecatedInstances: []
   m_AutoRefresh: 1
-  m_Seed: -8912
+  m_Seed: -2086767661
 --- !u!114 &1739507143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6918,9 +6924,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInput: {fileID: 2014895558}
-  holdThreshold: 0.6
-  isHolding: 0
   sphereSheepLeak: {fileID: 538715482}
+  delockAreaSize: {x: 600, y: 600}
 --- !u!4 &2014895557
 Transform:
   m_ObjectHideFlags: 0
@@ -6985,6 +6990,7 @@ MonoBehaviour:
   swipeAreaSize: {x: 1200, y: 1300}
   trail: {fileID: 1083134925}
   poutre: {fileID: 420376150}
+  skinManager: {fileID: 0}
 --- !u!1 &2017508797
 GameObject:
   m_ObjectHideFlags: 0

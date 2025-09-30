@@ -1,12 +1,21 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ContentScaleModifier : MonoBehaviour
 {
-    public void SetSize()
+    public void SetSize(int nbArticle)
     {
-        float nbArticle = transform.childCount;
-        RectTransform rect = gameObject.GetComponent<RectTransform>();
-        rect.offsetMax = new Vector2(nbArticle * 100, rect.offsetMax.y);
+        RectTransform rect = GetComponent<RectTransform>();
+
+        float newHeight = Mathf.CeilToInt((nbArticle / 3f)) * 140f;
+
+        rect.sizeDelta = new Vector2(rect.sizeDelta.x, newHeight);
+    }
+
+    public void ResetSize()
+    {
+        RectTransform rect = GetComponent<RectTransform>();
+        rect.sizeDelta = Vector2.zero;
     }
 }
