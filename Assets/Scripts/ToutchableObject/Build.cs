@@ -11,6 +11,8 @@ public class Build : TouchableObject
     
     public override void TouchEvent()
     {
+        if (GameManager.instance.shopOpen) return;
+        
         UI.SetActive(true);
         Invoke(nameof(DesactivateUI), 3f);
     }

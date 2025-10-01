@@ -4921,12 +4921,10 @@ MonoBehaviour:
   sheepId: 0
   sheepName: Antoine
   currentSkin: 2
-  maxCaressesValue: 100
   hasLaine: 1
-  holdingTimer: 0
+  isBeingCaressed: 0
+  doubleClickThreshold: 0.3
   cameraPosition: {fileID: 8021794831766881929}
-  wheelTimerUI: {fileID: 6046974914166926218}
-  valueWheelTimerImage: {fileID: 4380474806568430435}
   heartParticle: {fileID: 9111622071756502919}
   spawnParticleCaresse: {fileID: 6863644733935078796}
   skinListManager: {fileID: 3199422249654108566}
@@ -5104,7 +5102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5402273419796926229
 RectTransform:
   m_ObjectHideFlags: 0

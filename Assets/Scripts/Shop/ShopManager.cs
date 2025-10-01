@@ -4,20 +4,43 @@ using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
+    public static ShopManager instance;
+    
     [SerializeField] private List<GameObject> articlesList = new List<GameObject>();
     [SerializeField] private Transform listArticleParent;
     [SerializeField] private GameObject articlePrefab;
+    [SerializeField] private ArticleScriptable sheepDataArticles;
 
-    [SerializeField] private ArticleScriptable articleData;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     public void Start()
+    {
+        SwapCategorie(sheepDataArticles);
+    }
+
+    public void SwapCategorie(ArticleScriptable articleData)
+    {
+        listArticleParent.GetComponent<ContentScaleModifier>().ResetSize();
+        
+        foreach (Transform child in listArticleParent)
+        {
+            Destroy(child.gameObject);
+        }
+        
+        UpdateArticleList(articleData);
+    }
+    
+    public void UpdateArticleList(ArticleScriptable articleData)
     {
         foreach (Article article in articleData.articles)
         {
             AddItem(article);
         }
-
-        listArticleParent.GetComponent<ContentScaleModifier>().SetSize();
+        listArticleParent.GetComponent<ContentScaleModifier>().SetSize(articleData.articles.Count);
     }
 
     public void AddItem(Article article)

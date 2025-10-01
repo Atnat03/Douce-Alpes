@@ -1,32 +1,25 @@
-using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UI;
-
 
 public class Sheep : TouchableObject
 {
     [SerializeField] public int sheepId;
-    [SerializeField] private string sheepName;
+    [SerializeField] public string sheepName;
 
     [SerializeField] public int currentSkin;
-
-    [SerializeField] private float maxCaressesValue = 100;
-
     [SerializeField] public bool hasLaine = true;
     
     [SerializeField] private bool isBeingCaressed = false;
     public bool IsBeingCaressed => isBeingCaressed;
     
-    [Header("Timer")]
-    [SerializeField] private float holdingTimer;
-    private float timer; 
-    private bool startTimer = false;
+    public float elapsedTime { get; set; }
+    
+    [Header("Double Click Settings")]
+    [SerializeField] private float doubleClickThreshold = 0.3f; 
+    private float lastClickTime = -1f;
 
     [Header("References")]
     [SerializeField] private Transform cameraPosition;
-    [SerializeField] private GameObject wheelTimerUI;
-    [SerializeField] private Image valueWheelTimerImage;
     [SerializeField] private ParticleSystem heartParticle;
     [SerializeField] private Transform spawnParticleCaresse;
     [SerializeField] private SkinListManager skinListManager;
@@ -36,36 +29,23 @@ public class Sheep : TouchableObject
 
     private void Start()
     {
-        wheelTimerUI.SetActive(false);
-        holdingTimer = TouchManager.instance.holdThreshold;
         sheepAI = GetComponent<SheepAI>();
-        
         laine.GetComponent<Outline>().enabled = false;
     }
 
     private void Update()
     {
         laine.SetActive(hasLaine);
-        
-        if (startTimer)
-        {
-            timer += Time.deltaTime;
-            valueWheelTimerImage.fillAmount = timer / holdingTimer;
-
-            if (timer >= holdingTimer)
-            {
-                wheelTimerUI.SetActive(false);
-                startTimer = false;
-                WidowOpen();
-            }
-        }
-        
-        //SheepWindow.instance.GetInputField().onValueChanged.AddListener(ChangeName);
     }
 
     void ChangeName(string newName)
     {
         sheepName = newName;
+    }
+
+    public void CutWhool()
+    {
+        hasLaine = false;
     }
 
     public void StopAgentAndDesactivateScript(bool state)
@@ -86,6 +66,8 @@ public class Sheep : TouchableObject
 
     public void AddCaresse()
     {
+        if (GameManager.instance.shopOpen) return;
+        
         isBeingCaressed = true;   
         heartParticle.Play();
         GameManager.instance.Caresse(this);
@@ -99,37 +81,28 @@ public class Sheep : TouchableObject
         isBeingCaressed = false;
     }
 
-
     public override void TouchEvent()
     {
-        GameManager.instance.LockCamOnSheep(this);
-    }
-
-    public void StartHolding()
-    {
-        if(GameManager.instance.currentCameraState != CamState.Default)
-            return;
+        if (GameManager.instance.shopOpen) return;
         
-        if (isBeingCaressed) 
+        if (Time.time - lastClickTime <= doubleClickThreshold)
         {
-            Debug.Log("Impossible d’ouvrir la fenêtre : le mouton est en train d’être caressé");
-            return;
+            if (!isBeingCaressed) 
+            {
+                WidowOpen();
+            }
+            else
+            {
+                Debug.Log("Impossible d’ouvrir la fenêtre : le mouton est en train d’être caressé");
+            }
+            
+            lastClickTime = -1f;
         }
-        
-        timer = 0f;
-        startTimer = true;
-        wheelTimerUI.SetActive(true);
-        valueWheelTimerImage.fillAmount = 0f;
-        StopAgentAndDesactivateScript(true);
-    }
-
-    public void CancelHolding()
-    {
-        startTimer = false;
-        wheelTimerUI.SetActive(false);
-        
-        if(!SheepWindow.instance.isOpen)
-            StopAgentAndDesactivateScript(false);
+        else
+        {
+            lastClickTime = Time.time;
+            GameManager.instance.LockCamOnSheep(this);
+        }
     }
 
     public void WidowOpen()
@@ -151,14 +124,10 @@ public class Sheep : TouchableObject
         SheepWindow.instance.Initialize(sheepName, currentSkin, sheepId);
     }
 
-    public void OnTouchEnd()
-    {
-        CancelHolding();
-    }
-
     public void SetCurrentSkin(int skinId)
     {
         currentSkin = skinId;
         skinListManager.UpdateSkinList(currentSkin);
     }
 }
+

@@ -16,17 +16,20 @@ public enum CamState
     Drink,
 }
 
+[System.Serializable]
 public class SheepData
 {
     public int id;
     public string name;
     public int skin;
+	public bool hasWhool;
 
-    public SheepData(int id, string name, int skin)
+    public SheepData(int id, string name, int skin, bool hasWhool)
     {
         this.id = id;
         this.name = name;
         this.skin = skin;
+		this.hasWhool = hasWhool;
     }
 }
 
@@ -38,16 +41,15 @@ public class GameManager : MonoBehaviour
     public event Action<Sheep> SheepClicked;
     public event Action<Vector3, Vector3> GrangeClicked;
     public event Action<Vector3, Vector3> AbreuvoirClicked;
+    public event Action<GameObject> SheepEnter;
     
-    public CamState currentCameraState = CamState.StatingGame;
+    public CamState currentCameraState = CamState.Default;
     
-    CameraControl cameraFollow;
+    public CameraControl cameraFollow;
 
     [SerializeField] private GameObject[] UItoDisableWhenSheepIsOn;
 
     [SerializeField] public List<Sheep> sheepList;
-    [SerializeField] private List<SheepData> sheepDestroyData;
-    public bool isSheepOutside = true;
     
     [Header("Starting Game")]
     [SerializeField] GameObject[] elementsToDisable;
@@ -73,7 +75,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform miniGameCamPos;
     [SerializeField] private Transform miniGameZoomCamPos;
     [SerializeField] public Grange grange;
-    [SerializeField] private GameObject sheepPrefab;
+    [SerializeField] public GameObject chien;
+    
     [SerializeField] private Transform sheepSpawn;
     [SerializeField] private GameObject uiMiniGame;
 
@@ -83,7 +86,6 @@ public class GameManager : MonoBehaviour
         
     [Header("Shop")]
     [SerializeField] private GameObject shopUI;
-
     public bool shopOpen = false;
     
     [Header("Caresse Config")]
@@ -93,6 +95,8 @@ public class GameManager : MonoBehaviour
 
     private Dictionary<int, int> sheepSwipeCount = new Dictionary<int, int>();
     private Dictionary<int, float> sheepLastSwipeTime = new Dictionary<int, float>();
+
+    [SerializeField] public Button buttonForTonte;
     
     [Header("Caresse Visualizer")]
     public float[] caresseCurveValues;
@@ -103,50 +107,16 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
         
-        cameraFollow = Camera.main.GetComponent<CameraControl>();
         sheepWidow.SetActive(false);
     }
 
     private void Start()
     {
-        sheepDestroyData = new List<SheepData>();
-
-        currentCameraState = CamState.StatingGame;
-        
-        shopUI.SetActive(false);
-
-        ActivateElementsBeforeStart(false);
-    }
-
-    public void StartGameCameraTravelling()
-    {
-        StartCoroutine(WaitBeoreStart());
-    }
-
-    IEnumerator WaitBeoreStart()
-    {
-        Camera.main.GetComponent<Animator>().SetBool("Starting", true);
-        Camera.main.GetComponent<CameraControl>().enabled = false;
-        
-        yield return new WaitForSeconds(3f);
-        
-        Debug.Log("Game start !");
-        
-        Camera.main.GetComponent<CameraControl>().enabled = true;
-        Camera.main.GetComponent<Animator>().enabled = false;
-        
-        uiStart.SetActive(false);
         currentCameraState = CamState.Default;
         
-        ActivateElementsBeforeStart(true);
-    }
-    
-    void ActivateElementsBeforeStart(bool state)
-    {
-        foreach (GameObject go in elementsToDisable)
-        {
-            go.SetActive(state);
-        }
+        shopUI.SetActive(false);
+        
+        GameData.instance.nbSheep = sheepList.Count;
     }
 
     public Sheep GetSheep(int idSheep)
@@ -215,6 +185,9 @@ public class GameManager : MonoBehaviour
 
     public void LockCamOnSheep(Sheep sheep)
     {
+        if (currentCameraState != CamState.Default)
+            return;
+        
         if(curLockSheep == null)
         {
             isLock = true;
@@ -227,8 +200,6 @@ public class GameManager : MonoBehaviour
 
     public void DelockSheep()
     {
-        Debug.Log("DelockSheep");
-        
         cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetCameraLock(curLockSheep);
         
         curLockSheep = null;
@@ -260,8 +231,6 @@ public class GameManager : MonoBehaviour
         }
 
         sheepLastSwipeTime[id] = Time.time;
-
-        Debug.Log($"{sheep.name} : +{bonus:F2} bonheur (total {currentBonheur:F2}) | Fatigue: {sheepFatigue[id]:F2}");
     }
 
     private void Update()
@@ -272,7 +241,15 @@ public class GameManager : MonoBehaviour
         
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
 
-        isSheepOutside = sheepList.Count != 0;
+        buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
+    }
+
+    public void AddAllSheep() 
+    {
+        for (int i = 0; i < sheepList.Count; i++)
+        {
+            SheepEnterGrange(sheepList[i]);
+        }
     }
     
     //GrangeMiniGame
@@ -280,8 +257,8 @@ public class GameManager : MonoBehaviour
     {
         if (!sheepList.Contains(sheep)) Debug.LogError("Le mouton n'existe pas");
 
-        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.name, sheep.currentSkin);
-        sheepDestroyData.Add(newDataSheep);
+        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkin, sheep.hasLaine);
+        GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);
         Destroy(sheep.gameObject);
@@ -290,26 +267,35 @@ public class GameManager : MonoBehaviour
 
         if (sheepList.Count == 0)
             sheepList = new List<Sheep>();
+        
+        SheepEnter?.Invoke(sheep.gameObject);
     }
     
     public void SheepGetOutGrange()
     {
         List<SheepData> toRemove = new List<SheepData>();
 
-        foreach (SheepData sheepData in sheepDestroyData)
+        foreach (SheepData sheepData in GameData.instance.sheepDestroyData)
         {
-            GameObject newSheep = Instantiate(sheepPrefab, sheepSpawn.position, sheepSpawn.rotation, null);
+            GameObject newSheep = Instantiate(GameData.instance.sheepPrefab, sheepSpawn.position, sheepSpawn.rotation, transform.parent);
             Sheep sheep = newSheep.GetComponent<Sheep>();
         
             sheep.sheepId = sheepData.id;
             sheep.name = sheepData.name;
             sheep.currentSkin = sheepData.skin;
+            
+            if(sheepData.hasWhool == false)
+                sheep.CutWhool();
+            else
+                sheep.hasLaine = true;
         
             sheepList.Add(sheep);
             toRemove.Add(sheepData);
         }
 
-        sheepDestroyData = new List<SheepData>();
+        GameData.instance.sheepDestroyData = new List<SheepData>();
+        
+        grange.GetPoutre().ResetPoutre();
     }
     
     //Shop

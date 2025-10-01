@@ -52,8 +52,20 @@ public class SkinManager : MonoBehaviour
         SwipeLeft();
     }
 
+    public void DoubleLeftArrow()
+    {
+        SwipeLeft();
+        SwipeLeft();
+    }
+
     public void RightArrow()
     {
+        SwipeRight();
+    }
+    
+    public void DoubleRightArrow()
+    {
+        SwipeRight();
         SwipeRight();
     }
 

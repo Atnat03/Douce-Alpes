@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Vector2 = UnityEngine.Vector2;
@@ -11,15 +10,11 @@ public class TouchManager : MonoBehaviour
     public static TouchManager instance;
 
     public PlayerInput playerInput;
-    public float holdThreshold = 1f;
 
     private InputAction touchPositionAction;
     private InputAction touchPressAction;
 
     private GameObject currentTouchedObject;
-    private float pressStartTime;
-    public bool isHolding = false;
-
     private Swipe swipeInput;
 
     public GameObject sphereSheepLeak;
@@ -39,7 +34,7 @@ public class TouchManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-        }else
+        } else
         {
             Destroy(gameObject);
         }
@@ -51,8 +46,6 @@ public class TouchManager : MonoBehaviour
         
         sphereSheepLeak.SetActive(false);
     }
-    
-    
 
     private void OnEnable()
     {
@@ -70,9 +63,6 @@ public class TouchManager : MonoBehaviour
 
     private void OnTouchPressed(InputAction.CallbackContext context)
     {
-        pressStartTime = Time.time;
-        isHolding = false;
-
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
@@ -91,41 +81,15 @@ public class TouchManager : MonoBehaviour
     {
         if (currentTouchedObject == null) return;
 
-        float pressDuration = Time.time - pressStartTime;
-
-        if (pressDuration < holdThreshold)
-        {
-            TouchableObject touchable = currentTouchedObject.GetComponent<TouchableObject>();
-            if (touchable != null)
-                touchable.TouchEvent();
-        }
-        else if (isHolding)
-        {
-            Sheep sheep = currentTouchedObject.GetComponent<Sheep>();
-            if (sheep != null)
-                sheep.OnTouchEnd();
-        }
+        TouchableObject touchable = currentTouchedObject.GetComponent<TouchableObject>();
+        if (touchable != null)
+            touchable.TouchEvent();
 
         currentTouchedObject = null;
-        isHolding = false;
     }
 
     private void Update()
     {
-        if (currentTouchedObject == null && GameManager.instance.currentCameraState == CamState.Default) return;
-
-        float pressDuration = Time.time - pressStartTime;
-
-        if (!isHolding && pressDuration >= holdThreshold && currentTouchedObject != null)
-        {
-            Sheep sheep = currentTouchedObject.GetComponent<Sheep>();
-            if (sheep != null)
-            {
-                sheep.StartHolding();
-                isHolding = true;
-            }
-        }
-
         if (GameManager.instance.currentCameraState == CamState.MiniGame)
         {
             Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
@@ -142,7 +106,8 @@ public class TouchManager : MonoBehaviour
         }
         else
         {
-            sphereSheepLeak.SetActive(false);
+            if(sphereSheepLeak != null)
+                sphereSheepLeak.SetActive(false);
         }
     }
     
@@ -175,15 +140,4 @@ public class TouchManager : MonoBehaviour
     {
         return swipeInput.Swiping.PrimaryPosition.ReadValue<Vector2>();
     }
-    
-    /*private void OnGUI()
-    {
-        if (Application.isPlaying)
-        {
-            Color old = GUI.color;
-            GUI.color = new Color(1, 1, 0, 0.2f);
-            GUI.Box(delockArea, GUIContent.none);
-            GUI.color = old;
-        }
-    }*/
 }

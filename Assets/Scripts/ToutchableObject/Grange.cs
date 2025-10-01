@@ -18,12 +18,14 @@ public class Grange : Build
     [SerializeField] private GameObject gate2;
 
     [SerializeField] private GameObject keyCloseGate;
+
+    [SerializeField] private Poutre poutre;
     
     public void LaunchMiniGame()
     {
         GameManager.instance.ChangeCameraState(CamState.MiniGame);
 
-        if (!gateState)
+        if (!GameData.instance.isSheepInside)
         {
             GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameCamPos().position, GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles);
             OpenDoors();
@@ -45,7 +47,6 @@ public class Grange : Build
     {
         gate1.transform.rotation = Quaternion.Euler(gate1_Open);
         gate2.transform.rotation = Quaternion.Euler(gate2_Open);
-        sheepDestroyer.SetActive(true);
         gateState = true;
     }
     
@@ -53,7 +54,6 @@ public class Grange : Build
     {
         gate1.transform.rotation = Quaternion.Euler(gate1_Close);
         gate2.transform.rotation = Quaternion.Euler(gate2_Close);
-        sheepDestroyer.SetActive(false);
         gateState = false;
     }
 
@@ -69,6 +69,8 @@ public class Grange : Build
 
     private void Update()
     {
+        sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame);
+        
         if (GameManager.instance.sheepList.Count == 0)
         {
             keyCloseGate.SetActive(true);
@@ -80,4 +82,8 @@ public class Grange : Build
             keyCloseGate.SetActive(false);
         }
     }
+    
+    public Poutre GetPoutre(){return  poutre;}
+    
+    public Transform GetSheepDestroyer(){return sheepDestroyer.transform;}
 }
