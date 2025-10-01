@@ -17,7 +17,11 @@ public class PatrolObjets : MonoBehaviour
     public float fleeTriggerDistance = 2f;
     public float fleeRecalcInterval = 0.35f;
 
-    private GameObject predator;
+    [Header("Predators")]
+    private GameObject predatorLocal;
+
+    private GameObject predatorChien;
+    
     private bool isFleeing;
     private float lastFleeTime;
 
@@ -29,6 +33,12 @@ public class PatrolObjets : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         if (!agent) { enabled = false; return; }
 
+        predatorLocal = TouchManager.instance.sphereSheepLeak;
+
+		print(predatorLocal);
+
+        predatorChien = GameManager.instance.chien;
+        
         agent.speed = patrolSpeed;
         agent.stoppingDistance = 0.2f;
 
@@ -36,14 +46,15 @@ public class PatrolObjets : MonoBehaviour
         GoToRandomPatrolPoint();
     }
 
-    void Update()
+     void Update()
     {
-        predator = (GameManager.instance?.currentCameraState == CamState.MiniGame && TouchManager.instance != null)
-            ? TouchManager.instance.sphereSheepLeak
-            : null;
+        GameObject nearestPredator = GetNearestPredator();
 
-        if (predator != null && Vector3.Distance(transform.position, predator.transform.position) < fleeTriggerDistance)
-            Flee(predator.transform.position);
+        if (nearestPredator != null &&
+            Vector3.Distance(transform.position, nearestPredator.transform.position) < fleeTriggerDistance)
+        {
+            Flee(nearestPredator.transform.position);
+        }
 
         if (isFleeing)
         {
@@ -69,7 +80,7 @@ public class PatrolObjets : MonoBehaviour
             }
         }
     }
-    
+
     public void StopAgent(bool state)
     {
         agent.isStopped = state;
@@ -89,7 +100,7 @@ public class PatrolObjets : MonoBehaviour
     {
         waitDuration = Random.Range(minWaitTime, maxWaitTime);
     }
-    
+
     void Flee(Vector3 predatorPos)
     {
         if (Time.time - lastFleeTime < fleeRecalcInterval) return;
@@ -109,13 +120,46 @@ public class PatrolObjets : MonoBehaviour
     {
         if (agent.pathPending || agent.remainingDistance > agent.stoppingDistance) return;
 
-        if (predator != null && Vector3.Distance(transform.position, predator.transform.position) < fleeTriggerDistance)
-            Flee(predator.transform.position);
+        GameObject nearestPredator = GetNearestPredator();
+
+        if (nearestPredator != null &&
+            Vector3.Distance(transform.position, nearestPredator.transform.position) < fleeTriggerDistance)
+        {
+            Flee(nearestPredator.transform.position);
+        }
         else
         {
             isFleeing = false;
             SetWaitTime();
             GoToRandomPatrolPoint();
         }
+    }
+
+    GameObject GetNearestPredator()
+    {
+        GameObject nearest = null;
+        float minDist = Mathf.Infinity;
+
+        if (predatorLocal != null)
+        {
+            float dist = Vector3.Distance(transform.position, predatorLocal.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = predatorLocal;
+            }
+        }
+
+        if (predatorChien != null)
+        {
+            float dist = Vector3.Distance(transform.position, predatorChien.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = predatorChien;
+            }
+        }
+
+        return nearest;
     }
 }

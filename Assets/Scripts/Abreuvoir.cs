@@ -12,7 +12,8 @@ public class Abreuvoir : MonoBehaviour
 
     [SerializeField] private float valueAdded = 5;
     [SerializeField] private float speedDecrement = 0.5f;
-
+    [SerializeField] private Animator animatorPompe;
+    
     [Header("UI")]
     [SerializeField] public GameObject ui;
     [SerializeField] private Image curDrinkImage;
@@ -56,6 +57,7 @@ public class Abreuvoir : MonoBehaviour
         if (GameManager.instance.currentCameraState == CamState.Drink)
         {
             currentWater += valueAdded;
+            animatorPompe.SetTrigger("Pompe");
         }
     }
 }

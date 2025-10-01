@@ -84,4 +84,6 @@ public class Grange : Build
     }
     
     public Poutre GetPoutre(){return  poutre;}
+    
+    public Transform GetSheepDestroyer(){return sheepDestroyer.transform;}
 }

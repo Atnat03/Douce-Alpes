@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Sheep : TouchableObject
@@ -10,6 +11,8 @@ public class Sheep : TouchableObject
     
     [SerializeField] private bool isBeingCaressed = false;
     public bool IsBeingCaressed => isBeingCaressed;
+    
+    public float elapsedTime { get; set; }
     
     [Header("Double Click Settings")]
     [SerializeField] private float doubleClickThreshold = 0.3f; 
@@ -38,6 +41,11 @@ public class Sheep : TouchableObject
     void ChangeName(string newName)
     {
         sheepName = newName;
+    }
+
+    public void CutWhool()
+    {
+        hasLaine = false;
     }
 
     public void StopAgentAndDesactivateScript(bool state)

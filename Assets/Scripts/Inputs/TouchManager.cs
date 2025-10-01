@@ -81,7 +81,6 @@ public class TouchManager : MonoBehaviour
     {
         if (currentTouchedObject == null) return;
 
-        // Un relâchement simple déclenche l’event de l’objet touché
         TouchableObject touchable = currentTouchedObject.GetComponent<TouchableObject>();
         if (touchable != null)
             touchable.TouchEvent();

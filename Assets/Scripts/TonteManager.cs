@@ -45,6 +45,14 @@ public class TonteManager : MonoBehaviour
             NextSheep();
     }
 
+    public void Tondre()
+    {
+        currentSheep.GetComponent<SheepTonteScene>().Tonte();
+        
+        SheepData sheepData = GameData.instance.sheepDestroyData[sheepIndex-1];
+        sheepData.hasWhool = false;
+    }
+
     private void NextSheep()
     {
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)

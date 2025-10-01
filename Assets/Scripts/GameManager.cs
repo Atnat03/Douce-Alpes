@@ -22,12 +22,14 @@ public class SheepData
     public int id;
     public string name;
     public int skin;
+	public bool hasWhool;
 
-    public SheepData(int id, string name, int skin)
+    public SheepData(int id, string name, int skin, bool hasWhool)
     {
         this.id = id;
         this.name = name;
         this.skin = skin;
+		this.hasWhool = hasWhool;
     }
 }
 
@@ -39,6 +41,7 @@ public class GameManager : MonoBehaviour
     public event Action<Sheep> SheepClicked;
     public event Action<Vector3, Vector3> GrangeClicked;
     public event Action<Vector3, Vector3> AbreuvoirClicked;
+    public event Action<GameObject> SheepEnter;
     
     public CamState currentCameraState = CamState.Default;
     
@@ -72,6 +75,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform miniGameCamPos;
     [SerializeField] private Transform miniGameZoomCamPos;
     [SerializeField] public Grange grange;
+    [SerializeField] public GameObject chien;
     
     [SerializeField] private Transform sheepSpawn;
     [SerializeField] private GameObject uiMiniGame;
@@ -240,11 +244,11 @@ public class GameManager : MonoBehaviour
         buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
     }
 
-    public void AddAllSheep()
+    public void AddAllSheep() 
     {
-        foreach (Sheep sheep in sheepList)
+        for (int i = 0; i < sheepList.Count; i++)
         {
-            SheepEnterGrange(sheep);
+            SheepEnterGrange(sheepList[i]);
         }
     }
     
@@ -253,7 +257,7 @@ public class GameManager : MonoBehaviour
     {
         if (!sheepList.Contains(sheep)) Debug.LogError("Le mouton n'existe pas");
 
-        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkin);
+        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkin, sheep.hasLaine);
         GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);
@@ -263,6 +267,8 @@ public class GameManager : MonoBehaviour
 
         if (sheepList.Count == 0)
             sheepList = new List<Sheep>();
+        
+        SheepEnter?.Invoke(sheep.gameObject);
     }
     
     public void SheepGetOutGrange()
@@ -277,6 +283,11 @@ public class GameManager : MonoBehaviour
             sheep.sheepId = sheepData.id;
             sheep.name = sheepData.name;
             sheep.currentSkin = sheepData.skin;
+            
+            if(sheepData.hasWhool == false)
+                sheep.CutWhool();
+            else
+                sheep.hasLaine = true;
         
             sheepList.Add(sheep);
             toRemove.Add(sheepData);
