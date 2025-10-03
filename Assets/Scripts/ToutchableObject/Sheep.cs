@@ -12,6 +12,8 @@ public class Sheep : TouchableObject
     [SerializeField] private bool isBeingCaressed = false;
     public bool IsBeingCaressed => isBeingCaressed;
     
+    [SerializeField] public bool isOpen = false;
+    
     public float elapsedTime { get; set; }
     
     [Header("Double Click Settings")]
@@ -36,6 +38,12 @@ public class Sheep : TouchableObject
     private void Update()
     {
         laine.SetActive(hasLaine);
+
+        if (isOpen)
+        {
+            transform.position = transform.localPosition;
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
     }
 
     void ChangeName(string newName)
@@ -107,8 +115,14 @@ public class Sheep : TouchableObject
 
     public void WidowOpen()
     {
+        isOpen = true;
+        
         if(GameManager.instance.getCurLockSheep() != null)
             GameManager.instance.DelockSheep();
+
+        transform.rotation = Quaternion.Euler(0, 180, 0);
+        
+        StopAgentAndDesactivateScript(true);
         
         GameManager.instance.ChangeCameraState(CamState.Sheep);
         GameManager.instance.ChangeCameraPos(
@@ -117,9 +131,8 @@ public class Sheep : TouchableObject
         );
         
         Camera.main.gameObject.GetComponent<CameraControl>().ResetFOV();
-        
+
         GameManager.instance.GetSheepWindow().SetActive(true);
-        StopAgentAndDesactivateScript(true);
         
         SheepWindow.instance.Initialize(sheepName, currentSkin, sheepId);
     }

@@ -53,11 +53,11 @@ public class ShopManager : MonoBehaviour
         uiArticle.priceTxt.text = article.price.ToString();
         uiArticle.logoImage.sprite = article.logo;
         
-        uiArticle.buyBtn.onClick.AddListener(() => BuyArticle());
+        uiArticle.buyBtn.onClick.AddListener(() => BuyArticle(article));
     }
 
-    public void BuyArticle()
+    public void BuyArticle(Article article)
     {
-        Debug.Log("Un article a ete acheter");
+        InventoryManager.instance.AddItem(article);
     }
 }

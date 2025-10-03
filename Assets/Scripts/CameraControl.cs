@@ -22,8 +22,6 @@ public class CameraControl : MonoBehaviour
 
     public Transform centerPoint;
     public Transform root;
-    public Transform pivot;
-    public Transform target;
     
     private void Awake()
     {
@@ -49,17 +47,8 @@ public class CameraControl : MonoBehaviour
 
         cam.fieldOfView = zoom;
 
-        pivot.SetParent(root);
-        target.SetParent(pivot);
-
-        root.position = center;
-        root.localEulerAngles = Vector3.zero;
-
-        pivot.localPosition = Vector3.zero;
-        pivot.localEulerAngles = new Vector3(angle, 0, 0);
-
-        target.localPosition = new Vector3(0, 5, -20);
-        target.localEulerAngles = Vector3.zero;
+        root.position = center + new Vector3(0, 5, -20);
+        root.localEulerAngles = new Vector3(angle, 0, 0);
     }
 
     private void OnEnable()
@@ -75,8 +64,8 @@ public class CameraControl : MonoBehaviour
     private void Update()
     {
         cam.fieldOfView = zoom;
-        cam.transform.position = root.position + target.localPosition;
-        cam.transform.rotation = target.rotation;
+        cam.transform.position = root.position;
+        cam.transform.rotation = root.rotation;
 
         if (GameManager.instance.currentCameraState != CamState.Default) return;
         if (GameManager.instance.shopOpen) return;

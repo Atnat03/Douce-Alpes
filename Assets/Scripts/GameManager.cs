@@ -42,6 +42,9 @@ public class GameManager : MonoBehaviour
     public event Action<Vector3, Vector3> GrangeClicked;
     public event Action<Vector3, Vector3> AbreuvoirClicked;
     public event Action<GameObject> SheepEnter;
+
+    public Action startMiniGame;
+    public Action endMiniGame;
     
     public CamState currentCameraState = CamState.Default;
     
@@ -133,6 +136,9 @@ public class GameManager : MonoBehaviour
         currentCameraState = newState;
         cameraFollow.enabled = false;
         ChangePlayerEnvironnement(false);
+        
+        if(newState == CamState.MiniGame)
+            startMiniGame?.Invoke();
     }
 
     public void ResetCamera()
@@ -149,6 +155,9 @@ public class GameManager : MonoBehaviour
             sheepWidow.SetActive(false);
             SheepWindow.instance.ResetValue();
         }
+        
+        if(currentCameraState == CamState.MiniGame)
+            endMiniGame?.Invoke();
         
         currentCameraState = CamState.Default;
     }
