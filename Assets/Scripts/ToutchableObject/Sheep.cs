@@ -127,7 +127,8 @@ public class Sheep : TouchableObject
         GameManager.instance.ChangeCameraState(CamState.Sheep);
         GameManager.instance.ChangeCameraPos(
             cameraPosition.transform.position,
-            cameraPosition.transform.rotation.eulerAngles
+            cameraPosition.transform.rotation.eulerAngles,
+            transform
         );
         
         Camera.main.gameObject.GetComponent<CameraControl>().ResetFOV();

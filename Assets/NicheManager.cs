@@ -2,11 +2,12 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NicheManager : MonoBehaviour
+public class NicheManager : TouchableObject
 {
     [SerializeField] private Chien chien;
     [SerializeField] private Transform nichePos;
     [SerializeField] private bool isInNiche = false;
+    [SerializeField] private Transform cameraZoomPos;
 
     private void Start()
     {
@@ -40,5 +41,11 @@ public class NicheManager : MonoBehaviour
         
         if(isInNiche)
             chien.transform.LookAt(new Vector3(0, -90, 0));
+    }
+
+    public override void TouchEvent()
+    {
+        GameManager.instance.ChangeCameraPos(cameraZoomPos.position, cameraZoomPos.rotation.eulerAngles, transform);
+        GameManager.instance.ChangeCameraState(CamState.Dog);
     }
 }

@@ -24,6 +24,7 @@ public class ChangingCamera : MonoBehaviour
         GameManager.instance.SheepHold += ChangeCamera;
         GameManager.instance.GrangeClicked += ChangeCamera;
         GameManager.instance.AbreuvoirClicked += ChangeCamera;
+        GameManager.instance.NicheClicked += ChangeCamera;
 
         control = GetComponent<CameraControl>();
         follow = GetComponent<CameraFollow>();
@@ -31,7 +32,16 @@ public class ChangingCamera : MonoBehaviour
         quitButton.gameObject.SetActive(false);
     }
 
-    private IEnumerator SmoothTransition(Vector3 targetPos, Vector3 targetEuler, bool reEnableControl = false, bool hideQuitButton = false)
+    void OnDisable()
+    {
+        GameManager.instance.SheepClicked -= LockCamOnSheep;
+        GameManager.instance.SheepHold -= ChangeCamera;
+        GameManager.instance.GrangeClicked -= ChangeCamera;
+        GameManager.instance.AbreuvoirClicked -= ChangeCamera;
+        GameManager.instance.NicheClicked -= ChangeCamera;
+    }
+
+    private IEnumerator SmoothTransition(Vector3 targetPos, Vector3 targetEuler, Transform target, bool reEnableControl = false, bool hideQuitButton = false)
     {
         elapseTime = 0f;
         Quaternion finalRotation = Quaternion.Euler(targetEuler);
@@ -52,15 +62,13 @@ public class ChangingCamera : MonoBehaviour
         {
             elapseTime += Time.deltaTime;
             float t = elapseTime / timerToTransition;
-
+            
+            Camera.main.transform.LookAt(target);
             Camera.main.transform.position = Vector3.Lerp(savedCamPos, targetPos, t);
-            Camera.main.transform.rotation = Quaternion.Slerp(savedCamRot, finalRotation, t);
+            //Camera.main.transform.rotation = Quaternion.Slerp(savedCamRot, finalRotation, t);
 
             yield return null;
         }
-
-        Camera.main.transform.position = targetPos;
-        Camera.main.transform.rotation = finalRotation;
 
         if (reEnableControl)
             control.enabled = true;
@@ -69,10 +77,10 @@ public class ChangingCamera : MonoBehaviour
             quitButton.gameObject.SetActive(false);
     }
 
-    public void ChangeCamera(Vector3 newPosition, Vector3 rotation)
+    public void ChangeCamera(Vector3 newPosition, Vector3 rotation, Transform target)
     {
         StopAllCoroutines();
-        StartCoroutine(SmoothTransition(newPosition, rotation));
+        StartCoroutine(SmoothTransition(newPosition, rotation, target));
     }
 
     public void LockCamOnSheep(Sheep sheep)

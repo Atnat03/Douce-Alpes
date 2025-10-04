@@ -35,8 +35,6 @@ public class PatrolObjets : MonoBehaviour
 
         predatorLocal = TouchManager.instance.sphereSheepLeak;
 
-		print(predatorLocal);
-
         predatorChien = GameManager.instance.chien;
         
         agent.speed = patrolSpeed;

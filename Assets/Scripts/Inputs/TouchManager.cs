@@ -9,6 +9,8 @@ public class TouchManager : MonoBehaviour
 {
     public static TouchManager instance;
 
+    public Action<Vector3> OnCleanTouch;
+
     public PlayerInput playerInput;
 
     private InputAction touchPositionAction;
@@ -73,9 +75,16 @@ public class TouchManager : MonoBehaviour
                 Debug.Log("Force delock");
                 GameManager.instance.DelockSheep();
             }
+
             currentTouchedObject = hit.transform.gameObject;
+
+            if (hit.transform.gameObject.CompareTag("CleanSheep"))
+            { 
+                OnCleanTouch?.Invoke(hit.point);
+            }
         }
     }
+
 
     private void OnTouchReleased(InputAction.CallbackContext context)
     {

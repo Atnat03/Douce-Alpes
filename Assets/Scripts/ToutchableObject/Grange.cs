@@ -27,7 +27,7 @@ public class Grange : Build
 
         if (!GameData.instance.isSheepInside)
         {
-            GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameCamPos().position, GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles);
+            GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameCamPos().position, GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles, transform);
             OpenDoors();
         }
         else
@@ -64,7 +64,7 @@ public class Grange : Build
 
     void ZoomCamera()
     {
-        GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameZoomCamPos().position, GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles);
+        GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameZoomCamPos().position, GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles, transform);
     }
 
     private void Update()

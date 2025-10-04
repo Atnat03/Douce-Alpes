@@ -14,6 +14,7 @@ public enum CamState
     LockSheep,
     MiniGame,
     Drink,
+    Dog
 }
 
 [System.Serializable]
@@ -37,10 +38,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     
-    public event Action<Vector3, Vector3> SheepHold;
+    public event Action<Vector3, Vector3, Transform> SheepHold;
     public event Action<Sheep> SheepClicked;
-    public event Action<Vector3, Vector3> GrangeClicked;
-    public event Action<Vector3, Vector3> AbreuvoirClicked;
+    public event Action<Vector3, Vector3, Transform> GrangeClicked;
+    public event Action<Vector3, Vector3, Transform> AbreuvoirClicked;
+    public event Action<Vector3, Vector3, Transform> NicheClicked;
+
     public event Action<GameObject> SheepEnter;
 
     public Action startMiniGame;
@@ -174,18 +177,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ChangeCameraPos(Vector3 pos, Vector3 rot)
+    public void ChangeCameraPos(Vector3 pos, Vector3 rot, Transform target)
     {
         switch (currentCameraState)
         {
             case CamState.Sheep:
-                SheepHold?.Invoke(pos, rot);
+                SheepHold?.Invoke(pos, rot, target);
                 break; 
             case CamState.MiniGame:
-                GrangeClicked?.Invoke(pos, rot);
+                GrangeClicked?.Invoke(pos, rot, target);
                 break;
             case CamState.Drink:
-                AbreuvoirClicked?.Invoke(pos, rot);
+                AbreuvoirClicked?.Invoke(pos, rot, target);
+                break;
+            case CamState.Dog:
+                NicheClicked?.Invoke(pos, rot, target);
                 break;
             case CamState.Default:
                 break;
@@ -326,6 +332,6 @@ public class GameManager : MonoBehaviour
     public void ActivateAbreuvoir()
     {
         ChangeCameraState(CamState.Drink);
-        ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles);
+        ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles, abreuvoir.transform);
     }
 }
