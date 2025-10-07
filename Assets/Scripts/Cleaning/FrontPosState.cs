@@ -8,7 +8,7 @@ public class FrontPosState : ICleaningState
 
     private Vector3 camPos = new Vector3(2, 0.25f, 0);
     
-    private int cleanValueToChange = 10;
+    private int cleanValueToChange = 20;
     private int numberOfShampooInList;
     
     public void EnterState(StateMachineClean managerC)

@@ -11,31 +11,45 @@ public enum CleaningTool
 
 public class CleanManager : MonoBehaviour
 {
+    public static CleanManager instance;
+
+    [Header("References")]
     public Camera camera;
     public Transform sheepTarget;
 
+    [Header("Current Tool")]
     public CleaningTool currentTool;
 
-    [Header("Tool particles")] 
+    [Header("Tool Particles")] 
     [SerializeField] private GameObject shampoo;
     [SerializeField] private GameObject shower;
 
     [Header("UI")] 
     [SerializeField] private GameObject shampooContour;
-
     [SerializeField] private GameObject showerContour;
     [SerializeField] private Button showerButton;
     
-    List<GameObject> shampooList = new List<GameObject>();
+    private List<GameObject> shampooList = new List<GameObject>();
 
     [Header("Clean Values")] 
     private float cleanValue = 0;
-
     private float totalValueCleaned = 0;
-    
-    [HideInInspector] public int maxShampoo = 50;
-    
-    public float GetCleanValue(){return cleanValue;}
+    public int maxShampoo = 100;
+
+    [Header("Anti-Spam Shampoo Settings")]
+    [SerializeField] private float minDistanceBetweenShampoos = 0.05f;
+    private Vector3 lastShampooPos = Vector3.zero;
+    private bool hasLastPos = false;
+
+    public float GetCleanValue() { return cleanValue; }
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+    }
 
     private void Start()
     {
@@ -45,24 +59,14 @@ public class CleanManager : MonoBehaviour
     private void Update()
     {
         showerButton.interactable = totalValueCleaned >= maxShampoo;
-        
-        print(GetCounterListShampoo());
-    }
-
-    private void OnEnable()
-    {
-        TouchManager.instance.OnCleanTouch += PerformClean;
-    }
-
-    private void OnDisable()
-    {
-        TouchManager.instance.OnCleanTouch -= PerformClean;
     }
 
     public void ResetValueClean()
     {
         totalValueCleaned += cleanValue;
         cleanValue = 0;
+        hasLastPos = false;
+        lastShampooPos = Vector3.zero;
     }
 
     public void SetShampoo()
@@ -79,21 +83,37 @@ public class CleanManager : MonoBehaviour
         showerContour.SetActive(true);
     }
     
-
     public void PerformClean(Vector3 pos)
     {
-        if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo) return;
-        
-        GameObject effect = null;
+        ApplyClean(pos);
+    }
+
+    public void ApplyClean(Vector3 pos)
+    {
+        if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo)
+            return;
 
         switch (currentTool)
         {
             case CleaningTool.Shampoo:
-                AddShampoo(pos);
+                TryAddShampoo(pos);
                 break;
+
             case CleaningTool.Shower:
                 CheckShampoo(pos);
                 break;
+        }
+    }
+
+    private void TryAddShampoo(Vector3 pos)
+    {
+        if (!hasLastPos || Vector3.Distance(lastShampooPos, pos) >= minDistanceBetweenShampoos)
+        {
+            GameObject s = Instantiate(shampoo, pos, Quaternion.identity);
+            shampooList.Add(s);
+            cleanValue += 1f;
+            lastShampooPos = pos;
+            hasLastPos = true;
         }
     }
 
@@ -102,7 +122,7 @@ public class CleanManager : MonoBehaviour
         GameObject d = Instantiate(shower, pos, Quaternion.identity);
         Destroy(d, 0.3f);
 
-        float radius = 0.075f;
+        float radius = 0.025f;
         Collider[] hits = Physics.OverlapSphere(pos, radius);
 
         foreach (Collider hit in hits)
@@ -115,13 +135,21 @@ public class CleanManager : MonoBehaviour
         }
     }
 
-    public void AddShampoo(Vector3 pos)
+    public void ResetLastShampooPos()
     {
-        GameObject s = Instantiate(shampoo, pos, Quaternion.identity);
-        shampooList.Add(s);
-        
-        cleanValue += 1f;
+        hasLastPos = false;
     }
-    
-    public int GetCounterListShampoo(){return shampooList.Count;}
+
+    public int GetCounterListShampoo()
+    {
+        return shampooList.Count;
+    }
+
+    private void OnDisable()
+    {
+        foreach (GameObject shampoo in shampooList)
+        {
+            Destroy(shampoo);
+        }
+    }
 }

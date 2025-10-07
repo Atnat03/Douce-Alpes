@@ -77,11 +77,6 @@ public class TouchManager : MonoBehaviour
             }
 
             currentTouchedObject = hit.transform.gameObject;
-
-            if (hit.transform.gameObject.CompareTag("CleanSheep"))
-            { 
-                OnCleanTouch?.Invoke(hit.point);
-            }
         }
     }
 

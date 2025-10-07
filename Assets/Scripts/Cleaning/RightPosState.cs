@@ -7,7 +7,7 @@ public class RightPosState : ICleaningState
     
     private Vector3 camPos = new Vector3(0.1f, 0.25f, -2.5f);
     
-    private int cleanValueToChange = 20;
+    private int cleanValueToChange = 40;
     private int numberOfShampooInList;
 
     

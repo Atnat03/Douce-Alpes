@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum SwipeType
@@ -7,68 +8,34 @@ public enum SwipeType
     Up,
     Down,
     Left,
-    Right
+    Right,
+    Circle,
+    Square
 }
 
 public class SwipeDetection : MonoBehaviour
 {
     public static SwipeDetection instance;
-    public event Action<SwipeType> OnSwipeDetected;
-    
-    [SerializeField] private float miniDistance = .5f;
-    [SerializeField] float maxTime = 1f;
-    [SerializeField, Range(0,1)] float directionThreshold = .9f;
+    public Action<SwipeType> OnSwipeDetected;
+    public event Action<List<Vector2>> OnSwipeUpdated;
+    public event Action<List<Vector2>> OnSwipeFinished;
 
-    [SerializeField] private Vector2 swipeAreaSize = new Vector2(600, 600); 
-    private Rect swipeArea;
-    
-    TouchManager touchManager;
+    [HideInInspector] public float miniDistance = 50f;
 
+    private TouchManager touchManager;
     private Vector2 startPosition;
     private float startTime;
     private Vector2 endPosition;
     private float endTime;
-
-    [SerializeField] private GameObject trail;
-
-    private Coroutine coroutine;
-
-    private Sheep currentHoveredSheep = null;
-
+    private Coroutine swipeCoroutine;
     private bool isSwipe = false;
-
-    [SerializeField] private Poutre poutre;
-
-    [Header("Skins")]
-    [SerializeField] private SkinManager skinManager;
-    private bool isSkinMenu = false;
+    private List<Vector2> swipePoints = new List<Vector2>();
 
     private void Awake()
     {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(gameObject);
-        
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
         touchManager = TouchManager.instance;
-    }
-    
-    private void Start()
-    {
-        float screenW = Screen.width;
-        float screenH = Screen.height;
-        swipeArea = new Rect(
-            (screenW - swipeAreaSize.x) / 2f,
-            (screenH - swipeAreaSize.y) / 2f,
-            swipeAreaSize.x,
-            swipeAreaSize.y
-        );
-    }
-
-    private void Update()
-    {
-        if(skinManager != null)
-            isSkinMenu = skinManager.gameObject.activeSelf;
     }
 
     private void OnEnable()
@@ -88,159 +55,69 @@ public class SwipeDetection : MonoBehaviour
         startPosition = position;
         startTime = time;
         endPosition = position;
-        
         isSwipe = false;
-
-        trail.SetActive(false); 
-        currentHoveredSheep = null;
-
-        coroutine = StartCoroutine(CheckSwipeProgress());
+        swipePoints.Clear();
+        swipePoints.Add(startPosition);
+        swipeCoroutine = StartCoroutine(SwipeProgress());
     }
 
-
-    private IEnumerator CheckSwipeProgress()
+    private IEnumerator SwipeProgress()
     {
         while (true)
         {
-            Vector2 screenPos = TouchManager.instance.PrimaryPosition();
-            
-            if (!swipeArea.Contains(screenPos))
-            {
-                Debug.Log("Swipe ignoré : hors zone centrale");
-                break;
-            }
-
-            if (!isSwipe && Vector2.Distance(startPosition, screenPos) >= miniDistance)
-            {
+            Vector2 pos = touchManager.PrimaryPosition();
+            if (!isSwipe && Vector2.Distance(startPosition, pos) >= miniDistance)
                 isSwipe = true;
-                trail.SetActive(true);
-            }
 
             if (isSwipe)
             {
-                trail.transform.position = ScreenToWorld(screenPos);
-                DetectHover(screenPos);
+                swipePoints.Add(pos);
+                OnSwipeUpdated?.Invoke(new List<Vector2>(swipePoints));
+                
+                DetectCleanObject(pos);
             }
 
             yield return null;
         }
     }
 
-    private void DetectHover(Vector2 screenPos)
-    {
-        if (GameManager.instance.currentCameraState != CamState.Default) return;
-        
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
-        {
-            Sheep sheep = hit.collider.gameObject.GetComponent<Sheep>();
-
-            if (sheep != null)
-            {
-                if (GameManager.instance.isLock == false) 
-                    return;
-                
-                if (currentHoveredSheep != sheep)
-                {
-                    sheep.AddCaresse();
-                    currentHoveredSheep = sheep;
-                    Debug.Log("Caresse ajoutée à " + sheep.name);
-                }
-            }
-            else
-            {
-                currentHoveredSheep = null;
-            }
-        }
-        else
-        {
-            currentHoveredSheep = null;
-        }
-    }
-
     private void SwipeEnd(Vector2 position, float time)
     {
-        if (coroutine != null) StopCoroutine(coroutine);
-
-        trail.SetActive(false);
-
+        if (swipeCoroutine != null) StopCoroutine(swipeCoroutine);
         endPosition = position;
         endTime = time;
 
         DetectSwipe();
+        OnSwipeFinished?.Invoke(new List<Vector2>(swipePoints));
     }
+    
+    private void DetectCleanObject(Vector2 screenPosition)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.CompareTag("CleanSheep"))
+            {
+                if (CleanManager.instance != null)
+                {
+                    CleanManager.instance.PerformClean(hit.point);
+                }
+            }
+        }
+    }
+
 
     private void DetectSwipe()
     {
-        if (Vector2.Distance(startPosition, endPosition) >= miniDistance &&
-            (endTime - startTime) <= maxTime)
-        {
-            Debug.Log("SwipeDetected");
-            Vector2 direction = (endPosition - startPosition).normalized;
-            SwipeDirection(direction, startPosition);
-        }
-    }
+        if (Vector2.Distance(startPosition, endPosition) < miniDistance ||
+            (endTime - startTime) > 1f) return;
 
-    private void SwipeDirection(Vector2 direction, Vector2 startPos)
-    {
-        if (Vector2.Dot(Vector2.up, direction) > directionThreshold)
-        {
-            Debug.Log("Swipe Up");
-            OnSwipeDetected?.Invoke(SwipeType.Up);
-
-            if (poutre != null)
-                poutre.GetOffPoutre();
-        }
-        else if (Vector2.Dot(Vector2.down, direction) > directionThreshold)
-        {
-            Debug.Log("Swipe Down");
-            OnSwipeDetected?.Invoke(SwipeType.Down);
-
-            if (GameManager.instance.currentCameraState == CamState.Drink)
-            {
-                if (startPos.x > Screen.width * 0.66f)
-                {
-                    Debug.Log("Swipe Down sur la zone droite");
-                    Abreuvoir.instance.AddWater();
-                }
-                else
-                {
-                    Debug.Log("Swipe ignoré : pas sur la zone droite");
-                }
-            }
-        }
-        else if (Vector2.Dot(Vector2.right, direction) > directionThreshold)
-        {
-            Debug.Log("Swipe Right");
-            OnSwipeDetected?.Invoke(SwipeType.Right);
-
-            if (isSkinMenu && skinManager.IsInsideSwipeArea(startPos))
-            {
-                skinManager.RightArrow();
-            }
-        }
-        else if (Vector2.Dot(Vector2.left, direction) > directionThreshold)
-        {
-            Debug.Log("Swipe Left");
-            OnSwipeDetected?.Invoke(SwipeType.Left);
-
-            if (isSkinMenu && skinManager.IsInsideSwipeArea(startPos))
-            {
-                skinManager.LeftArrow();
-            }
-        }
-    }
-
-    private Vector3 ScreenToWorld(Vector2 screenPos)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
-        {
-            return hit.point + Vector3.up * 0.1f;
-        }
-
-        return ray.GetPoint(9f);
+        Vector2 dir = (endPosition - startPosition).normalized;
+        if (Vector2.Dot(Vector2.up, dir) > 0.8f) OnSwipeDetected?.Invoke(SwipeType.Up);
+        else if (Vector2.Dot(Vector2.down, dir) > 0.8f) OnSwipeDetected?.Invoke(SwipeType.Down);
+        else if (Vector2.Dot(Vector2.right, dir) > 0.8f) OnSwipeDetected?.Invoke(SwipeType.Right);
+        else if (Vector2.Dot(Vector2.left, dir) > 0.8f) OnSwipeDetected?.Invoke(SwipeType.Left);
     }
 }

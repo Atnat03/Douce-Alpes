@@ -7,6 +7,7 @@ public class SwapSceneManager : MonoBehaviour
     private void Awake() { instance = this; }
 
     [SerializeField] GameObject[] scenes;
+    [SerializeField] private int startScene = 0;
     
     public event Action SwapingInteriorScene;
     public event Action SwapingDefaultScene;
@@ -14,7 +15,8 @@ public class SwapSceneManager : MonoBehaviour
 
     private void Start()
     {
-        SwapScene(0);
+        SwapScene(startScene);
+
     }
 
     public void SwapScene(int sceneID)
