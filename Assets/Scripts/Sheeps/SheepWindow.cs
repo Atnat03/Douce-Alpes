@@ -20,9 +20,9 @@ public class SheepWindow : MonoBehaviour
         instance = this;
     }
 
-    public void SetNewCurrentSkin()
+    public void SetNewCurrentSkin(int id)
     {
-        GameManager.instance.GetSheep(sheepId).SetCurrentSkin(skinManager.GetCurrentSkinID());
+        GameManager.instance.GetSheep(sheepId).SetCurrentSkin(id);
     }
     
     public InputField GetInputField(){return nameText;}
@@ -42,7 +42,7 @@ public class SheepWindow : MonoBehaviour
         Debug.Log(this.currentSkin);
         
         this.sheepId = sheepId;
-        skinManager.SetCurrentSkin(this.currentSkin);
+        //skinManager.SetCurrentSkin(this.currentSkin);
     }
 
     public void ResetValue()

@@ -34,7 +34,7 @@ public class SkinManager : MonoBehaviour
             visibleImage[i].sprite = skins[skinIndex].logo;
         }
         
-        SheepWindow.instance.SetNewCurrentSkin();
+        //SheepWindow.instance.SetNewCurrentSkin();
     }
     
     public void SetCurrentSkin(int skinId)
