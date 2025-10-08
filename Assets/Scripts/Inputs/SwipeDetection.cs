@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public enum SwipeType
 {
@@ -30,12 +32,20 @@ public class SwipeDetection : MonoBehaviour
     private Coroutine swipeCoroutine;
     private bool isSwipe = false;
     private List<Vector2> swipePoints = new List<Vector2>();
+    
+    private GraphicRaycaster raycaster;
+    private EventSystem eventSystem;
+    private PointerEventData pointerEventData;
 
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
+        
         touchManager = TouchManager.instance;
+        
+        raycaster = FindObjectOfType<GraphicRaycaster>();
+        eventSystem = EventSystem.current;
     }
 
     private void OnEnable()
@@ -75,12 +85,13 @@ public class SwipeDetection : MonoBehaviour
                 OnSwipeUpdated?.Invoke(new List<Vector2>(swipePoints));
                 
                 DetectCleanObject(pos);
+                DetectUIButton(pos);
             }
 
             yield return null;
         }
     }
-
+    
     private void SwipeEnd(Vector2 position, float time)
     {
         if (swipeCoroutine != null) StopCoroutine(swipeCoroutine);
@@ -106,6 +117,20 @@ public class SwipeDetection : MonoBehaviour
                 }
             }
         }
+    }
+    
+    private void DetectUIButton(Vector2 screenPosition)
+    {
+        if (raycaster == null || eventSystem == null)
+            return;
+
+        pointerEventData = new PointerEventData(eventSystem)
+        {
+            position = screenPosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        raycaster.Raycast(pointerEventData, results);
     }
 
 

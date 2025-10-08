@@ -9,4 +9,3 @@ public class PatternsTricotsSO : ScriptableObject
     public Sprite image;
     public List<SwipeType> pattern = new();
 }
-
