@@ -10,32 +10,33 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     private void Awake()
     {
         rect = GetComponent<RectTransform>();
-        if (manager == null)
-            manager = FindObjectOfType<TricotManager2>();
+    }
+
+    void StartHover()
+    {
+        if (manager == null) return;
+        manager.SetHover(true);
+
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(manager.uiLineRenderer.rectTransform, rect.position, null, out localPos);
+        manager.AddPointInList(id, localPos);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        manager.SetHover(true);
-        AddPointToLine();
+        StartHover();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        AddPointToLine();
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(manager.uiLineRenderer.rectTransform, rect.position, null, out localPos);
+        manager.AddPointInList(id, localPos);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        manager.SetHover(false);
-        manager.CheckModel();
-    }
-
-    private void AddPointToLine()
-    {
-        if (manager == null) return;
-
-        Vector2 localPoint = rect.anchoredPosition;
-        manager.AddPointInList(id, localPoint);
+        if(manager != null)
+            manager.CheckModel();
     }
 }

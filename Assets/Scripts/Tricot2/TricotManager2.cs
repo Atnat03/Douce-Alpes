@@ -5,124 +5,130 @@ using UnityEngine.UI;
 
 public class TricotManager2 : MonoBehaviour
 {
-    public List<int> currentPassagePoint = new List<int>();
+    [Header("UI Elements")]
+    public GameObject okImage;
+    public Image imageProduct;
+    public Text testTxt;
+    public UILineDrawer uiLineRenderer;
+
+    [Header("Settings")]
+    public float fillSpeed = 2f;
+
+    [HideInInspector] public bool isHover;
+
+    private List<int> currentPassagePoint = new List<int>();
     private List<ModelDraw> currentPattern = new List<ModelDraw>();
-    [SerializeField] private GameObject okImage;
-    [SerializeField] private Image imageProduct;
-    [SerializeField] private float fillSpeed = 2f;
-
-    // Ligne UI
-    [SerializeField] private UILineDrawer uiLineRenderer;
-    private List<Vector2> linePoints = new List<Vector2>();
-
-    private int numberModelOfThisPattern = 0;
     private int currentModel = 0;
+    private int numberModelOfThisPattern = 0;
     private bool canShowNext = true;
     private float targetFill = 0f;
 
-    public bool isHover;
-    public Text testTxt;
+    [HideInInspector] public List<Vector2> linePoints = new List<Vector2>();
 
     private void Start()
     {
-        okImage.SetActive(false);
-        linePoints.Clear();
-        if(uiLineRenderer != null)
-            uiLineRenderer.points = linePoints.ToArray();
+        if (okImage != null) okImage.SetActive(false);
+        if (uiLineRenderer != null) uiLineRenderer.enabled = false;
     }
 
     private void Update()
     {
-        uiLineRenderer.enabled = linePoints.Count > 1;
-        
-        // Mise à jour fill
+        // Si on est en train de hover, mettre à jour le dernier point de la ligne vers le doigt
+        if (isHover && uiLineRenderer != null && TouchManager.instance != null && linePoints.Count > 0)
+        {
+            Vector2 screenPos = TouchManager.instance.PrimaryPosition();
+            Vector2 localPoint;
+            RectTransform canvasRect = uiLineRenderer.rectTransform;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out localPoint);
+
+            // Mettre à jour le dernier point pour suivre le doigt
+            if (linePoints.Count >= 2)
+                linePoints[linePoints.Count - 1] = localPoint;
+            else
+                linePoints.Add(localPoint);
+
+            uiLineRenderer.points = linePoints.ToArray();
+            uiLineRenderer.SetVerticesDirty();
+        }
+
+        // Fill de l'image produit
         if (imageProduct.fillAmount < targetFill)
         {
             imageProduct.fillAmount += Time.deltaTime * fillSpeed;
             if (imageProduct.fillAmount > targetFill)
                 imageProduct.fillAmount = targetFill;
         }
-
-        // Suivi du doigt pour la ligne
-        if (isHover && uiLineRenderer != null && TouchManager.instance != null)
-        {
-            Vector2 screenPos = TouchManager.instance.PrimaryPosition();
-            Vector2 localPoint;
-            RectTransform canvasRect = uiLineRenderer.rectTransform;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out localPoint);
-
-            if(linePoints.Count == 0 || Vector2.Distance(localPoint, linePoints[linePoints.Count-1]) > .5f)
-            {
-                linePoints.Add(localPoint);
-                uiLineRenderer.points = linePoints.ToArray();
-                uiLineRenderer.SetVerticesDirty();
-            }
-        }
     }
 
     public void SetHover(bool hover)
     {
         isHover = hover;
-        if (!hover)
-        {
-            linePoints.Clear();
-            if(uiLineRenderer != null)
-            {
-                uiLineRenderer.points = linePoints.ToArray();
-                uiLineRenderer.SetVerticesDirty();
-            }
-        }
-    }
 
-    public void AddPointInList(int i, Vector2 buttonLocalPos)
-    {
-        if (!isHover || currentPassagePoint.Contains(i)) return;
-        
-        if(linePoints.Count > 0 && Vector2.Distance(linePoints[linePoints.Count-1], buttonLocalPos) < 1f)
-            return; // ne pas ajouter le même point
+        // Activer/désactiver la ligne
+        if (uiLineRenderer != null)
+            uiLineRenderer.enabled = hover;
 
-        currentPassagePoint.Add(i);
-        linePoints.Add(buttonLocalPos);
-        if(uiLineRenderer != null)
+        // Si on commence un hover, ajouter un point temporaire pour suivre le doigt
+        if (hover && linePoints.Count == 0 && TouchManager.instance != null)
         {
+            Vector2 screenPos = TouchManager.instance.PrimaryPosition();
+            Vector2 localPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(uiLineRenderer.rectTransform, screenPos, null, out localPoint);
+            linePoints.Add(localPoint);
             uiLineRenderer.points = linePoints.ToArray();
             uiLineRenderer.SetVerticesDirty();
         }
-
-        if (testTxt != null)
-            testTxt.text += i + " / ";
     }
 
-    // --- Motifs / modèles ---
-    public void InitalizePattern(ModelDrawSO patternSO)
+    public void AddPointInList(int id, Vector2 buttonLocalPos)
     {
-        currentPattern = patternSO.pattern;
-        numberModelOfThisPattern = currentPattern.Count;
-        currentModel = 0;
-        currentPassagePoint.Clear();
-        targetFill = 0f;
-        imageProduct.sprite = patternSO.image;
-        imageProduct.fillAmount = 0f;
+        if (!isHover) return;
 
-        if (currentPattern.Count > 0)
-            StartCoroutine(ShowModelWithDelay(currentPattern[currentModel]));
+        // Ajouter seulement si le point n'est pas déjà le dernier
+        if (linePoints.Count > 0 && Vector2.Distance(linePoints[linePoints.Count - 1], buttonLocalPos) < 1f)
+            return;
+
+        // Ajouter le point bouton
+        linePoints.Add(buttonLocalPos);
+        uiLineRenderer.points = linePoints.ToArray();
+        uiLineRenderer.SetVerticesDirty();
+
+        // Ajouter à la logique du motif
+        if (!currentPassagePoint.Contains(id))
+        {
+            currentPassagePoint.Add(id);
+            if (testTxt != null)
+                testTxt.text += id + " / ";
+        }
     }
 
     public void CheckModel()
     {
-        testTxt.text = "";
-
         if (!canShowNext || currentModel >= currentPattern.Count)
         {
             currentPassagePoint.Clear();
+            linePoints.Clear();
+            if (uiLineRenderer != null)
+            {
+                uiLineRenderer.points = linePoints.ToArray();
+                uiLineRenderer.SetVerticesDirty();
+                uiLineRenderer.enabled = false;
+            }
             return;
         }
 
         List<int> modelPoints = currentPattern[currentModel].pointsList;
-
         if (currentPassagePoint.Count != modelPoints.Count)
         {
             currentPassagePoint.Clear();
+            linePoints.Clear();
+            if (uiLineRenderer != null)
+            {
+                uiLineRenderer.points = linePoints.ToArray();
+                uiLineRenderer.SetVerticesDirty();
+                uiLineRenderer.enabled = false;
+            }
             return;
         }
 
@@ -131,19 +137,35 @@ public class TricotManager2 : MonoBehaviour
             if (currentPassagePoint[j] != modelPoints[j])
             {
                 currentPassagePoint.Clear();
+                linePoints.Clear();
+                if (uiLineRenderer != null)
+                {
+                    uiLineRenderer.points = linePoints.ToArray();
+                    uiLineRenderer.SetVerticesDirty();
+                    uiLineRenderer.enabled = false;
+                }
                 return;
             }
         }
 
-        okImage.SetActive(true);
+        // Motif correct
+        if (okImage != null) okImage.SetActive(true);
         currentPassagePoint.Clear();
+        linePoints.Clear();
+        if (uiLineRenderer != null)
+        {
+            uiLineRenderer.points = linePoints.ToArray();
+            uiLineRenderer.SetVerticesDirty();
+            uiLineRenderer.enabled = false;
+        }
+
         StartCoroutine(HideOkAndNextModel());
     }
 
     private IEnumerator HideOkAndNextModel()
     {
         yield return new WaitForSeconds(0.5f);
-        okImage.SetActive(false);
+        if (okImage != null) okImage.SetActive(false);
         NextModel();
     }
 
@@ -162,14 +184,40 @@ public class TricotManager2 : MonoBehaviour
         }
     }
 
+    public void InitalizePattern(ModelDrawSO patternSO)
+    {
+        currentPattern = patternSO.pattern;
+        numberModelOfThisPattern = currentPattern.Count;
+        currentModel = 0;
+        currentPassagePoint.Clear();
+        linePoints.Clear();
+        targetFill = 0f;
+        if (imageProduct != null) imageProduct.sprite = patternSO.image;
+        if (imageProduct != null) imageProduct.fillAmount = 0f;
+        if (uiLineRenderer != null)
+        {
+            uiLineRenderer.points = linePoints.ToArray();
+            uiLineRenderer.SetVerticesDirty();
+            uiLineRenderer.enabled = false;
+        }
+
+        if (currentPattern.Count > 0)
+            StartCoroutine(ShowModelWithDelay(currentPattern[currentModel]));
+    }
+
     private IEnumerator ShowModelWithDelay(ModelDraw model)
     {
         canShowNext = false;
         yield return new WaitForSeconds(0.5f);
-
-        Debug.Log("Nouveau modèle à suivre : " + string.Join(",", model.pointsList));
-
         currentPassagePoint.Clear();
+        linePoints.Clear();
+        if (uiLineRenderer != null)
+        {
+            uiLineRenderer.points = linePoints.ToArray();
+            uiLineRenderer.SetVerticesDirty();
+            uiLineRenderer.enabled = false;
+        }
         canShowNext = true;
+        Debug.Log("Nouveau modèle : " + string.Join(",", model.pointsList));
     }
 }
