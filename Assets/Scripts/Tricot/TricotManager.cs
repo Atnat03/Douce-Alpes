@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TricotManager2 : MonoBehaviour
+public class TricotManager : MonoBehaviour
 {
     [Header("UI Elements")]
     public GameObject okImage;
     public Image imageProduct;
     public Text testTxt;
     public UILineDrawer uiLineRenderer;
-
+    public UILineDrawer modelLineRenderer;
+    public RectTransform[] _3x3Ui;
+    
     [Header("Settings")]
     public float fillSpeed = 2f;
 
@@ -24,16 +26,17 @@ public class TricotManager2 : MonoBehaviour
     private float targetFill = 0f;
 
     [HideInInspector] public List<Vector2> linePoints = new List<Vector2>();
+    [HideInInspector] public List<Vector2> modelLinePoints = new List<Vector2>();
 
     private void Start()
     {
         if (okImage != null) okImage.SetActive(false);
         if (uiLineRenderer != null) uiLineRenderer.enabled = false;
+        if (modelLineRenderer != null) modelLineRenderer.enabled = false;
     }
 
     private void Update()
     {
-        // Si on est en train de hover, mettre à jour le dernier point de la ligne vers le doigt
         if (isHover && uiLineRenderer != null && TouchManager.instance != null && linePoints.Count > 0)
         {
             Vector2 screenPos = TouchManager.instance.PrimaryPosition();
@@ -42,7 +45,6 @@ public class TricotManager2 : MonoBehaviour
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out localPoint);
 
-            // Mettre à jour le dernier point pour suivre le doigt
             if (linePoints.Count >= 2)
                 linePoints[linePoints.Count - 1] = localPoint;
             else
@@ -52,7 +54,6 @@ public class TricotManager2 : MonoBehaviour
             uiLineRenderer.SetVerticesDirty();
         }
 
-        // Fill de l'image produit
         if (imageProduct.fillAmount < targetFill)
         {
             imageProduct.fillAmount += Time.deltaTime * fillSpeed;
@@ -65,11 +66,9 @@ public class TricotManager2 : MonoBehaviour
     {
         isHover = hover;
 
-        // Activer/désactiver la ligne
         if (uiLineRenderer != null)
             uiLineRenderer.enabled = hover;
 
-        // Si on commence un hover, ajouter un point temporaire pour suivre le doigt
         if (hover && linePoints.Count == 0 && TouchManager.instance != null)
         {
             Vector2 screenPos = TouchManager.instance.PrimaryPosition();
@@ -85,16 +84,13 @@ public class TricotManager2 : MonoBehaviour
     {
         if (!isHover) return;
 
-        // Ajouter seulement si le point n'est pas déjà le dernier
         if (linePoints.Count > 0 && Vector2.Distance(linePoints[linePoints.Count - 1], buttonLocalPos) < 1f)
             return;
 
-        // Ajouter le point bouton
         linePoints.Add(buttonLocalPos);
         uiLineRenderer.points = linePoints.ToArray();
         uiLineRenderer.SetVerticesDirty();
 
-        // Ajouter à la logique du motif
         if (!currentPassagePoint.Contains(id))
         {
             currentPassagePoint.Add(id);
@@ -105,30 +101,19 @@ public class TricotManager2 : MonoBehaviour
 
     public void CheckModel()
     {
+        testTxt.text = "";
+        modelLinePoints.Clear();
+        
         if (!canShowNext || currentModel >= currentPattern.Count)
         {
-            currentPassagePoint.Clear();
-            linePoints.Clear();
-            if (uiLineRenderer != null)
-            {
-                uiLineRenderer.points = linePoints.ToArray();
-                uiLineRenderer.SetVerticesDirty();
-                uiLineRenderer.enabled = false;
-            }
+            ResetDrawing();
             return;
         }
 
         List<int> modelPoints = currentPattern[currentModel].pointsList;
         if (currentPassagePoint.Count != modelPoints.Count)
         {
-            currentPassagePoint.Clear();
-            linePoints.Clear();
-            if (uiLineRenderer != null)
-            {
-                uiLineRenderer.points = linePoints.ToArray();
-                uiLineRenderer.SetVerticesDirty();
-                uiLineRenderer.enabled = false;
-            }
+            ResetDrawing();
             return;
         }
 
@@ -136,20 +121,19 @@ public class TricotManager2 : MonoBehaviour
         {
             if (currentPassagePoint[j] != modelPoints[j])
             {
-                currentPassagePoint.Clear();
-                linePoints.Clear();
-                if (uiLineRenderer != null)
-                {
-                    uiLineRenderer.points = linePoints.ToArray();
-                    uiLineRenderer.SetVerticesDirty();
-                    uiLineRenderer.enabled = false;
-                }
+                ResetDrawing();
                 return;
             }
         }
 
         // Motif correct
         if (okImage != null) okImage.SetActive(true);
+        ResetDrawing();
+        StartCoroutine(HideOkAndNextModel());
+    }
+
+    private void ResetDrawing()
+    {
         currentPassagePoint.Clear();
         linePoints.Clear();
         if (uiLineRenderer != null)
@@ -158,8 +142,6 @@ public class TricotManager2 : MonoBehaviour
             uiLineRenderer.SetVerticesDirty();
             uiLineRenderer.enabled = false;
         }
-
-        StartCoroutine(HideOkAndNextModel());
     }
 
     private IEnumerator HideOkAndNextModel()
@@ -177,11 +159,79 @@ public class TricotManager2 : MonoBehaviour
         if (currentModel < numberModelOfThisPattern)
         {
             StartCoroutine(ShowModelWithDelay(currentPattern[currentModel]));
+            ApplyPrevisualisationLine();
         }
         else
         {
             Debug.Log("Pattern terminé !");
+            if (modelLineRenderer != null)
+            {
+                modelLineRenderer.points = new Vector2[0];
+                modelLineRenderer.SetVerticesDirty();
+                modelLineRenderer.enabled = false;
+            }
         }
+    }
+    
+    private void ApplyPrevisualisationLine()
+    {
+        //StopAllCoroutines();
+        StartCoroutine(AnimatePreviewLine());
+    }
+
+    private IEnumerator AnimatePreviewLine()
+    {
+        if (modelLineRenderer == null || _3x3Ui == null || currentPattern.Count == 0)
+            yield break;
+
+        modelLineRenderer.enabled = true;
+        modelLinePoints.Clear();
+        modelLineRenderer.points = modelLinePoints.ToArray();
+        modelLineRenderer.SetVerticesDirty();
+
+        List<int> modelPoints = currentPattern[currentModel].pointsList;
+        RectTransform lineRect = modelLineRenderer.rectTransform;
+        
+        int firstPointId = modelPoints[0];
+        foreach (RectTransform t in _3x3Ui)
+        {
+            ButtonShapeDrawing button = t.GetComponent<ButtonShapeDrawing>();
+            if (button != null && button.id == firstPointId)
+            {
+                button.SetFirstPoint();
+                break;
+            }
+        }
+
+        for (int i = 0; i < modelPoints.Count; i++)
+        {
+            foreach (RectTransform t in _3x3Ui)
+            {
+                ButtonShapeDrawing button = t.GetComponent<ButtonShapeDrawing>();
+                
+                if (button != null && button.id == modelPoints[i])
+                {
+                    Vector2 worldPos = t.TransformPoint(Vector3.zero);
+                    Vector2 localPoint;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        lineRect,
+                        RectTransformUtility.WorldToScreenPoint(null, worldPos),
+                        null,
+                        out localPoint
+                    );
+
+                    modelLinePoints.Add(localPoint);
+                    modelLineRenderer.points = modelLinePoints.ToArray();
+                    modelLineRenderer.SetVerticesDirty();
+
+                    yield return new WaitForSeconds(0.2f);
+                    break;
+                }
+            }
+        }
+
+        // Petit délai à la fin du tracé (optionnel)
+        yield return new WaitForSeconds(0.2f);
     }
 
     public void InitalizePattern(ModelDrawSO patternSO)
@@ -192,31 +242,27 @@ public class TricotManager2 : MonoBehaviour
         currentPassagePoint.Clear();
         linePoints.Clear();
         targetFill = 0f;
-        if (imageProduct != null) imageProduct.sprite = patternSO.image;
-        if (imageProduct != null) imageProduct.fillAmount = 0f;
-        if (uiLineRenderer != null)
+
+        if (imageProduct != null)
         {
-            uiLineRenderer.points = linePoints.ToArray();
-            uiLineRenderer.SetVerticesDirty();
-            uiLineRenderer.enabled = false;
+            imageProduct.sprite = patternSO.image;
+            imageProduct.fillAmount = 0f;
         }
 
+        ResetDrawing();
+
         if (currentPattern.Count > 0)
+        {
             StartCoroutine(ShowModelWithDelay(currentPattern[currentModel]));
+            ApplyPrevisualisationLine();
+        }
     }
 
     private IEnumerator ShowModelWithDelay(ModelDraw model)
     {
         canShowNext = false;
         yield return new WaitForSeconds(0.5f);
-        currentPassagePoint.Clear();
-        linePoints.Clear();
-        if (uiLineRenderer != null)
-        {
-            uiLineRenderer.points = linePoints.ToArray();
-            uiLineRenderer.SetVerticesDirty();
-            uiLineRenderer.enabled = false;
-        }
+        ResetDrawing();
         canShowNext = true;
         Debug.Log("Nouveau modèle : " + string.Join(",", model.pointsList));
     }
