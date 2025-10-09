@@ -18,7 +18,7 @@ public class ChangingCamera : MonoBehaviour
     private Vector3 savedCamPos;
     private Quaternion savedCamRot;
 
-    private void Start()
+    private void OnEnable()
     {
         GameManager.instance.SheepClicked += LockCamOnSheep;
         GameManager.instance.SheepHold += ChangeCamera;
@@ -79,7 +79,8 @@ public class ChangingCamera : MonoBehaviour
 
     public void ChangeCamera(Vector3 newPosition, Vector3 rotation, Transform target)
     {
-        StopAllCoroutines();
+        Debug.Log("ChangeCamera");
+        //StopAllCoroutines();
         StartCoroutine(SmoothTransition(newPosition, rotation, target));
     }
 

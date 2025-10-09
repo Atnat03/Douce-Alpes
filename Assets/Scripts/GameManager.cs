@@ -250,8 +250,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(Camera.main);
-        
         int bonheur = (int)((currentBonheur / maxBonheur) * 100);
         txtBonheur.text = bonheur + " %";
         txtMoney.text = currentMoney.ToString();
