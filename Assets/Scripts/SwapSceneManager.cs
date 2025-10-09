@@ -12,11 +12,13 @@ public class SwapSceneManager : MonoBehaviour
     public event Action SwapingInteriorScene;
     public event Action SwapingDefaultScene;
     public event Action SwapingTonteScene;
+    public event Action SwapingCleanScene;
+    public event Action SwapingTricotScene;
+
 
     private void Start()
     {
         SwapScene(startScene);
-
     }
 
     public void SwapScene(int sceneID)
@@ -43,6 +45,12 @@ public class SwapSceneManager : MonoBehaviour
                 break;
             case 2:
                 SwapingTonteScene?.Invoke();
+                break;
+            case 3:
+                SwapingCleanScene?.Invoke();
+                break;
+            case 4:
+                SwapingTricotScene?.Invoke();
                 break;
         }
         
