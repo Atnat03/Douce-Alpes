@@ -10,7 +10,7 @@ public class BonheurCalculator : MonoBehaviour
     [SerializeField] public float maxBonheur = 100f;
     [SerializeField] public float overflowMaxValueRatio = 0.2f;
     
-    private float overflowValue = 0f;
+    public float overflowValue = 0f;
     private float overflowMaxValue = 0f;
     private float virtualMaxBonheur = 0f;
     private bool isOverflow = false;

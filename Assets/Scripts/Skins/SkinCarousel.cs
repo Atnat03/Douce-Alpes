@@ -10,113 +10,74 @@ public class SkinCarousel : MonoBehaviour
     public HorizontalLayoutGroup horizontalLayoutGroup;
 
     [Header("Snap Settings")]
-    public float snapSpeed = 10f;
-    public float snapTriggerVelocity = 0.1f;
+    [Range(1f, 20f)] public float snapSpeed = 8f;
+    [Range(0.01f, 1f)] public float snapTriggerVelocity = 0.2f;
 
     private bool isSnapping = false;
     private Vector3 targetPosition;
-
     private float itemWidth;
-    private int clonesCount;
 
     [Header("Skins")]
     [SerializeField] private SkinScriptable skinData;
     [SerializeField] private GameObject skinPrefab;
-    public RectTransform[] itemList;
+
+    private RectTransform[] itemList;
     public RectTransform currentSnappedItem { get; private set; }
-
-    private void CreateAllSkinUI()
-    {
-        if (skinData == null || skinPrefab == null) return;
-
-        itemList = new RectTransform[skinData.skins.Count];
-
-        for (int i = 0; i < skinData.skins.Count; i++)
-        {
-            SkinSkelete skin = skinData.skins[i];
-            GameObject go = Instantiate(skinPrefab, contentTransform);
-            Image img = go.transform.GetChild(0).GetComponent<Image>();
-            img.sprite = skin.logo;
-
-            SkinUnit unit = go.transform.GetChild(0).GetComponent<SkinUnit>();
-            unit.id = skin.id;
-            go.transform.GetChild(0).name = skin.name;
-            
-            Button btn = go.transform.GetComponent<Button>();
-            int index = i;
-            btn.onClick.AddListener(() => OnSkinClicked(index));
-
-            itemList[i] = go.GetComponent<RectTransform>();
-        }
-    }
 
     private void Start()
     {
         CreateAllSkinUI();
 
+        if (itemList == null || itemList.Length == 0)
+        {
+            Debug.LogWarning("Aucun skin détecté dans le carousel !");
+            return;
+        }
+
+        // Calcule la largeur d’un item (image + espacement)
         itemWidth = itemList[0].rect.width + horizontalLayoutGroup.spacing;
-        clonesCount = Mathf.CeilToInt(viewPortTransform.rect.width / itemWidth);
 
-        // Clones à la fin
-        for (int i = 0; i < clonesCount; i++)
-        {
-            RectTransform item = Instantiate(itemList[i % itemList.Length], contentTransform);
-            item.SetAsLastSibling();
-        }
-
-        // Clones au début
-        for (int i = 0; i < clonesCount; i++)
-        {
-            int index = (itemList.Length - i - 1 + itemList.Length) % itemList.Length;
-            RectTransform item = Instantiate(itemList[index], contentTransform);
-            item.SetAsFirstSibling();
-        }
-
-        float offset = itemWidth * clonesCount;
-        contentTransform.localPosition = new Vector3(-offset, 0, 0);
+        // Démarre positionné au centre du premier élément
+        SnapToItem(itemList[0], instant: true);
     }
 
     private void Update()
     {
-        if (!isSnapping)
-            HandleInfiniteScroll();
-
         HandleSnap();
-    }
-
-    private void HandleInfiniteScroll()
-    {
-        float totalWidth = itemList.Length * itemWidth;
-
-        if (contentTransform.localPosition.x > 0)
-            contentTransform.localPosition -= new Vector3(totalWidth, 0, 0);
-        else if (contentTransform.localPosition.x < -totalWidth)
-            contentTransform.localPosition += new Vector3(totalWidth, 0, 0);
     }
 
     private void HandleSnap()
     {
+        // Si on scroll encore, pas de snap
         if (scrollRect.velocity.magnitude > snapTriggerVelocity)
         {
             isSnapping = false;
             return;
         }
 
+        // Si on est immobile et pas encore en snapping → on choisit l’élément le plus proche
         if (!isSnapping)
             SnapToClosestItem();
 
+        // Mouvement de snapping
         if (isSnapping)
         {
-            contentTransform.localPosition = Vector3.Lerp(contentTransform.localPosition, targetPosition, snapSpeed * Time.deltaTime);
+            contentTransform.localPosition = Vector3.Lerp(
+                contentTransform.localPosition,
+                targetPosition,
+                Time.deltaTime * snapSpeed
+            );
 
-            if (Vector3.Distance(contentTransform.localPosition, targetPosition) < snapTriggerVelocity)
+            if (Vector3.Distance(contentTransform.localPosition, targetPosition) < 0.01f)
             {
                 contentTransform.localPosition = targetPosition;
                 isSnapping = false;
 
-                if (currentSnappedItem && currentSnappedItem.GetChild(0).GetComponent<SkinUnit>())
+                if (currentSnappedItem && currentSnappedItem.GetComponentInChildren<SkinUnit>())
                 {
-                    SheepWindow.instance.SetNewCurrentSkin(currentSnappedItem.GetChild(0).GetComponent<SkinUnit>().id);
+                    SheepWindow.instance.SetNewCurrentSkin(
+                        currentSnappedItem.GetComponentInChildren<SkinUnit>().id
+                    );
                 }
             }
         }
@@ -125,51 +86,96 @@ public class SkinCarousel : MonoBehaviour
     private void SnapToClosestItem()
     {
         float closestDistance = float.MaxValue;
-        Vector3 closestPos = contentTransform.localPosition;
+        RectTransform closestItem = null;
 
-        float viewportCenterX = viewPortTransform.rect.width / 2;
+        Vector3 viewportCenterWorld = viewPortTransform.TransformPoint(
+            new Vector3(viewPortTransform.rect.width / 2, 0, 0)
+        );
 
-        // On parcourt uniquement les items originaux
-        for (int i = clonesCount; i < clonesCount + itemList.Length; i++)
+        foreach (RectTransform item in itemList)
         {
-            RectTransform item = contentTransform.GetChild(i) as RectTransform;
-            float distance = Mathf.Abs((item.localPosition.x + contentTransform.localPosition.x) - viewportCenterX);
+            Vector3 itemWorldPos = item.TransformPoint(Vector3.zero);
+            float distance = Mathf.Abs(viewportCenterWorld.x - itemWorldPos.x);
 
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                float offset = contentTransform.localPosition.x + (viewportCenterX - (item.localPosition.x + contentTransform.localPosition.x));
-                closestPos = new Vector3(offset, contentTransform.localPosition.y, 0);
-
-                currentSnappedItem = item;
+                closestItem = item;
             }
         }
 
-        targetPosition = closestPos;
-        isSnapping = true;
+        if (closestItem != null)
+            SnapToItem(closestItem);
     }
-    
-    private void OnSkinClicked(int index)
-    {
-        if (index < 0 || index >= itemList.Length) return;
 
-        RectTransform item = itemList[index];
+    private void SnapToItem(RectTransform item, bool instant = false)
+    {
+        if (item == null) return;
+
         currentSnappedItem = item;
 
-        // Centre du viewport
-        float viewportCenterX = viewPortTransform.rect.width / 2;
+        Vector3 itemWorldPos = item.TransformPoint(Vector3.zero);
+        Vector3 viewportCenterWorld = viewPortTransform.TransformPoint(
+            new Vector3(viewPortTransform.rect.width / 2, 0, 0)
+        );
 
-        // Calcul de la position target pour centrer cet item
-        float offset = contentTransform.localPosition.x + (viewportCenterX - (item.localPosition.x + contentTransform.localPosition.x));
-        targetPosition = new Vector3(offset, contentTransform.localPosition.y, 0);
+        float deltaX = viewportCenterWorld.x - itemWorldPos.x;
+        targetPosition = contentTransform.localPosition + new Vector3(deltaX, 0, 0);
 
-        isSnapping = true;
-
-        // Appliquer le skin immédiatement
-        if (item.GetComponentInChildren<SkinUnit>())
+        if (instant)
         {
-            SheepWindow.instance.SetNewCurrentSkin(item.GetComponentInChildren<SkinUnit>().id);
+            contentTransform.localPosition = targetPosition;
+            isSnapping = false;
+        }
+        else
+        {
+            isSnapping = true;
+        }
+
+        // Met à jour le skin courant
+        SkinUnit unit = item.GetComponentInChildren<SkinUnit>();
+        if (unit)
+            SheepWindow.instance.SetNewCurrentSkin(unit.id);
+    }
+
+    private void CreateAllSkinUI()
+    {
+        if (skinData == null || skinPrefab == null)
+        {
+            Debug.LogError("Skin data ou prefab manquant !");
+            return;
+        }
+
+        itemList = new RectTransform[skinData.skins.Count];
+
+        for (int i = 0; i < skinData.skins.Count; i++)
+        {
+            SkinSkelete skin = skinData.skins[i];
+            GameObject go = Instantiate(skinPrefab, contentTransform);
+            go.name = $"Skin_{skin.name}";
+
+            Image img = go.transform.GetChild(0).GetComponent<Image>();
+            img.sprite = skin.logo;
+
+            SkinUnit unit = go.transform.GetChild(0).GetComponent<SkinUnit>();
+            unit.id = skin.id;
+
+            // Ajout bouton cliquable
+            Button btn = go.GetComponent<Button>();
+            if (btn == null) btn = go.AddComponent<Button>();
+
+            // Setup du SkinButton
+            SkinButton skinBtn = go.GetComponent<SkinButton>();
+            if (skinBtn == null) skinBtn = go.AddComponent<SkinButton>();
+            skinBtn.Initialize(this);
+
+            itemList[i] = go.GetComponent<RectTransform>();
         }
     }
 
+    public void OnSkinClicked(RectTransform clickedItem)
+    {
+        if (clickedItem == null) return;
+        SnapToItem(clickedItem);
+    }
 }
