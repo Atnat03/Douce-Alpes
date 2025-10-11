@@ -9,10 +9,12 @@ public class AddSkins : MonoBehaviour
 
     private void Awake()
     {
+        var snap = scrollSnapBridge.ScrollSnap;
+
+        // 1️⃣ Ajouter les panels
         foreach (SkinSkelete skin in skinData.skins)
         {
             GameObject skinGO = Instantiate(skinPrefab);
-
             SkinUnit s = skinGO.GetComponent<SkinUnit>();
             s.id = skin.id;
             s.name = skin.name;
@@ -20,6 +22,15 @@ public class AddSkins : MonoBehaviour
 
             scrollSnapBridge.AddExistingPanel(skinGO);
         }
+
+        RectTransform prefabRect = skinPrefab.GetComponent<RectTransform>();
+        float panelWidth = snap.Viewport.rect.width / 5f;
+        float panelHeight = prefabRect.rect.height / prefabRect.rect.width * panelWidth;
+
+        snap.Size = new Vector2(panelWidth, panelHeight);
+
+
+        snap.Setup();
     }
     
     public GameObject GetSelectedPanel()
