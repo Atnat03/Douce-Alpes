@@ -3035,6 +3035,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   quitButton: {fileID: 2118940428}
   timerToTransition: 1
+  camera: {fileID: 330585545}
 --- !u!114 &330585550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8588,7 +8589,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 979034146}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 357.49994}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.096441925, y: 0.096441925, z: 0.096441925}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11295,7 +11296,7 @@ Transform:
   m_GameObject: {fileID: 1193738662}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.347, y: 0, z: -0.466}
+  m_LocalPosition: {x: -0.347, y: -0.082, z: -0.466}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16970,7 +16971,7 @@ Transform:
   m_GameObject: {fileID: 1811800171}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.234, y: 0, z: -0.47}
+  m_LocalPosition: {x: 0.234, y: -0.082, z: -0.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
