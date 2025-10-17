@@ -46,6 +46,8 @@ public class ChangingCamera : MonoBehaviour
     private IEnumerator SmoothTransition(Vector3 targetPos, Vector3 targetEuler, Transform target, bool reEnableControl = false, bool hideQuitButton = false)
     {
         elapseTime = 0f;
+        
+        camera.fieldOfView = 45f;
 
         savedRootPos = control.root.position;
         savedPivotRot = control.root.localRotation;

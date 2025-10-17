@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +6,13 @@ public enum CleaningTool
 {
     Shampoo,
     Shower,
+}
+
+public enum CleaningSide
+{
+    Left,
+    Front,
+    Right
 }
 
 public class CleanManager : MonoBehaviour
@@ -29,7 +35,7 @@ public class CleanManager : MonoBehaviour
     [SerializeField] private GameObject showerContour;
     [SerializeField] private Button showerButton;
     
-    private List<GameObject> shampooList = new List<GameObject>();
+    public List<GameObject> shampooList = new List<GameObject>();
 
     [Header("Clean Values")] 
     private float cleanValue = 0;
@@ -41,7 +47,18 @@ public class CleanManager : MonoBehaviour
     private Vector3 lastShampooPos = Vector3.zero;
     private bool hasLastPos = false;
 
-    public float GetCleanValue() { return cleanValue; }
+    public int currentCleaningLayer = 0;
+    public CleaningSide currentCleaningSide;
+    
+    [Header("Side Centers")]
+    public Transform leftCenter;
+    public Transform frontCenter;
+    public Transform rightCenter;
+    public float maxDistanceFromCenter = 1.0f;
+    
+    [HideInInspector] public bool allCleaned = false;
+
+    public float GetCleanValue() => cleanValue;
 
     private void Awake()
     {
@@ -110,6 +127,7 @@ public class CleanManager : MonoBehaviour
         if (!hasLastPos || Vector3.Distance(lastShampooPos, pos) >= minDistanceBetweenShampoos)
         {
             GameObject s = Instantiate(shampoo, pos, Quaternion.identity);
+            s.layer = currentCleaningLayer;
             shampooList.Add(s);
             cleanValue += 1f;
             lastShampooPos = pos;
@@ -127,22 +145,48 @@ public class CleanManager : MonoBehaviour
 
         foreach (Collider hit in hits)
         {
-            if (shampooList.Contains(hit.gameObject))
+            if (shampooList.Contains(hit.gameObject) && hit.gameObject.layer == currentCleaningLayer)
             {
                 Destroy(hit.gameObject);
                 shampooList.Remove(hit.gameObject);
             }
         }
+
+        // ✅ Si plus aucun shampoo, on considère la zone totalement nettoyée
+        if (shampooList.Count == 0 && currentTool == CleaningTool.Shower)
+        {
+            allCleaned = true;
+            OnAllCleaned();
+        }
     }
 
-    public void ResetLastShampooPos()
+    private void OnAllCleaned()
     {
+        Debug.Log("✅ Tout est propre !");
+        ResetValueClean();
         hasLastPos = false;
+
+        // On ne remet PAS allCleaned à false ici
+        // C’est le StateMachine qui décidera quand redémarrer le système.
+        
+        showerContour.SetActive(false);
+        shampooContour.SetActive(true);
     }
 
-    public int GetCounterListShampoo()
+    public void ResetCleanSystem()
     {
-        return shampooList.Count;
+        Debug.Log("🔄 Reset du système de nettoyage...");
+        foreach (GameObject s in shampooList)
+            Destroy(s);
+
+        shampooList.Clear();
+        allCleaned = false;
+        totalValueCleaned = 0;
+        cleanValue = 0;
+        hasLastPos = false;
+        lastShampooPos = Vector3.zero;
+
+        SetShampoo(); // Reviens à l’état initial
     }
 
     private void OnDisable()

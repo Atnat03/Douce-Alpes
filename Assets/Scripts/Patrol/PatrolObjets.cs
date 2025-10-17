@@ -85,7 +85,8 @@ public class PatrolObjets : MonoBehaviour
                 isDrinking = true;
                 currentDrinkPlace = drinkPlace;
                 agent.speed = patrolSpeed;
-                agent.SetDestination(drinkPlace.position);
+                Vector3 pos = new Vector3(drinkPlace.position.x, 0, drinkPlace.position.z);
+                agent.SetDestination(pos);
             }
         }
     }

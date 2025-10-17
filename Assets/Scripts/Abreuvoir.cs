@@ -23,23 +23,31 @@ public class Abreuvoir : MonoBehaviour
 
     private void Update()
     {
-        // UI
-        curDrinkImage.fillAmount = currentWater / maximumWater;
-        ui.SetActive(GameManager.instance.currentCameraState == CamState.Drink);
+        if (maximumWater > 0)
+            curDrinkImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
+        else
+            curDrinkImage.fillAmount = 0;
 
-        // Water logic
-        if (GameData.instance.isSheepInside) return;
-        currentWater = Mathf.Max(0, currentWater - Time.deltaTime * waterDecreaseRate);
+        if (ui != null)
+            ui.SetActive(GameManager.instance.currentCameraState == CamState.Drink);
+
+        if (!isOccupied1 && !isOccupied2) return;
+
+        currentWater -= Time.deltaTime * waterDecreaseRate;
+
+        if (float.IsNaN(currentWater) || float.IsInfinity(currentWater) || currentWater < 0)
+            currentWater = 0;
     }
 
-    public void AddWater()
+    public void AddWater(SwipeType type)
     {
+        if (type != SwipeType.Down) return;
         if (GameManager.instance.currentCameraState != CamState.Drink) return;
+
         currentWater = Mathf.Min(currentWater + waterAddValue, maximumWater);
         animatorPompe?.SetTrigger("Pompe");
     }
 
-    // --- 🐑 Gestion des places à l’abreuvoir ---
     public bool TryReservePlace(out Transform place)
     {
         place = null;
@@ -66,4 +74,7 @@ public class Abreuvoir : MonoBehaviour
         if (place == drinkPlace1) isOccupied1 = false;
         else if (place == drinkPlace2) isOccupied2 = false;
     }
+
+    void OnEnable() => SwipeDetection.instance.OnSwipeDetected += AddWater;
+    void OnDisable() => SwipeDetection.instance.OnSwipeDetected -= AddWater;
 }

@@ -35,11 +35,12 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField]private float tempSecond;
 
     [SerializeField] private float scaleTime = 50f;
-
+    [SerializeField] private float timeTransition = 100f;
+    
     private void Start()
     {
-        StartCoroutine(LerpSkybox(skyboxNight, skyboxSunrise, 10f));
-        StartCoroutine(LerpLight(graddientNightToSunrise, 10f));
+        StartCoroutine(LerpSkybox(skyboxDay, skyboxSunset, timeTransition));
+        StartCoroutine(LerpLight(graddientDayToSunset, timeTransition));
     }
 
     public void Update()
@@ -78,23 +79,23 @@ public class DayNightCycle : MonoBehaviour
         
         if (value == 0)
         {
-            StartCoroutine(LerpSkybox(skyboxNight, skyboxSunrise, 10f));
-            StartCoroutine(LerpLight(graddientNightToSunrise, 10f));
+            StartCoroutine(LerpSkybox(skyboxNight, skyboxSunrise, timeTransition));
+            StartCoroutine(LerpLight(graddientNightToSunrise, timeTransition));
         }
         else if (value == 1)
         {
-            StartCoroutine(LerpSkybox(skyboxSunrise, skyboxDay, 10f));
-            StartCoroutine(LerpLight(graddientSunriseToDay, 10f));
+            StartCoroutine(LerpSkybox(skyboxSunrise, skyboxDay, timeTransition));
+            StartCoroutine(LerpLight(graddientSunriseToDay, timeTransition));
         }
         else if (value == 2)
         {
-            StartCoroutine(LerpSkybox(skyboxDay, skyboxSunset, 10f));
-            StartCoroutine(LerpLight(graddientDayToSunset, 10f));
+            StartCoroutine(LerpSkybox(skyboxDay, skyboxSunset, timeTransition));
+            StartCoroutine(LerpLight(graddientDayToSunset, timeTransition));
         }
         else if (value == 3)
         {
-            StartCoroutine(LerpSkybox(skyboxSunset, skyboxNight, 10f));
-            StartCoroutine(LerpLight(graddientSunsetToNight, 10f));
+            StartCoroutine(LerpSkybox(skyboxSunset, skyboxNight, timeTransition));
+            StartCoroutine(LerpLight(graddientSunsetToNight, timeTransition));
         }
     }
  
