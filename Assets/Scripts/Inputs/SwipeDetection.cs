@@ -36,6 +36,12 @@ public class SwipeDetection : MonoBehaviour
     private GraphicRaycaster raycaster;
     private EventSystem eventSystem;
     private PointerEventData pointerEventData;
+    
+    private HashSet<Sheep> currentlyCaressedSheep = new HashSet<Sheep>();
+    
+    [Header("Trail")]
+    public TrailRenderer swipeTrail;
+    private bool trailActive = false;
 
     private void Awake()
     {
@@ -68,6 +74,14 @@ public class SwipeDetection : MonoBehaviour
         isSwipe = false;
         swipePoints.Clear();
         swipePoints.Add(startPosition);
+        
+        if (swipeTrail != null)
+        {
+            swipeTrail.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(position.x, position.y, 10f));
+            swipeTrail.Clear();
+            trailActive = true;
+        }
+        
         swipeCoroutine = StartCoroutine(SwipeProgress());
     }
 
@@ -86,6 +100,11 @@ public class SwipeDetection : MonoBehaviour
                 
                 DetectCleanObject(pos);
                 DetectUIButton(pos);
+                
+                if (trailActive && swipeTrail != null)
+                {
+                    swipeTrail.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(pos.x, pos.y, 10f));
+                }
             }
 
             yield return null;
@@ -100,22 +119,90 @@ public class SwipeDetection : MonoBehaviour
 
         DetectSwipe();
         OnSwipeFinished?.Invoke(new List<Vector2>(swipePoints));
+        
+        trailActive = false;
     }
     
     private void DetectCleanObject(Vector2 screenPosition)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         RaycastHit hit;
+        float maxDistance = 2.6f;
+        float offset = 0.5f;
+
+        if(SwapSceneManager.instance.currentSceneId == 3)
+        {
+            if (Physics.Raycast(ray, out hit, maxDistance))
+            {
+                if (hit.collider.CompareTag("CleanSheep"))
+                {
+                    bool isInsideSide = false;
+                    Vector3 center = Vector3.zero;
+
+                    switch(CleanManager.instance.currentCleaningSide)
+                    {
+                        case CleaningSide.Left: center = CleanManager.instance.leftCenter.position; break;
+                        case CleaningSide.Front: center = CleanManager.instance.frontCenter.position; break;
+                        case CleaningSide.Right: center = CleanManager.instance.rightCenter.position; break;
+                    }
+
+                    if(Vector3.Distance(hit.point, center) <= CleanManager.instance.maxDistanceFromCenter)
+                    {
+                        CleanManager.instance.PerformClean(hit.point);
+                    }
+
+                    return;
+                }
+            }
+            else if (Physics.SphereCast(ray, offset, out hit, maxDistance))
+            {
+                if (hit.collider.CompareTag("CleanSheep"))
+                {
+                    bool isInsideSide = false;
+                    Vector3 center = Vector3.zero;
+
+                    switch(CleanManager.instance.currentCleaningSide)
+                    {
+                        case CleaningSide.Left: center = CleanManager.instance.leftCenter.position; break;
+                        case CleaningSide.Front: center = CleanManager.instance.frontCenter.position; break;
+                        case CleaningSide.Right: center = CleanManager.instance.rightCenter.position; break;
+                    }
+
+                    if(Vector3.Distance(hit.point, center) <= CleanManager.instance.maxDistanceFromCenter)
+                    {                    
+                        Vector3 closestPoint = hit.collider.ClosestPoint(hit.point);
+                        CleanManager.instance.PerformClean(closestPoint);
+                    }
+
+                }
+            }
+        }
 
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.CompareTag("CleanSheep"))
+            Sheep sheep = hit.collider.GetComponent<Sheep>();
+            if (sheep != null)
             {
-                if (CleanManager.instance != null)
+                if (!currentlyCaressedSheep.Contains(sheep))
                 {
-                    CleanManager.instance.PerformClean(hit.point);
+                    sheep.AddCaresse();
+                    currentlyCaressedSheep.Add(sheep);
                 }
             }
+        }
+        
+        List<Sheep> toRemove = new List<Sheep>();
+        foreach (Sheep s in currentlyCaressedSheep)
+        {
+            if (s != hit.collider?.GetComponent<Sheep>())
+            {
+                toRemove.Add(s);
+            }
+        }
+
+        foreach (Sheep s in toRemove)
+        {
+            currentlyCaressedSheep.Remove(s);
         }
     }
     

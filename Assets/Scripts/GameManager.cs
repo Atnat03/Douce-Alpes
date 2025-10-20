@@ -62,11 +62,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject uiStart;
     
-    [Header("Bonheur")] 
-    [SerializeField] private float currentBonheur;
-    [SerializeField] private float maxBonheur;
-    [SerializeField] Text txtBonheur;
-    
     [Header("Money")]
     [SerializeField] private int currentMoney;
     [SerializeField] Text txtMoney;
@@ -241,7 +236,8 @@ public class GameManager : MonoBehaviour
 
         if (bonus > 0.01f) 
         {
-            currentBonheur = Mathf.Min(maxBonheur, currentBonheur + bonus);
+            Debug.Log("Carresse" + bonus);
+            BonheurCalculator.instance.currentBonheur = Mathf.Min(BonheurCalculator.instance.maxBonheur, BonheurCalculator.instance.currentBonheur + bonus);
             sheepFatigue[id] += 1f; 
         }
 
@@ -250,10 +246,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        int bonheur = (int)((currentBonheur / maxBonheur) * 100);
-        txtBonheur.text = bonheur + " %";
-        txtMoney.text = currentMoney.ToString();
-        
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
 
         buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;

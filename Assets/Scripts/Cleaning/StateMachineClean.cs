@@ -7,7 +7,7 @@ public class StateMachineClean : MonoBehaviour
     [HideInInspector] public FrontPosState frontPosState;
     [HideInInspector] public RightPosState rightPosState;
     
-    private ICleaningState currentState;
+    public ICleaningState currentState;
     
     public CleanManager cleanManager;
 
