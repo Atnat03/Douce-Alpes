@@ -1,63 +1,80 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Abreuvoir : MonoBehaviour
 {
     public static Abreuvoir instance;
-    
-    private float maximumWater;
-    [SerializeField] private float currentWater = 100;
-    [SerializeField] private bool isEmptyWater = false;
 
-    [SerializeField] private float valueAdded = 5;
-    [SerializeField] private float speedDecrement = 0.5f;
+    [Header("Water")]
+    [SerializeField] private float maximumWater = 100f;
+    [SerializeField] private float currentWater = 100f;
+    [SerializeField] private float waterDecreaseRate = 0.5f;
+    [SerializeField] private float waterAddValue = 5f;
     [SerializeField] private Animator animatorPompe;
-    
-    [Header("UI")]
-    [SerializeField] public GameObject ui;
-    [SerializeField] private Image curDrinkImage;
+    [SerializeField] private UnityEngine.UI.Image curDrinkImage;
+    [SerializeField] private GameObject ui;
 
-    private void Awake()
-    {
-        instance = this;
-    }
+    [Header("Drink Places")]
+    [SerializeField] private Transform drinkPlace1;
+    [SerializeField] private Transform drinkPlace2;
+    private bool isOccupied1 = false;
+    private bool isOccupied2 = false;
 
-    private void Start()
-    {
-        maximumWater = currentWater;
-        
-        ui.SetActive(false);
-    }
+    private void Awake() => instance = this;
 
     private void Update()
     {
-        curDrinkImage.fillAmount = currentWater / maximumWater;
-
-        ui.SetActive(GameManager.instance.currentCameraState == CamState.Drink);
-        
-        if(currentWater >= maximumWater)
-            currentWater = maximumWater;
-        if(currentWater <= 0)
-        {
-            currentWater = 0;
-            isEmptyWater = true;
-        }
+        if (maximumWater > 0)
+            curDrinkImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
         else
-        {
-            isEmptyWater = true;
-            
-            if(!GameData.instance.isSheepInside)
-                currentWater -= Time.deltaTime * 0.5f;
-        }
+            curDrinkImage.fillAmount = 0;
+
+        if (ui != null)
+            ui.SetActive(GameManager.instance.currentCameraState == CamState.Drink);
+
+        if (!isOccupied1 && !isOccupied2) return;
+
+        currentWater -= Time.deltaTime * waterDecreaseRate;
+
+        if (float.IsNaN(currentWater) || float.IsInfinity(currentWater) || currentWater < 0)
+            currentWater = 0;
     }
 
-    public void AddWater()
+    public void AddWater(SwipeType type)
     {
-        if (GameManager.instance.currentCameraState == CamState.Drink)
-        {
-            currentWater += valueAdded;
-            animatorPompe.SetTrigger("Pompe");
-        }
+        if (type != SwipeType.Down) return;
+        if (GameManager.instance.currentCameraState != CamState.Drink) return;
+
+        currentWater = Mathf.Min(currentWater + waterAddValue, maximumWater);
+        animatorPompe?.SetTrigger("Pompe");
     }
+
+    public bool TryReservePlace(out Transform place)
+    {
+        place = null;
+
+        if (!isOccupied1)
+        {
+            isOccupied1 = true;
+            place = drinkPlace1;
+            return true;
+        }
+
+        if (!isOccupied2)
+        {
+            isOccupied2 = true;
+            place = drinkPlace2;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void FreePlace(Transform place)
+    {
+        if (place == drinkPlace1) isOccupied1 = false;
+        else if (place == drinkPlace2) isOccupied2 = false;
+    }
+
+    void OnEnable() => SwipeDetection.instance.OnSwipeDetected += AddWater;
+    void OnDisable() => SwipeDetection.instance.OnSwipeDetected -= AddWater;
 }

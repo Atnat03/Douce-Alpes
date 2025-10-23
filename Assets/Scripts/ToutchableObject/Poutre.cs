@@ -32,8 +32,10 @@ public class Poutre : MonoBehaviour
         gameObject.transform.position = Startpos;
     }
 
-    public void GetOffPoutre()
+    public void GetOffPoutre(SwipeType swipe)
     {
+        if(swipe != SwipeType.Up) return;
+        
         if (canSwipeUp())
         {
             gameObject.AddComponent<Rigidbody>();
@@ -60,4 +62,12 @@ public class Poutre : MonoBehaviour
         }
         return true;
     }
+
+
+    void OnEnable()
+    {
+        if(SwipeDetection.instance != null)
+            SwipeDetection.instance.OnSwipeDetected += GetOffPoutre;
+    }
+    void OnDisable() { SwipeDetection.instance.OnSwipeDetected -= GetOffPoutre; }
 }

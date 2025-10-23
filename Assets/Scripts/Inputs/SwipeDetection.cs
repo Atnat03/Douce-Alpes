@@ -127,17 +127,59 @@ public class SwipeDetection : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         RaycastHit hit;
+        float maxDistance = 2.6f;
+        float offset = 0.5f;
+
+        if(SwapSceneManager.instance.currentSceneId == 3)
+        {
+            if (Physics.Raycast(ray, out hit, maxDistance))
+            {
+                if (hit.collider.CompareTag("CleanSheep"))
+                {
+                    bool isInsideSide = false;
+                    Vector3 center = Vector3.zero;
+
+                    switch(CleanManager.instance.currentCleaningSide)
+                    {
+                        case CleaningSide.Left: center = CleanManager.instance.leftCenter.position; break;
+                        case CleaningSide.Front: center = CleanManager.instance.frontCenter.position; break;
+                        case CleaningSide.Right: center = CleanManager.instance.rightCenter.position; break;
+                    }
+
+                    if(Vector3.Distance(hit.point, center) <= CleanManager.instance.maxDistanceFromCenter)
+                    {
+                        CleanManager.instance.PerformClean(hit.point);
+                    }
+
+                    return;
+                }
+            }
+            else if (Physics.SphereCast(ray, offset, out hit, maxDistance))
+            {
+                if (hit.collider.CompareTag("CleanSheep"))
+                {
+                    bool isInsideSide = false;
+                    Vector3 center = Vector3.zero;
+
+                    switch(CleanManager.instance.currentCleaningSide)
+                    {
+                        case CleaningSide.Left: center = CleanManager.instance.leftCenter.position; break;
+                        case CleaningSide.Front: center = CleanManager.instance.frontCenter.position; break;
+                        case CleaningSide.Right: center = CleanManager.instance.rightCenter.position; break;
+                    }
+
+                    if(Vector3.Distance(hit.point, center) <= CleanManager.instance.maxDistanceFromCenter)
+                    {                    
+                        Vector3 closestPoint = hit.collider.ClosestPoint(hit.point);
+                        CleanManager.instance.PerformClean(closestPoint);
+                    }
+
+                }
+            }
+        }
 
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.CompareTag("CleanSheep"))
-            {
-                if (CleanManager.instance != null)
-                {
-                    CleanManager.instance.PerformClean(hit.point);
-                }
-            }
-            
             Sheep sheep = hit.collider.GetComponent<Sheep>();
             if (sheep != null)
             {
@@ -161,11 +203,6 @@ public class SwipeDetection : MonoBehaviour
         foreach (Sheep s in toRemove)
         {
             currentlyCaressedSheep.Remove(s);
-        }
-
-        if (hit.collider.CompareTag("CleanSheep"))
-        {
-            CleanManager.instance?.PerformClean(hit.point);
         }
     }
     

@@ -1,8 +1,8 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(fileName = "NewSkinData", menuName = "Skins/SkinScriptable")]
 public class SkinScriptable : ScriptableObject
 {
     public List<SkinSkelete> skins = new List<SkinSkelete>();
@@ -16,4 +16,3 @@ public class SkinSkelete
     public int price;
     public Sprite logo;
 }
-
