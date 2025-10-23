@@ -30,7 +30,7 @@ public class CameraControl : MonoBehaviour
 
     private void Start()
     {
-        Initialize(20, 10, 20, 10, 30, 60, 30, 80);
+        Initialize(20, 10, 20, 10, 30, 45, 30, 60);
     }
 
     private void Initialize(float right, float up, float left, float down, float angle, float zoom, float zoomMin, float zoomMax)

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Sheep : TouchableObject
@@ -28,11 +29,25 @@ public class Sheep : TouchableObject
     [SerializeField] public GameObject laine;
     
     private SheepAI sheepAI;
+    
+    [Header("Nature")]
+    public INature nature;
+    [SerializeField] private int idNature;
 
     private void Start()
     {
         sheepAI = GetComponent<SheepAI>();
         laine.GetComponent<Outline>().enabled = false;
+
+        nature = new Nature_Happy();
+        var parameters = new Dictionary<string, object>()
+        {
+            { "Id", 0 },
+            { "Name", "Happy" },
+            { "Message", "Je suis un mouton heureux !" },
+            { "HappinessMultiplier", 1.5f }
+        };
+        nature.InitialiseNature(parameters);
     }
 
     private void Update()

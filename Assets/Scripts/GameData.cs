@@ -6,7 +6,7 @@ public class GameData : MonoBehaviour
 {
     public static GameData instance;
 
-    [HideInInspector] public List<SheepData> sheepDestroyData = new List<SheepData>();
+    [HideInInspector] public List<SheepData> sheepDestroyData = new ();
     public int nbSheep;
     public bool isSheepInside = false;
     [SerializeField] public GameObject sheepPrefab;
@@ -14,6 +14,9 @@ public class GameData : MonoBehaviour
     [Header("Saving data")]
     public double timeWhenLoad;
     public double timeSinceLastLoad;
+    
+    public List<int> unlockedSkinIDs = new ();
+    public event Action OnSkinsUpdated;
     
     private void Awake()
     {
@@ -42,5 +45,32 @@ public class GameData : MonoBehaviour
     {
         isSheepInside = sheepDestroyData.Count == nbSheep;
     }
+    
+    #region SKIN
+    
+    public bool HasSkin(int id)
+    {
+        return unlockedSkinIDs.Contains(id);
+    }
+
+    [ContextMenu("UnlockSkin")]
+    public void UnlockSkin(int id)
+    {
+        if (!unlockedSkinIDs.Contains(id))
+        {
+            unlockedSkinIDs.Add(id);
+            OnSkinsUpdated?.Invoke();
+        }
+    }
+
+    public void LockSkin(int id)
+    {
+        if (unlockedSkinIDs.Remove(id))
+        {
+            OnSkinsUpdated?.Invoke();
+        }
+    }
+    
+    #endregion
 
 }

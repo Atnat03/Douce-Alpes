@@ -8,6 +8,7 @@ public class SwapSceneManager : MonoBehaviour
 
     [SerializeField] GameObject[] scenes;
     [SerializeField] private int startScene = 0;
+    public int currentSceneId;
     
     public event Action SwapingInteriorScene;
     public event Action SwapingDefaultScene;
@@ -23,6 +24,8 @@ public class SwapSceneManager : MonoBehaviour
 
     public void SwapScene(int sceneID)
     {
+        currentSceneId = sceneID;
+        
         for (int i = 0; i < scenes.Length; i++)
         {
             if (sceneID == i)

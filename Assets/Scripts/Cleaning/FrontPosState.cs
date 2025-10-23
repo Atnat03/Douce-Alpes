@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
@@ -9,23 +10,29 @@ public class FrontPosState : ICleaningState
     private Vector3 camPos = new Vector3(2, 0.25f, 0);
     
     private int cleanValueToChange = 20;
-    private int numberOfShampooInList;
+    
+    private int frontLayer;
+
     
     public void EnterState(StateMachineClean managerC)
     {
         manager = managerC;
-
-        numberOfShampooInList = manager.cleanManager.GetCounterListShampoo();
+        
+        frontLayer = LayerMask.NameToLayer("FrontSide");
+        manager.cleanManager.currentCleaningLayer = frontLayer;    
+        
+        manager.cleanManager.currentCleaningSide = CleaningSide.Front;
         
         manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 1f));
-        manager.cleanManager.ResetValueClean();
+        if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
+            manager.cleanManager.ResetValueClean();
     }
 
     public void UpdateState()
     {
         manager.cleanManager.camera.transform.LookAt(manager.cleanManager.sheepTarget);
         
-        if (IsEnought())
+        if (IsEnought() && !((manager.cleanManager.currentTool == CleaningTool.Shower) && manager.cleanManager.allCleaned))
         {
             manager.SetState(manager.rightPosState);
         }
@@ -50,7 +57,14 @@ public class FrontPosState : ICleaningState
     {
         if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
             return manager.cleanManager.GetCleanValue() >= cleanValueToChange;
-        
-        return manager.cleanManager.GetCounterListShampoo() <= numberOfShampooInList-cleanValueToChange;
+
+        int remaining = 0;
+        foreach(var s in manager.cleanManager.shampooList)
+        {
+            if(s.layer == frontLayer)
+                remaining++;
+        }
+
+        return remaining <= 0;
     }
 }
