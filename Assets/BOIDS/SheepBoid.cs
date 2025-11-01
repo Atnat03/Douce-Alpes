@@ -1,24 +1,24 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Boid version "mouton" : mouvement doux sur le plan XZ, avec pauses.
-/// </summary>
 public class SheepBoid : MonoBehaviour
 {
     [HideInInspector] public SheepBoidManager manager;
+    [SerializeField] private NatureType natureType = NatureType.Suiveur;
+    public INatureStrategy natureStrategy;
 
-    Vector3 velocity;
-    bool isPaused = false;
-    float pauseTimer = 0f;
-    float nextPauseTime = 0f;
+    private Vector3 velocity;
+    private bool isPaused;
+    private float pauseTimer, nextPauseTime;
 
     void Start()
     {
-        // vitesse initiale
         velocity = Random.insideUnitSphere;
         velocity.y = 0;
         velocity = velocity.normalized * Random.Range(manager.minSpeed, manager.maxSpeed);
+
+        // On crée la stratégie selon le type
+        natureStrategy = NatureFactory.Create(natureType);
+
         ScheduleNextPause();
     }
 
@@ -35,7 +35,6 @@ public class SheepBoid : MonoBehaviour
             return;
         }
 
-        // comportement des boids
         Vector3 accel = Vector3.zero;
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
@@ -59,6 +58,10 @@ public class SheepBoid : MonoBehaviour
 
             alignment += other.velocity;
             cohesion += other.transform.position;
+
+            // On laisse la stratégie ajuster selon la nature
+            natureStrategy.ApplyNature(this, ref separation, ref alignment, ref cohesion, other);
+
             count++;
         }
 
@@ -74,57 +77,65 @@ public class SheepBoid : MonoBehaviour
         accel += separation * manager.separationWeight;
         accel += alignment * manager.alignmentWeight;
         accel += cohesion * manager.cohesionWeight;
-
-        // bruit léger pour un comportement plus organique
         accel += Random.insideUnitSphere * manager.noise * Time.deltaTime;
+        accel += StayInBounds();
 
-        // mise à jour vitesse
         velocity += accel * Time.deltaTime;
         velocity.y = 0;
-        float speed = velocity.magnitude;
-        speed = Mathf.Clamp(speed, manager.minSpeed, manager.maxSpeed);
+
+        float speed = Mathf.Clamp(velocity.magnitude, manager.minSpeed, manager.maxSpeed);
         velocity = velocity.normalized * speed;
 
-        // déplacement
-        transform.position += velocity * Time.deltaTime;
+        // post-traitement de la stratégie
+        natureStrategy.PostProcess(this, ref velocity);
 
-        // rotation vers la direction du déplacement
+        transform.position += velocity * Time.deltaTime;
         if (velocity.sqrMagnitude > 0.001f)
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(velocity), 0.1f);
 
-        // garder les moutons dans le pâturage
-        Vector3 pos = transform.position;
-        Vector3 b = manager.bounds;
-        if (pos.x > b.x) pos.x = -b.x;
-        if (pos.x < -b.x) pos.x = b.x;
-        if (pos.z > b.z) pos.z = -b.z;
-        if (pos.z < -b.z) pos.z = b.z;
-        transform.position = pos;
-
-        // déclenchement pause aléatoire
         nextPauseTime -= Time.deltaTime;
         if (nextPauseTime <= 0)
-        {
             StartPause();
-        }
     }
 
-    void ScheduleNextPause()
+    Vector3 StayInBounds()
     {
-        nextPauseTime = Random.Range(manager.minTimeBetweenPauses.x, manager.minTimeBetweenPauses.y);
+        Vector3 pos = transform.position;
+        Vector3 b = manager.bounds;
+        Vector3 steer = Vector3.zero;
+        float margin = manager.boundMargin;
+
+        if (pos.x > b.x - margin) steer += Vector3.left;
+        else if (pos.x < -b.x + margin) steer += Vector3.right;
+
+        if (pos.z > b.z - margin) steer += Vector3.back;
+        else if (pos.z < -b.z + margin) steer += Vector3.forward;
+
+        if (Mathf.Abs(pos.x) > b.x || Mathf.Abs(pos.z) > b.z)
+            steer += (-pos.normalized) * 2f;
+
+        return steer.normalized * manager.boundaryWeight;
+    }
+    
+    public void SetNature(NatureType type)
+    {
+        natureType = type;
+        natureStrategy = NatureFactory.Create(type);
+
+        // Optionnel : donner une couleur selon la nature
+        Color color = type switch
+        {
+            NatureType.Dominant => Color.red,
+            NatureType.Peureux => Color.blue,
+            NatureType.Curieux => Color.yellow,
+            _ => Color.white,
+        };
+        GetComponent<Renderer>().material.color = color;
     }
 
-    void StartPause()
-    {
-        isPaused = true;
-        pauseTimer = Random.Range(manager.pauseDuration.x, manager.pauseDuration.y);
-    }
 
-    public Vector3 Velocity => _velocity;
-    private Vector3 _velocity
-    {
-        get => velocityField;
-        set => velocityField = value;
-    }
-    private Vector3 velocityField;
+    void ScheduleNextPause() => nextPauseTime = Random.Range(manager.minTimeBetweenPauses.x, manager.minTimeBetweenPauses.y);
+    void StartPause() { isPaused = true; pauseTimer = Random.Range(manager.pauseDuration.x, manager.pauseDuration.y); }
+
+    public Vector3 GetVelocity() => velocity;
 }

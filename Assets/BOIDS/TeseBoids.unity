@@ -421,11 +421,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a78999ff91549ac49b8e63d64fb1934f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sheepPrefab: {fileID: 5592888947759395378, guid: a0c48ae68f9d52f4e836bb58ac589715, type: 3}
-  sheepCount: 20
+  prefab: {fileID: 5592888947759395378, guid: a0c48ae68f9d52f4e836bb58ac589715, type: 3}
+  count: 50
   bounds: {x: 25, y: 10, z: 25}
+  neighborRadius: 3
+  separationRadius: 1
   minSpeed: 2
   maxSpeed: 5
+  separationWeight: 1.2
+  alignmentWeight: 0.8
+  cohesionWeight: 0.8
+  noise: 0.5
+  boundMargin: 3
+  boundaryWeight: 2
+  minTimeBetweenPauses: {x: 5, y: 10}
+  pauseDuration: {x: 1, y: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

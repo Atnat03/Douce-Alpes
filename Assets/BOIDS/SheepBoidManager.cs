@@ -2,49 +2,52 @@ using UnityEngine;
 
 public class SheepBoidManager : MonoBehaviour
 {
-    [Header("Prefab & spawn")]
-    public GameObject sheepPrefab;
-    public int sheepCount = 30;
-    public Vector3 bounds = new Vector3(25f, 0f, 25f);
+    [Header("Réglages généraux")]
+    public GameObject prefab;
+    public int count = 50;
+    public Vector3 bounds = new Vector3(25, 0, 25);
 
-    [Header("Vitesse")]
-    public float minSpeed = 1f;
-    public float maxSpeed = 3f;
-
-    [Header("Interactions")]
+    [Header("Mouvement Boids")]
     public float neighborRadius = 3f;
     public float separationRadius = 1f;
+    public float minSpeed = 1f;
+    public float maxSpeed = 3f;
+    public float separationWeight = 1.5f;
+    public float alignmentWeight = 1f;
+    public float cohesionWeight = 1f;
+    public float noise = 0.3f;
 
-    [Header("Poids des règles")]
-    public float separationWeight = 1.2f;
-    public float alignmentWeight = 0.8f;
-    public float cohesionWeight = 0.8f;
+    [Header("Limites de la zone")]
+    public float boundMargin = 3f;
+    public float boundaryWeight = 2f;
 
-    [Header("Comportement aléatoire")]
-    public float noise = 0.5f;
-    public Vector2 minTimeBetweenPauses = new Vector2(5f, 10f);
-    public Vector2 pauseDuration = new Vector2(1f, 3f);
+    [Header("Pauses")]
+    public Vector2 minTimeBetweenPauses = new Vector2(5, 10);
+    public Vector2 pauseDuration = new Vector2(1, 3);
 
     void Start()
     {
-        for (int i = 0; i < sheepCount; i++)
+        for (int i = 0; i < count; i++)
         {
             Vector3 pos = new Vector3(
                 Random.Range(-bounds.x, bounds.x),
-                0f,
+                0,
                 Random.Range(-bounds.z, bounds.z)
             );
-            GameObject go = Instantiate(sheepPrefab, pos, Random.rotation);
-            SheepBoid s = go.GetComponent<SheepBoid>();
-            if (s == null)
-                s = go.AddComponent<SheepBoid>();
-            s.manager = this;
+
+            GameObject go = Instantiate(prefab, pos, Quaternion.identity, transform);
+            SheepBoid sheep = go.GetComponent<SheepBoid>();
+            sheep.manager = this;
+
+            // Donne une nature aléatoire (ou tu peux forcer pour tester)
+            NatureType randomNature = (NatureType)Random.Range(0, System.Enum.GetValues(typeof(NatureType)).Length);
+            sheep.SetNature(randomNature);
         }
     }
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position + Vector3.up * 0.1f, bounds * 2f);
+        Gizmos.DrawWireCube(Vector3.zero, new Vector3(bounds.x * 2, 0.1f, bounds.z * 2));
     }
 }
