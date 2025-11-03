@@ -3,10 +3,9 @@ using UnityEngine;
 public class SheepBoid : MonoBehaviour
 {
     [HideInInspector] public SheepBoidManager manager;
-    [SerializeField] private NatureType natureType = NatureType.Suiveur;
+    [SerializeField] private NatureType natureType;
     public INatureStrategy natureStrategy;
 
-    // <-- Champ public (pas de propriété) pour éviter l'erreur CS1612
     public Vector3 velocity;
     private bool isPaused;
     private float pauseTimer, nextPauseTime;

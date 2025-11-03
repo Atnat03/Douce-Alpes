@@ -55,6 +55,8 @@ public class Grange : Build
 
         if (nbSheepInGrange >= totalSheep && totalSheep > 0)
         {
+            BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
+            
             CloseDoors();
             ZoomCamera();
             keyCloseGate.SetActive(true);

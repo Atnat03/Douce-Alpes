@@ -1,0 +1,21 @@
+using UnityEngine;
+
+public class MiniGameParent : MonoBehaviour
+{
+    public void EndMiniGame(TypeAmelioration type)
+    {
+        BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(type));
+    }
+
+    public static bool CheckIfCanUpgrade(TypeAmelioration type)
+    {
+        (AmeliorationValueSO, int) curUpgrade = GameData.instance.GetSOUpgrade(type);
+
+        if (GameData.instance.nbSheep >= curUpgrade.Item1.levelsValue[curUpgrade.Item2].miniSheep && 
+            GameData.instance.nbSheep <= curUpgrade.Item1.levelsValue[curUpgrade.Item2].maxiSheep)
+        {
+            return true;
+        }
+        return false;
+    }
+}

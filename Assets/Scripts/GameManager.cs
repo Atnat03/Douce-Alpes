@@ -302,6 +302,8 @@ public class GameManager : MonoBehaviour
 
         GameData.instance.sheepDestroyData = new List<SheepData>();
         
+        BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Sortie));
+        
         grange.GetPoutre().ResetPoutre();
     }
     

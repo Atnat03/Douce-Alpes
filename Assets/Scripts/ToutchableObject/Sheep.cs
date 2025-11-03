@@ -36,6 +36,12 @@ public class Sheep : TouchableObject
         laine.GetComponent<Outline>().enabled = false;
     }
 
+    public void Initialize(int id, string name)
+    {
+        sheepId  = id;
+        sheepName = name;
+    }
+
     private void Update()
     {
         laine.SetActive(hasLaine);
