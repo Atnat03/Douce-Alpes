@@ -4931,6 +4931,7 @@ MonoBehaviour:
   spawnParticleCaresse: {fileID: 6863644733935078796}
   skinListManager: {fileID: 3199422249654108566}
   laine: {fileID: 559622738346025117}
+  idNature: 0
 --- !u!65 &2181534520863901765
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5579,6 +5580,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7251016418176017577, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 57826949909e303419ab0e430ca5ead6, type: 2}
     - target: {fileID: -17347424074673613, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -5587,14 +5592,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Model
       objectReference: {fileID: 0}
+    - target: {fileID: 1154148092859243729, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 6838126ea77d6c94b92a0a0b967bb161, type: 2}
     - target: {fileID: 1890575838560829442, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2033115025398773586, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 57826949909e303419ab0e430ca5ead6, type: 2}
     - target: {fileID: 3645459133028859887, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5736734181957130605, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 59071e1083a145c41aed300e9e0ed764, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
