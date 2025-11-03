@@ -4931,7 +4931,6 @@ MonoBehaviour:
   spawnParticleCaresse: {fileID: 6863644733935078796}
   skinListManager: {fileID: 3199422249654108566}
   laine: {fileID: 559622738346025117}
-  idNature: 0
 --- !u!65 &2181534520863901765
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4983,7 +4982,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2722875930628605413}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 1
@@ -5028,6 +5027,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   manager: {fileID: 0}
   natureType: 3
+  isAfraid: 0
 --- !u!1 &3480828354281721098
 GameObject:
   m_ObjectHideFlags: 0

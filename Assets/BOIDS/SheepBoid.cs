@@ -123,8 +123,10 @@ public class SheepBoid : MonoBehaviour
 
         if (pos.x > b.x - margin) steer += Vector3.left;
         else if (pos.x < -b.x + margin) steer += Vector3.right;
+
         if (pos.z > b.z - margin) steer += Vector3.back;
         else if (pos.z < -b.z + margin) steer += Vector3.forward;
+
         if (Mathf.Abs(pos.x) > b.x || Mathf.Abs(pos.z) > b.z)
             steer += (-pos.normalized) * 2f;
 

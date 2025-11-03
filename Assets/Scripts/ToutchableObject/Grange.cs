@@ -8,7 +8,6 @@ public class Grange : Build
     private int nbSheepInGrange = 0;
     
     [Header("Gates")]
-    
     public bool gateState = false;
     
     [SerializeField] private Vector3 gate1_Close, gate1_Open;
@@ -24,23 +23,9 @@ public class Grange : Build
     public void LaunchMiniGame()
     {
         GameManager.instance.ChangeCameraState(CamState.MiniGame);
-
-        if (!GameData.instance.isSheepInside)
-        {
-            GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameCamPos().position, GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles, transform);
-            OpenDoors();
-        }
-        else
-        {
-            ZoomCamera();
-        }
-        
         DesactivateUI();
-    }
-
-    public void EndMiniGame()
-    {
-        //CloseDoors();
+        OpenDoors();
+        UpdateCameraZoom();
     }
 
     public void OpenDoors()
@@ -60,30 +45,51 @@ public class Grange : Build
     public void AddSheepInGrange()
     {
         nbSheepInGrange++;
+        UpdateCameraZoom();
+    }
+    
+    private void UpdateCameraZoom()
+    {
+        int totalSheep = GameData.instance.nbSheep;
+        Debug.Log("Total sheep: " + totalSheep);
+
+        if (nbSheepInGrange >= totalSheep && totalSheep > 0)
+        {
+            CloseDoors();
+            ZoomCamera();
+            keyCloseGate.SetActive(true);
+        }
+        else
+        {
+            OpenDoors();
+            MiniGameCamera();
+            keyCloseGate.SetActive(false);
+        }
     }
 
-    void ZoomCamera()
+    private void ZoomCamera()
     {
-        GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameZoomCamPos().position, GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles, transform);
+        GameManager.instance.ChangeCameraPos(
+            GameManager.instance.GetMiniGameZoomCamPos().position,
+            GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles,
+            transform
+        );
+    }
+
+    private void MiniGameCamera()
+    {
+        GameManager.instance.ChangeCameraPos(
+            GameManager.instance.GetMiniGameCamPos().position,
+            GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles,
+            transform
+        );
     }
 
     private void Update()
     {
         sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame);
-        
-        if (GameManager.instance.sheepList.Count == 0)
-        {
-            keyCloseGate.SetActive(true);
-            ZoomCamera();
-            CloseDoors();
-        }
-        else
-        {
-            keyCloseGate.SetActive(false);
-        }
     }
     
-    public Poutre GetPoutre(){return  poutre;}
-    
-    public Transform GetSheepDestroyer(){return sheepDestroyer.transform;}
+    public Poutre GetPoutre() { return poutre; }
+    public Transform GetSheepDestroyer() { return sheepDestroyer.transform; }
 }

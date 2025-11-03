@@ -47,7 +47,6 @@ public class SheepBoidManager : MonoBehaviour
             SheepBoid sheep = go.GetComponent<SheepBoid>();
             sheep.manager = this;
 
-            // Donne une nature aléatoire (ou tu peux forcer pour tester)
             NatureType randomNature = (NatureType)Random.Range(0, System.Enum.GetValues(typeof(NatureType)).Length);
             sheep.SetNature(randomNature);
 
@@ -59,6 +58,8 @@ public class SheepBoidManager : MonoBehaviour
             
             OnListChanged?.Invoke(sheep);
         }
+        
+        GameData.instance.nbSheep = nbInstantSheep;
     }
 
     void OnDrawGizmos()
