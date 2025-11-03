@@ -4879,6 +4879,7 @@ GameObject:
   - component: {fileID: 2263199192514018292}
   - component: {fileID: 2415846055480166708}
   - component: {fileID: 1968087294569869161}
+  - component: {fileID: 4891704381536124345}
   m_Layer: 7
   m_Name: "\U0001F411 Mouton"
   m_TagString: Touchable
@@ -4920,7 +4921,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sheepId: 0
   sheepName: Antoine
-  currentSkin: 2
+  currentSkin: 0
   hasLaine: 1
   isBeingCaressed: 0
   isOpen: 0
@@ -4930,6 +4931,7 @@ MonoBehaviour:
   spawnParticleCaresse: {fileID: 6863644733935078796}
   skinListManager: {fileID: 3199422249654108566}
   laine: {fileID: 559622738346025117}
+  idNature: 0
 --- !u!65 &2181534520863901765
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4958,7 +4960,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2722875930628605413}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ea9d7817cc0b254786c045653212493, type: 3}
   m_Name: 
@@ -4967,6 +4969,9 @@ MonoBehaviour:
   patrolSpeed: 1
   minWaitTime: 1
   maxWaitTime: 3
+  minCheckDrinkTime: 5
+  maxCheckDrinkTime: 15
+  drinkDuration: 3
   fleeDistance: 5
   fleeSpeed: 2.5
   fleeTriggerDistance: 5
@@ -4978,7 +4983,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2722875930628605413}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 1
@@ -5009,6 +5014,20 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.15, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &4891704381536124345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2722875930628605413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0d1a84d525efe7419b36a0c60425c11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 0}
+  natureType: 3
 --- !u!1 &3480828354281721098
 GameObject:
   m_ObjectHideFlags: 0

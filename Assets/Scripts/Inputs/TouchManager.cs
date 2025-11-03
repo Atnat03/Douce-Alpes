@@ -45,8 +45,6 @@ public class TouchManager : MonoBehaviour
         touchPositionAction = playerInput.actions["TouchPosition"];
 
         swipeInput = new Swipe();
-        
-        sphereSheepLeak.SetActive(false);
     }
 
     private void OnEnable()

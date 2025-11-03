@@ -28,26 +28,12 @@ public class Sheep : TouchableObject
     [SerializeField] private SkinListManager skinListManager;
     [SerializeField] public GameObject laine;
     
-    private SheepAI sheepAI;
-    
-    [Header("Nature")]
-    public INature nature;
-    [SerializeField] private int idNature;
+    private SheepBoid sheepBoid;
 
     private void Start()
     {
-        sheepAI = GetComponent<SheepAI>();
+        sheepBoid = GetComponent<SheepBoid>();
         laine.GetComponent<Outline>().enabled = false;
-
-        nature = new Nature_Happy();
-        var parameters = new Dictionary<string, object>()
-        {
-            { "Id", 0 },
-            { "Name", "Happy" },
-            { "Message", "Je suis un mouton heureux !" },
-            { "HappinessMultiplier", 1.5f }
-        };
-        nature.InitialiseNature(parameters);
     }
 
     private void Update()
@@ -73,8 +59,7 @@ public class Sheep : TouchableObject
 
     public void StopAgentAndDesactivateScript(bool state)
     {
-        sheepAI.StopAgent(state);
-        sheepAI.enabled = !state;
+        GetComponent<SheepBoid>().enabled = !state;
     }
 
     public Vector3 GetCameraPosition()
@@ -110,7 +95,7 @@ public class Sheep : TouchableObject
         
         if (Time.time - lastClickTime <= doubleClickThreshold)
         {
-            if (!isBeingCaressed) 
+            if (!isBeingCaressed && !sheepBoid.isAfraid)
             {
                 WidowOpen();
             }
