@@ -1,15 +1,18 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class SheepBoidManager : MonoBehaviour
 {
     public static Action<SheepBoid> OnListChanged;
-    
-    [Header("Réglages généraux")]
-    GameObject prefab;
+
+    [Header("Réglages généraux")] 
+    public Vector3 bounds;
+    public GameObject prefab;
     public int count = 50;
-    public Vector3 bounds = new Vector3(25, 0, 25);
+    public Vector3 spawnPosition = Vector3.zero; // tous les moutons spawnent au même endroit
+    public float spawnDelay = 0.2f; // délai entre chaque mouton
 
     [Header("Mouvement Boids")]
     public float neighborRadius = 3f;
@@ -28,47 +31,45 @@ public class SheepBoidManager : MonoBehaviour
     [Header("Pauses")]
     public Vector2 minTimeBetweenPauses = new Vector2(5, 10);
     public Vector2 pauseDuration = new Vector2(1, 3);
-    
+
     private int nbInstantSheep = 0;
 
     void Start()
     {
         prefab = GameData.instance.sheepPrefab;
-        
+        StartCoroutine(SpawnSheepRoutine());
+    }
+
+    private IEnumerator SpawnSheepRoutine()
+    {
         for (int i = 0; i < count; i++)
         {
-            Vector3 pos = new Vector3(
-                Random.Range(transform.position.x + (-bounds.x), transform.position.x + bounds.x),
-                transform.position.y,
-                Random.Range(transform.position.z + -bounds.z, transform.position.z + bounds.z)
-            );
-
-            GameObject go = Instantiate(prefab, pos, Quaternion.identity, transform);
+            GameObject go = Instantiate(prefab, spawnPosition, Quaternion.identity, transform);
             SheepBoid sheep = go.GetComponent<SheepBoid>();
             sheep.manager = this;
 
-            NatureType randomNature = (NatureType)Random.Range(0, System.Enum.GetValues(typeof(NatureType)).Length);
+            NatureType randomNature = (NatureType)Random.Range(0, Enum.GetValues(typeof(NatureType)).Length);
             sheep.SetNature(randomNature);
 
             Sheep sheepScript = sheep.GetComponent<Sheep>();
             sheepScript.sheepId = nbInstantSheep;
             GameManager.instance.sheepList.Add(sheepScript);
-            
+
             nbInstantSheep++;
-            
             OnListChanged?.Invoke(sheep);
+
+            yield return new WaitForSeconds(spawnDelay);
         }
-        
+
         GameData.instance.nbSheep = nbInstantSheep;
     }
 
     void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(spawnPosition, new Vector3(1f, 0.1f, 1f));
+        
+        Gizmos.color = Color.white;
         Gizmos.DrawWireCube(transform.position, new Vector3(bounds.x * 2, 0.1f, bounds.z * 2));
-
-        Gizmos.color = new Color(1f, 1f, 0f, 0.4f);
-        Gizmos.DrawWireCube(transform.position, new Vector3((bounds.x - boundMargin) * 2, 0.1f, (bounds.z - boundMargin) * 2));
     }
-
 }
