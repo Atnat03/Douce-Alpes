@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Grange : Build
@@ -19,6 +20,11 @@ public class Grange : Build
     [SerializeField] private GameObject keyCloseGate;
 
     [SerializeField] private Poutre poutre;
+
+    public Transform spawnGetOffTransform;
+    public Transform endSpawnGetOffTransform;
+
+    public bool AllSheepAreOutside = true;
     
     public void LaunchMiniGame()
     {
@@ -33,6 +39,7 @@ public class Grange : Build
         gate1.transform.rotation = Quaternion.Euler(gate1_Open);
         gate2.transform.rotation = Quaternion.Euler(gate2_Open);
         gateState = true;
+        keyCloseGate.SetActive(false);
     }
     
     public void CloseDoors()
@@ -40,6 +47,7 @@ public class Grange : Build
         gate1.transform.rotation = Quaternion.Euler(gate1_Close);
         gate2.transform.rotation = Quaternion.Euler(gate2_Close);
         gateState = false;
+        keyCloseGate.SetActive(true);
     }
 
     public void AddSheepInGrange()
@@ -55,15 +63,15 @@ public class Grange : Build
 
         if (nbSheepInGrange >= totalSheep && totalSheep > 0)
         {
+            BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
+            
             CloseDoors();
             ZoomCamera();
-            keyCloseGate.SetActive(true);
         }
         else
         {
             OpenDoors();
             MiniGameCamera();
-            keyCloseGate.SetActive(false);
         }
     }
 
@@ -87,9 +95,49 @@ public class Grange : Build
 
     private void Update()
     {
-        sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame);
+        Debug.Log(AllSheepAreOutside);
+
+        sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
     }
     
     public Poutre GetPoutre() { return poutre; }
     public Transform GetSheepDestroyer() { return sheepDestroyer.transform; }
+    
+    //Sortie animé
+    public void AnimSheepGetOffGrange(GameObject sheep)
+    {
+        float travelTime = 2f;
+        StartCoroutine(SmoothTravelSortie(sheep, endSpawnGetOffTransform.position, travelTime));
+    }
+
+    private IEnumerator SmoothTravelSortie(GameObject sheep, Vector3 targetPos, float duration)
+    {
+        if (sheep == null) yield break;
+
+        Vector3 startPos = sheep.transform.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            // interpolation fluide
+            t = t * t * (3f - 2f * t);
+
+            sheep.transform.position = Vector3.Lerp(startPos, targetPos, t);
+            sheep.transform.LookAt(targetPos); // fait regarder le mouton vers sa direction
+
+            yield return null;
+        }
+
+        sheep.transform.position = targetPos;
+
+        // 🐑 Active le comportement Boid à la fin
+        SheepBoid boid = sheep.GetComponent<SheepBoid>();
+        if (boid != null)
+            boid.enabled = true;
+    }
+
+
 }

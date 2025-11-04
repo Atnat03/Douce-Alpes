@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PassifNature : INatureStrategy
+public class StandardNature : INatureStrategy
 {
     public void ApplyNature(SheepBoid self, ref Vector3 separation, ref Vector3 alignment, ref Vector3 cohesion, SheepBoid other)
     {

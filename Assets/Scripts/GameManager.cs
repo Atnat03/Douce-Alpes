@@ -24,13 +24,15 @@ public class SheepData
     public string name;
     public int skin;
 	public bool hasWhool;
+    public NatureType nature;
 
-    public SheepData(int id, string name, int skin, bool hasWhool)
+    public SheepData(int id, string name, int skin, bool hasWhool, NatureType nature)
     {
         this.id = id;
         this.name = name;
         this.skin = skin;
 		this.hasWhool = hasWhool;
+        this.nature = nature;
     }
 }
 
@@ -264,7 +266,7 @@ public class GameManager : MonoBehaviour
     {
         if (!sheepList.Contains(sheep)) Debug.LogError("Le mouton n'existe pas");
 
-        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkin, sheep.hasLaine);
+        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkin, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType);
         GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);
@@ -280,30 +282,45 @@ public class GameManager : MonoBehaviour
     
     public void SheepGetOutGrange()
     {
+        StartCoroutine(SpawnSheepOneByOne());
+    }
+
+    private IEnumerator SpawnSheepOneByOne()
+    {
         List<SheepData> toRemove = new List<SheepData>();
+
+        BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Sortie));
+
+        grange.OpenDoors();
+        grange.GetPoutre().ResetPoutre();
+        grange.AllSheepAreOutside = false;
+
+        float delayBetweenSheep = 1f; 
 
         foreach (SheepData sheepData in GameData.instance.sheepDestroyData)
         {
-            GameObject newSheep = Instantiate(GameData.instance.sheepPrefab, sheepSpawn.position, sheepSpawn.rotation, transform.parent);
+            GameObject newSheep = SheepBoidManager.instance.SheepGetOffAndRecreate(sheepData, grange.spawnGetOffTransform.position);
             Sheep sheep = newSheep.GetComponent<Sheep>();
-        
-            sheep.sheepId = sheepData.id;
-            sheep.name = sheepData.name;
-            sheep.currentSkin = sheepData.skin;
-            
-            if(sheepData.hasWhool == false)
+
+            if (sheepData.hasWhool == false)
                 sheep.CutWhool();
             else
                 sheep.hasLaine = true;
-        
+
+            newSheep.GetComponent<SheepBoid>().enabled = false;
+
+            grange.AnimSheepGetOffGrange(newSheep);
+
             sheepList.Add(sheep);
             toRemove.Add(sheepData);
+
+            yield return new WaitForSeconds(delayBetweenSheep);
         }
 
-        GameData.instance.sheepDestroyData = new List<SheepData>();
-        
-        grange.GetPoutre().ResetPoutre();
+        grange.AllSheepAreOutside = true;
+        GameData.instance.sheepDestroyData.Clear();
     }
+
     
     //Shop
     public void ActivateShop()

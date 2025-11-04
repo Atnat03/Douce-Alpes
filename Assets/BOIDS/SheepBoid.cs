@@ -3,24 +3,33 @@ using UnityEngine;
 public class SheepBoid : MonoBehaviour
 {
     [HideInInspector] public SheepBoidManager manager;
-    [SerializeField] private NatureType natureType = NatureType.Suiveur;
+    [SerializeField] public NatureType natureType;
     public INatureStrategy natureStrategy;
 
-    private Vector3 velocity;
+    public Vector3 velocity;
     private bool isPaused;
     private float pauseTimer, nextPauseTime;
 
     public bool isAfraid = false;
-    private float fearSpeedMultiplier = 2f;
-
+    private float fearSpeedMultiplier = 3f;
+    
     void Start()
     {
-        velocity = Random.insideUnitSphere;
-        velocity.y = 0;
-        velocity = velocity.normalized * Random.Range(manager.minSpeed, manager.maxSpeed);
-
         natureStrategy = NatureFactory.Create(natureType);
         ScheduleNextPause();
+    }
+
+    private void OnEnable()
+    {
+        if (manager == null)
+            return;
+        
+        if (velocity == Vector3.zero)
+        {
+            velocity = Random.insideUnitSphere;
+            velocity.y = 0f;
+            velocity = velocity.normalized * Random.Range(manager.minSpeed, manager.maxSpeed);
+        }
     }
 
     void Update()
@@ -28,7 +37,7 @@ public class SheepBoid : MonoBehaviour
         if (isPaused && !isAfraid)
         {
             pauseTimer -= Time.deltaTime;
-            if (pauseTimer <= 0)
+            if (pauseTimer <= 0f)
             {
                 isPaused = false;
                 ScheduleNextPause();
@@ -36,6 +45,7 @@ public class SheepBoid : MonoBehaviour
             return;
         }
 
+        // --- Comportement Boid ---
         Vector3 accel = Vector3.zero;
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
@@ -50,9 +60,9 @@ public class SheepBoid : MonoBehaviour
             if (other == null) continue;
 
             Vector3 toOther = other.transform.position - transform.position;
-            toOther.y = 0;
+            toOther.y = 0f;
             float dist = toOther.magnitude;
-            if (dist == 0) continue;
+            if (dist == 0f) continue;
 
             if (dist < manager.separationRadius)
                 separation -= toOther.normalized / dist;
@@ -68,6 +78,7 @@ public class SheepBoid : MonoBehaviour
         {
             alignment /= count;
             alignment = alignment.normalized * velocity.magnitude - velocity;
+
             cohesion /= count;
             cohesion = (cohesion - transform.position).normalized * velocity.magnitude - velocity;
         }
@@ -79,7 +90,7 @@ public class SheepBoid : MonoBehaviour
         accel += StayInBounds();
 
         velocity += accel * Time.deltaTime;
-        velocity.y = 0;
+        velocity.y = 0f;
 
         float currentMinSpeed = manager.minSpeed;
         float currentMaxSpeed = manager.maxSpeed;
@@ -90,16 +101,33 @@ public class SheepBoid : MonoBehaviour
         }
 
         float speed = Mathf.Clamp(velocity.magnitude, currentMinSpeed, currentMaxSpeed);
-        velocity = velocity.normalized * speed;
+        // protect against zero velocity before normalization
+        if (velocity.sqrMagnitude > 0.000001f)
+            velocity = velocity.normalized * speed;
+        else
+            velocity = Random.insideUnitSphere.normalized * currentMinSpeed;
 
         natureStrategy.PostProcess(this, ref velocity);
 
+        if (float.IsNaN(velocity.x) || float.IsNaN(velocity.y) || float.IsNaN(velocity.z))
+            velocity = Vector3.zero;
+
         transform.position += velocity * Time.deltaTime;
+
+        // Clamp dans la bounding box centrée sur manager
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, manager.transform.position.x - manager.bounds.x, manager.transform.position.x + manager.bounds.x);
+        pos.z = Mathf.Clamp(pos.z, manager.transform.position.z - manager.bounds.z, manager.transform.position.z + manager.bounds.z);
+        transform.position = pos;
+
         if (velocity.sqrMagnitude > 0.001f)
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(velocity), 0.1f);
+        {
+            Quaternion targetRot = Quaternion.LookRotation(velocity);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.1f);
+        }
 
         nextPauseTime -= Time.deltaTime;
-        if (nextPauseTime <= 0)
+        if (nextPauseTime <= 0f)
             StartPause();
     }
 
@@ -117,20 +145,30 @@ public class SheepBoid : MonoBehaviour
     Vector3 StayInBounds()
     {
         Vector3 pos = transform.position;
+        Vector3 center = manager.transform.position;
         Vector3 b = manager.bounds;
         Vector3 steer = Vector3.zero;
-        float margin = manager.boundMargin;
 
-        if (pos.x > b.x - margin) steer += Vector3.left;
-        else if (pos.x < -b.x + margin) steer += Vector3.right;
+        float marginX = b.x * 0.9f;
+        float marginZ = b.z * 0.9f;
 
-        if (pos.z > b.z - margin) steer += Vector3.back;
-        else if (pos.z < -b.z + margin) steer += Vector3.forward;
+        if (pos.x > center.x + marginX)
+            steer += Vector3.left * ((pos.x - (center.x + marginX)) / Mathf.Max(0.0001f, (b.x - marginX)));
+        else if (pos.x < center.x - marginX)
+            steer += Vector3.right * ((((center.x - marginX) - pos.x)) / Mathf.Max(0.0001f, (b.x - marginX)));
 
-        if (Mathf.Abs(pos.x) > b.x || Mathf.Abs(pos.z) > b.z)
-            steer += (-pos.normalized) * 2f;
+        if (pos.z > center.z + marginZ)
+            steer += Vector3.back * ((pos.z - (center.z + marginZ)) / Mathf.Max(0.0001f, (b.z - marginZ)));
+        else if (pos.z < center.z - marginZ)
+            steer += Vector3.forward * ((((center.z - marginZ) - pos.z)) / Mathf.Max(0.0001f, (b.z - marginZ)));
 
-        return steer.normalized * manager.boundaryWeight;
+        // Force plus forte si vraiment en dehors des limites
+        if (Mathf.Abs(pos.x - center.x) > b.x || Mathf.Abs(pos.z - center.z) > b.z)
+        {
+            steer += (center - pos).normalized * 2f;
+        }
+
+        return steer * manager.boundaryWeight;
     }
 
     public void SetNature(NatureType type)
@@ -139,6 +177,12 @@ public class SheepBoid : MonoBehaviour
         natureStrategy = NatureFactory.Create(type);
     }
 
-    void ScheduleNextPause() => nextPauseTime = Random.Range(manager.minTimeBetweenPauses.x, manager.minTimeBetweenPauses.y);
-    void StartPause() { isPaused = true; pauseTimer = Random.Range(manager.pauseDuration.x, manager.pauseDuration.y); }
+    void ScheduleNextPause() =>
+        nextPauseTime = Random.Range(manager.minTimeBetweenPauses.x, manager.minTimeBetweenPauses.y);
+
+    void StartPause()
+    {
+        isPaused = true;
+        pauseTimer = Random.Range(manager.pauseDuration.x, manager.pauseDuration.y);
+    }
 }
