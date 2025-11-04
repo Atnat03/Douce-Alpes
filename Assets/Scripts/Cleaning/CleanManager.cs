@@ -15,7 +15,7 @@ public enum CleaningSide
     Right
 }
 
-public class CleanManager : MonoBehaviour
+public class CleanManager : MiniGameParent
 {
     public static CleanManager instance;
 
@@ -166,8 +166,7 @@ public class CleanManager : MonoBehaviour
         ResetValueClean();
         hasLastPos = false;
 
-        // On ne remet PAS allCleaned à false ici
-        // C’est le StateMachine qui décidera quand redémarrer le système.
+        EndMiniGame(TypeAmelioration.Nettoyage);
         
         showerContour.SetActive(false);
         shampooContour.SetActive(true);

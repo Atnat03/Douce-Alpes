@@ -32,15 +32,34 @@ public class BonheurUI : MonoBehaviour
 
     private void UpdateCursorAndColor()
     {
+        if (backgroundImage == null || cursorImage == null || minPos == null || maxPos == null || overflowPos == null)
+            return;
+
+        // Couleur
         Color32 color = GetColorForValue(currentValue, isOverflow);
         backgroundImage.color = color;
 
+        // Positions
         Vector3 startPos = isOverflow ? maxPos.localPosition : minPos.localPosition;
         Vector3 endPos = isOverflow ? overflowPos.localPosition : maxPos.localPosition;
         float value = isOverflow ? overflowValue : currentValue;
 
-        cursorImage.transform.localPosition = Vector3.Lerp(startPos, endPos, value);
+        // Clamp de la valeur pour éviter NaN
+        if (float.IsNaN(value) || value < 0f) value = 0f;
+        if (value > 1f) value = 1f;
+
+        Vector3 newPos = Vector3.Lerp(startPos, endPos, value);
+
+        // Vérification NaN
+        if (float.IsNaN(newPos.x) || float.IsNaN(newPos.y) || float.IsNaN(newPos.z))
+        {
+            Debug.LogWarning($"Cursor position invalid! startPos={startPos}, endPos={endPos}, value={value}");
+            newPos = startPos; // fallback
+        }
+
+        cursorImage.transform.localPosition = newPos;
     }
+
 
     private Color32 GetColorForValue(float value, bool overflow)
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TonteManager : MonoBehaviour
+public class TonteManager : MiniGameParent
 {
     [SerializeField] private GameObject sheepModel;
     [SerializeField] private Text nameText;
@@ -61,6 +61,8 @@ public class TonteManager : MonoBehaviour
             nbToCutText.text = "";
             
             backButton.gameObject.SetActive(true);
+         
+            EndMiniGame(TypeAmelioration.Tonte);
             
             return;
         }

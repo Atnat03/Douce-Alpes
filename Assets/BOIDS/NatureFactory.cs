@@ -1,4 +1,4 @@
-public enum NatureType { Dominant, Peureux, Curieux, Suiveur }
+public enum NatureType { Dominant, Peureux, Solitaire, Standard }
 
 public static class NatureFactory
 {
@@ -7,7 +7,9 @@ public static class NatureFactory
         return type switch
         {
             NatureType.Dominant => new DominantNature(),
-            _ => new PassifNature(),
+            NatureType.Peureux => new PeureuxNature(),
+            NatureType.Solitaire => new SolitaireNature(),
+            NatureType.Standard => new StandardNature(),
         };
     }
 }
