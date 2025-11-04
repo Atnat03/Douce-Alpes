@@ -10,7 +10,7 @@ public class CameraControl : MonoBehaviour
 
     [Header("Mouvement")]
     [SerializeField] private float moveSpeed = 50f;
-    [SerializeField] private float moveSmooth = 5f;
+    [SerializeField] private float moveSmoothTime = 0.2f; // SmoothTime en secondes pour inertie
 
     [Header("Zoom")]
     [SerializeField] private float zoomSpeed = 5f;
@@ -23,16 +23,9 @@ public class CameraControl : MonoBehaviour
     [SerializeField] private float angle = 45f;
 
     [Header("Bounds (modifiable en jeu)")]
-    [Tooltip("Limite vers la droite depuis le centre")]
     [SerializeField] private float boundRight = 20f;
-
-    [Tooltip("Limite vers le haut depuis le centre (Z positif)")]
     [SerializeField] private float boundUp = 20f;
-
-    [Tooltip("Limite vers la gauche depuis le centre")]
     [SerializeField] private float boundLeft = 20f;
-
-    [Tooltip("Limite vers le bas depuis le centre (Z négatif)")]
     [SerializeField] private float boundDown = 20f;
 
     [Header("Debug Options")]
@@ -43,20 +36,22 @@ public class CameraControl : MonoBehaviour
     private float zoom;
     private Vector3 center = Vector3.zero;
 
-    private void Awake()
-    {
-        inputs = new Movements();
-    }
+    // Pour l'inertie
+    private Vector3 targetPosition;
+    private Vector3 velocity = Vector3.zero;
+
+    private void Awake() => inputs = new Movements();
 
     private void Start()
     {
-        // Initialisation configurable directement dans l'inspecteur
         center = centerPoint.position;
         zoom = zoomStart;
 
         cam.fieldOfView = zoom;
         root.position = center + new Vector3(0, 7.5f, -40);
         root.localEulerAngles = new Vector3(angle, -60, 0);
+
+        targetPosition = root.position; // position cible initiale
     }
 
     private void OnEnable() => inputs.Enable();
@@ -64,17 +59,18 @@ public class CameraControl : MonoBehaviour
 
     private void Update()
     {
-        // Mise à jour de la caméra
+        // Zoom lissé
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, zoom, Time.deltaTime * zoomSmooth);
         cam.transform.position = root.position;
         cam.transform.rotation = root.rotation;
 
-        // Empêche les mouvements dans certains états
         if (GameManager.instance.currentCameraState != CamState.Default) return;
         if (GameManager.instance.shopOpen) return;
 
         HandleGestures();
         ApplyBounds();
+
+        root.position = Vector3.SmoothDamp(root.position, targetPosition, ref velocity, moveSmoothTime);
     }
 
     public void ResetFOV() => zoom = zoomStart;
@@ -86,7 +82,6 @@ public class CameraControl : MonoBehaviour
 
         Vector2 secondaryDelta = inputs.Main.SecondaryTouchDelta.ReadValue<Vector2>();
         bool secondaryPressed = inputs.Main.SecondaryTouchPress.ReadValue<float>() > 0.5f;
-
 
         if (primaryPressed && secondaryPressed)
         {
@@ -102,30 +97,28 @@ public class CameraControl : MonoBehaviour
 
             zoom += delta * zoomSpeed * Time.deltaTime;
             zoom = Mathf.Clamp(zoom, zoomMin, zoomMax);
-
         }
-
         else if (primaryPressed && primaryDelta != Vector2.zero)
         {
-            Vector3 moveDelta = new Vector3(
-                primaryDelta.y * moveSpeed * Time.deltaTime,
-                0,
-                -primaryDelta.x * moveSpeed * Time.deltaTime
-            );
+            Vector3 moveRight = cam.transform.right * primaryDelta.x * moveSpeed * Time.deltaTime;
+            Vector3 moveForward = cam.transform.forward * primaryDelta.y * moveSpeed * Time.deltaTime;
 
-            root.position += moveDelta;
+            moveRight.y = 0;
+            moveForward.y = 0;
+
+            targetPosition += (-moveRight) + (-moveForward);
         }
     }
 
     private void ApplyBounds()
     {
         Vector3 clampedPos = new Vector3(
-            Mathf.Clamp(root.position.x, center.x - boundLeft, center.x + boundRight),
-            root.position.y,
-            Mathf.Clamp(root.position.z, center.z - boundDown, center.z + boundUp)
+            Mathf.Clamp(targetPosition.x, center.x - boundLeft, center.x + boundRight),
+            targetPosition.y,
+            Mathf.Clamp(targetPosition.z, center.z - boundDown, center.z + boundUp)
         );
-        
-        root.position = clampedPos;
+
+        targetPosition = clampedPos;
     }
 
     private void OnDrawGizmos()
@@ -133,10 +126,8 @@ public class CameraControl : MonoBehaviour
         if (!showDebugBounds || centerPoint == null) return;
 
         Gizmos.color = debugColor;
-
         Vector3 centerPos = centerPoint.position;
         Vector3 size = new Vector3(boundLeft + boundRight, 0.1f, boundUp + boundDown);
-
         Gizmos.DrawWireCube(centerPos + new Vector3((boundRight - boundLeft) / 2f, 0, (boundUp - boundDown) / 2f), size);
     }
 }
