@@ -19373,9 +19373,9 @@ ParticleSystem:
     enabled: 1
     startLifetime:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 1.77
-      minScalar: 5
+      minMaxState: 3
+      scalar: 2
+      minScalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -19426,9 +19426,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startSpeed:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 2.65
-      minScalar: 5
+      minMaxState: 3
+      scalar: 2
+      minScalar: 2.65
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -19544,9 +19544,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     startSize:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 0.6
-      minScalar: 1
+      minMaxState: 3
+      scalar: 0.4
+      minScalar: 0.8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -19597,7 +19597,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -19650,7 +19650,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -24178,6 +24178,9 @@ MonoBehaviour:
   gate2: {fileID: 1607767493}
   keyCloseGate: {fileID: 420376144}
   poutre: {fileID: 0}
+  spawnGetOffTransform: {fileID: 0}
+  endSpawnGetOffTransform: {fileID: 0}
+  AllSheepAreOutside: 1
 --- !u!1 &1607767493
 GameObject:
   m_ObjectHideFlags: 0
