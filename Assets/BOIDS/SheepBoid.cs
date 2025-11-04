@@ -3,7 +3,7 @@ using UnityEngine;
 public class SheepBoid : MonoBehaviour
 {
     [HideInInspector] public SheepBoidManager manager;
-    [SerializeField] private NatureType natureType;
+    [SerializeField] public NatureType natureType;
     public INatureStrategy natureStrategy;
 
     public Vector3 velocity;
@@ -11,8 +11,8 @@ public class SheepBoid : MonoBehaviour
     private float pauseTimer, nextPauseTime;
 
     public bool isAfraid = false;
-    private float fearSpeedMultiplier = 2f;
-
+    private float fearSpeedMultiplier = 3f;
+    
     void Start()
     {
         natureStrategy = NatureFactory.Create(natureType);

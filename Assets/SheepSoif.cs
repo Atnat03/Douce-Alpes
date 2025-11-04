@@ -16,7 +16,7 @@ public class SheepThirst : MonoBehaviour
     void Start()
     {
         boidScript = GetComponent<SheepBoid>();
-        thirst = Random.Range(0, maxThirst * 0.5f); // soif aléatoire au départ
+        thirst = Random.Range(0, maxThirst * 0.5f);
     }
 
     void Update()
@@ -36,13 +36,11 @@ public class SheepThirst : MonoBehaviour
     {
         isDrinking = true;
 
-        // Désactive le boid pour reprendre le contrôle manuel
         boidScript.enabled = false;
 
-        // Déplacement vers l’abreuvoir
         Vector3 startPos = transform.position;
         Vector3 targetPos = drinkPlace.position;
-        targetPos.y = startPos.y; // conserve la hauteur
+        targetPos.y = startPos.y; 
 
         float speed = boidScript.manager.maxSpeed;
         while (Vector3.Distance(transform.position, targetPos) > 0.1f)
@@ -52,13 +50,10 @@ public class SheepThirst : MonoBehaviour
             yield return null;
         }
 
-        // Boire
         yield return new WaitForSeconds(drinkDuration);
 
-        // Libérer la place à l’abreuvoir
         Abreuvoir.instance.FreePlace(drinkPlace);
 
-        // Réactiver le boid et reprendre le mouvement normal
         boidScript.enabled = true;
 
         thirst = 0f;

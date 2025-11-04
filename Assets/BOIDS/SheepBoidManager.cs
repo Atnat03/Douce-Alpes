@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 public class SheepBoidManager : MonoBehaviour
 {
     public static Action<SheepBoid> OnListChanged;
+    
+    public static SheepBoidManager instance;
 
     [Header("Réglages généraux")] 
     public Vector3 bounds;
@@ -37,6 +39,11 @@ public class SheepBoidManager : MonoBehaviour
 
     [Header("Ui")] 
     [SerializeField] private InputField nameInputField;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -85,6 +92,8 @@ public class SheepBoidManager : MonoBehaviour
         
         sheepScript.Initialize(nbInstantSheep, name);
         
+        Debug.Log("Created new sheep");
+        
         OnListChanged?.Invoke(sheep);
     }
 
@@ -120,6 +129,35 @@ public class SheepBoidManager : MonoBehaviour
             return NatureType.Solitaire;
         else
             return NatureType.Standard;
+    }
+
+    public GameObject SheepGetOffAndRecreate(SheepData data, Vector3 spawnP)
+    {
+        GameObject go = Instantiate(prefab, spawnP, Quaternion.identity, transform);
+        SheepBoid sheep = go.GetComponent<SheepBoid>();
+        sheep.manager = this;
+
+        Sheep sheepScript = sheep.GetComponent<Sheep>();
+        sheepScript.sheepId = data.id;
+        sheepScript.currentSkin = data.skin;
+        sheepScript.hasLaine = data.hasWhool;
+        sheepScript.sheepName = data.name;
+        sheep.natureType = data.nature;
+        
+        GameManager.instance.sheepList.Add(sheepScript);
+
+        sheep.enabled = false;
+
+        nbInstantSheep++;
+        GameData.instance.nbSheep++;
+        
+        sheepScript.Initialize(nbInstantSheep, name);
+        
+        Debug.Log("Load sheep : " +sheepScript.sheepId);
+        
+        OnListChanged?.Invoke(sheep);
+
+        return go;
     }
 
 
