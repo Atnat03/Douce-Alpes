@@ -95,8 +95,6 @@ public class Grange : Build
 
     private void Update()
     {
-        Debug.Log(AllSheepAreOutside);
-
         sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
     }
     

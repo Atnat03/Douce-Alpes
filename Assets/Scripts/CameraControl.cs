@@ -87,7 +87,7 @@ public class CameraControl : MonoBehaviour
         Vector2 secondaryDelta = inputs.Main.SecondaryTouchDelta.ReadValue<Vector2>();
         bool secondaryPressed = inputs.Main.SecondaryTouchPress.ReadValue<float>() > 0.5f;
 
-        // Zoom avec deux doigts
+
         if (primaryPressed && secondaryPressed)
         {
             Vector2 p1 = inputs.Main.PrimaryTouchPosition.ReadValue<Vector2>();
@@ -104,7 +104,7 @@ public class CameraControl : MonoBehaviour
             zoom = Mathf.Clamp(zoom, zoomMin, zoomMax);
 
         }
-        // Déplacement avec un doigt
+
         else if (primaryPressed && primaryDelta != Vector2.zero)
         {
             Vector3 moveDelta = new Vector3(

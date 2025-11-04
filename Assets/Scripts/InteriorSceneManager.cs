@@ -40,7 +40,8 @@ public class InteriorSceneManager : MonoBehaviour
         
                 sheep.sheepId = sheepData.id;
                 sheep.name = sheepData.name;
-                sheep.currentSkin = sheepData.skin;
+                sheep.currentSkinHat = sheepData.skinHat;
+                sheep.currentSkinClothe = sheepData.skinClothe;
         
                 sheepInside.Add(sheep);
             }

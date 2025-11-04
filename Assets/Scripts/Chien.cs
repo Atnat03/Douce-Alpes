@@ -6,13 +6,15 @@ public class Chien : MonoBehaviour
 {
     [Header("Paramètres")]
     [SerializeField] private float waitingTime = 2f;
-    [SerializeField] private float scareRadius = 6f; // distance d'effroi
-    [SerializeField] private float scareForce = 8f;  // intensité de la fuite
+    [SerializeField] private float scareRadius = 6f;
+    [SerializeField] private float scareForce = 8f;
 
     private float timer = 0f;
     private NavMeshAgent agent;
     private Transform sheepDest;
     private List<GameObject> sheepList = new List<GameObject>();
+
+    [SerializeField] private ParticleSystem barkEffect;
 
     private void OnEnable()
     {
@@ -43,7 +45,7 @@ public class Chien : MonoBehaviour
             return;
 
         PerformSheepManagement();
-        ScareNearbySheep(); // 🐕 effrayer les moutons proches
+        ScareNearbySheep();
     }
 
     private void PerformSheepManagement()
@@ -53,6 +55,7 @@ public class Chien : MonoBehaviour
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
             timer += Time.deltaTime;
+            barkEffect.Play();
             if (timer >= waitingTime)
             {
                 timer = 0f;

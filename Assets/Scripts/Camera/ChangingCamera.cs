@@ -6,19 +6,17 @@ public class ChangingCamera : MonoBehaviour
 {
     [SerializeField] private Button quitButton;
     [SerializeField] private float timerToTransition = 1f;
+    [SerializeField] private Camera camera;
 
     private CameraControl control;
     private CameraFollow follow;
-    private float elapseTime;
 
+    private float elapseTime;
     private Vector3 savedRootPos;
     private Quaternion savedPivotRot;
     private Vector3 savedTargetPos;
-
     private Vector3 savedCamPos;
     private Quaternion savedCamRot;
-
-    [SerializeField] private Camera camera;
 
     private void OnEnable()
     {
@@ -27,6 +25,7 @@ public class ChangingCamera : MonoBehaviour
         GameManager.instance.GrangeClicked += ChangeCamera;
         GameManager.instance.AbreuvoirClicked += ChangeCamera;
         GameManager.instance.NicheClicked += ChangeCamera;
+        GameManager.instance.OnClickOnShop += ChangeCamera;
 
         control = GetComponent<CameraControl>();
         follow = GetComponent<CameraFollow>();
@@ -34,24 +33,23 @@ public class ChangingCamera : MonoBehaviour
         quitButton.gameObject.SetActive(false);
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         GameManager.instance.SheepClicked -= LockCamOnSheep;
         GameManager.instance.SheepHold -= ChangeCamera;
         GameManager.instance.GrangeClicked -= ChangeCamera;
         GameManager.instance.AbreuvoirClicked -= ChangeCamera;
         GameManager.instance.NicheClicked -= ChangeCamera;
+        GameManager.instance.OnClickOnShop -= ChangeCamera;
     }
 
     private IEnumerator SmoothTransition(Vector3 targetPos, Vector3 targetEuler, Transform target, bool reEnableControl = false, bool hideQuitButton = false)
     {
         elapseTime = 0f;
-        
         camera.fieldOfView = 45f;
 
         savedRootPos = control.root.position;
         savedPivotRot = control.root.localRotation;
-
         savedCamPos = camera.transform.position;
         savedCamRot = camera.transform.rotation;
 
@@ -86,22 +84,24 @@ public class ChangingCamera : MonoBehaviour
             quitButton.gameObject.SetActive(false);
     }
 
-
     public void ChangeCamera(Vector3 newPosition, Vector3 rotation, Transform target)
     {
         Debug.Log("ChangeCamera");
-        //StopAllCoroutines();
         StartCoroutine(SmoothTransition(newPosition, rotation, target));
+    }
+    
+    public void ChangeCamera(Vector3 newPosition, Vector3 rotation, Transform target, bool cameraVisible)
+    {
+        Debug.Log("ChangeCamera");
+        StartCoroutine(SmoothTransition(newPosition, rotation, target, false, cameraVisible));
     }
 
     public void LockCamOnSheep(Sheep sheep)
     {
         control.enabled = false;
         follow.enabled = true;
-
         follow.target = sheep.transform;
         follow.offset = Camera.main.transform.position;
-
         sheep.ChangeOutlineState(true);
     }
 
@@ -112,7 +112,6 @@ public class ChangingCamera : MonoBehaviour
 
         control.enabled = true;
         follow.enabled = false;
-
         sheep.ChangeOutlineState(false);
     }
 
@@ -129,23 +128,21 @@ public class ChangingCamera : MonoBehaviour
 
         Vector3 currentCamPos = camera.transform.position;
         Quaternion currentCamRot = camera.transform.rotation;
-
         Vector3 currentRootPos = control.root.position;
 
         control.enabled = false;
         follow.enabled = false;
 
-        Vector3 endCamPos = savedRootPos;
-        Quaternion endCamRot = savedPivotRot;
+        Vector3 endCamPos = savedCamPos;
+        Quaternion endCamRot = savedCamRot;
 
         while (elapsed < timerToTransition)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / timerToTransition;
 
-            camera.transform.position = Vector3.Lerp(currentCamPos, savedRootPos, t);
-            camera.transform.rotation = Quaternion.Slerp(currentCamRot, savedPivotRot, t);
-
+            camera.transform.position = Vector3.Lerp(currentCamPos, endCamPos, t);
+            camera.transform.rotation = Quaternion.Slerp(currentCamRot, endCamRot, t);
             control.root.position = Vector3.Lerp(currentRootPos, savedRootPos, t);
 
             yield return null;
@@ -153,7 +150,6 @@ public class ChangingCamera : MonoBehaviour
 
         camera.transform.position = endCamPos;
         camera.transform.rotation = endCamRot;
-
         control.root.position = savedRootPos;
         control.root.rotation = savedPivotRot;
 

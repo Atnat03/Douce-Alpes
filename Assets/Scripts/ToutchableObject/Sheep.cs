@@ -7,7 +7,8 @@ public class Sheep : TouchableObject
     [SerializeField] public int sheepId;
     [SerializeField] public string sheepName;
 
-    [SerializeField] public int currentSkin;
+    [SerializeField] public int currentSkinHat;
+    [SerializeField] public int currentSkinClothe;
     [SerializeField] public bool hasLaine = true;
     
     [SerializeField] private bool isBeingCaressed = false;
@@ -141,13 +142,19 @@ public class Sheep : TouchableObject
 
         GameManager.instance.GetSheepWindow().SetActive(true);
         
-        SheepWindow.instance.Initialize(sheepName, currentSkin, sheepId);
+        SheepWindow.instance.Initialize(sheepName, currentSkinHat, currentSkinClothe, sheepId);
     }
 
-    public void SetCurrentSkin(int skinId)
+    public void SetCurrentSkinHat(int skinId)
     {
-        currentSkin = skinId;
-        skinListManager.UpdateSkinList(currentSkin);
+        currentSkinHat = skinId;
+        skinListManager.UpdateSkinListHat(currentSkinHat);
+    }
+    
+    public void SetCurrentSkinClothe(int skinId)
+    {
+        currentSkinClothe = skinId;
+        skinListManager.UpdateSkinListClothe(currentSkinClothe);
     }
 }
 

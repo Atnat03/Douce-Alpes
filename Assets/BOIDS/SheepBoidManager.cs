@@ -84,6 +84,7 @@ public class SheepBoidManager : MonoBehaviour
 
         Sheep sheepScript = sheep.GetComponent<Sheep>();
         sheepScript.sheepId = nbInstantSheep;
+        sheepScript.SetCurrentSkinHat(0);
         
         GameManager.instance.sheepList.Add(sheepScript);
 
@@ -139,7 +140,8 @@ public class SheepBoidManager : MonoBehaviour
 
         Sheep sheepScript = sheep.GetComponent<Sheep>();
         sheepScript.sheepId = data.id;
-        sheepScript.currentSkin = data.skin;
+        sheepScript.currentSkinHat = data.skinHat;
+        sheepScript.currentSkinClothe = data.skinClothe;
         sheepScript.hasLaine = data.hasWhool;
         sheepScript.sheepName = data.name;
         sheep.natureType = data.nature;
