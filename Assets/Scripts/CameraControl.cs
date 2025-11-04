@@ -10,7 +10,7 @@ public class CameraControl : MonoBehaviour
 
     [Header("Mouvement")]
     [SerializeField] private float moveSpeed = 50f;
-    [SerializeField] private float moveSmoothTime = 0.2f; // SmoothTime en secondes pour inertie
+    [SerializeField] private float moveSmoothTime = 0.2f; 
 
     [Header("Zoom")]
     [SerializeField] private float zoomSpeed = 5f;
@@ -27,6 +27,8 @@ public class CameraControl : MonoBehaviour
     [SerializeField] private float boundUp = 20f;
     [SerializeField] private float boundLeft = 20f;
     [SerializeField] private float boundDown = 20f;
+    [SerializeField] private float bounceStrength = 5f; 
+    [SerializeField] private float bounceDamping = 5f;  
 
     [Header("Debug Options")]
     [SerializeField] private bool showDebugBounds = true;
@@ -51,7 +53,7 @@ public class CameraControl : MonoBehaviour
         root.position = center + new Vector3(0, 7.5f, -40);
         root.localEulerAngles = new Vector3(angle, -60, 0);
 
-        targetPosition = root.position; // position cible initiale
+        targetPosition = root.position;
     }
 
     private void OnEnable() => inputs.Enable();
@@ -112,14 +114,23 @@ public class CameraControl : MonoBehaviour
 
     private void ApplyBounds()
     {
-        Vector3 clampedPos = new Vector3(
-            Mathf.Clamp(targetPosition.x, center.x - boundLeft, center.x + boundRight),
-            targetPosition.y,
-            Mathf.Clamp(targetPosition.z, center.z - boundDown, center.z + boundUp)
-        );
+        Vector3 offset = Vector3.zero;
 
-        targetPosition = clampedPos;
+        if (targetPosition.x < center.x - boundLeft)
+            offset.x = (center.x - boundLeft) - targetPosition.x;
+        else if (targetPosition.x > center.x + boundRight)
+            offset.x = (center.x + boundRight) - targetPosition.x;
+
+        if (targetPosition.z < center.z - boundDown)
+            offset.z = (center.z - boundDown) - targetPosition.z;
+        else if (targetPosition.z > center.z + boundUp)
+            offset.z = (center.z + boundUp) - targetPosition.z;
+
+        targetPosition += offset * bounceStrength * Time.deltaTime;
+
+        velocity *= Mathf.Exp(-bounceDamping * Time.deltaTime);
     }
+
 
     private void OnDrawGizmos()
     {
