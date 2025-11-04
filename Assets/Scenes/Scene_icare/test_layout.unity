@@ -154,8 +154,8 @@ MonoBehaviour:
   skyboxNight: {fileID: 2800000, guid: 13ec4f589b2340646969832fc2e68ec6, type: 3}
   graddientNightToSunrise:
     serializedVersion: 2
-    key0: {r: 0.23529412, g: 0.21960784, b: 0.4, a: 1}
-    key1: {r: 1, g: 0.4694984, b: 0, a: 1}
+    key0: {r: 0.019533878, g: 0, b: 0.2264151, a: 1}
+    key1: {r: 0.5764706, g: 0.25490198, b: 0.019607844, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -163,7 +163,7 @@ MonoBehaviour:
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 65342
+    ctime1: 65150
     ctime2: 0
     ctime3: 0
     ctime4: 0
@@ -184,7 +184,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   graddientSunriseToDay:
     serializedVersion: 2
-    key0: {r: 1, g: 0.47058827, b: 0, a: 1}
+    key0: {r: 0.5764706, g: 0.25490198, b: 0.019607844, a: 1}
     key1: {r: 0.58431375, g: 0.53333336, b: 0.39607844, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -215,7 +215,7 @@ MonoBehaviour:
   graddientDayToSunset:
     serializedVersion: 2
     key0: {r: 0.58431375, g: 0.53333336, b: 0.39607844, a: 1}
-    key1: {r: 1, g: 0.49922678, b: 0, a: 1}
+    key1: {r: 0.5764706, g: 0.25490198, b: 0.019607844, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -244,8 +244,8 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   graddientSunsetToNight:
     serializedVersion: 2
-    key0: {r: 1, g: 0.50980395, b: 0.019607844, a: 1}
-    key1: {r: 0.23529412, g: 0.21960784, b: 0.4, a: 1}
+    key0: {r: 0.5764706, g: 0.25490198, b: 0.019607844, a: 1}
+    key1: {r: 0.016278228, g: 0, b: 0.18867922, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -277,7 +277,7 @@ MonoBehaviour:
   hours: 2
   days: 0
   tempSecond: 0
-  scaleTime: 1
+  scaleTime: 50
   timeTransition: 100
 --- !u!4 &1712360
 Transform:
@@ -5878,7 +5878,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.58431375, g: 0.53333336, b: 0.39607844, a: 1}
+  m_Color: {r: 0.6132076, g: 0.56544155, b: 0.40205592, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
@@ -5888,7 +5888,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.318
+    m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.1
@@ -7404,6 +7404,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7711195622789447176, guid: 140e449ba3546fa4dad7a24c98fc919a, type: 3}
   m_PrefabInstance: {fileID: 1391958592}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1404651174
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2722875930628605413, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_Name
+      value: "\U0001F411 Mouton"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.1483192
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.321
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.0450983
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582360026584067795, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
 --- !u!1 &1406553928
 GameObject:
   m_ObjectHideFlags: 0
@@ -11829,3 +11886,4 @@ SceneRoots:
   - {fileID: 1654018637}
   - {fileID: 1712360}
   - {fileID: 900692160}
+  - {fileID: 1404651174}
