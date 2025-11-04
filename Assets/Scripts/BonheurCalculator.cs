@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BonheurCalculator : MonoBehaviour
@@ -20,10 +21,25 @@ public class BonheurCalculator : MonoBehaviour
 
     private void Start()
     {
-        maxBonheur *= GameData.instance.nbSheep;
         currentBonheur = maxBonheur / 2f;
         overflowMaxValue = maxBonheur * overflowMaxValueRatio;
         virtualMaxBonheur = maxBonheur;
+    }
+
+    private void OnEnable()
+    {
+        if (SheepBoidManager.OnListChanged != null)
+            SheepBoidManager.OnListChanged += UpdateMaxBonheur;
+    }
+
+    private void OnDisable()
+    {
+        SheepBoidManager.OnListChanged -= UpdateMaxBonheur;
+    }
+
+    void UpdateMaxBonheur(SheepBoid s)
+    {
+        maxBonheur *= GameData.instance.nbSheep;
     }
 
     private void Update()

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Abreuvoir : MonoBehaviour
+public class Abreuvoir : MiniGameParent
 {
     public static Abreuvoir instance;
 
@@ -46,6 +46,8 @@ public class Abreuvoir : MonoBehaviour
 
         currentWater = Mathf.Min(currentWater + waterAddValue, maximumWater);
         animatorPompe?.SetTrigger("Pompe");
+        
+        EndMiniGame(TypeAmelioration.Abreuvoir);
     }
 
     public bool TryReservePlace(out Transform place)

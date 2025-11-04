@@ -77,6 +77,7 @@ public class ChangingCamera : MonoBehaviour
         }
 
         camera.transform.position = targetPos;
+        camera.transform.LookAt(target);
 
         if (reEnableControl)
             control.enabled = true;

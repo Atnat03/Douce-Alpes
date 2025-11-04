@@ -1,19 +1,18 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Chien : MonoBehaviour
 {
-    List<GameObject> sheepList = new List<GameObject>();
-    
-    [SerializeField] private float waitingTime;
-    private float timer = 0;
-    bool isWaiting = false;
-    
-    NavMeshAgent agent;
-    Transform sheepDest;
+    [Header("Paramètres")]
+    [SerializeField] private float waitingTime = 2f;
+    [SerializeField] private float scareRadius = 6f; // distance d'effroi
+    [SerializeField] private float scareForce = 8f;  // intensité de la fuite
+
+    private float timer = 0f;
+    private NavMeshAgent agent;
+    private Transform sheepDest;
+    private List<GameObject> sheepList = new List<GameObject>();
 
     private void OnEnable()
     {
@@ -31,18 +30,20 @@ public class Chien : MonoBehaviour
         {
             sheepList.Add(sheep.gameObject);
         }
-        
+
         agent = GetComponent<NavMeshAgent>();
         sheepDest = GameManager.instance.grange.GetSheepDestroyer();
+
+        GoToRandomPatrolPoint();
     }
 
-    void Update()
+    private void Update()
     {
-        if (GameData.instance.isSheepInside) 
+        if (GameData.instance.isSheepInside)
             return;
-        
+
         PerformSheepManagement();
-        
+        ScareNearbySheep(); // 🐕 effrayer les moutons proches
     }
 
     private void PerformSheepManagement()
@@ -60,38 +61,58 @@ public class Chien : MonoBehaviour
         }
     }
 
-    void GoToRandomPatrolPoint()
+    private void GoToRandomPatrolPoint()
     {
         agent.SetDestination(GetNextDestination());
     }
 
-    void ChangeSheepList(GameObject sheep)
-    { 
+    private void ChangeSheepList(GameObject sheep)
+    {
         sheepList.Remove(sheep);
     }
 
-    Vector3 GetNextDestination()
+    private Vector3 GetNextDestination()
     {
-        float distance = 0;
-        Vector3 sheepMoreFar = Vector3.zero;
+        float maxDistance = 0f;
+        Vector3 sheepFarPos = Vector3.zero;
 
         foreach (GameObject sheep in sheepList)
         {
-            float d = Vector3.Distance(sheep.transform.position, sheepDest.position);
+            if (sheep == null) continue;
 
-            if (d > distance)
+            float d = Vector3.Distance(sheep.transform.position, sheepDest.position);
+            if (d > maxDistance)
             {
-                distance = d;
-                sheepMoreFar = sheep.transform.position;
+                maxDistance = d;
+                sheepFarPos = sheep.transform.position;
             }
         }
 
-        Vector3 dir = (sheepMoreFar - sheepDest.position).normalized;
-
-        float offset = 1.5f;
-        Vector3 nextDestination = sheepMoreFar + dir * offset;
+        // Se placer derrière le mouton le plus éloigné
+        Vector3 dir = (sheepFarPos - sheepDest.position).normalized;
+        float offset = 2f;
+        Vector3 nextDestination = sheepFarPos + dir * offset;
 
         return nextDestination;
     }
 
+    private void ScareNearbySheep()
+    {
+        foreach (GameObject sheep in sheepList)
+        {
+            if (sheep == null) continue;
+
+            float distance = Vector3.Distance(transform.position, sheep.transform.position);
+            if (distance < scareRadius)
+            {
+                Vector3 fleeDir = (sheep.transform.position - transform.position).normalized;
+
+                SheepBoid boid = sheep.GetComponent<SheepBoid>();
+                if (boid != null)
+                {
+                    boid.AddFearForce(fleeDir * scareForce * (1f - distance / scareRadius));
+                }
+            }
+        }
+    }
 }

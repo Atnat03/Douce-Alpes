@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Grange : Build
@@ -8,7 +9,6 @@ public class Grange : Build
     private int nbSheepInGrange = 0;
     
     [Header("Gates")]
-    
     public bool gateState = false;
     
     [SerializeField] private Vector3 gate1_Close, gate1_Open;
@@ -20,27 +20,18 @@ public class Grange : Build
     [SerializeField] private GameObject keyCloseGate;
 
     [SerializeField] private Poutre poutre;
+
+    public Transform spawnGetOffTransform;
+    public Transform endSpawnGetOffTransform;
+
+    public bool AllSheepAreOutside = true;
     
     public void LaunchMiniGame()
     {
         GameManager.instance.ChangeCameraState(CamState.MiniGame);
-
-        if (!GameData.instance.isSheepInside)
-        {
-            GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameCamPos().position, GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles, transform);
-            OpenDoors();
-        }
-        else
-        {
-            ZoomCamera();
-        }
-        
         DesactivateUI();
-    }
-
-    public void EndMiniGame()
-    {
-        //CloseDoors();
+        OpenDoors();
+        UpdateCameraZoom();
     }
 
     public void OpenDoors()
@@ -48,6 +39,7 @@ public class Grange : Build
         gate1.transform.rotation = Quaternion.Euler(gate1_Open);
         gate2.transform.rotation = Quaternion.Euler(gate2_Open);
         gateState = true;
+        keyCloseGate.SetActive(false);
     }
     
     public void CloseDoors()
@@ -55,35 +47,97 @@ public class Grange : Build
         gate1.transform.rotation = Quaternion.Euler(gate1_Close);
         gate2.transform.rotation = Quaternion.Euler(gate2_Close);
         gateState = false;
+        keyCloseGate.SetActive(true);
     }
 
     public void AddSheepInGrange()
     {
         nbSheepInGrange++;
+        UpdateCameraZoom();
+    }
+    
+    private void UpdateCameraZoom()
+    {
+        int totalSheep = GameData.instance.nbSheep;
+        Debug.Log("Total sheep: " + totalSheep);
+
+        if (nbSheepInGrange >= totalSheep && totalSheep > 0)
+        {
+            BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
+            
+            CloseDoors();
+            ZoomCamera();
+        }
+        else
+        {
+            OpenDoors();
+            MiniGameCamera();
+        }
     }
 
-    void ZoomCamera()
+    private void ZoomCamera()
     {
-        GameManager.instance.ChangeCameraPos(GameManager.instance.GetMiniGameZoomCamPos().position, GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles, transform);
+        GameManager.instance.ChangeCameraPos(
+            GameManager.instance.GetMiniGameZoomCamPos().position,
+            GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles,
+            transform
+        );
+    }
+
+    private void MiniGameCamera()
+    {
+        GameManager.instance.ChangeCameraPos(
+            GameManager.instance.GetMiniGameCamPos().position,
+            GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles,
+            transform
+        );
     }
 
     private void Update()
     {
-        sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame);
-        
-        if (GameManager.instance.sheepList.Count == 0)
-        {
-            keyCloseGate.SetActive(true);
-            ZoomCamera();
-            CloseDoors();
-        }
-        else
-        {
-            keyCloseGate.SetActive(false);
-        }
+        Debug.Log(AllSheepAreOutside);
+
+        sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
     }
     
-    public Poutre GetPoutre(){return  poutre;}
+    public Poutre GetPoutre() { return poutre; }
+    public Transform GetSheepDestroyer() { return sheepDestroyer.transform; }
     
-    public Transform GetSheepDestroyer(){return sheepDestroyer.transform;}
+    //Sortie animé
+    public void AnimSheepGetOffGrange(GameObject sheep)
+    {
+        float travelTime = 2f;
+        StartCoroutine(SmoothTravelSortie(sheep, endSpawnGetOffTransform.position, travelTime));
+    }
+
+    private IEnumerator SmoothTravelSortie(GameObject sheep, Vector3 targetPos, float duration)
+    {
+        if (sheep == null) yield break;
+
+        Vector3 startPos = sheep.transform.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            // interpolation fluide
+            t = t * t * (3f - 2f * t);
+
+            sheep.transform.position = Vector3.Lerp(startPos, targetPos, t);
+            sheep.transform.LookAt(targetPos); // fait regarder le mouton vers sa direction
+
+            yield return null;
+        }
+
+        sheep.transform.position = targetPos;
+
+        // 🐑 Active le comportement Boid à la fin
+        SheepBoid boid = sheep.GetComponent<SheepBoid>();
+        if (boid != null)
+            boid.enabled = true;
+    }
+
+
 }
