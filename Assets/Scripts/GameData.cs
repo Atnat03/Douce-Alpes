@@ -17,6 +17,8 @@ public class GameData : MonoBehaviour
     public bool isSheepInside = false;
     [SerializeField] public GameObject sheepPrefab;
     
+    [SerializeField] 
+    
     [Header("Saving data")]
     public double timeWhenLoad;
     public double timeSinceLastLoad;

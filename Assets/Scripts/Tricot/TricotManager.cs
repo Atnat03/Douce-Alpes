@@ -12,6 +12,7 @@ public class TricotManager : MonoBehaviour
     public UILineDrawer uiLineRenderer;
     public UILineDrawer modelLineRenderer;
     public RectTransform[] _3x3Ui;
+    public Button sellButton;
     
     [Header("Settings")]
     public float fillSpeed = 2f;
@@ -21,6 +22,8 @@ public class TricotManager : MonoBehaviour
     private List<int> currentPassagePoint = new List<int>();
     private List<ModelDraw> currentPattern = new List<ModelDraw>();
     private int currentModel = 0;
+    private int currentPriceSell = 0;
+    private int currentWhoolUse = 0;
     private int numberModelOfThisPattern = 0;
     private bool canShowNext = true;
     private float targetFill = 0f;
@@ -60,6 +63,8 @@ public class TricotManager : MonoBehaviour
             if (imageProduct.fillAmount > targetFill)
                 imageProduct.fillAmount = targetFill;
         }
+        
+        
     }
 
     public void SetHover(bool hover)
@@ -163,12 +168,17 @@ public class TricotManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Pattern terminé !");
+            Debug.Log("Pattern terminé !");         
             if (modelLineRenderer != null)
             {
                 modelLineRenderer.points = new Vector2[0];
                 modelLineRenderer.SetVerticesDirty();
                 modelLineRenderer.enabled = false;
+            }
+            
+            if (sellButton != null)
+            {
+                sellButton.gameObject.SetActive(true);
             }
         }
     }
@@ -236,19 +246,29 @@ public class TricotManager : MonoBehaviour
 
     public void InitalizePattern(ModelDrawSO patternSO)
     {
+        if (!PlayerMoney.instance.isEnoughtWhool(patternSO.whoolToUse))
+        {
+            Debug.LogError("Pas assez de laine pour completer le produit");
+            return;
+        }
+        
         currentPattern = patternSO.pattern;
         numberModelOfThisPattern = currentPattern.Count;
         currentModel = 0;
         currentPassagePoint.Clear();
         linePoints.Clear();
         targetFill = 0f;
+        currentPriceSell = patternSO.sellPrice;
+        currentWhoolUse = patternSO.whoolToUse;
 
         if (imageProduct != null)
         {
             imageProduct.sprite = patternSO.image;
             imageProduct.fillAmount = 0f;
         }
-
+        
+        sellButton.gameObject.SetActive(false);
+        
         ResetDrawing();
 
         if (currentPattern.Count > 0)
@@ -265,5 +285,27 @@ public class TricotManager : MonoBehaviour
         ResetDrawing();
         canShowNext = true;
         Debug.Log("Nouveau modèle : " + string.Join(",", model.pointsList));
+    }
+
+    public void SellProduct()
+    {
+        PlayerMoney.instance.AddMoney(currentPriceSell);
+        PlayerMoney.instance.AddWhool(-currentWhoolUse);
+        
+        currentPattern = null;
+        numberModelOfThisPattern = 0;
+        currentModel = 0;
+        currentPassagePoint.Clear();
+        linePoints.Clear();
+        targetFill = 0f;
+        currentPriceSell = 0;
+
+        if (imageProduct != null)
+        {
+            imageProduct.sprite = null;
+            imageProduct.fillAmount = 0f;
+        }
+        
+        sellButton.gameObject.SetActive(false);
     }
 }

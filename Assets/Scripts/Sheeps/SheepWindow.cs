@@ -10,7 +10,8 @@ public class SheepWindow : MonoBehaviour
     
     [Header("UI")] 
     [SerializeField] private InputField nameText;
-    private int currentSkin;
+    private int currentSkinHat;
+    private int currentSkinClothe;
     private int sheepId;
 
     public bool isOpen = false;
@@ -20,9 +21,14 @@ public class SheepWindow : MonoBehaviour
         instance = this;
     }
 
-    public void SetNewCurrentSkin(int id)
+    public void SetNewCurrentSkinHat(int id)
     {
-        GameManager.instance.GetSheep(sheepId).SetCurrentSkin(id);
+        GameManager.instance.GetSheep(sheepId).SetCurrentSkinHat(id);
+    }
+    
+    public void SetNewCurrentSkinClothe(int id)
+    {
+        GameManager.instance.GetSheep(sheepId).SetCurrentSkinClothe(id);
     }
     
     public InputField GetInputField(){return nameText;}
@@ -32,14 +38,15 @@ public class SheepWindow : MonoBehaviour
         return sheepId;
     }
 
-    public void Initialize(string name, int currentSkin, int sheepId)
+    public void Initialize(string name, int currentSkinHat, int currentSkinClothe, int sheepId)
     {
         isOpen = true;
         
         nameText.text = name;
-        this.currentSkin = currentSkin;
+        this.currentSkinHat = currentSkinHat;
+        this.currentSkinClothe = currentSkinClothe;
         
-        Debug.Log(this.currentSkin);
+        Debug.Log(this.currentSkinHat +  " / " + this.currentSkinClothe);
         
         this.sheepId = sheepId;
         //skinManager.SetCurrentSkin(this.currentSkin);
@@ -48,7 +55,8 @@ public class SheepWindow : MonoBehaviour
     public void ResetValue()
     {
         isOpen = false;
-        currentSkin = -1;
+        currentSkinHat = -1;
+        currentSkinClothe = -1;
         sheepId = -1;
     }
 }

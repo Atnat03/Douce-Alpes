@@ -83,6 +83,8 @@ public class TonteManager : MiniGameParent
     {
         if (currentSheep != null)
         {
+            PlayerMoney.instance.AddWhool(100);
+            
             StartCoroutine(SendToDestroy(currentSheep));
         }
     }
