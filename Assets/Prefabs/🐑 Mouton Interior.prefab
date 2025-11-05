@@ -4916,15 +4916,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sheepId: 0
   sheepName: Antoine
-  currentSkin: 2
+  currentSkinHat: 0
+  currentSkinClothe: 0
   hasLaine: 1
   isBeingCaressed: 0
+  isOpen: 0
   doubleClickThreshold: 0.3
   cameraPosition: {fileID: 8021794831766881929}
   heartParticle: {fileID: 9111622071756502919}
-  spawnParticleCaresse: {fileID: 6863644733935078796}
   skinListManager: {fileID: 3199422249654108566}
-  laine: {fileID: 559622738346025117}
+  laine: {fileID: 0}
 --- !u!1 &3480828354281721098
 GameObject:
   m_ObjectHideFlags: 0
@@ -5438,11 +5439,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.515
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.25
+      value: 0.075
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5480,6 +5481,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 17330062676665839, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc3f63fecc5c4a9468fe95d44bb11597, type: 2}
     - target: {fileID: 919132149155446097, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_Name
       value: Model
@@ -5492,37 +5497,15 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3672299806286417845, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2a926e58f9bf9d7499a750ef0e0c9bee, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3645459133028859887, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1833723673813902993}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
---- !u!1 &559622738346025117 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3645459133028859887, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
-  m_PrefabInstance: {fileID: 3842529453925982066}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1833723673813902993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 559622738346025117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 0.6443304, b: 0, a: 1}
-  outlineWidth: 2
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!4 &3664189928310749337 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}

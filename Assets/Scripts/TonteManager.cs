@@ -21,6 +21,8 @@ public class TonteManager : MiniGameParent
 
     [SerializeField] private Button backButton;
 
+    [SerializeField] private GameObject particleTonte;
+
     private void Awake()
     {
         SwapSceneManager.instance.SwapingTonteScene += Initialize;
@@ -47,8 +49,6 @@ public class TonteManager : MiniGameParent
 
     public void Tondre()
     {
-        currentSheep.GetComponent<SheepTonteScene>().Tonte();
-        
         SheepData sheepData = GameData.instance.sheepDestroyData[sheepIndex-1];
         sheepData.hasWhool = false;
     }
@@ -116,7 +116,12 @@ public class TonteManager : MiniGameParent
 
         target.position = destination;
     }
-
+    
+    private void SetEffectPositionToFingerPosition(Vector3 pos)
+    {
+        particleTonte.transform.position = pos;
+    }
+    
     void ExitScene()
     {
         SwapSceneManager.instance.SwapScene(0);
@@ -129,4 +134,15 @@ public class TonteManager : MiniGameParent
 
         tonteButton.onClick.RemoveListener(EndTonte);
     }
+
+    private void OnEnable()
+    {
+        TouchManager.instance.OnGetFingerPosition += SetEffectPositionToFingerPosition;
+    }
+    
+    private void OnDisable()
+    {
+        TouchManager.instance.OnGetFingerPosition -= SetEffectPositionToFingerPosition;
+    }
+
 }

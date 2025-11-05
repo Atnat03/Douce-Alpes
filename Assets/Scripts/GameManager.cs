@@ -250,7 +250,7 @@ public class GameManager : MonoBehaviour
     {
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
 
-        buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
+        //buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
     }
 
     public void AddAllSheep() 

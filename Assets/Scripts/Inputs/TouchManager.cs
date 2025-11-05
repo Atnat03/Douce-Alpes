@@ -10,6 +10,7 @@ public class TouchManager : MonoBehaviour
     public static TouchManager instance;
 
     public Action<Vector3> OnCleanTouch;
+    public Action<Vector3> OnGetFingerPosition;
 
     public PlayerInput playerInput;
 
@@ -94,11 +95,11 @@ public class TouchManager : MonoBehaviour
 
     private void Update()
     {
+        Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        
         if (GameManager.instance.currentCameraState == CamState.MiniGame)
         {
-            Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
-            Ray ray = Camera.main.ScreenPointToRay(screenPos);
-
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 if (hit.transform.CompareTag("Field"))
@@ -112,6 +113,11 @@ public class TouchManager : MonoBehaviour
         {
             if(sphereSheepLeak != null)
                 sphereSheepLeak.SetActive(false);
+        }
+        
+        if (Physics.Raycast(ray, out RaycastHit hit2))
+        {
+            OnGetFingerPosition?.Invoke(hit2.point);
         }
     }
     
