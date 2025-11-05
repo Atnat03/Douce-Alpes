@@ -150,11 +150,15 @@ public class GameManager : MonoBehaviour
             if(sheep != null) sheep.StopAgentAndDesactivateScript(false);
                     
             sheepWidow.SetActive(false);
+            sheep.isOpen = false;
             SheepWindow.instance.ResetValue();
         }
         
         if(currentCameraState == CamState.MiniGame)
             endMiniGame?.Invoke();
+        
+        if(isLock)
+            DelockSheep();
         
         currentCameraState = CamState.Default;
     }
@@ -197,18 +201,14 @@ public class GameManager : MonoBehaviour
 
     public void LockCamOnSheep(Sheep sheep)
     {
-        if (currentCameraState != CamState.Default)
-            return;
-        
         if(curLockSheep == null)
         {
             isLock = true;
-
             SheepClicked?.Invoke(sheep);
-
             curLockSheep = sheep;
         }
     }
+
 
     public void DelockSheep()
     {

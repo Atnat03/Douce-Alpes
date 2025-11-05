@@ -67,14 +67,16 @@ public class TouchManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
-        {            
+        {    
             if (GameManager.instance.isLock && !delockArea.Contains(screenPos))
             {
                 Debug.Log("Force delock");
                 GameManager.instance.DelockSheep();
             }
-
+            
             currentTouchedObject = hit.transform.gameObject;
+            
+            Debug.Log(currentTouchedObject.transform.name);
         }
     }
 

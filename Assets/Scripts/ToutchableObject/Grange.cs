@@ -25,6 +25,11 @@ public class Grange : Build
     public Transform endSpawnGetOffTransform;
 
     public bool AllSheepAreOutside = true;
+
+    void Start()
+    {
+        OpenDoors();
+    }
     
     public void LaunchMiniGame()
     {

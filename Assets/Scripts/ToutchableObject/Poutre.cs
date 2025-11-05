@@ -9,6 +9,8 @@ public class Poutre : MonoBehaviour
     [SerializeField] SwipeDetection swipeDetection;
     [SerializeField] private Grange grange;
     
+    [SerializeField] private ParticleSystem touchGroundEffect;
+    
     Vector3 Startpos;
 
     private void Start()
@@ -47,7 +49,7 @@ public class Poutre : MonoBehaviour
 
     IEnumerator WaitALittle()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
                     
         grange.OpenDoors();
         GameManager.instance.SheepGetOutGrange();
@@ -70,4 +72,17 @@ public class Poutre : MonoBehaviour
             SwipeDetection.instance.OnSwipeDetected += GetOffPoutre;
     }
     void OnDisable() { SwipeDetection.instance.OnSwipeDetected -= GetOffPoutre; }
+    
+    public void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            ContactPoint contact = other.contacts[0];
+            Vector3 pointDeCollision = contact.point;
+            
+            touchGroundEffect.transform.position = pointDeCollision;
+            
+            touchGroundEffect.Play();
+        }
+    }
 }

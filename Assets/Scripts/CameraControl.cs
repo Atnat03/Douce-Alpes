@@ -38,7 +38,6 @@ public class CameraControl : MonoBehaviour
     private float zoom;
     private Vector3 center = Vector3.zero;
 
-    // Pour l'inertie
     private Vector3 targetPosition;
     private Vector3 velocity = Vector3.zero;
     
@@ -116,13 +115,15 @@ public class CameraControl : MonoBehaviour
 
     private void ApplyBounds()
     {
-        if (!boundsCollider.bounds.Contains(targetPosition))
-        {
-            Vector3 closest = boundsCollider.ClosestPoint(targetPosition);
-            targetPosition = Vector3.Lerp(targetPosition, closest, bounceStrength * Time.deltaTime);
-        }
-    }
+        if(boundsCollider == null) return;
 
+        Vector3 pos = targetPosition;
+        Vector3 closest = boundsCollider.ClosestPoint(targetPosition);
+
+        closest.y = pos.y;
+
+        targetPosition = Vector3.Lerp(pos, closest, bounceStrength * Time.deltaTime);
+    }
 
     private void OnDrawGizmos()
     {
