@@ -76,8 +76,6 @@ public class TouchManager : MonoBehaviour
             }
             
             currentTouchedObject = hit.transform.gameObject;
-            
-            Debug.Log(currentTouchedObject.transform.name);
         }
     }
 

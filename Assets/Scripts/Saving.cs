@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[DefaultExecutionOrder(-2)]
 public class Saving : MonoBehaviour
 {
     public static Saving instance;

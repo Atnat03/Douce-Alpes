@@ -319,6 +319,8 @@ public class GameManager : MonoBehaviour
 
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
+
+        GameData.instance.StartMiniGameCooldown(TypeAmelioration.Rentree);
     }
     
     //Abreuvoir

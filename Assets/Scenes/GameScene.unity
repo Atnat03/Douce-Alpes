@@ -1443,6 +1443,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 586839804}
     m_Modifications:
+    - target: {fileID: 183746120565829467, guid: f499995b7cb23fa498f61e60c0ab866b, type: 3}
+      propertyPath: m_VolumeLayerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 2769668051876437587, guid: f499995b7cb23fa498f61e60c0ab866b, type: 3}
       propertyPath: orthographic size
       value: 0.58
@@ -1461,7 +1465,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3377703406059319706, guid: f499995b7cb23fa498f61e60c0ab866b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.542
       objectReference: {fileID: 0}
     - target: {fileID: 3377703406059319706, guid: f499995b7cb23fa498f61e60c0ab866b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2896,7 +2900,7 @@ Transform:
   m_GameObject: {fileID: 189825326}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0}
+  m_LocalPosition: {x: 0, y: 2.5, z: -0.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2922,7 +2926,7 @@ MonoBehaviour:
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 3959
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
@@ -8036,7 +8040,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -800}
+  m_AnchoredPosition: {x: 11, y: -1033}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &565186320
@@ -8229,7 +8233,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &586839804
 Transform:
   m_ObjectHideFlags: 0
@@ -11251,7 +11255,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000022888, y: -625}
+  m_AnchoredPosition: {x: 11, y: -858}
   m_SizeDelta: {x: 396.53, y: 74.3496}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &755267442
@@ -25982,6 +25986,7 @@ GameObject:
   - component: {fileID: 1724283568}
   - component: {fileID: 1724283569}
   - component: {fileID: 1724283570}
+  - component: {fileID: 1724283571}
   m_Layer: 0
   m_Name: GameData
   m_TagString: Untagged
@@ -26005,6 +26010,7 @@ MonoBehaviour:
   nbSheep: 2
   isSheepInside: 0
   sheepPrefab: {fileID: 2722875930628605413, guid: cdd3d81a5a15a6e44aecf4f426d06e53, type: 3}
+  coolDownTimers: 000000000000000000000000000000000000000000000000
   timeWhenLoad: 0
   timeSinceLastLoad: 0
   unlockedSkinIDs: 00000000010000000200000003000000
@@ -26101,6 +26107,22 @@ MonoBehaviour:
   txtMoney: {fileID: 1670251564}
   currentWhool: 0
   txtWhool: {fileID: 645624968}
+--- !u!114 &1724283571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724283565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f10c7e86d45ba54fb78067b55b26cf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grangeButton: {fileID: 1132608115}
+  grangeMiniGameText: {fileID: 1700545448}
+  tonteMiniGameText: {fileID: 283137332}
+  cleanMiniGameText: {fileID: 437534144}
 --- !u!1 &1727989087
 GameObject:
   m_ObjectHideFlags: 0
@@ -28726,7 +28748,7 @@ GameObject:
   - component: {fileID: 1918023992}
   - component: {fileID: 1918023991}
   m_Layer: 7
-  m_Name: Particle System
+  m_Name: TonteParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28741,7 +28763,7 @@ Transform:
   m_GameObject: {fileID: 1918023989}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.0027760516, z: -0, w: 0.9999962}
-  m_LocalPosition: {x: 0.128, y: 1.246, z: 10.036}
+  m_LocalPosition: {x: -0.44, y: 1.12, z: 1.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29078,7 +29100,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.2
+      scalar: 0.3
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -29714,7 +29736,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5.31
+      scalar: 50
       minScalar: 0
       maxCurve:
         serializedVersion: 2
