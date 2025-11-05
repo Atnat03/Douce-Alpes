@@ -212,6 +212,8 @@ public class GameManager : MonoBehaviour
 
     public void DelockSheep()
     {
+        if (curLockSheep.isOpen) return;
+        
         cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetCameraLock(curLockSheep);
         
         curLockSheep = null;
@@ -319,8 +321,6 @@ public class GameManager : MonoBehaviour
 
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
-
-        GameData.instance.StartMiniGameCooldown(TypeAmelioration.Rentree);
     }
     
     //Abreuvoir

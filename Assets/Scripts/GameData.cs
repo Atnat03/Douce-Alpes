@@ -14,13 +14,16 @@ public class GameData : MonoBehaviour
 {
     public static GameData instance;
 
-    public Action<TypeAmelioration, float> OnCooldownUpdated;
+    public Action<TypeAmelioration, float, bool> OnCooldownUpdated;
     public Action<TypeAmelioration> OnCooldownFinish;
 
     [HideInInspector] public List<SheepData> sheepDestroyData = new ();
     public int nbSheep;
     public bool isSheepInside = false;
     [SerializeField] public GameObject sheepPrefab;
+
+    public bool hasTonte = false;
+    public bool hasClean = false;
 
     [SerializeField] public int[] coolDownTimers;
 
@@ -175,16 +178,19 @@ public class GameData : MonoBehaviour
     {
         float time = GetCooldownUpgrade(type);
         Debug.Log("Start Timer for " + type);
-        StartCoroutine(CooldownCoroutine(type, time));
+
+        bool state = GetCurrentStateToNextMiniGame(type);
+        
+        StartCoroutine(CooldownCoroutine(type, time, state));
     }
 
-    private IEnumerator CooldownCoroutine(TypeAmelioration type, float remainingTime)
+    private IEnumerator CooldownCoroutine(TypeAmelioration type, float remainingTime, bool state = true)
     {
         SetCooldownTimer(type, (int)remainingTime);
 
         while (remainingTime > 0)
         {
-            OnCooldownUpdated?.Invoke(type, remainingTime);
+            OnCooldownUpdated?.Invoke(type, remainingTime, state);
             yield return new WaitForSeconds(1f);
             remainingTime -= 1f;
 
@@ -194,6 +200,21 @@ public class GameData : MonoBehaviour
         SetCooldownTimer(type, 0);
         OnCooldownFinish?.Invoke(type);
         Debug.Log($"{type} cooldown finished");
+    }
+
+    bool GetCurrentStateToNextMiniGame(TypeAmelioration type)
+    {
+        switch (type)
+        {
+            case TypeAmelioration.Tonte:
+                return isSheepInside;
+            case TypeAmelioration.Nettoyage:
+                return hasTonte;
+            case TypeAmelioration.Sortie:
+                return hasClean;
+        }
+
+        return true;
     }
 
     #endregion

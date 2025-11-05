@@ -5,6 +5,15 @@ public class MiniGameParent : MonoBehaviour
     public void EndMiniGame(TypeAmelioration type)
     {
         BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(type));
+        
+        GameData.instance.StartMiniGameCooldown(type);
+    }
+
+    public static void EndMiniGameGrange(TypeAmelioration type)
+    {
+        BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(type));
+        
+        GameData.instance.StartMiniGameCooldown(type);
     }
 
     public static bool CheckIfCanUpgrade(TypeAmelioration type)

@@ -8,6 +8,8 @@ public class TimerManager : MonoBehaviour
     
     [Header("Buttons")] 
     [SerializeField] public Button grangeButton;
+    [SerializeField] public Button tonteButton;
+    [SerializeField] public Button cleanButton;
     
     [Header("Text")]
     [SerializeField] public Text grangeMiniGameText;
@@ -29,7 +31,7 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    private void UpdateCooldownUI(TypeAmelioration type, float remainingTime)
+    private void UpdateCooldownUI(TypeAmelioration type, float remainingTime, bool state = true)
     {
         int displayTime = Mathf.CeilToInt(remainingTime);
         switch (type)
@@ -38,11 +40,17 @@ public class TimerManager : MonoBehaviour
                 grangeMiniGameText.text = displayTime.ToString();
                 grangeButton.interactable = remainingTime <= 0;
                 break;
+            case TypeAmelioration.Sortie:
+                grangeMiniGameText.text = displayTime.ToString();
+                grangeButton.interactable = remainingTime <= 0;
+                break;
             case TypeAmelioration.Tonte:
                 tonteMiniGameText.text = displayTime.ToString();
+                tonteButton.interactable = remainingTime <= 0 && state;
                 break;
             case TypeAmelioration.Nettoyage:
                 cleanMiniGameText.text = displayTime.ToString();
+                cleanButton.interactable = remainingTime <= 0 && state;
                 break;
             default:
                 break;
@@ -57,11 +65,17 @@ public class TimerManager : MonoBehaviour
                 grangeMiniGameText.text = "Grange";
                 grangeButton.interactable = true;
                 break;
+            case TypeAmelioration.Sortie:
+                grangeMiniGameText.text = "Grange";
+                grangeButton.interactable = true;
+                break;
             case TypeAmelioration.Tonte:
                 tonteMiniGameText.text = "Tonte";
+                tonteButton.interactable = true;
                 break;
             case TypeAmelioration.Nettoyage:
                 cleanMiniGameText.text = "Nettoyage";
+                cleanButton.interactable = true;
                 break;
         }
     }

@@ -68,13 +68,16 @@ public class Grange : Build
 
         if (nbSheepInGrange >= totalSheep && totalSheep > 0)
         {
-            BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
+            MiniGameParent.EndMiniGameGrange(TypeAmelioration.Sortie);
             
             CloseDoors();
             ZoomCamera();
+            GameManager.instance.cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetPosition();
         }
         else
         {
+            MiniGameParent.EndMiniGameGrange(TypeAmelioration.Rentree);
+            
             OpenDoors();
             MiniGameCamera();
         }

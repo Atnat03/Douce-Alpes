@@ -1,5 +1,6 @@
 using UnityEngine;
 using DanielLochner.Assets.SimpleScrollSnap;
+using UnityEngine.UI;
 
 public class AddSkins : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class AddSkins : MonoBehaviour
     [SerializeField] private SkinScriptable skinData;
     [SerializeField] private GameObject skinPrefab;
     [SerializeField] private SimpleScrollSnapBridge scrollSnapBridge;
+    
+    [SerializeField] Sprite unselectedSprite;
+    [SerializeField] Sprite selectedSprite;
 
     [Header("Testing Mode")]
     [Tooltip("Quand activé, affiche tous les skins du ScriptableObject, même ceux non débloqués.")]
@@ -26,12 +30,18 @@ public class AddSkins : MonoBehaviour
             GameData.instance.OnSkinsUpdated += UpdateSkinsDisplay;
 
         UpdateSkinsDisplay();
-    }
 
+        if (snap != null)
+            snap.OnPanelCentered.AddListener(OnPanelCentered);
+    }
+    
     private void OnDestroy()
     {
         if (GameData.instance != null)
             GameData.instance.OnSkinsUpdated -= UpdateSkinsDisplay;
+
+        if (snap != null)
+            snap.OnPanelCentered.RemoveListener(OnPanelCentered);
     }
 
     private void UpdateSkinsDisplay()
@@ -39,11 +49,9 @@ public class AddSkins : MonoBehaviour
         if (snap == null || skinData == null)
             return;
 
-        // Nettoyage des anciens panels
         foreach (Transform child in snap.Content)
             Destroy(child.gameObject);
 
-        // Ajout des skins
         foreach (SkinSkelete skin in skinData.skins)
         {
             if (!isTesting && !GameData.instance.HasSkin(skin.id))
@@ -53,7 +61,7 @@ public class AddSkins : MonoBehaviour
             SkinUnit s = skinGO.GetComponent<SkinUnit>();
             s.id = skin.id;
             s.name = skin.name;
-            s.GetComponent<UnityEngine.UI.Image>().sprite = skin.logo;
+            s.transform.GetChild(0).GetComponent<Image>().sprite = skin.logo;
 
             scrollSnapBridge.AddExistingPanel(skinGO);
         }
@@ -79,21 +87,31 @@ public class AddSkins : MonoBehaviour
         return scrollSnapBridge.ScrollSnap.Panels[selectedIndex].gameObject;
     }
 
-    private void Update()
+    private void OnPanelCentered(int newIndex, int previousIndex)
     {
-        var selectedPanel = GetSelectedPanel();
-        if (selectedPanel == null) return;
-
-        int skinId = selectedPanel.GetComponent<SkinUnit>().id;
-
-        switch (skinType)
+        if (previousIndex >= 0 && previousIndex < snap.Panels.Length)
         {
-            case SkinType.Hat:
-                SheepWindow.instance.SetNewCurrentSkinHat(skinId);
-                break;
-            case SkinType.Clothe:
-                SheepWindow.instance.SetNewCurrentSkinClothe(skinId);
-                break;
+            Image prevImage = snap.Panels[previousIndex].GetComponent<Image>();
+            if (prevImage != null)
+                prevImage.sprite = unselectedSprite;
+        }
+
+        if (newIndex >= 0 && newIndex < snap.Panels.Length)
+        {
+            Image newImage = snap.Panels[newIndex].GetComponent<Image>();
+            if (newImage != null)
+                newImage.sprite = selectedSprite;
+
+            int skinId = snap.Panels[newIndex].GetComponent<SkinUnit>().id;
+            switch (skinType)
+            {
+                case SkinType.Hat:
+                    SheepWindow.instance.SetNewCurrentSkinHat(skinId);
+                    break;
+                case SkinType.Clothe:
+                    SheepWindow.instance.SetNewCurrentSkinClothe(skinId);
+                    break;
+            }
         }
     }
 }
