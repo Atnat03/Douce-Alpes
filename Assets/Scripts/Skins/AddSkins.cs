@@ -3,7 +3,10 @@ using DanielLochner.Assets.SimpleScrollSnap;
 
 public class AddSkins : MonoBehaviour
 {
-    [Header("Data Sources")]
+    public enum SkinType { Hat, Clothe }
+
+    [Header("Skin Settings")]
+    [SerializeField] private SkinType skinType;
     [SerializeField] private SkinScriptable skinData;
     [SerializeField] private GameObject skinPrefab;
     [SerializeField] private SimpleScrollSnapBridge scrollSnapBridge;
@@ -16,12 +19,11 @@ public class AddSkins : MonoBehaviour
 
     private void Awake()
     {
-        snap = scrollSnapBridge.ScrollSnap;
+        if (scrollSnapBridge != null)
+            snap = scrollSnapBridge.ScrollSnap;
 
         if (GameData.instance != null)
-        {
             GameData.instance.OnSkinsUpdated += UpdateSkinsDisplay;
-        }
 
         UpdateSkinsDisplay();
     }
@@ -34,18 +36,20 @@ public class AddSkins : MonoBehaviour
 
     private void UpdateSkinsDisplay()
     {
-        foreach (Transform child in snap.Content)
-        {
-            Destroy(child.gameObject);
-        }
+        if (snap == null || skinData == null)
+            return;
 
+        // Nettoyage des anciens panels
+        foreach (Transform child in snap.Content)
+            Destroy(child.gameObject);
+
+        // Ajout des skins
         foreach (SkinSkelete skin in skinData.skins)
         {
             if (!isTesting && !GameData.instance.HasSkin(skin.id))
                 continue;
 
-            // Création du skin
-            GameObject skinGO = Instantiate(skinPrefab);
+            GameObject skinGO = Instantiate(skinPrefab, snap.Content);
             SkinUnit s = skinGO.GetComponent<SkinUnit>();
             s.id = skin.id;
             s.name = skin.name;
@@ -54,29 +58,42 @@ public class AddSkins : MonoBehaviour
             scrollSnapBridge.AddExistingPanel(skinGO);
         }
 
-        RectTransform prefabRect = skinPrefab.GetComponent<RectTransform>();
+        ResizePanels(snap, skinPrefab);
+        snap.Setup();
+    }
+
+    private void ResizePanels(SimpleScrollSnap snap, GameObject prefab)
+    {
+        RectTransform prefabRect = prefab.GetComponent<RectTransform>();
         float panelWidth = snap.Viewport.rect.width / 5f;
         float panelHeight = prefabRect.rect.height / prefabRect.rect.width * panelWidth;
         snap.Size = new Vector2(panelWidth, panelHeight);
-
-        snap.Setup();
     }
 
     public GameObject GetSelectedPanel()
     {
-        if (scrollSnapBridge == null || scrollSnapBridge.scrollSnap == null)
+        if (scrollSnapBridge == null || scrollSnapBridge.ScrollSnap == null)
             return null;
 
-        int selectedIndex = scrollSnapBridge.scrollSnap.CenteredPanel;
-        return scrollSnapBridge.scrollSnap.Panels[selectedIndex].gameObject;
+        int selectedIndex = scrollSnapBridge.ScrollSnap.CenteredPanel;
+        return scrollSnapBridge.ScrollSnap.Panels[selectedIndex].gameObject;
     }
 
     private void Update()
     {
-        if (scrollSnapBridge.scrollSnap.Panels.Length == 0) return;
+        var selectedPanel = GetSelectedPanel();
+        if (selectedPanel == null) return;
 
-        SheepWindow.instance.SetNewCurrentSkin(
-            GetSelectedPanel().GetComponent<SkinUnit>().id
-        );
+        int skinId = selectedPanel.GetComponent<SkinUnit>().id;
+
+        switch (skinType)
+        {
+            case SkinType.Hat:
+                SheepWindow.instance.SetNewCurrentSkinHat(skinId);
+                break;
+            case SkinType.Clothe:
+                SheepWindow.instance.SetNewCurrentSkinClothe(skinId);
+                break;
+        }
     }
 }

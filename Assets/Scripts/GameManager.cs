@@ -14,7 +14,8 @@ public enum CamState
     LockSheep,
     MiniGame,
     Drink,
-    Dog
+    Dog,
+    Shop
 }
 
 [System.Serializable]
@@ -22,15 +23,17 @@ public class SheepData
 {
     public int id;
     public string name;
-    public int skin;
+    public int skinHat;
+    public int skinClothe;
 	public bool hasWhool;
     public NatureType nature;
 
-    public SheepData(int id, string name, int skin, bool hasWhool, NatureType nature)
+    public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature)
     {
         this.id = id;
         this.name = name;
-        this.skin = skin;
+        this.skinHat = skinHat;
+        this.skinClothe = skinClothe;
 		this.hasWhool = hasWhool;
         this.nature = nature;
     }
@@ -45,6 +48,7 @@ public class GameManager : MonoBehaviour
     public event Action<Vector3, Vector3, Transform> GrangeClicked;
     public event Action<Vector3, Vector3, Transform> AbreuvoirClicked;
     public event Action<Vector3, Vector3, Transform> NicheClicked;
+    public event Action<Vector3, Vector3, Transform, bool> OnClickOnShop;
 
     public event Action<GameObject> SheepEnter;
 
@@ -64,10 +68,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject uiStart;
     
-    [Header("Money")]
-    [SerializeField] private int currentMoney;
-    [SerializeField] Text txtMoney;
-    
     [Header("Sheep")]
     [SerializeField] private int SheepCount;
     [SerializeField] private GameObject sheepWidow;
@@ -86,9 +86,8 @@ public class GameManager : MonoBehaviour
     [Header("Abreuvoir")]
     [SerializeField] private Abreuvoir abreuvoir;
     [SerializeField] private Transform cameraPosAbreuvoir;
-        
+
     [Header("Shop")]
-    [SerializeField] private GameObject shopUI;
     public bool shopOpen = false;
     
     [Header("Caresse Config")]
@@ -116,8 +115,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         currentCameraState = CamState.Default;
-        
-        shopUI.SetActive(false);
         
         GameData.instance.nbSheep = sheepList.Count;
     }
@@ -174,7 +171,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ChangeCameraPos(Vector3 pos, Vector3 rot, Transform target)
+    public void ChangeCameraPos(Vector3 pos, Vector3 rot, Transform target, bool hidebutton = false)
     {
         switch (currentCameraState)
         {
@@ -189,6 +186,9 @@ public class GameManager : MonoBehaviour
                 break;
             case CamState.Dog:
                 NicheClicked?.Invoke(pos, rot, target);
+                break;
+            case CamState.Shop:
+                OnClickOnShop?.Invoke(pos,rot, target, hidebutton);
                 break;
             case CamState.Default:
                 break;
@@ -266,7 +266,7 @@ public class GameManager : MonoBehaviour
     {
         if (!sheepList.Contains(sheep)) Debug.LogError("Le mouton n'existe pas");
 
-        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkin, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType);
+        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkinHat,  sheep.currentSkinClothe, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType);
         GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);
@@ -319,22 +319,6 @@ public class GameManager : MonoBehaviour
 
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
-    }
-
-    
-    //Shop
-    public void ActivateShop()
-    {
-        shopOpen = true;
-        shopUI.SetActive(true);
-        ChangePlayerEnvironnement(false);
-    }
-
-    public void DeactivateShop()
-    {
-        shopOpen = false;
-        shopUI.SetActive(false);
-        ChangePlayerEnvironnement(true);
     }
     
     //Abreuvoir
