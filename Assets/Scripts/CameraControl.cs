@@ -41,6 +41,8 @@ public class CameraControl : MonoBehaviour
     // Pour l'inertie
     private Vector3 targetPosition;
     private Vector3 velocity = Vector3.zero;
+    
+    [SerializeField] private Collider boundsCollider;
 
     private void Awake() => inputs = new Movements();
 
@@ -50,7 +52,7 @@ public class CameraControl : MonoBehaviour
         zoom = zoomStart;
 
         cam.fieldOfView = zoom;
-        root.position = center + new Vector3(0, 7.5f, -40);
+        root.position = center + new Vector3(0, 7.5f, 0);
         root.localEulerAngles = new Vector3(angle, -60, 0);
 
         targetPosition = root.position;
@@ -114,21 +116,11 @@ public class CameraControl : MonoBehaviour
 
     private void ApplyBounds()
     {
-        Vector3 offset = Vector3.zero;
-
-        if (targetPosition.x < center.x - boundLeft)
-            offset.x = (center.x - boundLeft) - targetPosition.x;
-        else if (targetPosition.x > center.x + boundRight)
-            offset.x = (center.x + boundRight) - targetPosition.x;
-
-        if (targetPosition.z < center.z - boundDown)
-            offset.z = (center.z - boundDown) - targetPosition.z;
-        else if (targetPosition.z > center.z + boundUp)
-            offset.z = (center.z + boundUp) - targetPosition.z;
-
-        targetPosition += offset * bounceStrength * Time.deltaTime;
-
-        velocity *= Mathf.Exp(-bounceDamping * Time.deltaTime);
+        if (!boundsCollider.bounds.Contains(targetPosition))
+        {
+            Vector3 closest = boundsCollider.ClosestPoint(targetPosition);
+            targetPosition = Vector3.Lerp(targetPosition, closest, bounceStrength * Time.deltaTime);
+        }
     }
 
 

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LeftPosState : ICleaningState
@@ -8,7 +9,7 @@ public class LeftPosState : ICleaningState
     private int cleanValueToChange = 40;
 
     private int leftLayer;
-
+    
     public void EnterState(StateMachineClean managerC)
     {
         manager = managerC;
