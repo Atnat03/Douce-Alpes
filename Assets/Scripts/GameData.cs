@@ -37,7 +37,9 @@ public class GameData : MonoBehaviour
     public AmeliorationValueSO[] soUpgradeList;
 
     public Dictionary<TypeAmelioration, (AmeliorationValueSO, int)> dicoAmélioration = new();
-
+    
+    [HideInInspector] public TimerManager timer;
+    
     private void Awake()
     {
         instance = this;
@@ -59,6 +61,8 @@ public class GameData : MonoBehaviour
         };
         
         UpdateAllCooldownTimers();
+        
+        timer = GetComponent<TimerManager>();
     }
 
     private void SaveMyData()
@@ -202,7 +206,7 @@ public class GameData : MonoBehaviour
         Debug.Log($"{type} cooldown finished");
     }
 
-    bool GetCurrentStateToNextMiniGame(TypeAmelioration type)
+    public bool GetCurrentStateToNextMiniGame(TypeAmelioration type)
     {
         switch (type)
         {

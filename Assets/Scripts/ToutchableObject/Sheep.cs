@@ -9,6 +9,9 @@ public class Sheep : TouchableObject
     [SerializeField] public int currentSkinHat;
     [SerializeField] public int currentSkinClothe;
     [SerializeField] public bool hasLaine = true;
+    [SerializeField] public float processWool;
+
+    [SerializeField] public float curPuanteur = 0;
 
     [SerializeField] private bool isBeingCaressed = false;
     public bool IsBeingCaressed => isBeingCaressed;
@@ -34,6 +37,9 @@ public class Sheep : TouchableObject
     {
         sheepBoid = GetComponent<SheepBoid>();
         laine.GetComponent<Outline>().enabled = false;
+
+        processWool = Random.Range(50, 100);
+        curPuanteur = Random.Range(0, 50);
     }
 
     public void Initialize(int id, string name)
@@ -52,6 +58,37 @@ public class Sheep : TouchableObject
             transform.position = lockedPosition;
             transform.rotation = lockedRotation;
         }
+
+        if (!hasLaine)
+        {
+            Debug.Log("Process Laine");
+            ProcessWool();
+        }
+
+        if (curPuanteur < 100)
+        {
+            curPuanteur += 2 * Time.deltaTime;
+        }
+        else
+        {
+            curPuanteur = 100;
+        }
+    }
+
+    private void ProcessWool()
+    {
+        processWool -= 2 * Time.deltaTime;
+        
+        if (processWool <= 0)
+        {
+            hasLaine = true;
+            processWool = Random.Range(50, 100);
+        }
+    }
+
+    public void ResetPuanteur()
+    {
+        curPuanteur = Random.Range(0, 50);
     }
 
     public void CutWhool()
@@ -123,7 +160,7 @@ public class Sheep : TouchableObject
 
         while (Time.time - startTime < doubleClickThreshold)
         {
-            if (lastClickTime < 0f) yield break; // annule si double clic
+            if (lastClickTime < 0f) yield break;
             yield return null;
         }
 
@@ -137,16 +174,12 @@ public class Sheep : TouchableObject
     {
         isOpen = true;
 
-        // Verrouille la position et rotation pour que le mouton reste stable
         lockedPosition = transform.position;
         lockedRotation = Quaternion.Euler(0, 180, 0);
-
-        //StopAgentAndDesactivateScript(true);
 
         transform.position = lockedPosition;
         transform.rotation = lockedRotation;
 
-        // Lock la caméra si elle n'est pas déjà sur ce mouton
         if (GameManager.instance.getCurLockSheep() != this)
             GameManager.instance.LockCamOnSheep(this);
 

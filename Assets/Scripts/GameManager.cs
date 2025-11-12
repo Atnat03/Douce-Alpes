@@ -252,6 +252,8 @@ public class GameManager : MonoBehaviour
     {
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
 
+        CheckAllSheepHasWool();
+
         //buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
     }
 
@@ -277,7 +279,12 @@ public class GameManager : MonoBehaviour
         grange.AddSheepInGrange();
 
         if (sheepList.Count == 0)
+        {
             sheepList = new List<Sheep>();
+            GameData.instance.timer.canButtonG = false;
+            GameData.instance.timer.canButtonT = true;
+            GameData.instance.timer.UpdateAllButton();
+        }
         
         SheepEnter?.Invoke(sheep.gameObject);
     }
@@ -308,6 +315,8 @@ public class GameManager : MonoBehaviour
                 sheep.CutWhool();
             else
                 sheep.hasLaine = true;
+            
+            sheep.ResetPuanteur();
 
             newSheep.GetComponent<SheepBoid>().enabled = false;
 
@@ -328,5 +337,14 @@ public class GameManager : MonoBehaviour
     {
         ChangeCameraState(CamState.Drink);
         ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles, abreuvoir.transform);
+    }
+
+    public void CheckAllSheepHasWool()
+    {
+        foreach (Sheep s in sheepList)
+        {
+            if (!s.hasLaine)
+                GameData.instance.timer.canButtonT = false;
+        }
     }
 }

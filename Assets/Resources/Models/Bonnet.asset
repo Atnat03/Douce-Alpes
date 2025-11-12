@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Bonnet
   image: {fileID: 21300000, guid: 1025e35ca0b971a479a6575e8d1d5809, type: 3}
-  whoolToUse: 0
-  pattern: []
-  sellPrice: 100
+  pattern:
+  - pointsList: 010000000200000003000000
+    neededWool: 10
+  - pointsList: 01000000040000000700000008000000
+    neededWool: 10
+  sellPrice: 0
   unlockPrice: 0

@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class TricotModelFactory : EditorWindow
 {
     public string modelName = "";
     public Sprite logo = null;
-    public int woolToUse = 0;
     public List<ModelDraw> pattern = new List<ModelDraw>();
     public ModelDraw currentModelPattern =  new ModelDraw();
     public int sellPrice = 0;
     public int unlockPrice = 0;
+    public int woolUsed = 0;
     
     [MenuItem("Tools/TricotFactory")]
     public static void ShowWindow()
@@ -31,7 +32,6 @@ public class TricotModelFactory : EditorWindow
 
         modelName = EditorGUILayout.TextField("Model name", modelName);
         logo = EditorGUILayout.ObjectField("Logo", logo, typeof(Sprite), true) as Sprite;
-        woolToUse = EditorGUILayout.IntField("Wool to use", woolToUse);
         
         GUILayout.Space(16);
         
@@ -45,6 +45,8 @@ public class TricotModelFactory : EditorWindow
         GUILayout.BeginVertical();
         
         GUI.enabled = currentModelPattern.pointsList.Count > 0;
+        
+        woolUsed = EditorGUILayout.IntField("Add wool used", woolUsed);
         
         if (GUILayout.Button("Create Shape",GUILayout.Width(130), GUILayout.Height(40)))
         {
@@ -111,6 +113,7 @@ public class TricotModelFactory : EditorWindow
     public void AddCurrentModelToPattern()
     {
         Debug.Log($"Ajout de la nouvelle force au pattern de création");
+        currentModelPattern.neededWool = woolUsed;
         pattern.Add(currentModelPattern);
         currentModelPattern = new ModelDraw();
     }
@@ -156,7 +159,6 @@ public class TricotModelFactory : EditorWindow
         ModelDrawSO newSo = CreateInstance<ModelDrawSO>();
         newSo.name = modelName;
         newSo.image = logo;
-        newSo.whoolToUse = woolToUse;
         newSo.pattern = pattern;
         newSo.sellPrice = sellPrice;
         newSo.unlockPrice = unlockPrice;

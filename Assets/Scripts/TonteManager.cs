@@ -63,6 +63,10 @@ public class TonteManager : MiniGameParent
             backButton.gameObject.SetActive(true);
          
             EndMiniGame(TypeAmelioration.Tonte);
+
+            GameData.instance.timer.canButtonT = false;
+            GameData.instance.timer.canButtonC = true;
+            GameData.instance.timer.UpdateAllButton();
             
             return;
         }

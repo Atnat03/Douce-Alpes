@@ -14,6 +14,7 @@ public class CreateButtonModel : MonoBehaviour
         {
             Button newButton = Instantiate(buttonPrefab, transform).GetComponent<Button>();
             newButton.transform.name = product.name;
+            newButton.GetComponentInChildren<Text>().text = product.name;
             newButton.onClick.AddListener(()=> tricotManager.InitalizePattern(product));
         }
     }

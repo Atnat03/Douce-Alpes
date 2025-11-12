@@ -167,6 +167,9 @@ public class CleanManager : MiniGameParent
         hasLastPos = false;
 
         EndMiniGame(TypeAmelioration.Nettoyage);
+        GameData.instance.timer.canButtonG = true;
+        GameData.instance.timer.canButtonC = false;
+        GameData.instance.timer.UpdateAllButton();
         
         showerContour.SetActive(false);
         shampooContour.SetActive(true);

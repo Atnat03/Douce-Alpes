@@ -23,7 +23,6 @@ public class TricotManager : MonoBehaviour
     private List<ModelDraw> currentPattern = new List<ModelDraw>();
     private int currentModel = 0;
     private int currentPriceSell = 0;
-    private int currentWhoolUse = 0;
     private int numberModelOfThisPattern = 0;
     private bool canShowNext = true;
     private float targetFill = 0f;
@@ -158,6 +157,14 @@ public class TricotManager : MonoBehaviour
 
     private void NextModel()
     {
+        if (!PlayerMoney.instance.isEnoughtWhool(currentPattern[currentModel].neededWool))
+        {
+            Debug.LogError("Pas assez de laine pour completer le produit");
+            return;
+        }
+        
+        PlayerMoney.instance.AddWhool(-currentPattern[currentModel].neededWool);
+        
         currentModel++;
         targetFill = (float)currentModel / numberModelOfThisPattern;
 
@@ -246,12 +253,6 @@ public class TricotManager : MonoBehaviour
 
     public void InitalizePattern(ModelDrawSO patternSO)
     {
-        if (!PlayerMoney.instance.isEnoughtWhool(patternSO.whoolToUse))
-        {
-            Debug.LogError("Pas assez de laine pour completer le produit");
-            return;
-        }
-        
         currentPattern = patternSO.pattern;
         numberModelOfThisPattern = currentPattern.Count;
         currentModel = 0;
@@ -259,7 +260,6 @@ public class TricotManager : MonoBehaviour
         linePoints.Clear();
         targetFill = 0f;
         currentPriceSell = patternSO.sellPrice;
-        currentWhoolUse = patternSO.whoolToUse;
 
         if (imageProduct != null)
         {
@@ -290,7 +290,6 @@ public class TricotManager : MonoBehaviour
     public void SellProduct()
     {
         PlayerMoney.instance.AddMoney(currentPriceSell);
-        PlayerMoney.instance.AddWhool(-currentWhoolUse);
         
         currentPattern = null;
         numberModelOfThisPattern = 0;

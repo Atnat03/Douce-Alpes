@@ -6,8 +6,7 @@ using UnityEngine;
 public class ModelDrawSO : ScriptableObject
 {
     public string name;
-    public Sprite image;
-    public int whoolToUse;
+    public Sprite image; 
     public List<ModelDraw> pattern = new();
     public int sellPrice;
     public int unlockPrice;
@@ -17,4 +16,5 @@ public class ModelDrawSO : ScriptableObject
 public class ModelDraw
 {
     public List<int> pointsList = new();
+    public int neededWool;
 }

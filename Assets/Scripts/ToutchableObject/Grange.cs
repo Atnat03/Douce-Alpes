@@ -68,16 +68,11 @@ public class Grange : Build
 
         if (nbSheepInGrange >= totalSheep && totalSheep > 0)
         {
-            MiniGameParent.EndMiniGameGrange(TypeAmelioration.Sortie);
-            
             CloseDoors();
             ZoomCamera();
-            GameManager.instance.cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetPosition();
         }
         else
         {
-            MiniGameParent.EndMiniGameGrange(TypeAmelioration.Rentree);
-            
             OpenDoors();
             MiniGameCamera();
         }
@@ -128,18 +123,16 @@ public class Grange : Build
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
 
-            // interpolation fluide
             t = t * t * (3f - 2f * t);
 
             sheep.transform.position = Vector3.Lerp(startPos, targetPos, t);
-            sheep.transform.LookAt(targetPos); // fait regarder le mouton vers sa direction
+            sheep.transform.LookAt(targetPos); 
 
             yield return null;
         }
 
         sheep.transform.position = targetPos;
 
-        // 🐑 Active le comportement Boid à la fin
         SheepBoid boid = sheep.GetComponent<SheepBoid>();
         if (boid != null)
             boid.enabled = true;

@@ -16,6 +16,11 @@ public class TimerManager : MonoBehaviour
     [SerializeField] public Text tonteMiniGameText;
     [SerializeField] public Text cleanMiniGameText;
     
+    [Header("Bools")]
+    [SerializeField] public bool canButtonG = true;
+    [SerializeField] public bool canButtonT = false;
+    [SerializeField] public bool canButtonC = false;
+    
     private void OnEnable()
     {
         GameData.instance.OnCooldownUpdated += UpdateCooldownUI;
@@ -31,6 +36,24 @@ public class TimerManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        tonteButton.interactable = false;
+        cleanButton.interactable = false;
+    }
+
+    private void UpdateButtons(Button button, bool state, bool finishTimer = true)
+    {
+        button.interactable = state && finishTimer;
+    }
+
+    public void UpdateAllButton()
+    {
+        grangeButton.interactable = canButtonG;
+        tonteButton.interactable = canButtonT;
+        cleanButton.interactable = canButtonC;
+    }
+
     private void UpdateCooldownUI(TypeAmelioration type, float remainingTime, bool state = true)
     {
         int displayTime = Mathf.CeilToInt(remainingTime);
@@ -38,21 +61,19 @@ public class TimerManager : MonoBehaviour
         {
             case TypeAmelioration.Rentree:
                 grangeMiniGameText.text = displayTime.ToString();
-                grangeButton.interactable = remainingTime <= 0;
+                UpdateButtons(grangeButton, canButtonG, (remainingTime <= 0));
                 break;
             case TypeAmelioration.Sortie:
                 grangeMiniGameText.text = displayTime.ToString();
-                grangeButton.interactable = remainingTime <= 0;
+                UpdateButtons(grangeButton, canButtonG, (remainingTime <= 0));
                 break;
             case TypeAmelioration.Tonte:
                 tonteMiniGameText.text = displayTime.ToString();
-                tonteButton.interactable = remainingTime <= 0 && state;
+                UpdateButtons(tonteButton, canButtonT, (remainingTime <= 0));
                 break;
             case TypeAmelioration.Nettoyage:
                 cleanMiniGameText.text = displayTime.ToString();
-                cleanButton.interactable = remainingTime <= 0 && state;
-                break;
-            default:
+                UpdateButtons(cleanButton, canButtonC, (remainingTime <= 0));
                 break;
         }
     }
@@ -63,19 +84,19 @@ public class TimerManager : MonoBehaviour
         {
             case TypeAmelioration.Rentree:
                 grangeMiniGameText.text = "Grange";
-                grangeButton.interactable = true;
+                UpdateButtons(grangeButton, canButtonG);
                 break;
             case TypeAmelioration.Sortie:
                 grangeMiniGameText.text = "Grange";
-                grangeButton.interactable = true;
+                UpdateButtons(grangeButton, canButtonG);
                 break;
             case TypeAmelioration.Tonte:
                 tonteMiniGameText.text = "Tonte";
-                tonteButton.interactable = true;
+                UpdateButtons(grangeButton, canButtonT);
                 break;
             case TypeAmelioration.Nettoyage:
                 cleanMiniGameText.text = "Nettoyage";
-                cleanButton.interactable = true;
+                UpdateButtons(grangeButton, canButtonC);
                 break;
         }
     }
