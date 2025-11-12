@@ -57,11 +57,25 @@ public class CameraControl : MonoBehaviour
         targetPosition = root.position;
     }
 
+    private bool ignoreInput = false;
+
+    public void SetIgnoreInput(bool value)
+    {
+        ignoreInput = value;
+    }
+
+    public void SetTargetPosition(Vector3 pos)
+    {
+        targetPosition = pos;
+    }
+
     private void OnEnable() => inputs.Enable();
     private void OnDisable() => inputs.Disable();
 
     private void Update()
     {
+        if (ignoreInput) return;
+        
         // Zoom lissé
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, zoom, Time.deltaTime * zoomSmooth);
         cam.transform.position = root.position;

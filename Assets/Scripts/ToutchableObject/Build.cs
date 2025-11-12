@@ -13,6 +13,9 @@ public class Build : TouchableObject
     {
         if (GameManager.instance.shopOpen) return;
         
+        if(GameManager.instance.currentCameraState != CamState.Default)
+            return;
+        
         UI.SetActive(true);
         Invoke(nameof(DesactivateUI), 3f);
     }

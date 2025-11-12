@@ -1,34 +1,26 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ChangingCamera : MonoBehaviour
 {
-    [SerializeField] private float timerToTransition = 1f;
     [SerializeField] private Camera camera;
+    public float timerToTransition = 1f;
 
     private CameraControl control;
     private CameraFollow follow;
 
-    private float elapseTime;
-    private Vector3 savedRootPos;
-    private Quaternion savedPivotRot;
-    private Vector3 savedTargetPos;
-    private Vector3 savedCamPos;
-    private Quaternion savedCamRot;
-    
+    private Vector3 preTransitionCamPos;
+    private Quaternion preTransitionCamRot;
+    private Vector3 preTransitionRootPos;
+    private Quaternion preTransitionRootRot;
+
     private void Awake()
     {
         if (camera == null) camera = Camera.main;
-        if (control == null) control = GetComponent<CameraControl>();
-        if (follow == null) follow = GetComponent<CameraFollow>();
-
-        savedCamPos = camera.transform.position;
-        savedCamRot = camera.transform.rotation;
-        savedRootPos = control.root.position;
-        savedPivotRot = control.root.rotation;
+        control = GetComponent<CameraControl>();
+        follow = GetComponent<CameraFollow>();
     }
-
 
     private void OnEnable()
     {
@@ -38,10 +30,6 @@ public class ChangingCamera : MonoBehaviour
         GameManager.instance.AbreuvoirClicked += ChangeCamera;
         GameManager.instance.NicheClicked += ChangeCamera;
         GameManager.instance.OnClickOnShop += ChangeCamera;
-
-        control = GetComponent<CameraControl>();
-        follow = GetComponent<CameraFollow>();
-
     }
 
     private void OnDisable()
@@ -54,51 +42,36 @@ public class ChangingCamera : MonoBehaviour
         GameManager.instance.OnClickOnShop -= ChangeCamera;
     }
 
-    private IEnumerator SmoothTransition(Vector3 targetPos, Vector3 targetEuler, Transform target, bool reEnableControl = false, bool hideQuitButton = false)
+    private IEnumerator SmoothTransition(Vector3 targetPos, Vector3 targetEuler, Transform target, bool reEnableControl = false)
     {
-        elapseTime = 0f;
-        camera.fieldOfView = 45f;
-
-        savedRootPos = control.root.position;
-        savedPivotRot = control.root.localRotation;
-        savedCamPos = camera.transform.position;
-        savedCamRot = camera.transform.rotation;
+        // Sauvegarde de la position AVANT transition
+        preTransitionCamPos = camera.transform.position;
+        preTransitionCamRot = camera.transform.rotation;
+        preTransitionRootPos = control.root.position;
+        preTransitionRootRot = control.root.rotation;
 
         control.enabled = false;
         follow.enabled = false;
 
-        while (elapseTime < timerToTransition)
+        Quaternion targetRot = Quaternion.Euler(targetEuler);
+
+        while (Vector3.Distance(camera.transform.position, targetPos) > 0.01f ||
+               Quaternion.Angle(camera.transform.rotation, targetRot) > 0.1f)
         {
-            elapseTime += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, elapseTime / timerToTransition);
-
-            Vector3 newPos = Vector3.Lerp(savedCamPos, targetPos, t);
-            camera.transform.position = newPos;
-
-            Vector3 direction = (target.position - camera.transform.position).normalized;
-            Quaternion lookRot = Quaternion.LookRotation(direction);
-            camera.transform.rotation = Quaternion.Slerp(camera.transform.rotation, lookRot, Time.deltaTime * 10f);
-
+            camera.transform.position = Vector3.Lerp(camera.transform.position, targetPos, Time.deltaTime * 5f);
+            camera.transform.rotation = Quaternion.Slerp(camera.transform.rotation, targetRot, Time.deltaTime * 5f);
             yield return null;
         }
 
         camera.transform.position = targetPos;
-        camera.transform.LookAt(target);
+        camera.transform.rotation = targetRot;
 
-        if (reEnableControl)
-            control.enabled = true;
+        if (reEnableControl) control.enabled = true;
     }
 
     public void ChangeCamera(Vector3 newPosition, Vector3 rotation, Transform target)
     {
-        Debug.Log("ChangeCamera");
         StartCoroutine(SmoothTransition(newPosition, rotation, target));
-    }
-    
-    public void ChangeCamera(Vector3 newPosition, Vector3 rotation, Transform target, bool cameraVisible)
-    {
-        Debug.Log("ChangeCamera");
-        StartCoroutine(SmoothTransition(newPosition, rotation, target, false, cameraVisible));
     }
 
     public void LockCamOnSheep(Sheep sheep)
@@ -106,7 +79,7 @@ public class ChangingCamera : MonoBehaviour
         control.enabled = false;
         follow.enabled = true;
         follow.target = sheep.transform;
-        follow.offset = Camera.main.transform.position;
+        follow.offset = camera.transform.position;
         sheep.ChangeOutlineState(true);
     }
 
@@ -117,7 +90,6 @@ public class ChangingCamera : MonoBehaviour
 
         control.enabled = true;
         follow.enabled = false;
-        
         sheep.ChangeOutlineState(false);
     }
 
@@ -125,7 +97,6 @@ public class ChangingCamera : MonoBehaviour
     {
         StartCoroutine(SmoothReset());
     }
-
 
     private IEnumerator SmoothReset()
     {
@@ -146,23 +117,23 @@ public class ChangingCamera : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / timerToTransition);
 
-            camera.transform.position = Vector3.Lerp(startCamPos, savedCamPos, t);
-            camera.transform.rotation = Quaternion.Slerp(startCamRot, savedCamRot, t);
+            camera.transform.position = Vector3.Lerp(startCamPos, preTransitionCamPos, t);
+            camera.transform.rotation = Quaternion.Slerp(startCamRot, preTransitionCamRot, t);
 
-            control.root.position = Vector3.Lerp(startRootPos, savedRootPos, t);
-            control.root.rotation = Quaternion.Slerp(startRootRot, savedPivotRot, t);
+            control.root.position = Vector3.Lerp(startRootPos, preTransitionRootPos, t);
+            control.root.rotation = Quaternion.Slerp(startRootRot, preTransitionRootRot, t);
 
             yield return null;
         }
 
-        camera.transform.position = savedCamPos;
-        camera.transform.rotation = savedCamRot;
-        control.root.position = savedRootPos;
-        control.root.rotation = savedPivotRot;
+        camera.transform.position = preTransitionCamPos;
+        camera.transform.rotation = preTransitionCamRot;
+        control.root.position = preTransitionRootPos;
+        control.root.rotation = preTransitionRootRot;
 
+        yield return null;
+        
         control.enabled = true;
     }
-
-
 
 }

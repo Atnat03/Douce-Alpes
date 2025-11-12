@@ -54,9 +54,14 @@ public class Sheep : TouchableObject
 
         if (isOpen)
         {
-            // Maintenir mouton à la position et rotation verrouillées
+            sheepBoid.enabled = false;
+
             transform.position = lockedPosition;
             transform.rotation = lockedRotation;
+        }
+        else
+        {
+            sheepBoid.enabled = true;
         }
 
         if (!hasLaine)
@@ -141,7 +146,7 @@ public class Sheep : TouchableObject
 
             if (!isBeingCaressed && !sheepBoid.isAfraid)
             {
-                WidowOpen(); // ne touche plus au lock
+                WidowOpen();
             }
 
             lastClickTime = -1f;
@@ -191,7 +196,7 @@ public class Sheep : TouchableObject
         );
 
         Camera.main.GetComponent<CameraControl>().ResetFOV();
-
+        
         GameManager.instance.GetSheepWindow().SetActive(true);
         SheepWindow.instance.Initialize(sheepName, currentSkinHat, currentSkinClothe, sheepId);
     }

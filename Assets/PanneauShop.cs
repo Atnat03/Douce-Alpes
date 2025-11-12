@@ -24,6 +24,9 @@ public class PanneauShop : TouchableObject
 
     public override void TouchEvent()
     {
+        if (GameManager.instance.currentCameraState != CamState.Default)
+            return;
+        
         Debug.Log("Touch shop");
         
         if (!GameManager.instance.shopOpen)
@@ -37,7 +40,7 @@ public class PanneauShop : TouchableObject
         shopUI.SetActive(true);
         GameManager.instance.shopOpen = true;
         GameManager.instance.ChangeCameraState(CamState.Shop);
-        GameManager.instance.ChangeCameraPos(transformCamera.position, transformCamera.localEulerAngles, cameraLookTraveling, true);
+        GameManager.instance.ChangeCameraPos(transformCamera.position, transformCamera.localEulerAngles, cameraLookTraveling);
     }
 
     public void CloseUI()

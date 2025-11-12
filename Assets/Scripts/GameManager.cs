@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
     public event Action<Vector3, Vector3, Transform> GrangeClicked;
     public event Action<Vector3, Vector3, Transform> AbreuvoirClicked;
     public event Action<Vector3, Vector3, Transform> NicheClicked;
-    public event Action<Vector3, Vector3, Transform, bool> OnClickOnShop;
+    public event Action<Vector3, Vector3, Transform> OnClickOnShop;
 
     public event Action<GameObject> SheepEnter;
 
@@ -175,7 +175,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ChangeCameraPos(Vector3 pos, Vector3 rot, Transform target, bool hidebutton = false)
+    public void ChangeCameraPos(Vector3 pos, Vector3 rot, Transform target)
     {
         switch (currentCameraState)
         {
@@ -192,7 +192,7 @@ public class GameManager : MonoBehaviour
                 NicheClicked?.Invoke(pos, rot, target);
                 break;
             case CamState.Shop:
-                OnClickOnShop?.Invoke(pos,rot, target, hidebutton);
+                OnClickOnShop?.Invoke(pos,rot, target);
                 break;
             case CamState.Default:
                 break;

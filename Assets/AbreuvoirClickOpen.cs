@@ -7,16 +7,15 @@ public class AbreuvoirClickOpen : TouchableObject
 
     public override void TouchEvent()
     {
-        if (GameManager.instance.currentCameraState != CamState.Drink)
-        {
-            ActivateAbreuvoir();
-        }
+        if(GameManager.instance.currentCameraState != CamState.Default)
+            return;
+        
+        ActivateAbreuvoir();
     }
 
     private void ActivateAbreuvoir()
     {
-        GameManager.instance.shopOpen = true;
         GameManager.instance.ChangeCameraState(CamState.Drink);
-        GameManager.instance.ChangeCameraPos(camPos.transform.position, camPos.transform.localEulerAngles, abreuvoir.transform, false);
+        GameManager.instance.ChangeCameraPos(camPos.transform.position, camPos.transform.localEulerAngles, abreuvoir.transform);
     }
 }
