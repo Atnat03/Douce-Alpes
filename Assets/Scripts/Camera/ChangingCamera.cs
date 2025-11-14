@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -6,6 +5,7 @@ public class ChangingCamera : MonoBehaviour
 {
     [SerializeField] private Camera camera;
     public float timerToTransition = 1f;
+    public float transitionCooldown = 0.5f;
 
     private CameraControl control;
     private CameraFollow follow;
@@ -14,6 +14,9 @@ public class ChangingCamera : MonoBehaviour
     private Quaternion preTransitionCamRot;
     private Vector3 preTransitionRootPos;
     private Quaternion preTransitionRootRot;
+    private bool hasPreTransition = false;
+
+    private bool isInTransition = false;
 
     private void Awake()
     {
@@ -42,98 +45,218 @@ public class ChangingCamera : MonoBehaviour
         GameManager.instance.OnClickOnShop -= ChangeCamera;
     }
 
-    private IEnumerator SmoothTransition(Vector3 targetPos, Vector3 targetEuler, Transform target, bool reEnableControl = false)
+    // ----------------------------------------------------------------------
+    // assure toujours la continuité quaternion (même hémisphère)
+    // ----------------------------------------------------------------------
+    private static Quaternion EnsureShortest(Quaternion from, Quaternion to)
     {
-        // Sauvegarde de la position AVANT transition
+        if (Quaternion.Dot(from, to) < 0f)
+            to = new Quaternion(-to.x, -to.y, -to.z, -to.w);
+        return to;
+    }
+
+    // ----------------------------------------------------------------------
+    // Save de l'état courant (appelé aussi depuis LockCamOnSheep)
+    // ----------------------------------------------------------------------
+    private void SavePreTransitionState()
+    {
         preTransitionCamPos = camera.transform.position;
         preTransitionCamRot = camera.transform.rotation;
-        preTransitionRootPos = control.root.position;
-        preTransitionRootRot = control.root.rotation;
+        if (control != null && control.root != null)
+        {
+            preTransitionRootPos = control.root.position;
+            preTransitionRootRot = control.root.rotation;
+        }
+        hasPreTransition = true;
+    }
+
+    // ----------------------------------------------------------------------
+    // Transition linéaire sur timer (position + rotation + root)
+    // ----------------------------------------------------------------------
+    private IEnumerator SmoothTransition(
+        Vector3 targetCamPos,
+        Vector3 targetEuler,
+        Vector3 targetRootPos,
+        Quaternion targetRootRot,
+        bool reEnableControl = false)
+    {
+        isInTransition = true;
+
+        // Sauvegarde immédiate (pour pouvoir revenir)
+        SavePreTransitionState();
 
         control.enabled = false;
         follow.enabled = false;
+        control.SetIgnoreInput(true);
 
-        Quaternion targetRot = Quaternion.Euler(targetEuler);
+        // Préparer rotations cibles et garantir chemin le plus court
+        Quaternion startCamRot = camera.transform.rotation;
+        Quaternion targetCamRot = Quaternion.Euler(targetEuler);
+        targetCamRot = EnsureShortest(startCamRot, targetCamRot);
 
-        while (Vector3.Distance(camera.transform.position, targetPos) > 0.01f ||
-               Quaternion.Angle(camera.transform.rotation, targetRot) > 0.1f)
+        Quaternion startRootRot = control.root.rotation;
+        targetRootRot = EnsureShortest(startRootRot, targetRootRot);
+
+        Vector3 startCamPos = camera.transform.position;
+        Vector3 startRootPos = control.root.position;
+
+        float elapsed = 0f;
+        float duration = Mathf.Max(0.0001f, timerToTransition);
+
+        while (elapsed < duration)
         {
-            camera.transform.position = Vector3.Lerp(camera.transform.position, targetPos, Time.deltaTime * 5f);
-            camera.transform.rotation = Quaternion.Slerp(camera.transform.rotation, targetRot, Time.deltaTime * 5f);
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            // t est linéaire; si tu veux easing utiliser une courbe ici (ex : Mathf.SmoothStep)
+            camera.transform.position = Vector3.Lerp(startCamPos, targetCamPos, t);
+            camera.transform.rotation = Quaternion.Slerp(startCamRot, targetCamRot, t);
+
+            control.root.position = Vector3.Lerp(startRootPos, targetRootPos, t);
+            control.root.rotation = Quaternion.Slerp(startRootRot, targetRootRot, t);
+
             yield return null;
         }
 
-        camera.transform.position = targetPos;
-        camera.transform.rotation = targetRot;
+        // assurer valeur finale exacte
+        camera.transform.position = targetCamPos;
+        camera.transform.rotation = targetCamRot;
+        control.root.position = targetRootPos;
+        control.root.rotation = targetRootRot;
 
-        if (reEnableControl) control.enabled = true;
+        yield return new WaitForEndOfFrame();
+
+        if (reEnableControl)
+        {
+            control.enabled = true;
+            control.SetIgnoreInput(false);
+        }
+
+        yield return new WaitForSeconds(transitionCooldown);
+        isInTransition = false;
     }
 
-    public void ChangeCamera(Vector3 newPosition, Vector3 rotation, Transform target)
+    public void ChangeCamera(Vector3 newPosition, Vector3 rotationEuler, Transform target)
     {
-        StartCoroutine(SmoothTransition(newPosition, rotation, target));
+        if (!isInTransition)
+        {
+            StartCoroutine(
+                SmoothTransition(
+                    newPosition,
+                    rotationEuler,
+                    target.position,
+                    target.rotation
+                )
+            );
+        }
     }
 
+    // ----------------------------------------------------------------------
+    // Lock sur le mouton : IMPORTANT -> on sauvegarde l'état ici aussi
+    // ----------------------------------------------------------------------
     public void LockCamOnSheep(Sheep sheep)
     {
+        if (sheep == null) return;
+
+        // 🔥 IMPORTANT : on enregistre l'état AVANT que le mouton ne bouge
+        SavePreTransitionState();
+
         control.enabled = false;
+        control.SetIgnoreInput(true);
+
         follow.enabled = true;
         follow.target = sheep.transform;
-        follow.offset = camera.transform.position;
+
+        follow.offset = camera.transform.position - sheep.transform.position;
+
         sheep.ChangeOutlineState(true);
     }
+
 
     public void ResetCameraLock(Sheep sheep)
     {
         if (GameManager.instance.getCurLockSheep() != null)
-            GameManager.instance.getCurLockSheep().gameObject.GetComponent<Sheep>().isOpen = false;
+            GameManager.instance.getCurLockSheep().isOpen = false;
+
+        follow.enabled = false;
+        follow.target = null;
 
         control.enabled = true;
-        follow.enabled = false;
-        sheep.ChangeOutlineState(false);
+        control.SetIgnoreInput(false);
+
+        if (sheep != null)
+            sheep.ChangeOutlineState(false);
     }
 
+    // ----------------------------------------------------------------------
+    // RESET : utilise la sauvegarde (si existante) et interpolation linéaire
+    // ----------------------------------------------------------------------
     public void ResetPosition()
     {
-        StartCoroutine(SmoothReset());
+        if (!isInTransition && hasPreTransition)
+            StartCoroutine(SmoothReset());
     }
 
     private IEnumerator SmoothReset()
     {
-        float elapsed = 0f;
+        isInTransition = true;
+
+        // si pas de pré-état, on sort proprement
+        if (!hasPreTransition)
+        {
+            isInTransition = false;
+            yield break;
+        }
 
         Vector3 startCamPos = camera.transform.position;
         Quaternion startCamRot = camera.transform.rotation;
         Vector3 startRootPos = control.root.position;
         Quaternion startRootRot = control.root.rotation;
 
+        Vector3 targetCamPos = preTransitionCamPos;
+        Quaternion targetCamRot = preTransitionCamRot;
+        Vector3 targetRootPos = preTransitionRootPos;
+        Quaternion targetRootRot = preTransitionRootRot;
+
         control.enabled = false;
         follow.enabled = false;
-        
+        control.SetIgnoreInput(true);
+
         GameManager.instance.ResetCamera();
-    
-        while (elapsed < timerToTransition)
+
+        // forcer même hémisphère pour Slerp
+        targetCamRot = EnsureShortest(startCamRot, targetCamRot);
+        targetRootRot = EnsureShortest(startRootRot, targetRootRot);
+
+        float elapsed = 0f;
+        float duration = Mathf.Max(0.0001f, timerToTransition);
+
+        while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, elapsed / timerToTransition);
+            float t = Mathf.Clamp01(elapsed / duration);
 
-            camera.transform.position = Vector3.Lerp(startCamPos, preTransitionCamPos, t);
-            camera.transform.rotation = Quaternion.Slerp(startCamRot, preTransitionCamRot, t);
+            camera.transform.position = Vector3.Lerp(startCamPos, targetCamPos, t);
+            camera.transform.rotation = Quaternion.Slerp(startCamRot, targetCamRot, t);
 
-            control.root.position = Vector3.Lerp(startRootPos, preTransitionRootPos, t);
-            control.root.rotation = Quaternion.Slerp(startRootRot, preTransitionRootRot, t);
+            control.root.position = Vector3.Lerp(startRootPos, targetRootPos, t);
+            control.root.rotation = Quaternion.Slerp(startRootRot, targetRootRot, t);
 
             yield return null;
         }
 
-        camera.transform.position = preTransitionCamPos;
-        camera.transform.rotation = preTransitionCamRot;
-        control.root.position = preTransitionRootPos;
-        control.root.rotation = preTransitionRootRot;
+        camera.transform.position = targetCamPos;
+        camera.transform.rotation = targetCamRot;
+        control.root.position = targetRootPos;
+        control.root.rotation = targetRootRot;
 
-        yield return null;
-        
+        yield return new WaitForEndOfFrame();
+
         control.enabled = true;
-    }
+        follow.enabled = true;
+        control.SetIgnoreInput(false);
 
+        yield return new WaitForSeconds(transitionCooldown);
+        isInTransition = false;
+    }
 }

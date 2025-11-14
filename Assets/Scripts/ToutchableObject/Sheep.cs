@@ -66,7 +66,6 @@ public class Sheep : TouchableObject
 
         if (!hasLaine)
         {
-            Debug.Log("Process Laine");
             ProcessWool();
         }
 
@@ -142,8 +141,6 @@ public class Sheep : TouchableObject
 
         if (timeSinceLastClick <= doubleClickThreshold)
         {
-            Debug.Log("Double Clique");
-
             if (!isBeingCaressed && !sheepBoid.isAfraid)
             {
                 WidowOpen();
@@ -180,7 +177,7 @@ public class Sheep : TouchableObject
         isOpen = true;
 
         lockedPosition = transform.position;
-        lockedRotation = Quaternion.Euler(0, 180, 0);
+        lockedRotation = Quaternion.Euler(0, 120, 0);
 
         transform.position = lockedPosition;
         transform.rotation = lockedRotation;

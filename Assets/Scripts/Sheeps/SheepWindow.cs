@@ -46,10 +46,7 @@ public class SheepWindow : MonoBehaviour
         this.currentSkinHat = currentSkinHat;
         this.currentSkinClothe = currentSkinClothe;
         
-        Debug.Log(this.currentSkinHat +  " / " + this.currentSkinClothe);
-        
         this.sheepId = sheepId;
-        //skinManager.SetCurrentSkin(this.currentSkin);
     }
 
     public void ResetValue()
