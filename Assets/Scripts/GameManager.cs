@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     
     public event Action<Vector3, Vector3, Transform> SheepHold;
     public event Action<Sheep> SheepClicked;
-    public event Action<Vector3, Vector3, Transform> GrangeClicked;
+    public event Action<Vector3, Vector3, Transform, bool> GrangeClicked;
     public event Action<Vector3, Vector3, Transform> AbreuvoirClicked;
     public event Action<Vector3, Vector3, Transform> NicheClicked;
     public event Action<Vector3, Vector3, Transform> OnClickOnShop;
@@ -175,7 +175,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ChangeCameraPos(Vector3 pos, Vector3 rot, Transform target)
+    public void ChangeCameraPos(Vector3 pos, Vector3 rot, Transform target, bool isZoomGrange = false)
     {
         switch (currentCameraState)
         {
@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour
                 SheepHold?.Invoke(pos, rot, target);
                 break; 
             case CamState.MiniGame:
-                GrangeClicked?.Invoke(pos, rot, target);
+                GrangeClicked?.Invoke(pos, rot, target, isZoomGrange);
                 break;
             case CamState.Drink:
                 AbreuvoirClicked?.Invoke(pos, rot, target);

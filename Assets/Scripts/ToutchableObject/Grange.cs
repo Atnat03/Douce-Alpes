@@ -58,7 +58,12 @@ public class Grange : Build
     public void AddSheepInGrange()
     {
         nbSheepInGrange++;
-        UpdateCameraZoom();
+
+        if (nbSheepInGrange >= GameData.instance.nbSheep && GameData.instance.nbSheep >0)
+        {
+            Camera.main.gameObject.GetComponent<ChangingCamera>().ResetPosition();
+            CloseDoors();
+        }
     }
     
     private void UpdateCameraZoom()
@@ -83,7 +88,7 @@ public class Grange : Build
         GameManager.instance.ChangeCameraPos(
             GameManager.instance.GetMiniGameZoomCamPos().position,
             GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles,
-            transform
+            transform,true
         );
     }
 

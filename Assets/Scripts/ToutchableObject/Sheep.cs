@@ -143,6 +143,8 @@ public class Sheep : TouchableObject
         {
             if (!isBeingCaressed && !sheepBoid.isAfraid)
             {
+                if (GameManager.instance.currentCameraState != CamState.Default) return;
+                
                 WidowOpen();
             }
 

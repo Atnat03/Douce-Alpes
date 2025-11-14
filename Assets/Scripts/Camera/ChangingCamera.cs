@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ public class ChangingCamera : MonoBehaviour
     {
         GameManager.instance.SheepClicked += LockCamOnSheep;
         GameManager.instance.SheepHold += ChangeCamera;
-        GameManager.instance.GrangeClicked += ChangeCamera;
+        GameManager.instance.GrangeClicked += ChangeCameraZoomGrange;
         GameManager.instance.AbreuvoirClicked += ChangeCamera;
         GameManager.instance.NicheClicked += ChangeCamera;
         GameManager.instance.OnClickOnShop += ChangeCamera;
@@ -39,7 +40,7 @@ public class ChangingCamera : MonoBehaviour
     {
         GameManager.instance.SheepClicked -= LockCamOnSheep;
         GameManager.instance.SheepHold -= ChangeCamera;
-        GameManager.instance.GrangeClicked -= ChangeCamera;
+        GameManager.instance.GrangeClicked -= ChangeCameraZoomGrange;
         GameManager.instance.AbreuvoirClicked -= ChangeCamera;
         GameManager.instance.NicheClicked -= ChangeCamera;
         GameManager.instance.OnClickOnShop -= ChangeCamera;
@@ -69,7 +70,7 @@ public class ChangingCamera : MonoBehaviour
         }
         hasPreTransition = true;
     }
-
+    
     // ----------------------------------------------------------------------
     // Transition linéaire sur timer (position + rotation + root)
     // ----------------------------------------------------------------------
@@ -78,12 +79,13 @@ public class ChangingCamera : MonoBehaviour
         Vector3 targetEuler,
         Vector3 targetRootPos,
         Quaternion targetRootRot,
+        bool isGrangeZoom = false,
         bool reEnableControl = false)
     {
         isInTransition = true;
 
-        // Sauvegarde immédiate (pour pouvoir revenir)
-        SavePreTransitionState();
+        if(!isGrangeZoom)
+            SavePreTransitionState();
 
         control.enabled = false;
         follow.enabled = false;
@@ -150,15 +152,26 @@ public class ChangingCamera : MonoBehaviour
             );
         }
     }
-
-    // ----------------------------------------------------------------------
-    // Lock sur le mouton : IMPORTANT -> on sauvegarde l'état ici aussi
-    // ----------------------------------------------------------------------
+    
+    public void ChangeCameraZoomGrange(Vector3 newPosition, Vector3 rotationEuler, Transform target, bool isGrangeZoom = false)
+    {
+        if (!isInTransition)
+        {
+            StartCoroutine(
+                SmoothTransition(
+                    newPosition,
+                    rotationEuler,
+                    target.position,
+                    target.rotation,
+                    isGrangeZoom
+                )
+            );
+        }
+    }
     public void LockCamOnSheep(Sheep sheep)
     {
         if (sheep == null) return;
 
-        // 🔥 IMPORTANT : on enregistre l'état AVANT que le mouton ne bouge
         SavePreTransitionState();
 
         control.enabled = false;
@@ -188,9 +201,6 @@ public class ChangingCamera : MonoBehaviour
             sheep.ChangeOutlineState(false);
     }
 
-    // ----------------------------------------------------------------------
-    // RESET : utilise la sauvegarde (si existante) et interpolation linéaire
-    // ----------------------------------------------------------------------
     public void ResetPosition()
     {
         if (!isInTransition && hasPreTransition)
@@ -201,7 +211,6 @@ public class ChangingCamera : MonoBehaviour
     {
         isInTransition = true;
 
-        // si pas de pré-état, on sort proprement
         if (!hasPreTransition)
         {
             isInTransition = false;

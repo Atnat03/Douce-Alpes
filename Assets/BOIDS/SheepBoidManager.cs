@@ -11,7 +11,7 @@ public class SheepBoidManager : MonoBehaviour
     public static SheepBoidManager instance;
 
     [Header("Réglages généraux")]
-    public MeshCollider meshCollider; // Drag & drop ton mesh ici (non convex)
+    public MeshCollider meshCollider;
     public float boundaryForceDistance = 1.5f;
     public float boundaryWeight = 5f;
 
@@ -41,7 +41,7 @@ public class SheepBoidManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private InputField nameInputField;
-
+    
     private int nbInstantSheep = 0;
 
     private void Awake() => instance = this;
@@ -74,7 +74,6 @@ public class SheepBoidManager : MonoBehaviour
     int[] triangles = mesh.triangles;
     var edgeCount = new Dictionary<(int, int), int>();
 
-    // Étape 1 — déterminer les arêtes et leur fréquence
     for (int i = 0; i < triangles.Length; i += 3)
     {
         int a = triangles[i];
@@ -86,7 +85,6 @@ public class SheepBoidManager : MonoBehaviour
         AddEdge(edgeCount, c, a);
     }
 
-    // Étape 2 — trouver le centre du mesh (pour filtrer les points internes)
     Vector3 meshCenter = meshCollider.bounds.center;
     float maxDistance = 0f;
     foreach (var v in vertices)
@@ -95,7 +93,6 @@ public class SheepBoidManager : MonoBehaviour
         if (d > maxDistance) maxDistance = d;
     }
 
-    // Étape 3 — générer les points sur les arêtes de bordure
     int subdivisions = 3;
     HashSet<Vector3> uniquePoints = new HashSet<Vector3>();
 
@@ -181,10 +178,33 @@ public class SheepBoidManager : MonoBehaviour
         OnListChanged?.Invoke(sheep);
     }
 
+    private int nbDominant = 0;
+    private int nbPeureux = 0;
+    private int nbSolitaire = 0;
+    
     NatureType GetRandomNature()
     {
-        // Simplifié pour clarté
-        return NatureType.Standard;
+        float pD = 30 - nbDominant * 9;    
+        float pP = 20 - nbPeureux * 3.5f; 
+        float pSo = 45 - nbSolitaire * 11;
+
+        pD = Mathf.Max(pD, 0);
+        pP = Mathf.Max(pP, 0);
+        pSo = Mathf.Max(pSo, 0);
+
+        float pSt = 100 - (pD + pP + pSo);
+        pSt = Mathf.Max(pSt, 0);
+
+        float rand = Random.Range(0f, 100f);
+
+        if (rand < pD)
+            return NatureType.Dominant;
+        else if (rand < pD + pP)
+            return NatureType.Peureux;
+        else if (rand < pD + pP + pSo)
+            return NatureType.Solitaire;
+        else
+            return NatureType.Standard;
     }
 
     public GameObject SheepGetOffAndRecreate(SheepData data, Vector3 spawnP)

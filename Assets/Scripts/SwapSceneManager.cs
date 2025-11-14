@@ -38,44 +38,28 @@ public class SwapSceneManager : MonoBehaviour
         {
             if (sceneID == i)
             {
-                AnimateSwapingScene(scenes[i]);
+                Debug.Log("Actiovate intérior scene");
+                AnimateSwapingScene(scenes[i], i);
             }
             else
             {
                 scenes[i].SetActive(false);
             }
         }
-
-        switch (sceneID)
-        {
-            case 0:
-                SwapingDefaultScene?.Invoke();
-                break;
-            case 1:
-                SwapingInteriorScene?.Invoke();
-                break;
-            case 2:
-                SwapingTonteScene?.Invoke();
-                break;
-            case 3:
-                SwapingCleanScene?.Invoke();
-                break;
-            case 4:
-                SwapingTricotScene?.Invoke();
-                break;
-        }
     }
 
-    void AnimateSwapingScene(GameObject scene)
+    void AnimateSwapingScene(GameObject scene, int i)
     {
-        StartCoroutine(FadeTransition(scene));
+        StartCoroutine(FadeTransition(scene, i));
     }
 
-    IEnumerator FadeTransition(GameObject scene)
+    IEnumerator FadeTransition(GameObject scene, int i)
     {
         yield return StartCoroutine(FadeOut()); 
         scene.SetActive(true);
-        yield return StartCoroutine(FadeIn());  
+        TriggerInitialiseScene(i);
+
+        yield return StartCoroutine(FadeIn());
     }
 
 
@@ -115,5 +99,27 @@ public class SwapSceneManager : MonoBehaviour
 
         color.a = 1f;
         fadeImage.color = color;
+    }
+    
+    void TriggerInitialiseScene(int sceneID)
+    {
+        switch (sceneID)
+        {
+            case 0:
+                SwapingDefaultScene?.Invoke();
+                break;
+            case 1:
+                SwapingInteriorScene?.Invoke();
+                break;
+            case 2:
+                SwapingTonteScene?.Invoke();
+                break;
+            case 3:
+                SwapingCleanScene?.Invoke();
+                break;
+            case 4:
+                SwapingTricotScene?.Invoke();
+                break;
+        }
     }
 }

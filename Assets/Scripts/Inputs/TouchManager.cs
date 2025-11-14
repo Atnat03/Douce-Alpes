@@ -41,19 +41,25 @@ public class TouchManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
-        touchPressAction = playerInput.actions["TouchPress"];
-        touchPositionAction = playerInput.actions["TouchPosition"];
 
         swipeInput = new Swipe();
     }
+    
 
     private void OnEnable()
     {
-        touchPressAction.performed += OnTouchPressed;
-        touchPressAction.canceled += OnTouchReleased;
-        swipeInput.Enable();
+        if(playerInput != null)
+        {
+            touchPressAction = playerInput.actions["TouchPress"];
+            touchPositionAction = playerInput.actions["TouchPosition"];
+
+            touchPressAction.performed += OnTouchPressed;
+            touchPressAction.canceled += OnTouchReleased;
+        }
+
+        swipeInput?.Enable();
     }
+
 
     private void OnDisable()
     {

@@ -92,11 +92,11 @@ public class TimerManager : MonoBehaviour
                 break;
             case TypeAmelioration.Tonte:
                 tonteMiniGameText.text = "Tonte";
-                UpdateButtons(grangeButton, canButtonT);
+                UpdateButtons(tonteButton, canButtonT);
                 break;
             case TypeAmelioration.Nettoyage:
                 cleanMiniGameText.text = "Nettoyage";
-                UpdateButtons(grangeButton, canButtonC);
+                UpdateButtons(cleanButton, canButtonC);
                 break;
         }
     }

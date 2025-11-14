@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SheepBoid : MonoBehaviour
 {
@@ -15,6 +17,13 @@ public class SheepBoid : MonoBehaviour
     private float fearDuration = 1f; 
     private float fearTimer;
 
+    private Color[] natureColors = new Color[]
+    {
+        Color.red, 
+        Color.blue,  
+        Color.gray,  
+        Color.yellow  
+    };
     void Start()
     {
         natureStrategy = NatureFactory.Create(natureType);
@@ -116,4 +125,10 @@ public class SheepBoid : MonoBehaviour
 
     void ScheduleNextPause() => nextPauseTime = Random.Range(manager.minTimeBetweenPauses.x, manager.minTimeBetweenPauses.y);
     void StartPause() { isPaused = true; pauseTimer = Random.Range(manager.pauseDuration.x, manager.pauseDuration.y); }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = natureColors[(int)natureType];
+        Gizmos.DrawCube(transform.position + Vector3.up * 0.5f, Vector3.one * 0.2f);
+    }
 }
