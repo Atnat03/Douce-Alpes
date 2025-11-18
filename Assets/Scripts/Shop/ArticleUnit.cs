@@ -8,6 +8,7 @@ public class ArticleUnit : MonoBehaviour
     public Text priceTxt;
     public Button buyBtn;
     public Button cancelBtn;
+    public Image backGround;
 
     public void ActivateButtons()
     {

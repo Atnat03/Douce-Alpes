@@ -52,8 +52,21 @@ public class ShopManager : MonoBehaviour
         uiArticle.titleTxt.text = article.title;
         uiArticle.priceTxt.text = article.price.ToString();
         uiArticle.logoImage.sprite = article.logo;
+
+        uiArticle.backGround.color = ChangeBackGroundRarete(article.Rarete);
         
         uiArticle.buyBtn.onClick.AddListener(() => BuyArticle(article));
+    }
+
+    private Color ChangeBackGroundRarete(RareteItem articleRarete)
+    {
+        return articleRarete switch
+        {
+            RareteItem.Commum => Color.gray,
+            RareteItem.Rare => Color.cyan,
+            RareteItem.Epique => Color.magenta,
+            RareteItem.Legendaire => Color.yellow,
+        };
     }
 
     public void BuyArticle(Article article)

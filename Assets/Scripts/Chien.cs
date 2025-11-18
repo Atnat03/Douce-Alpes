@@ -35,8 +35,6 @@ public class Chien : MonoBehaviour
 
         agent = GetComponent<NavMeshAgent>();
         sheepDest = GameManager.instance.grange.GetSheepDestroyer();
-
-        GoToRandomPatrolPoint();
     }
 
     private void Update()
@@ -55,7 +53,6 @@ public class Chien : MonoBehaviour
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
             timer += Time.deltaTime;
-            barkEffect.Play();
             if (timer >= waitingTime)
             {
                 timer = 0f;
@@ -91,10 +88,12 @@ public class Chien : MonoBehaviour
             }
         }
 
-        // Se placer derrière le mouton le plus éloigné
         Vector3 dir = (sheepFarPos - sheepDest.position).normalized;
-        float offset = 2f;
+        float offset = 1.2f;
         Vector3 nextDestination = sheepFarPos + dir * offset;
+        
+        if(!barkEffect.isPlaying)
+            barkEffect.Play();
 
         return nextDestination;
     }

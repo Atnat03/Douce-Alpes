@@ -8,13 +8,19 @@ public class NicheManager : TouchableObject
     [SerializeField] private Transform nichePos;
     [SerializeField] private bool isInNiche = false;
     [SerializeField] private Transform cameraZoomPos;
-
+    [SerializeField] private GameObject buttonQuit;
+    Vector3 startPos;
+    Vector3 startRot;
+    
     private void Start()
     {
         GameManager.instance.startMiniGame += SortirLeChien;
         GameManager.instance.endMiniGame += RentrerLeChien;
         
-        RentrerLeChien();
+        startPos = chien.transform.position;
+        startRot = chien.transform.rotation.eulerAngles;
+
+        chien.enabled = false;
     }
     
     private void OnDisable()
@@ -25,6 +31,9 @@ public class NicheManager : TouchableObject
 
     private void SortirLeChien()
     {
+        if (SheepBoidManager.instance.nbInstantSheep == 0)
+            return;
+        
         chien.enabled = true;
         isInNiche = false;
     }
@@ -32,20 +41,22 @@ public class NicheManager : TouchableObject
     private void RentrerLeChien()
     {
         chien.enabled = false;
-        chien.gameObject.GetComponent<NavMeshAgent>().SetDestination(nichePos.position);
+        chien.gameObject.GetComponent<NavMeshAgent>().SetDestination(startPos);
     }
 
     private void Update()
     {
-        isInNiche = Vector3.Distance(chien.transform.position, nichePos.position) < 0.2f;
+        isInNiche = Vector3.Distance(chien.transform.position, startPos) < 0.2f;
         
         if(isInNiche)
-            chien.transform.LookAt(new Vector3(0, -90, 0));
+            chien.transform.rotation = Quaternion.Euler(startRot);
     }
 
     public override void TouchEvent()
     {
-        GameManager.instance.ChangeCameraPos(cameraZoomPos.position, cameraZoomPos.rotation.eulerAngles, transform);
         GameManager.instance.ChangeCameraState(CamState.Dog);
+        GameManager.instance.ChangeCameraPos(cameraZoomPos.position, cameraZoomPos.rotation.eulerAngles, transform);
+        buttonQuit.SetActive(true);
     }
+
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PanneauShop : TouchableObject
 {
@@ -16,6 +17,8 @@ public class PanneauShop : TouchableObject
     [SerializeField] private Transform[] posCameraPoints;
     
     private Coroutine moveCoroutine;
+    
+    [SerializeField] MeshRenderer[] meshRendererCancelShadow;
 
     private void Start()
     {
@@ -50,7 +53,7 @@ public class PanneauShop : TouchableObject
         GameManager.instance.ChangePlayerEnvironnement(true);
         changeCamera.ResetPosition();
     }
-
+    
     public void GoLeft()
     {
         if (!GameManager.instance.shopOpen) return;

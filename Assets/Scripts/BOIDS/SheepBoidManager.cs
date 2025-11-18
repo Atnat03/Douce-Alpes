@@ -42,7 +42,7 @@ public class SheepBoidManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private InputField nameInputField;
     
-    private int nbInstantSheep = 0;
+    public int nbInstantSheep = 0;
 
     private void Awake() => instance = this;
 

@@ -15,4 +15,13 @@ public class Article
     public string title;
     public int price;
     public Sprite logo;
+    public RareteItem Rarete;
+}
+
+public enum RareteItem
+{
+    Commum,
+    Rare,
+    Epique,
+    Legendaire
 }

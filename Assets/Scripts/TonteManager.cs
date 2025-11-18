@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TonteManager : MiniGameParent
 {
+    public static TonteManager instance;
+    
     [SerializeField] private GameObject sheepModel;
     [SerializeField] private Text nameText;
     [SerializeField] private Text nbToCutText;
@@ -21,10 +23,12 @@ public class TonteManager : MiniGameParent
 
     [SerializeField] private Button backButton;
 
-    [SerializeField] private GameObject particleTonte;
-
+    [SerializeField] private ParticleSystem particleTonte;
+    
     private void Awake()
     {
+        instance = this;
+        
         SwapSceneManager.instance.SwapingTonteScene += Initialize;
         
         tonteButton.onClick.AddListener(EndTonte);
@@ -42,7 +46,7 @@ public class TonteManager : MiniGameParent
             Destroy(currentSheep);
             currentSheep = null;
         }
-
+        
         if (GameData.instance.sheepDestroyData.Count > 0)
             NextSheep();
     }
@@ -70,7 +74,10 @@ public class TonteManager : MiniGameParent
             
             return;
         }
-
+        
+        particleTonte.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        particleTonte.transform.position = tontePoint.position;
+        
         SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
 
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
@@ -78,8 +85,8 @@ public class TonteManager : MiniGameParent
         nameText.text = nextSheepData.name;
         nbToCutText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
 
-        StartCoroutine(MoveOverTime(currentSheep.transform, tontePoint.position, 2f));
-
+        StartCoroutine(MoveOverTime(currentSheep.transform, tontePoint.position, 2f, true));
+        
         sheepIndex++;
     }
     
@@ -95,17 +102,18 @@ public class TonteManager : MiniGameParent
 
     private IEnumerator SendToDestroy(GameObject sheep)
     {
-        yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f);
+        yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f, false);
 
         Destroy(sheep);
 
         currentSheep = null;
 
         yield return new WaitForSeconds(0.25f);
+        
         NextSheep();
     }
 
-    private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration)
+    private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration, bool isPosTonte)
     {
         Vector3 start = target.position;
         float elapsed = 0f;
@@ -119,11 +127,34 @@ public class TonteManager : MiniGameParent
         }
 
         target.position = destination;
+        
+        if(isPosTonte)
+        {
+            particleTonte.Play();
+        }
     }
+
     
     private void SetEffectPositionToFingerPosition(Vector3 pos)
     {
-        particleTonte.transform.position = pos;
+        if (currentSheep == null)
+            return;
+
+        Vector3 fromCenter = pos - currentSheep.transform.position;
+        float distance = fromCenter.magnitude;              
+        float maxDistance = 0.85f;
+
+        Vector3 direction = fromCenter.normalized;
+
+        float t = Mathf.Clamp01(distance / maxDistance);
+
+        t = Mathf.Pow(t, 1.5f);
+
+        float offsetStrength = Mathf.Lerp(0f, 1.5f, t);
+
+        Vector3 offset = direction * offsetStrength;
+
+        particleTonte.transform.position = currentSheep.transform.position + offset;
     }
     
     void ExitScene()

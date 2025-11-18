@@ -52,14 +52,11 @@ public class SheepBoid : MonoBehaviour
 
         Vector3 accel = Vector3.zero;
 
-        // Force de répulsion contre les limites
         accel += BoundaryRepulsion();
 
-        // Application de l’accélération
         velocity += accel * Time.deltaTime;
         velocity.y = 0f;
 
-        // Gestion de la peur (multiplicateur de vitesse)
         float speed = Mathf.Clamp(velocity.magnitude, manager.minSpeed, manager.maxSpeed);
 
         if (isAfraid)
@@ -92,6 +89,11 @@ public class SheepBoid : MonoBehaviour
     {
         if (manager.boundaryPoints == null || manager.boundaryPoints.Count == 0)
             return Vector3.zero;
+        
+        float weight = manager.boundaryWeight;
+
+        if (isAfraid)
+            weight *= 30f;
 
         Vector3 steer = Vector3.zero;
         Vector3 pos = transform.position;
@@ -110,7 +112,7 @@ public class SheepBoid : MonoBehaviour
             }
         }
 
-        return steer * manager.boundaryWeight;
+        return steer * weight;
     }
 
     public void AddFearForce(Vector3 fearForce)
