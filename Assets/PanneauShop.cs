@@ -15,10 +15,14 @@ public class PanneauShop : TouchableObject
     [SerializeField] private float moveDuration = 0.5f;
 
     [SerializeField] private Transform[] posCameraPoints;
+    [SerializeField] private GameObject buttonQuit;
     
     private Coroutine moveCoroutine;
     
     [SerializeField] MeshRenderer[] meshRendererCancelShadow;
+
+    [Header("Arrow")]
+    [SerializeField]  private GameObject[] centerArrows;
 
     private void Start()
     {
@@ -41,6 +45,7 @@ public class PanneauShop : TouchableObject
     void OpenUI()
     {
         shopUI.SetActive(true);
+        buttonQuit.SetActive(true);
         GameManager.instance.shopOpen = true;
         GameManager.instance.ChangeCameraState(CamState.Shop);
         GameManager.instance.ChangeCameraPos(transformCamera.position, transformCamera.localEulerAngles, cameraLookTraveling);
@@ -49,6 +54,7 @@ public class PanneauShop : TouchableObject
     public void CloseUI()
     {
         shopUI.SetActive(false);
+        buttonQuit.SetActive(false);
         GameManager.instance.shopOpen = false;
         GameManager.instance.ChangePlayerEnvironnement(true);
         changeCamera.ResetPosition();
@@ -63,6 +69,8 @@ public class PanneauShop : TouchableObject
 
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
+        
+        ActivateCenterArrows(false);
 
         moveCoroutine = StartCoroutine(CameraTranslate(startPos, endPos));
     }
@@ -77,6 +85,8 @@ public class PanneauShop : TouchableObject
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
 
+        ActivateCenterArrows(false);
+
         moveCoroutine = StartCoroutine(CameraTranslate(startPos, endPos));
     }
 
@@ -89,10 +99,20 @@ public class PanneauShop : TouchableObject
 
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
+        
+        ActivateCenterArrows(true);
 
         moveCoroutine = StartCoroutine(CameraTranslate(startPos, endPos));
     }
 
+    void ActivateCenterArrows(bool state)
+    {
+        foreach (GameObject arrow in centerArrows)
+        {
+            arrow.SetActive(state);
+        }
+    }
+    
     private IEnumerator CameraTranslate(Vector3 startPos, Vector3 endPos)
     {
         float elapsed = 0f;

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class Abreuvoir : MiniGameParent
@@ -19,7 +21,22 @@ public class Abreuvoir : MiniGameParent
     private bool isOccupied1 = false;
     private bool isOccupied2 = false;
 
+    [Header("Eau")]
+    private Material eau;
+    [SerializeField] private GameObject Eau;
+    [SerializeField] private GameObject water;
+    [SerializeField] private Vector3 noWater;
+    [SerializeField] private Vector3 fullWater;
+    
     private void Awake() => instance = this;
+
+    private void Start()
+    {
+        eau = Eau.GetComponent<Renderer>().material;
+        eau.SetFloat("_Apparition", 3);
+
+        Eau.transform.rotation = Quaternion.Euler(-90, 0, 0);
+    }
 
     private void Update()
     {
@@ -37,6 +54,8 @@ public class Abreuvoir : MiniGameParent
 
         if (float.IsNaN(currentWater) || float.IsInfinity(currentWater) || currentWater < 0)
             currentWater = 0;
+
+        water.transform.position = Vector3.Lerp(noWater, fullWater, currentWater /  maximumWater);
     }
 
     public void AddWater(SwipeType type)
@@ -45,10 +64,44 @@ public class Abreuvoir : MiniGameParent
         if (GameManager.instance.currentCameraState != CamState.Drink) return;
 
         currentWater = Mathf.Min(currentWater + waterAddValue, maximumWater);
-        animatorPompe?.SetTrigger("Pompe");
+        
+        StartCoroutine(AddWaterSmooth());
         
         EndMiniGame(TypeAmelioration.Abreuvoir);
     }
+
+    IEnumerator AddWaterSmooth()
+    {
+        Eau.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+
+        float value = eau.GetFloat("_Apparition");
+
+        animatorPompe?.SetTrigger("Pompe");
+        
+        while (value > 0f)
+        {
+            value -= 0.2f; 
+            eau.SetFloat("_Apparition", value);
+            yield return null;
+        }
+
+        eau.SetFloat("_Apparition", 0f);
+
+        yield return new WaitForSeconds(1f);
+
+        Eau.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
+        value = eau.GetFloat("_Apparition");
+        while (value < 3f)
+        {
+            value += 0.2f;
+            eau.SetFloat("_Apparition", value);
+            yield return null;
+        }
+
+        eau.SetFloat("_Apparition", 3f);
+    }
+
 
     public bool TryReservePlace(out Transform place)
     {
