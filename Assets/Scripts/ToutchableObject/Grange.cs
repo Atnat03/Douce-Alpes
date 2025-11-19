@@ -26,11 +26,19 @@ public class Grange : Build
 
     public bool AllSheepAreOutside = true;
 
+    public GameObject uiFlecheClick;
+
     void Start()
     {
         OpenDoors();
     }
-    
+
+    public override void TouchEvent()
+    {
+        base.TouchEvent();
+        uiFlecheClick.SetActive(false);
+    }
+
     public void LaunchMiniGame()
     {
         GameManager.instance.ChangeCameraState(CamState.MiniGame);

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Sheep : TouchableObject
 {
@@ -33,6 +34,11 @@ public class Sheep : TouchableObject
 
     private SheepBoid sheepBoid;
 
+    [SerializeField] private GameObject bulleUI;
+    [SerializeField] private Image logoImage;
+    [SerializeField] private Sprite showerLogo;
+    [SerializeField] private Sprite zzzzzzLogo;
+
     private void Start()
     {
         sheepBoid = GetComponent<SheepBoid>();
@@ -51,6 +57,8 @@ public class Sheep : TouchableObject
     private void Update()
     {
         laine.SetActive(hasLaine);
+        
+        bulleUI.SetActive(curPuanteur >= 100 || hasLaine && GameManager.instance.currentCameraState == CamState.Default);
 
         if (isOpen)
         {
@@ -76,6 +84,7 @@ public class Sheep : TouchableObject
         else
         {
             curPuanteur = 100;
+            logoImage.sprite = showerLogo;
         }
     }
 
@@ -86,6 +95,7 @@ public class Sheep : TouchableObject
         if (processWool <= 0)
         {
             hasLaine = true;
+            logoImage.sprite = zzzzzzLogo;
             processWool = Random.Range(50, 100);
         }
     }
