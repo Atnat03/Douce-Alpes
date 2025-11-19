@@ -99,6 +99,9 @@ public class TouchManager : MonoBehaviour
 
     private void Update()
     {
+        if (Camera.main == null)
+            return;
+        
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
         

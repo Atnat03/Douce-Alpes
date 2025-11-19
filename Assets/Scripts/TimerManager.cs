@@ -20,6 +20,8 @@ public class TimerManager : MonoBehaviour
     [SerializeField] public bool canButtonG = true;
     [SerializeField] public bool canButtonT = false;
     [SerializeField] public bool canButtonC = false;
+
+    [SerializeField] public GameObject uiFleche;
     
     private void OnEnable()
     {
@@ -99,5 +101,7 @@ public class TimerManager : MonoBehaviour
                 UpdateButtons(cleanButton, canButtonC);
                 break;
         }
+        
+        uiFleche.SetActive(true);
     }
 }
