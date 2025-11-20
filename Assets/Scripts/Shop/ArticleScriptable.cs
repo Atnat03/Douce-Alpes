@@ -22,6 +22,5 @@ public enum RareteItem
 {
     Commum,
     Rare,
-    Epique,
     Legendaire
 }

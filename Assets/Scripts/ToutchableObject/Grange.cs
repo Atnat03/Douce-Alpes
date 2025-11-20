@@ -42,7 +42,7 @@ public class Grange : Build
     public void LaunchMiniGame()
     {
         GameManager.instance.ChangeCameraState(CamState.MiniGame);
-        DesactivateUI();
+        UI.SetActive(false);
         OpenDoors();
         UpdateCameraZoom();
     }
