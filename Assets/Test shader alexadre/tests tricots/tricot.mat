@@ -68,6 +68,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 68a23a057d4d1ca48bedf2b40f8fbc9d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_4e017776583941fcba803a5c3c4c5114_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 893300b336003f5418d94a5c311d3017, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_7d69fb6e745a4235a2df89b97b9b382a_Texture_1_Texture2D:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -76,16 +80,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: 0c98451726e0b3c46b9cd346cdff850c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_e25ffe2b44304de9b6bfb7ce6c7fc87d_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 893300b336003f5418d94a5c311d3017, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture_Bas:
-        m_Texture: {fileID: 2800000, guid: 0c98451726e0b3c46b9cd346cdff850c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 865f5558ebb5a814082f62522627de9a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture_Centre:
-        m_Texture: {fileID: 2800000, guid: 68a23a057d4d1ca48bedf2b40f8fbc9d, type: 3}
+        m_Texture: {fileID: 2800000, guid: a3cd14d540aa1434885a7808c0b610cc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture_Haut:
@@ -111,8 +119,8 @@ Material:
     - _AlphaToMask: 0
     - _Alpha_clip_threshold: 0.01
     - _Apparition_Horizontale: 3.89
-    - _Apparition_Horizontale_Mailles_Haut: 2.29
-    - _Appartion_Rang_e: 4
+    - _Apparition_Horizontale_Mailles_Haut: 4.62
+    - _Appartion_Rang_e: 2
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -147,20 +155,21 @@ Material:
     - _Taille_Mailles_haut: 0.66
     - _Tiling_Mailles_Haut: 0.84
     - _Tiling_laine: 0.5
-    - _Tiling_torsade: 0.68
-    - _Torsade_Taille: 0.43
+    - _Tiling_torsade: 1.06
+    - _Torsade_Taille: 0.44
     - _Torsade_scale: 0.37
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _contrast: -0.61
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.28773582, g: 0.80279696, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset_Laine: {r: 0, g: 0, b: 0, a: 0}
     - _Offset_mailles_Haut: {r: -0.005, g: -0.11, b: 0, a: 0}
-    - _Offset_torsade: {r: 0, g: 0.01, b: 0, a: 0}
+    - _Offset_torsade: {r: 0, g: -0.005, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Tiling_Laine: {r: 0.66, g: 0.68, b: 0, a: 0}
+    - _Tiling_Laine: {r: 2, g: 2, b: 0, a: 0}
     - _Tiling_Mailles_haut: {r: 1, g: 0.84, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
