@@ -10,6 +10,9 @@ public class AbreuvoirClickOpen : TouchableObject
         if(GameManager.instance.currentCameraState != CamState.Default)
             return;
         
+        if(TutoManager.instance != null)
+            TutoManager.instance.Abreuvoir();
+        
         ActivateAbreuvoir();
     }
 

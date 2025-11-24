@@ -188,7 +188,7 @@ public class CleanManager : MiniGameParent
         hasLastPos = false;
         lastShampooPos = Vector3.zero;
 
-        SetShampoo(); // Reviens à l’état initial
+        SetShampoo();
     }
 
     private void OnDisable()
@@ -197,5 +197,11 @@ public class CleanManager : MiniGameParent
         {
             Destroy(shampoo);
         }
+    }
+
+    void OnEnable()
+    {
+        if(TutoManager.instance != null)
+            TutoManager.instance.MiniJeuClean();
     }
 }

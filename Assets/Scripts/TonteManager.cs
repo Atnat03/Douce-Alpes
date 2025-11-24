@@ -173,6 +173,9 @@ public class TonteManager : MiniGameParent
     private void OnEnable()
     {
         TouchManager.instance.OnGetFingerPosition += SetEffectPositionToFingerPosition;
+        
+        if(TutoManager.instance != null)
+            TutoManager.instance.MiniJeuTonte();
     }
     
     private void OnDisable()

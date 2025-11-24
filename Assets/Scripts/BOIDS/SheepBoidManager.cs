@@ -40,7 +40,7 @@ public class SheepBoidManager : MonoBehaviour
     public Vector2 pauseDuration = new Vector2(1, 3);
 
     [Header("UI")]
-    [SerializeField] private InputField nameInputField;
+    [SerializeField] public InputField nameInputField;
     
     public int nbInstantSheep = 0;
 
@@ -54,79 +54,76 @@ public class SheepBoidManager : MonoBehaviour
     }
 
     private void GenerateBoundaryPointsFromMesh()
-{
-    boundaryPoints.Clear();
-
-    if (meshCollider == null)
     {
-        Debug.LogError("Aucun MeshCollider assigné !");
-        return;
-    }
+        boundaryPoints.Clear();
 
-    Mesh mesh = meshCollider.sharedMesh;
-    if (mesh == null)
-    {
-        Debug.LogError("MeshCollider sans mesh !");
-        return;
-    }
-
-    Vector3[] vertices = mesh.vertices;
-    int[] triangles = mesh.triangles;
-    var edgeCount = new Dictionary<(int, int), int>();
-
-    for (int i = 0; i < triangles.Length; i += 3)
-    {
-        int a = triangles[i];
-        int b = triangles[i + 1];
-        int c = triangles[i + 2];
-
-        AddEdge(edgeCount, a, b);
-        AddEdge(edgeCount, b, c);
-        AddEdge(edgeCount, c, a);
-    }
-
-    Vector3 meshCenter = meshCollider.bounds.center;
-    float maxDistance = 0f;
-    foreach (var v in vertices)
-    {
-        float d = Vector3.Distance(meshCenter, meshCollider.transform.TransformPoint(v));
-        if (d > maxDistance) maxDistance = d;
-    }
-
-    int subdivisions = 3;
-    HashSet<Vector3> uniquePoints = new HashSet<Vector3>();
-
-    foreach (var edge in edgeCount)
-    {
-        if (edge.Value == 1)
+        if (meshCollider == null)
         {
-            Vector3 start = meshCollider.transform.TransformPoint(vertices[edge.Key.Item1]);
-            Vector3 end = meshCollider.transform.TransformPoint(vertices[edge.Key.Item2]);
+            Debug.LogError("Aucun MeshCollider assigné !");
+            return;
+        }
 
-            // On ignore les points trop proches du centre
-            if (Vector3.Distance(meshCenter, start) < maxDistance * 0.5f) continue;
-            if (Vector3.Distance(meshCenter, end) < maxDistance * 0.5f) continue;
+        Mesh mesh = meshCollider.sharedMesh;
+        if (mesh == null)
+        {
+            Debug.LogError("MeshCollider sans mesh !");
+            return;
+        }
 
-            start.y = meshCollider.transform.position.y;
-            end.y = meshCollider.transform.position.y;
+        Vector3[] vertices = mesh.vertices;
+        int[] triangles = mesh.triangles;
+        var edgeCount = new Dictionary<(int, int), int>();
 
-            uniquePoints.Add(start);
-            uniquePoints.Add(end);
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            int a = triangles[i];
+            int b = triangles[i + 1];
+            int c = triangles[i + 2];
 
-            // Points intermédiaires
-            for (int s = 1; s <= subdivisions; s++)
+            AddEdge(edgeCount, a, b);
+            AddEdge(edgeCount, b, c);
+            AddEdge(edgeCount, c, a);
+        }
+
+        Vector3 meshCenter = meshCollider.bounds.center;
+        float maxDistance = 0f;
+        foreach (var v in vertices)
+        {
+            float d = Vector3.Distance(meshCenter, meshCollider.transform.TransformPoint(v));
+            if (d > maxDistance) maxDistance = d;
+        }
+
+        int subdivisions = 3;
+        HashSet<Vector3> uniquePoints = new HashSet<Vector3>();
+
+        foreach (var edge in edgeCount)
+        {
+            if (edge.Value == 1)
             {
-                float t = s / (float)(subdivisions + 1);
-                Vector3 mid = Vector3.Lerp(start, end, t);
-                if (Vector3.Distance(meshCenter, mid) < maxDistance * 0.5f) continue;
-                uniquePoints.Add(mid);
+                Vector3 start = meshCollider.transform.TransformPoint(vertices[edge.Key.Item1]);
+                Vector3 end = meshCollider.transform.TransformPoint(vertices[edge.Key.Item2]);
+
+                if (Vector3.Distance(meshCenter, start) < maxDistance * 0.5f) continue;
+                if (Vector3.Distance(meshCenter, end) < maxDistance * 0.5f) continue;
+
+                start.y = meshCollider.transform.position.y;
+                end.y = meshCollider.transform.position.y;
+
+                uniquePoints.Add(start);
+                uniquePoints.Add(end);
+
+                for (int s = 1; s <= subdivisions; s++)
+                {
+                    float t = s / (float)(subdivisions + 1);
+                    Vector3 mid = Vector3.Lerp(start, end, t);
+                    if (Vector3.Distance(meshCenter, mid) < maxDistance * 0.5f) continue;
+                    uniquePoints.Add(mid);
+                }
             }
         }
-    }
 
-    boundaryPoints.AddRange(uniquePoints);
-    Debug.Log($"✅ [SheepBoidManager] {boundaryPoints.Count} points générés sur le contour du mesh (points internes filtrés).");
-}
+        boundaryPoints.AddRange(uniquePoints);
+    }
 
     private void AddEdge(Dictionary<(int, int), int> edges, int a, int b)
     {
