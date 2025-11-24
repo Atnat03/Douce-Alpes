@@ -15,6 +15,7 @@ public enum TutoState
     MiniJeuCleanning,
     MiniJeuSortis,
     Shop,
+    Tricot,
 }
 
 public class TutoManager : MonoBehaviour
@@ -37,6 +38,7 @@ public class TutoManager : MonoBehaviour
     [SerializeField] private Collider grange;
     [SerializeField] private Collider shop;
     [SerializeField] private Collider abreuvoir;
+    [SerializeField] private Collider tricot;
     
     void Start()
     {
@@ -80,6 +82,7 @@ public class TutoManager : MonoBehaviour
         grange.enabled = false;
         abreuvoir.enabled = false;
         shop.enabled = false;
+        tricot.enabled = false;
     }
 
     public void AddMouton()
@@ -172,5 +175,13 @@ public class TutoManager : MonoBehaviour
     {
         arrow.gameObject.SetActive(false);
         tutoState = TutoState.MiniJeuSortis;
+    }
+    
+    public void GoToTricot()
+    {
+        tutoState = TutoState.Tricot;
+        arrow.gameObject.SetActive(true);
+        arrow.targetPos = tricot.transform;
+        tricot.enabled = true;
     }
 }

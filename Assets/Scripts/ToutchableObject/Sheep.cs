@@ -58,7 +58,7 @@ public class Sheep : TouchableObject
     {
         laine.SetActive(hasLaine);
         
-        bulleUI.SetActive(curPuanteur >= 100 || hasLaine && GameManager.instance.currentCameraState == CamState.Default);
+        //bulleUI.SetActive(curPuanteur >= 100 || hasLaine && GameManager.instance.currentCameraState == CamState.Default);
 
         if (isOpen)
         {
