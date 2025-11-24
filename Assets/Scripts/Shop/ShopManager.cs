@@ -4,73 +4,60 @@ using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
-    public static ShopManager instance;
-    
-    [SerializeField] private List<GameObject> articlesList = new List<GameObject>();
     [SerializeField] private Transform listArticleParent;
     [SerializeField] private GameObject articlePrefab;
-    [SerializeField] private ArticleScriptable sheepDataArticles;
+    [SerializeField] private ArticleScriptable data; // Unique ScriptableObject
+    [SerializeField] private List<GameObject> articlesList = new List<GameObject>();
+    [SerializeField] private Sprite[] rareteSprite;
 
-
-    private void Awake()
+    private void Start()
     {
-        instance = this;
-    }
-
-    public void Start()
-    {
-        SwapCategorie(sheepDataArticles);
-    }
-
-    public void SwapCategorie(ArticleScriptable articleData)
-    {
-        listArticleParent.GetComponent<ContentScaleModifier>().ResetSize();
-        
-        foreach (Transform child in listArticleParent)
-        {
-            Destroy(child.gameObject);
-        }
-        
-        UpdateArticleList(articleData);
+        RefreshShop();
     }
     
-    public void UpdateArticleList(ArticleScriptable articleData)
+    public void RefreshShop()
     {
-        foreach (Article article in articleData.articles)
-        {
+        // Reset UI container
+        listArticleParent.GetComponent<ContentScaleModifier>().ResetSize();
+
+        foreach (Transform child in listArticleParent)
+            Destroy(child.gameObject);
+
+        articlesList.Clear();
+
+        // Créer les articles
+        foreach (Article article in data.articles)
             AddItem(article);
-        }
-        listArticleParent.GetComponent<ContentScaleModifier>().SetSize(articleData.articles.Count);
+
+        // Adapter la taille du scroll
+        listArticleParent
+            .GetComponent<ContentScaleModifier>()
+            .SetSize(data.articles.Count);
     }
 
-    public void AddItem(Article article)
+    private void AddItem(Article article)
     {
-        GameObject instance = Instantiate(articlePrefab,  listArticleParent.transform);
+        GameObject instance = Instantiate(articlePrefab, listArticleParent);
         articlesList.Add(instance);
-        
-        ArticleUnit uiArticle = instance.GetComponent<ArticleUnit>();
-        uiArticle.titleTxt.text = article.title;
-        uiArticle.priceTxt.text = article.price.ToString();
-        uiArticle.logoImage.sprite = article.logo;
 
-        uiArticle.backGround.color = ChangeBackGroundRarete(article.Rarete);
-        
-        uiArticle.buyBtn.onClick.AddListener(() => BuyArticle(article));
+        ArticleUnit uiArticle = instance.GetComponent<ArticleUnit>();
+        /*uiArticle.titleTxt.text = article.title;
+        uiArticle.priceTxt.text = article.price.ToString();*/
+
+        uiArticle.logoImage.sprite = article.logo;
+        uiArticle.backGround.sprite = ChangeBackGroundRarete(article.Rarete);
+
+        //uiArticle.buyBtn.onClick.AddListener(() => BuyArticle(article));
     }
 
-    private Color ChangeBackGroundRarete(RareteItem articleRarete)
+    private Sprite ChangeBackGroundRarete(RareteItem articleRarete)
     {
         return articleRarete switch
         {
-            RareteItem.Commum => Color.gray,
-            RareteItem.Rare => Color.cyan,
-            RareteItem.Epique => Color.magenta,
-            RareteItem.Legendaire => Color.yellow,
+            RareteItem.Commum => rareteSprite[0],
+            RareteItem.Rare => rareteSprite[1],
+            RareteItem.Legendaire => rareteSprite[2],
         };
     }
 
-    public void BuyArticle(Article article)
-    {
-        InventoryManager.instance.AddItem(article);
-    }
 }

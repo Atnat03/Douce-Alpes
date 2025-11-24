@@ -1,12 +1,13 @@
+using System;
 using UnityEngine;
 
 public class Build : TouchableObject
 {
-    [SerializeField] GameObject UI;
+    [SerializeField] public GameObject UI;
 
     void Start()
     {
-        DesactivateUI();
+        UI.SetActive(false);
     }
     
     public override void TouchEvent()
@@ -15,13 +16,7 @@ public class Build : TouchableObject
         
         if(GameManager.instance.currentCameraState != CamState.Default)
             return;
-        
-        UI.SetActive(true);
-        Invoke(nameof(DesactivateUI), 3f);
-    }
 
-    public void DesactivateUI()
-    {
-        UI.SetActive(false);
+        GetComponentInChildren<OnBecameInvisibleObject>().ActivateUI();
     }
 }
