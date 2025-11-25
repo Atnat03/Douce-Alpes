@@ -38,7 +38,6 @@ public class SwapSceneManager : MonoBehaviour
         {
             if (sceneID == i)
             {
-                Debug.Log("Actiovate intérior scene");
                 AnimateSwapingScene(scenes[i], i);
             }
             else

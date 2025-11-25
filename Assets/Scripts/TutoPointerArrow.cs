@@ -5,7 +5,7 @@ public class TutoPointerArrow : MonoBehaviour
     public Transform targetPos;
     public RectTransform pointerRectTransform;
 
-    public float borderSize = 100f;
+    public float borderSize = 400f;
     public float angleOffset = 90f; 
     public float yOffset = 20f;     
 

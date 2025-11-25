@@ -87,10 +87,7 @@ public class TutoManager : MonoBehaviour
 
     public void AddMouton()
     {
-        foreach (GameObject go in startStateGameObjects)
-        {
-            go.SetActive(true);
-        }
+        startStateGameObjects[0].SetActive(true);
         
         tutoState = TutoState.AddMouton;
         addMoutonButton.gameObject.SetActive(true);
@@ -99,6 +96,13 @@ public class TutoManager : MonoBehaviour
 
     public void ExplicationBonheur()
     {
+        foreach (GameObject go in startStateGameObjects)
+        {
+            go.SetActive(true);
+        }
+        
+        startStateGameObjects[0].SetActive(false);
+        
         tutoState = TutoState.ExplicationBonheur;
         EnableDialogueBox(dataDialogue.dialogues[1] + SheepBoidManager.instance.nameInputField.text + dataDialogue.dialogues[2]);
     }
