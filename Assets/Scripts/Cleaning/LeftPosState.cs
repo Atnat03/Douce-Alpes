@@ -5,7 +5,7 @@ using UnityEngine;
 public class LeftPosState : ICleaningState
 {
     private StateMachineClean manager;
-    private Vector3 camPos = new Vector3(0, 0.25f, 2.5f);
+    private Vector3 camPos = new Vector3(0, 0.75f, 2.5f);
     private int cleanValueToChange = 40;
 
     private int leftLayer;

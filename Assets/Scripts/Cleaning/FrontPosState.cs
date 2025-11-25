@@ -7,7 +7,7 @@ public class FrontPosState : ICleaningState
 {
     private StateMachineClean manager;
 
-    private Vector3 camPos = new Vector3(2, 0.25f, 0);
+    private Vector3 camPos = new Vector3(2, 0.75f, 0);
     
     private int cleanValueToChange = 20;
     

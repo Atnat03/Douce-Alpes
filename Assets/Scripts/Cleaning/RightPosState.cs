@@ -6,7 +6,7 @@ public class RightPosState : ICleaningState
 {
     private StateMachineClean manager;
     
-    private Vector3 camPos = new Vector3(0.1f, 0.25f, -2.5f);
+    private Vector3 camPos = new Vector3(0.1f, 0.75f, -2.5f);
     
     private int cleanValueToChange = 40;
     
