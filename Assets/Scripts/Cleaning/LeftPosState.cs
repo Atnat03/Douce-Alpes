@@ -19,6 +19,7 @@ public class LeftPosState : ICleaningState
         
         manager.cleanManager.currentCleaningSide = CleaningSide.Left;
 
+        manager.cleanManager.canAddShampoo = false;
         manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 1f));
         if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
             manager.cleanManager.ResetValueClean();
@@ -44,6 +45,8 @@ public class LeftPosState : ICleaningState
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+        manager.cleanManager.canAddShampoo = true;
+
     }
 
     public bool IsEnought()

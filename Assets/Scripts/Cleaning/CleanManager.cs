@@ -27,7 +27,7 @@ public class CleanManager : MiniGameParent
     public CleaningTool currentTool;
 
     [Header("Tool Particles")] 
-    [SerializeField] private GameObject shampoo;
+    [SerializeField] private GameObject[] shampoos;
     [SerializeField] private GameObject shower;
 
     [Header("UI")] 
@@ -57,6 +57,7 @@ public class CleanManager : MiniGameParent
     public float maxDistanceFromCenter = 1.0f;
     
     [HideInInspector] public bool allCleaned = false;
+    [HideInInspector] public bool canAddShampoo = true;
 
     public float GetCleanValue() => cleanValue;
 
@@ -126,8 +127,17 @@ public class CleanManager : MiniGameParent
     {
         if (!hasLastPos || Vector3.Distance(lastShampooPos, pos) >= minDistanceBetweenShampoos)
         {
-            GameObject s = Instantiate(shampoo, pos, Quaternion.identity);
+            GameObject prefab = shampoos[Random.Range(0, shampoos.Length)];
+
+            float randomY = Random.Range(0f, 360f);
+            Quaternion randomRotation = Quaternion.Euler(0f, randomY, 0f);
+
+            GameObject s = Instantiate(prefab, pos, randomRotation);
             s.layer = currentCleaningLayer;
+
+            float randomScale = Random.Range(0.75f, 1f);
+            s.transform.localScale = Vector3.one * randomScale;
+
             shampooList.Add(s);
             cleanValue += 1f;
             lastShampooPos = pos;
@@ -135,30 +145,35 @@ public class CleanManager : MiniGameParent
         }
     }
 
+
+
     private void CheckShampoo(Vector3 pos)
     {
+        // Instancie l'effet shower
         GameObject d = Instantiate(shower, pos, Quaternion.identity);
         Destroy(d, 0.3f);
 
-        float radius = 0.025f;
-        Collider[] hits = Physics.OverlapSphere(pos, radius);
+        float radius = 0.1f; // rayon de détection autour de la position de l'eau
 
-        foreach (Collider hit in hits)
+        // Parcours la liste des boules de shampoo pour supprimer celles proches
+        for (int i = shampooList.Count - 1; i >= 0; i--)
         {
-            if (shampooList.Contains(hit.gameObject) && hit.gameObject.layer == currentCleaningLayer)
+            GameObject s = shampooList[i];
+            if (s.layer == currentCleaningLayer && Vector3.Distance(s.transform.position, pos) <= radius)
             {
-                Destroy(hit.gameObject);
-                shampooList.Remove(hit.gameObject);
+                Destroy(s);
+                shampooList.RemoveAt(i);
             }
         }
 
-        // ✅ Si plus aucun shampoo, on considère la zone totalement nettoyée
-        if (shampooList.Count == 0 && currentTool == CleaningTool.Shower)
+        // Vérifie si la zone est totalement nettoyée
+        if (shampooList.Count == 0)
         {
             allCleaned = true;
             OnAllCleaned();
         }
     }
+
 
     private void OnAllCleaned()
     {
