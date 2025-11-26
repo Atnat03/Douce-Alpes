@@ -70,6 +70,11 @@ public class TouchManager : MonoBehaviour
 
     private void OnTouchPressed(InputAction.CallbackContext context)
     {
+        if (TutoManager.instance.isTuto && TutoManager.instance.tutoState == TutoState.Start)
+        {
+            TutoManager.instance.AddMouton();
+        }
+        
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 

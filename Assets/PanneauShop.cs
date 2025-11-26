@@ -38,6 +38,9 @@ public class PanneauShop : TouchableObject
         
         if (!GameManager.instance.shopOpen)
         {
+            if(TutoManager.instance != null)
+                TutoManager.instance.Shop();
+            
             OpenUI();
         }
     }

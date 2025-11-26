@@ -19,18 +19,28 @@ public class FakeSheepBoid : MonoBehaviour
 
     private Color[] natureColors = new Color[]
     {
-        Color.red, 
-        Color.blue,  
-        Color.gray,  
-        Color.yellow  
+        Color.red,
+        Color.blue,
+        Color.gray,
+        Color.yellow
     };
+
     void Start()
     {
+        // manager doit être assigné avant tout
+        if (manager == null)
+        {
+            manager = FakeSheepBoidManager.instance;
+            if (manager == null)
+            {
+                Debug.LogError("Aucun FakeSheepBoidManager trouvé !");
+                enabled = false;
+                return;
+            }
+        }
+
         natureStrategy = NatureFactory.Create(natureType);
         ScheduleNextPause();
-        
-        manager = FakeSheepBoidManager.instance;
-        FakeSheepBoidManager.instance.RegisterSheep(this);
 
         if (velocity == Vector3.zero)
         {
@@ -42,6 +52,8 @@ public class FakeSheepBoid : MonoBehaviour
 
     void Update()
     {
+        if (manager == null) return; // sécurité
+
         if (isPaused && !isAfraid)
         {
             pauseTimer -= Time.deltaTime;
@@ -55,10 +67,24 @@ public class FakeSheepBoid : MonoBehaviour
 
         Vector3 accel = Vector3.zero;
 
+        accel += Separation() * manager.separationWeight;
+        accel += Alignment() * manager.alignmentWeight;
+        accel += Cohesion() * manager.cohesionWeight;
         accel += BoundaryRepulsion();
+
+        // Sécurité : éviter NaN dans accel
+        if (float.IsNaN(accel.x) || float.IsNaN(accel.y) || float.IsNaN(accel.z))
+            accel = Vector3.zero;
 
         velocity += accel * Time.deltaTime;
         velocity.y = 0f;
+
+        // Si velocity devient trop petit, on lui donne un petit vecteur aléatoire
+        if (velocity.sqrMagnitude < 0.0001f || float.IsNaN(velocity.x))
+        {
+            velocity = Random.insideUnitSphere;
+            velocity.y = 0f;
+        }
 
         float speed = Mathf.Clamp(velocity.magnitude, manager.minSpeed, manager.maxSpeed);
 
@@ -72,31 +98,103 @@ public class FakeSheepBoid : MonoBehaviour
 
         velocity = velocity.normalized * speed;
 
-        // Déplacement
+        // Sécurité finale
+        if (float.IsNaN(velocity.x) || float.IsNaN(velocity.y) || float.IsNaN(velocity.z))
+            velocity = Random.insideUnitSphere;
+
         transform.position += velocity * Time.deltaTime;
 
-        // Rotation du mouton vers la direction du mouvement
         if (velocity.sqrMagnitude > 0.001f)
         {
             Quaternion targetRot = Quaternion.LookRotation(velocity);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.1f);
         }
 
-        // Gestion de la pause naturelle
         nextPauseTime -= Time.deltaTime;
         if (nextPauseTime <= 0f)
+        {
             StartPause();
+            ScheduleNextPause();
+        }
     }
+
+
+    // ---------------- Règles Boids ----------------
+
+    Vector3 Separation()
+    {
+        Vector3 away = Vector3.zero;
+        int count = 0;
+
+        foreach (var other in manager.sheepBoids)
+        {
+            if (other == this) continue;
+            float dist = Vector3.Distance(transform.position, other.transform.position);
+            if (dist < manager.separationRadius)
+            {
+                away += (transform.position - other.transform.position) / dist;
+                count++;
+            }
+        }
+
+        if (count > 0) away /= count;
+        return away;
+    }
+
+    Vector3 Alignment()
+    {
+        Vector3 avgVel = Vector3.zero;
+        int count = 0;
+
+        foreach (var other in manager.sheepBoids)
+        {
+            if (other == this) continue;
+            float dist = Vector3.Distance(transform.position, other.transform.position);
+            if (dist < manager.neighborRadius)
+            {
+                avgVel += other.velocity;
+                count++;
+            }
+        }
+
+        if (count > 0) avgVel /= count;
+        return (avgVel - velocity) * 0.5f;
+    }
+
+    Vector3 Cohesion()
+    {
+        Vector3 center = Vector3.zero;
+        int count = 0;
+
+        foreach (var other in manager.sheepBoids)
+        {
+            if (other == this) continue;
+            float dist = Vector3.Distance(transform.position, other.transform.position);
+            if (dist < manager.neighborRadius)
+            {
+                center += other.transform.position;
+                count++;
+            }
+        }
+
+        if (count > 0)
+        {
+            center /= count;
+            return (center - transform.position) * 0.5f;
+        }
+
+        return Vector3.zero;
+    }
+
+    // ---------------- Frontières ----------------
 
     Vector3 BoundaryRepulsion()
     {
         if (manager.boundaryPoints == null || manager.boundaryPoints.Count == 0)
             return Vector3.zero;
-        
-        float weight = manager.boundaryWeight;
 
-        if (isAfraid)
-            weight *= 30f;
+        float weight = manager.boundaryWeight;
+        if (isAfraid) weight *= 30f;
 
         Vector3 steer = Vector3.zero;
         Vector3 pos = transform.position;
@@ -126,14 +224,22 @@ public class FakeSheepBoid : MonoBehaviour
     }
 
     public void CalmDown() => isAfraid = false;
-    public void SetNature(NatureType type) { natureType = type; natureStrategy = NatureFactory.Create(type); }
+
+    public void SetNature(NatureType type)
+    {
+        natureType = type;
+        natureStrategy = NatureFactory.Create(type);
+    }
 
     void ScheduleNextPause() => nextPauseTime = Random.Range(manager.minTimeBetweenPauses.x, manager.minTimeBetweenPauses.y);
-    void StartPause() { isPaused = true; pauseTimer = Random.Range(manager.pauseDuration.x, manager.pauseDuration.y); }
+    void StartPause() => pauseTimer = Random.Range(manager.pauseDuration.x, manager.pauseDuration.y);
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = natureColors[(int)natureType];
-        Gizmos.DrawCube(transform.position + Vector3.up * 0.5f, Vector3.one * 0.2f);
+        if ((int)natureType < natureColors.Length)
+        {
+            Gizmos.color = natureColors[(int)natureType];
+            Gizmos.DrawCube(transform.position + Vector3.up * 0.5f, Vector3.one * 0.2f);
+        }
     }
 }

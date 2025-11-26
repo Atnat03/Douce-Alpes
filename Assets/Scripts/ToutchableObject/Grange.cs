@@ -25,20 +25,12 @@ public class Grange : Build
     public Transform endSpawnGetOffTransform;
 
     public bool AllSheepAreOutside = true;
-
-    public GameObject uiFlecheClick;
-
+    
     void Start()
     {
         OpenDoors();
     }
-
-    public override void TouchEvent()
-    {
-        base.TouchEvent();
-        uiFlecheClick.SetActive(false);
-    }
-
+    
     public void LaunchMiniGame()
     {
         GameManager.instance.ChangeCameraState(CamState.MiniGame);
@@ -53,6 +45,9 @@ public class Grange : Build
         gate2.transform.rotation = Quaternion.Euler(gate2_Open);
         gateState = true;
         keyCloseGate.SetActive(false);
+        
+        if(TutoManager.instance != null)
+            TutoManager.instance.MiniJeuGrange();
     }
     
     public void CloseDoors()
@@ -61,6 +56,9 @@ public class Grange : Build
         gate2.transform.rotation = Quaternion.Euler(gate2_Close);
         gateState = false;
         keyCloseGate.SetActive(true);
+        
+        if(TutoManager.instance != null)
+            TutoManager.instance.MiniJeuSortis();
     }
 
     public void AddSheepInGrange()

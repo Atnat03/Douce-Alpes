@@ -7,7 +7,7 @@ public class FrontPosState : ICleaningState
 {
     private StateMachineClean manager;
 
-    private Vector3 camPos = new Vector3(2, 0.25f, 0);
+    private Vector3 camPos = new Vector3(2, 0.75f, 0);
     
     private int cleanValueToChange = 20;
     
@@ -22,7 +22,7 @@ public class FrontPosState : ICleaningState
         manager.cleanManager.currentCleaningLayer = frontLayer;    
         
         manager.cleanManager.currentCleaningSide = CleaningSide.Front;
-        
+        manager.cleanManager.canAddShampoo = false; 
         manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 1f));
         if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
             manager.cleanManager.ResetValueClean();
@@ -51,6 +51,7 @@ public class FrontPosState : ICleaningState
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+        manager.cleanManager.canAddShampoo = true;
     }
     
     public bool IsEnought()

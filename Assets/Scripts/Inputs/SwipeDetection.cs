@@ -128,7 +128,7 @@ public class SwipeDetection : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         RaycastHit hit;
         float maxDistance = 2.6f;
-        float offset = 0.5f;
+        float offset = 0.2f;
 
         if(SwapSceneManager.instance.currentSceneId == 3)
         {

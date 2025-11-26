@@ -328,6 +328,8 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(delayBetweenSheep);
         }
 
+        if(TutoManager.instance != null)
+            TutoManager.instance.GoToShop();
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
     }
