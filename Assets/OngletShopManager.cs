@@ -12,7 +12,7 @@ public class OngletShopManager : MonoBehaviour
     private void Start()
     {
         startScale = onglets[0].transform.localScale;
-        selectedScale = startScale * 1.25f;
+        selectedScale = startScale * 1.15f;
     }
 
     public void ChangePage(int id)
@@ -21,23 +21,44 @@ public class OngletShopManager : MonoBehaviour
         {
             if (i == id)
             {
-                // On active la page sélectionnée
                 pages[i].SetActive(true);
-
-                // On place l'onglet en position 3
+                
+                UpdateOnglet(i);
                 onglets[i].transform.SetSiblingIndex(3);
             }
             else if (i < id)
             {
-                // On désactive toutes les pages avant id
                 pages[i].SetActive(false);
             }
             else
             {
-                // On laisse activées les pages après id
                 pages[i].SetActive(true);
             }
         }
     }
+
+    void UpdateOnglet(int i)
+    {
+        List<int> order = new List<int>();
+
+        for (int j = 0; j < onglets.Count; j++)
+            order.Add(j);
+
+        order.Sort((a, b) => b.CompareTo(a));
+
+        order.Remove(i);
+        order.Insert(0, i);
+
+        for (int h = 0; h < order.Count; h++)
+        {
+            onglets[order[h]].transform.SetSiblingIndex(h);
+
+            if (order[h] == i)
+                onglets[order[h]].transform.localScale = selectedScale;
+            else
+                onglets[order[h]].transform.localScale = startScale;
+        }
+    }
+
 
 }
