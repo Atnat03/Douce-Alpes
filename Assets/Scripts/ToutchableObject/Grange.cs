@@ -25,6 +25,8 @@ public class Grange : Build
     public Transform endSpawnGetOffTransform;
 
     public bool AllSheepAreOutside = true;
+
+    public Transform targetTransiPos;
     
     void Start()
     {
@@ -94,7 +96,7 @@ public class Grange : Build
         GameManager.instance.ChangeCameraPos(
             GameManager.instance.GetMiniGameZoomCamPos().position,
             GameManager.instance.GetMiniGameZoomCamPos().rotation.eulerAngles,
-            transform,true
+            targetTransiPos,true
         );
     }
 
@@ -103,7 +105,7 @@ public class Grange : Build
         GameManager.instance.ChangeCameraPos(
             GameManager.instance.GetMiniGameCamPos().position,
             GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles,
-            transform
+            targetTransiPos
         );
     }
 

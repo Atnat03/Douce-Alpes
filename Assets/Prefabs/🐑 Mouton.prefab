@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &626534496862609779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8496360103741788287}
+  m_Layer: 7
+  m_Name: CameraTransiRotation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8496360103741788287
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 626534496862609779}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3582360026584067795}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1274171081867537020
 GameObject:
   m_ObjectHideFlags: 0
@@ -4942,6 +4973,7 @@ Transform:
   - {fileID: 6863644733935078796}
   - {fileID: 4637469469025211434}
   - {fileID: 7949231754225349437}
+  - {fileID: 8496360103741788287}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &606120119166536806
@@ -4974,6 +5006,7 @@ MonoBehaviour:
   logoImage: {fileID: 1771354484032541055}
   showerLogo: {fileID: 21300000, guid: eeeb7bb88e36d9345b124d4c450c4988, type: 3}
   zzzzzzLogo: {fileID: 21300000, guid: 25a29186d45c56b4b856928700b72c0c, type: 3}
+  targetTransiPos: {fileID: 8496360103741788287}
 --- !u!65 &2181534520863901765
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5626,7 +5659,7 @@ Transform:
   m_GameObject: {fileID: 8270886783497250301}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.9940564, z: -0.10886683, w: 0}
-  m_LocalPosition: {x: -0, y: 0.91, z: 4}
+  m_LocalPosition: {x: -0, y: 1.02, z: 3.98}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

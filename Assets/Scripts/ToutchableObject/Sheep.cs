@@ -38,6 +38,8 @@ public class Sheep : TouchableObject
     [SerializeField] private Image logoImage;
     [SerializeField] private Sprite showerLogo;
     [SerializeField] private Sprite zzzzzzLogo;
+    
+    public Transform targetTransiPos;
 
     private void Start()
     {
@@ -201,7 +203,7 @@ public class Sheep : TouchableObject
         GameManager.instance.ChangeCameraPos(
             cameraPosition.position,
             cameraPosition.rotation.eulerAngles,
-            transform
+            targetTransiPos
         );
 
         Camera.main.GetComponent<CameraControl>().ResetFOV();

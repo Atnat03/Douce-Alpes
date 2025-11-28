@@ -29,7 +29,7 @@ public class Abreuvoir : MiniGameParent
     [SerializeField] private Vector3 fullWater;
     
     private void Awake() => instance = this;
-
+    
     private void Start()
     {
         eau = Eau.GetComponent<Renderer>().material;

@@ -4,6 +4,8 @@ public class AbreuvoirClickOpen : TouchableObject
 {
     [SerializeField] private Abreuvoir abreuvoir;
     [SerializeField] private Transform camPos; 
+    
+    public Transform targetTransiPos;
 
     public override void TouchEvent()
     {
@@ -19,6 +21,6 @@ public class AbreuvoirClickOpen : TouchableObject
     private void ActivateAbreuvoir()
     {
         GameManager.instance.ChangeCameraState(CamState.Drink);
-        GameManager.instance.ChangeCameraPos(camPos.transform.position, camPos.transform.localEulerAngles, abreuvoir.transform);
+        GameManager.instance.ChangeCameraPos(camPos.transform.position, camPos.transform.localEulerAngles, targetTransiPos);
     }
 }
