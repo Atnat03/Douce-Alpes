@@ -68,6 +68,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 68a23a057d4d1ca48bedf2b40f8fbc9d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_1e7c38b5a25e4aa5a0cdefd7648a8ba5_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 6bc7d7afc0b882147a35ca70cb0cd122, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_4d529c4349a9453d9f57e215f0df7f06_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 6bc7d7afc0b882147a35ca70cb0cd122, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -123,9 +127,9 @@ Material:
     - _AlphaToMask: 0
     - _Alpha_clip_threshold: 0.01
     - _Apparition_Horizontale: 3.89
-    - _Apparition_Horizontale_Mailles_Haut: 0
+    - _Apparition_Horizontale_Mailles_Haut: 1.67
     - _Appartion_Rang_e: 4
-    - _Appartion_Rang_e_Verticale: 0
+    - _Appartion_Rang_e_Verticale: 3
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -133,6 +137,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _D_calage: 0.42
     - _Decalage_rang_e: 0.48
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -142,9 +147,8 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Gradient_droite: 0
-    - _MaxHorizontal: 4
-    - _MaxVertical: 5
+    - _Gradient_droite: 1
+    - _LImite_hauteur: 0.31
     - _Metallic: 0
     - _Nbr_rangees_Horizontales: 5
     - _Nombre_de_Rang_e: 5
@@ -160,19 +164,17 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _Taille_Mailles_haut: 0.7
+    - _Taille_Mailles_haut: 0.66
     - _Tiling_Mailles_Haut: 0.84
     - _Tiling_laine: 0.5
     - _Tiling_torsade: 1.06
     - _Torsade_Taille: 0.44
     - _Torsade_scale: 0.37
-    - _ValueHorizontal: 5
-    - _ValueVertical: 5
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _contrast: -0.61
     - _on_test: 0.48
-    - _on_teste2: -0.09
+    - _on_teste2: -1.1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
