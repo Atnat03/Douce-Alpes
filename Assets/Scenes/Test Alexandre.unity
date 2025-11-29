@@ -5400,7 +5400,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 48bf555b8c473784daafee2c2a5b3be7, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 76ddd2887eb49ec499508d0ccdb96993, type: 2}
+      objectReference: {fileID: 2100000, guid: 7a3bf9f399a3293408552fe94015b782, type: 2}
     - target: {fileID: -7511558181221131132, guid: 48bf555b8c473784daafee2c2a5b3be7, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -5433,6 +5433,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[8]'
       value: 
       objectReference: {fileID: 2100000, guid: 7269d3970f3bea049907c1dc89031abd, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 48bf555b8c473784daafee2c2a5b3be7, type: 3}
+      propertyPath: 'm_Materials.Array.data[9]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d192da7666f06c24d82f2706dfbb05c9, type: 2}
     - target: {fileID: -7511558181221131132, guid: 48bf555b8c473784daafee2c2a5b3be7, type: 3}
       propertyPath: 'm_Materials.Array.data[10]'
       value: 
@@ -30802,7 +30806,7 @@ MonoBehaviour:
   m_RebuildFrequency: 30
   m_UpdateColliders: 1
   m_Sides: 8
-  m_SegmentsPerUnit: 4
+  m_SegmentsPerUnit: 20
   m_Capped: 1
   m_Radius: 0.05
   m_Range: {x: 0, y: 1}
@@ -30898,31 +30902,31 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots:
     - Position:
-        x: -0.97562695
-        y: -0.571
-        z: 3.4659512
+        x: -0.8706269
+        y: -0.747
+        z: 3.2429512
       TangentIn:
         x: 0
         y: 0
-        z: -0.85962814
+        z: -0.94259024
       TangentOut:
         x: 0
         y: 0
-        z: 0.85962814
+        z: 0.94259024
       Rotation:
         value:
-          x: 0.79244083
-          y: 0.000013165435
-          z: 0.60994875
-          w: 0.0000101335545
+          x: 0.6354747
+          y: 0.000010532287
+          z: 0.7721217
+          w: 0.000012797054
     - Position:
-        x: 0.3763728
+        x: 0.30237293
         y: -0.768
-        z: 2.5409513
+        z: 2.444951
       TangentIn:
-        x: 0.32129908
-        y: -0.00076436996
-        z: -0.3756318
+        x: 0.1499139
+        y: 0.3330691
+        z: -0.5273957
       TangentOut:
         x: 0.19419086
         y: 0.00000020296389
