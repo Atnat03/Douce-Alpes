@@ -70,26 +70,28 @@ public class TouchManager : MonoBehaviour
 
     private void OnTouchPressed(InputAction.CallbackContext context)
     {
-        if (TutoManager.instance.isTuto && TutoManager.instance.tutoState == TutoState.Start)
+        if (playerInput == null || touchPositionAction == null || Camera.main == null)
+            return;
+
+        if (TutoManager.instance != null && TutoManager.instance.isTuto && TutoManager.instance.tutoState == TutoState.Start)
         {
             TutoManager.instance.AddMouton();
         }
-        
+
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {    
-            if (GameManager.instance.isLock && !delockArea.Contains(screenPos))
+            if (GameManager.instance != null && GameManager.instance.isLock && !delockArea.Contains(screenPos))
             {
                 Debug.Log("Force delock");
                 GameManager.instance.DelockSheep();
             }
-            
+
             currentTouchedObject = hit.transform.gameObject;
         }
     }
-
 
     private void OnTouchReleased(InputAction.CallbackContext context)
     {

@@ -29,6 +29,8 @@ public class TricotManager : MonoBehaviour
 
     [HideInInspector] public List<Vector2> linePoints = new List<Vector2>();
     [HideInInspector] public List<Vector2> modelLinePoints = new List<Vector2>();
+    
+    [SerializeField] VisualTricot visualTricot;
 
     private void Start()
     {
@@ -55,13 +57,13 @@ public class TricotManager : MonoBehaviour
             uiLineRenderer.points = linePoints.ToArray();
             uiLineRenderer.SetVerticesDirty();
         }
-
+/*
         if (imageProduct.fillAmount < targetFill)
         {
             imageProduct.fillAmount += Time.deltaTime * fillSpeed;
             if (imageProduct.fillAmount > targetFill)
                 imageProduct.fillAmount = targetFill;
-        }
+        }*/
         
         
     }
@@ -131,6 +133,9 @@ public class TricotManager : MonoBehaviour
         }
 
         // Motif correct
+        
+        visualTricot.AddLaine(numberModelOfThisPattern);
+        
         if (okImage != null) okImage.SetActive(true);
         ResetDrawing();
         StartCoroutine(HideOkAndNextModel());
