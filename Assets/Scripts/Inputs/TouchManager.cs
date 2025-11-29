@@ -70,7 +70,7 @@ public class TouchManager : MonoBehaviour
 
     private void OnTouchPressed(InputAction.CallbackContext context)
     {
-        if (playerInput == null || touchPositionAction == null || Camera.main == null)
+        if (playerInput == null || touchPositionAction == null || Camera.main == null || ChangingCamera.isInTransition)
             return;
 
         if (TutoManager.instance != null && TutoManager.instance.isTuto && TutoManager.instance.tutoState == TutoState.Start)

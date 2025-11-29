@@ -4946,7 +4946,6 @@ GameObject:
   - component: {fileID: 606120119166536806}
   - component: {fileID: 2181534520863901765}
   - component: {fileID: 4891704381536124345}
-  - component: {fileID: 793898322858746094}
   m_Layer: 7
   m_Name: "\U0001F411 Mouton"
   m_TagString: Touchable
@@ -5045,21 +5044,6 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   isAfraid: 0
   fearSpeedMultiplier: 3
---- !u!114 &793898322858746094
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2722875930628605413}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67801ea8428c0e6478818453b300dd7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxThirst: 100
-  thirstIncreaseRate: 5
-  drinkDuration: 3
 --- !u!1 &3429154055375540571
 GameObject:
   m_ObjectHideFlags: 0

@@ -34,6 +34,9 @@ public class SheepBoidManager : MonoBehaviour
     public float alignmentWeight = 1f;
     public float cohesionWeight = 1f;
     public float noise = 0.3f;
+    
+    [Header("Obstacles à éviter")]
+    public List<Collider> avoidanceColliders = new List<Collider>();
 
     [Header("Pauses")]
     public Vector2 minTimeBetweenPauses = new Vector2(5, 10);

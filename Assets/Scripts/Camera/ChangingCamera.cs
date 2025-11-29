@@ -18,7 +18,7 @@ public class ChangingCamera : MonoBehaviour
     private Quaternion preTransitionRootRot;
     private bool hasPreTransition = false;
 
-    private bool isInTransition = false;
+    public static bool isInTransition = false;
 
     private void Awake()
     {
@@ -118,6 +118,9 @@ private IEnumerator SmoothTransition(
     Vector3 startCamPos = camera.transform.position;
     Vector3 startRootPos = control.root.position;
 
+    float startFOV = camera.fieldOfView; 
+    float targetFOV = 45f;              
+
     float elapsed = 0f;
     float duration = Mathf.Max(0.0001f, timerToTransition);
 
@@ -126,27 +129,24 @@ private IEnumerator SmoothTransition(
         elapsed += Time.deltaTime;
         float t = Mathf.Clamp01(elapsed / duration);
 
-        // position
         camera.transform.position = Vector3.Lerp(startCamPos, targetCamPos, t);
 
         Quaternion lookAtRot = Quaternion.LookRotation(target.position - camera.transform.position, Vector3.up);
-
-        float blend = Mathf.Pow(t, 3); 
+        float blend = Mathf.Pow(t, 3);
         Quaternion targetRotCombined = Quaternion.Slerp(lookAtRot, targetCamRot, blend);
-
         camera.transform.rotation = Quaternion.Slerp(startCamRot, targetRotCombined, t);
 
+        camera.fieldOfView = Mathf.Lerp(startFOV, targetFOV, t);
 
-        // root
         control.root.position = Vector3.Lerp(startRootPos, targetRootPos, t);
         control.root.rotation = Quaternion.Slerp(startRootRot, targetRootRot, t);
 
         yield return null;
     }
 
-    // garantir position et rotation finales exactes
     camera.transform.position = targetCamPos;
     camera.transform.rotation = targetCamRot;
+    camera.fieldOfView = targetFOV;
     control.root.position = targetRootPos;
     control.root.rotation = targetRootRot;
 
@@ -161,6 +161,7 @@ private IEnumerator SmoothTransition(
     yield return new WaitForSeconds(transitionCooldown);
     isInTransition = false;
 }
+
 
 
     // ----------------------------------------------------------------------
