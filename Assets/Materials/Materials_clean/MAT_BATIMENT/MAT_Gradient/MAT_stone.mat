@@ -17,7 +17,8 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -104,6 +105,7 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -118,7 +120,9 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Gradient: 1
     - _Metallic: 0
+    - _Normal_Clay: 5
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -134,7 +138,9 @@ Material:
     - _Surface: 0
     - _Vitesse_des_bumps: 2
     - _WorkflowMode: 1
+    - _ZTest: 4
     - _ZWrite: 1
+    - _ZWriteControl: 0
     - _smoothness: 0
     - _speed: 0.42
     - _strenght_fingerprints: 0.21
@@ -142,7 +148,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.65241194, g: 0.7233553, b: 0.764151, a: 1}
     - _Color: {r: 0.65241194, g: 0.7233553, b: 0.764151, a: 1}
-    - _Color_gradient: {r: 0.23584905, g: 0.10243977, b: 0.06563723, a: 0}
+    - _Color_gradient: {r: 0.14217694, g: 0.3902933, b: 0.4245283, a: 0}
     - _Couleur_ombre: {r: 0.5283019, g: 0.062299743, b: 0.062299743, a: 0}
     - _Couluer_mask: {r: 0.7176471, g: 0.023529414, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
