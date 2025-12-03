@@ -30,9 +30,6 @@ public class FakeSheepBoidManager : MonoBehaviour
     [Header("Pauses")]
     public Vector2 minTimeBetweenPauses = new Vector2(5, 10);
     public Vector2 pauseDuration = new Vector2(1, 3);
-    
-    [Header("Obstacles à éviter")]
-    public List<Collider> avoidanceColliders = new List<Collider>();
 
     private void Awake()
     {

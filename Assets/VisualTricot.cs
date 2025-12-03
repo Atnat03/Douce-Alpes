@@ -12,7 +12,6 @@ public class VisualTricot : MonoBehaviour
     [SerializeField] private Renderer obejctVisual;
     private Material shader;
     [SerializeField] float duree = 2f;
-    private float valueVerticalTemp;
     
     [Header("Spline")]
     private Vector2 positionMin;
@@ -41,7 +40,7 @@ public class VisualTricot : MonoBehaviour
             Debug.Log("Fin du tricot");
             yield break;
         }
-        
+
         float depart = value_Horizontal;
         float cible = gradient_Droite ? 0 : maxNumberHorizontal;
         float temps = 0f;
@@ -53,9 +52,10 @@ public class VisualTricot : MonoBehaviour
             yield return null;
         }
         
-        value_Horizontal = cible;
         value_Vertical++;
         
+        value_Horizontal = cible;
+
         gradient_Droite = !gradient_Droite;
     }
 

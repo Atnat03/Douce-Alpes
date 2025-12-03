@@ -103,23 +103,6 @@ public class FakeSheepBoid : MonoBehaviour
             velocity = Random.insideUnitSphere;
 
         transform.position += velocity * Time.deltaTime;
-        
-        Vector3 avoidanceForce = Vector3.zero;
-
-        foreach (Collider col in manager.avoidanceColliders)
-        {
-            Vector3 closestPoint = col.ClosestPoint(transform.position);
-            float distance = Vector3.Distance(transform.position, closestPoint);
-            float safeDistance = 1.0f; // distance à garder minimum
-
-            if (distance < safeDistance)
-            {
-                // Crée une force de répulsion proportionnelle à la proximité
-                avoidanceForce += (transform.position - closestPoint).normalized * (safeDistance - distance) * 2f;
-            }
-        }
-
-        velocity += avoidanceForce * Time.deltaTime;
 
         if (velocity.sqrMagnitude > 0.001f)
         {
