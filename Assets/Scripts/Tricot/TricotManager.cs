@@ -31,6 +31,7 @@ public class TricotManager : MonoBehaviour
     [HideInInspector] public List<Vector2> modelLinePoints = new List<Vector2>();
     
     [SerializeField] VisualTricot visualTricot;
+    [SerializeField] private GameObject spawnVisual;
 
     private void Start()
     {
@@ -57,15 +58,6 @@ public class TricotManager : MonoBehaviour
             uiLineRenderer.points = linePoints.ToArray();
             uiLineRenderer.SetVerticesDirty();
         }
-/*
-        if (imageProduct.fillAmount < targetFill)
-        {
-            imageProduct.fillAmount += Time.deltaTime * fillSpeed;
-            if (imageProduct.fillAmount > targetFill)
-                imageProduct.fillAmount = targetFill;
-        }*/
-        
-        
     }
 
     public void SetHover(bool hover)
@@ -133,8 +125,7 @@ public class TricotManager : MonoBehaviour
         }
 
         // Motif correct
-        
-        visualTricot.AddLaine(numberModelOfThisPattern);
+        visualTricot.AddLaine();
         
         if (okImage != null) okImage.SetActive(true);
         ResetDrawing();
@@ -265,6 +256,8 @@ public class TricotManager : MonoBehaviour
         linePoints.Clear();
         targetFill = 0f;
         currentPriceSell = patternSO.sellPrice;
+        
+        GameObject meshVisual = Instantiate(patternSO.prefabVisual, spawnVisual.transform);
 
         if (imageProduct != null)
         {
@@ -275,6 +268,8 @@ public class TricotManager : MonoBehaviour
         sellButton.gameObject.SetActive(false);
         
         ResetDrawing();
+        
+        visualTricot.Initialise(meshVisual.GetComponent<MeshRenderer>());
 
         if (currentPattern.Count > 0)
         {

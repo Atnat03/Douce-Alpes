@@ -10,6 +10,7 @@ public class ModelDrawSO : ScriptableObject
     public List<ModelDraw> pattern = new();
     public int sellPrice;
     public int unlockPrice;
+    public GameObject prefabVisual;
 }
 
 [Serializable]
