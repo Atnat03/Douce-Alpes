@@ -56,11 +56,13 @@ public class PanneauShop : TouchableObject
 
     public void CloseUI()
     {
+        if (changeCamera.isInTransition)
+            return;
+        
         shopUI.SetActive(false);
         buttonQuit.SetActive(false);
+        changeCamera.ResetPosition(); 
         GameManager.instance.shopOpen = false;
-        GameManager.instance.ChangePlayerEnvironnement(true);
-        changeCamera.ResetPosition();
     }
     
     public void GoLeft()
