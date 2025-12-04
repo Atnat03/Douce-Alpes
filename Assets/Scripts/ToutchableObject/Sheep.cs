@@ -32,7 +32,7 @@ public class Sheep : TouchableObject
     [SerializeField] private SkinListManager skinListManager;
     [SerializeField] public GameObject laine;
 
-    private SheepBoid sheepBoid;
+    public SheepBoid sheepBoid;
 
     [SerializeField] private GameObject bulleUI;
     [SerializeField] private Image logoImage;
@@ -43,7 +43,6 @@ public class Sheep : TouchableObject
 
     private void Start()
     {
-        sheepBoid = GetComponent<SheepBoid>();
         laine.GetComponent<Outline>().enabled = false;
 
         processWool = Random.Range(50, 100);
@@ -54,6 +53,10 @@ public class Sheep : TouchableObject
     {
         sheepId  = id;
         sheepName = name;
+
+        skinListManager.Initalize();
+        SetCurrentSkinClothe(0);
+        SetCurrentSkinHat(0);
     }
 
     private void Update()
@@ -216,11 +219,30 @@ public class Sheep : TouchableObject
     {
         currentSkinHat = skinId;
         skinListManager.UpdateSkinListHat(currentSkinHat);
+        UpdateCombo();
     }
 
     public void SetCurrentSkinClothe(int skinId)
     {
         currentSkinClothe = skinId;
         skinListManager.UpdateSkinListClothe(currentSkinClothe);
+        UpdateCombo();
+    }
+
+    private void UpdateCombo()
+    {
+        CheckCombo(currentSkinHat, currentSkinClothe);
+    }
+
+    void CheckCombo(int hatId, int clothId)
+    {
+        if (skinListManager.HasCombo(hatId, clothId))
+        {
+            sheepBoid.SetNature(skinListManager.GetNatureFromCombo(hatId));
+        }
+        else
+        {
+            sheepBoid.SetNature(sheepBoid.natureBase);
+        }
     }
 }
