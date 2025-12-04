@@ -4946,7 +4946,6 @@ GameObject:
   - component: {fileID: 606120119166536806}
   - component: {fileID: 2181534520863901765}
   - component: {fileID: 4891704381536124345}
-  - component: {fileID: 793898322858746094}
   m_Layer: 7
   m_Name: "\U0001F411 Mouton"
   m_TagString: Touchable
@@ -5002,6 +5001,7 @@ MonoBehaviour:
   heartParticle: {fileID: 9111622071756502919}
   skinListManager: {fileID: 3199422249654108566}
   laine: {fileID: 8344763972593900532}
+  sheepBoid: {fileID: 4891704381536124345}
   bulleUI: {fileID: 3429154055375540571}
   logoImage: {fileID: 1771354484032541055}
   showerLogo: {fileID: 21300000, guid: eeeb7bb88e36d9345b124d4c450c4988, type: 3}
@@ -5045,21 +5045,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   isAfraid: 0
   fearSpeedMultiplier: 3
---- !u!114 &793898322858746094
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2722875930628605413}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67801ea8428c0e6478818453b300dd7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxThirst: 100
-  thirstIncreaseRate: 5
-  drinkDuration: 3
+  natureBase: 0
 --- !u!1 &3429154055375540571
 GameObject:
   m_ObjectHideFlags: 0
@@ -5839,6 +5825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 1
+  combo: 1
 --- !u!1001 &3842529453925982066
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6066,6 +6053,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 4
+  combo: 0
 --- !u!1001 &5762435524765236423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6148,6 +6136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 2
+  combo: 0
 --- !u!4 &5220500902179527468 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 57e5f1dd3a9fe6942a2aa9432f029ce7, type: 3}
@@ -6247,6 +6236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 3
+  combo: 0
 --- !u!4 &6822502423679034025 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3f5f851640df8e948ab1d8ce60d49903, type: 3}
@@ -6334,6 +6324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 3
+  combo: 0
 --- !u!4 &6481131664994692995 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c210716d832c3784c89f273e29abacbb, type: 3}
@@ -6425,6 +6416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
+  combo: 0
 --- !u!4 &7993283152786868417 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 975a389c09bc17749b36ce3aa2639f9c, type: 3}
@@ -6512,6 +6504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 5
+  combo: 0
 --- !u!4 &7930104943339064004 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9b50ab10b1157df43b5277df9446b398, type: 3}
@@ -6604,6 +6597,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 1
+  combo: 0
 --- !u!1001 &8609898925175817697
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6691,6 +6685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
+  combo: 1
 --- !u!1001 &8793850948885711012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6777,6 +6772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 2
+  combo: 0
 --- !u!4 &9043423377723617103 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d861bc1a4b8ee1944880db0de243bd72, type: 3}
@@ -6864,6 +6860,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 6
+  combo: 0
 --- !u!4 &8940424159428948359 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8f9cde9f841e5b346af6a32da9ec6f42, type: 3}

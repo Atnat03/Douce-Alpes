@@ -22,6 +22,8 @@ public class SwapSceneManager : MonoBehaviour
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration;
 
+    [SerializeField] private DayNightCycle dayNightCycle;
+    
     private void Start()
     {
         if(isTesting)
@@ -120,5 +122,10 @@ public class SwapSceneManager : MonoBehaviour
                 SwapingTricotScene?.Invoke();
                 break;
         }
+    }
+
+    private void Update()
+    {
+        dayNightCycle.enabled = currentSceneId < 2 || currentSceneId > 4;
     }
 }
