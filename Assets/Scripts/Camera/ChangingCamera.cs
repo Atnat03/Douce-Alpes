@@ -18,7 +18,7 @@ public class ChangingCamera : MonoBehaviour
     private Quaternion preTransitionRootRot;
     private bool hasPreTransition = false;
 
-    private bool isInTransition = false;
+    public bool isInTransition = false;
 
     private void Awake()
     {
