@@ -150,6 +150,9 @@ public class Sheep : TouchableObject
 
     public override void TouchEvent()
     {
+        if (GameManager.instance.currentCameraState != CamState.Default)
+            return;
+        
         if (GameManager.instance.shopOpen) return;
 
         float timeSinceLastClick = Time.time - lastClickTime;
