@@ -23,7 +23,7 @@ public class FrontPosState : ICleaningState
         
         manager.cleanManager.currentCleaningSide = CleaningSide.Front;
         manager.cleanManager.canAddShampoo = false; 
-        manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 1f));
+        manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 2f));
         if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
             manager.cleanManager.ResetValueClean();
     }
