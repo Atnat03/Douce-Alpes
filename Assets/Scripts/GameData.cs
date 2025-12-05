@@ -46,6 +46,9 @@ public class GameData : MonoBehaviour
 
         Saving.instance.savingEvent += SaveMyData;
         Saving.instance.loadingEvent += LoadMyData;
+        
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
     }
 
     private void Start()

@@ -19,6 +19,9 @@ public class ChangingCamera : MonoBehaviour
     private bool hasPreTransition = false;
 
     public bool isInTransition = false;
+    
+    private float targetFOV = 45f;
+    private float startFOV;
 
     private void Awake()
     {
@@ -118,6 +121,13 @@ private IEnumerator SmoothTransition(
     Vector3 startCamPos = camera.transform.position;
     Vector3 startRootPos = control.root.position;
 
+    // -----------------------------
+    // AJOUT : transition progressive du FOV vers 45
+    // -----------------------------
+    float startFOV = camera.fieldOfView;
+    float targetFOV = 45f;
+    // -----------------------------
+
     float elapsed = 0f;
     float duration = Mathf.Max(0.0001f, timerToTransition);
 
@@ -126,16 +136,21 @@ private IEnumerator SmoothTransition(
         elapsed += Time.deltaTime;
         float t = Mathf.Clamp01(elapsed / duration);
 
-        // position
+        // position caméra
         camera.transform.position = Vector3.Lerp(startCamPos, targetCamPos, t);
 
         Quaternion lookAtRot = Quaternion.LookRotation(target.position - camera.transform.position, Vector3.up);
 
-        float blend = Mathf.Pow(t, 3); 
+        float blend = Mathf.Pow(t, 3);
         Quaternion targetRotCombined = Quaternion.Slerp(lookAtRot, targetCamRot, blend);
 
         camera.transform.rotation = Quaternion.Slerp(startCamRot, targetRotCombined, t);
 
+        // -----------------------------
+        // AJOUT : interpolation du FOV
+        // -----------------------------
+        camera.fieldOfView = Mathf.Lerp(startFOV, targetFOV, t);
+        // -----------------------------
 
         // root
         control.root.position = Vector3.Lerp(startRootPos, targetRootPos, t);
@@ -144,9 +159,11 @@ private IEnumerator SmoothTransition(
         yield return null;
     }
 
-    // garantir position et rotation finales exactes
+    // garantir position, rotation et FOV finales
     camera.transform.position = targetCamPos;
     camera.transform.rotation = targetCamRot;
+    camera.fieldOfView = targetFOV;
+
     control.root.position = targetRootPos;
     control.root.rotation = targetRootRot;
 
@@ -161,7 +178,6 @@ private IEnumerator SmoothTransition(
     yield return new WaitForSeconds(transitionCooldown);
     isInTransition = false;
 }
-
 
     // ----------------------------------------------------------------------
     public void ChangeCamera(Vector3 newPosition, Vector3 rotationEuler, Transform target)
@@ -238,64 +254,72 @@ private IEnumerator SmoothTransition(
     }
 
     // ----------------------------------------------------------------------
-    private IEnumerator SmoothReset()
+private IEnumerator SmoothReset()
+{
+    isInTransition = true;
+
+    if (!hasPreTransition)
     {
-        isInTransition = true;
-
-        if (!hasPreTransition)
-        {
-            isInTransition = false;
-            yield break;
-        }
-
-        Vector3 startCamPos = camera.transform.position;
-        Quaternion startCamRot = camera.transform.rotation;
-        Vector3 startRootPos = control.root.position;
-        Quaternion startRootRot = control.root.rotation;
-
-        Vector3 targetCamPos = preTransitionCamPos;
-        Quaternion targetCamRot = preTransitionCamRot;
-        Vector3 targetRootPos = preTransitionRootPos;
-        Quaternion targetRootRot = preTransitionRootRot;
-
-        control.enabled = false;
-        follow.enabled = false;
-        control.SetIgnoreInput(true);
-
-        GameManager.instance.ResetCamera();
-
-        targetCamRot = EnsureShortest(startCamRot, targetCamRot);
-        targetRootRot = EnsureShortest(startRootRot, targetRootRot);
-
-        float elapsed = 0f;
-        float duration = Mathf.Max(0.0001f, timerToTransition);
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-
-            camera.transform.position = Vector3.Lerp(startCamPos, targetCamPos, t);
-            camera.transform.rotation = Quaternion.Slerp(startCamRot, targetCamRot, t);
-
-            control.root.position = Vector3.Lerp(startRootPos, targetRootPos, t);
-            control.root.rotation = Quaternion.Slerp(startRootRot, targetRootRot, t);
-
-            yield return null;
-        }
-
-        camera.transform.position = targetCamPos;
-        camera.transform.rotation = targetCamRot;
-        control.root.position = targetRootPos;
-        control.root.rotation = targetRootRot;
-
-        yield return new WaitForEndOfFrame();
-
-        control.enabled = true;
-        follow.enabled = true;
-        control.SetIgnoreInput(false);
-
-        yield return new WaitForSeconds(transitionCooldown);
         isInTransition = false;
+        yield break;
     }
+
+    Vector3 startCamPos = camera.transform.position;
+    Quaternion startCamRot = camera.transform.rotation;
+    Vector3 startRootPos = control.root.position;
+    Quaternion startRootRot = control.root.rotation;
+
+    Vector3 targetCamPos = preTransitionCamPos;
+    Quaternion targetCamRot = preTransitionCamRot;
+    Vector3 targetRootPos = preTransitionRootPos;
+    Quaternion targetRootRot = preTransitionRootRot;
+
+    float currentFOV = camera.fieldOfView;
+
+    control.enabled = false;
+    follow.enabled = false;
+    control.SetIgnoreInput(true);
+    
+    GameManager.instance.ResetCamera();
+
+    targetCamRot = EnsureShortest(startCamRot, targetCamRot);
+    targetRootRot = EnsureShortest(startRootRot, targetRootRot);
+
+    float elapsed = 0f;
+    float duration = Mathf.Max(0.0001f, timerToTransition);
+
+    while (elapsed < duration)
+    {
+        elapsed += Time.deltaTime;
+        float t = Mathf.Clamp01(elapsed / duration);
+
+        camera.transform.position = Vector3.Lerp(startCamPos, targetCamPos, t);
+        camera.transform.rotation = Quaternion.Slerp(startCamRot, targetCamRot, t);
+
+        camera.fieldOfView = currentFOV;
+
+        control.root.position = Vector3.Lerp(startRootPos, targetRootPos, t);
+        control.root.rotation = Quaternion.Slerp(startRootRot, targetRootRot, t);
+
+        yield return null;
+    }
+
+    camera.transform.position = targetCamPos;
+    camera.transform.rotation = targetCamRot;
+
+    camera.fieldOfView = currentFOV;
+
+    control.root.position = targetRootPos;
+    control.root.rotation = targetRootRot;
+
+    yield return new WaitForEndOfFrame();
+
+    control.enabled = true;
+    follow.enabled = true;
+    control.SetIgnoreInput(false);
+
+    yield return new WaitForSeconds(transitionCooldown);
+    isInTransition = false;
+}
+
 }

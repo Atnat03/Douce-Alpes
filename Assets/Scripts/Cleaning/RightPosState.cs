@@ -23,9 +23,11 @@ public class RightPosState : ICleaningState
         manager.cleanManager.currentCleaningSide = CleaningSide.Right;
         manager.cleanManager.canAddShampoo = false;
 
-        manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 1f));
+        manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 2f));
         if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
+        {
             manager.cleanManager.ResetValueClean();
+        }
     }
 
     public void UpdateState()
@@ -34,6 +36,7 @@ public class RightPosState : ICleaningState
 
         if (IsEnought() && !((manager.cleanManager.currentTool == CleaningTool.Shower) && manager.cleanManager.allCleaned))
         {
+            manager.cleanManager.SetShampoo();
             manager.SetState(manager.leftPosState);
         }
     }

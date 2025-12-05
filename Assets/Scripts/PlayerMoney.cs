@@ -19,12 +19,17 @@ public class PlayerMoney : MonoBehaviour
         instance = this;
     }
 
+    private void Update()
+    {
+        txtMoney.text = currentMoney.ToString();
+        txtWhool.text = currentWhool.ToString();
+    }
+
     //Money
     public void AddMoney(int value)
     {
         Debug.Log(value  + " money ajouté");
         currentMoney += value;
-        txtMoney.text = currentMoney.ToString();
     }
     
     //Laine
@@ -33,7 +38,6 @@ public class PlayerMoney : MonoBehaviour
         Debug.Log(value  + " whool ajouté");
         
         currentWhool += value;
-        txtWhool.text = currentWhool.ToString();
     }
 
     public bool isEnoughtMoney(int value)
