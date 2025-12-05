@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1827747931609968648
+--- !u!114 &-5761861917214760262
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,21 +20,18 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Eau
-  m_Shader: {fileID: -6465566751694194690, guid: 1e95af94f73b5244496ff1b738f52d9b, type: 3}
+  m_Name: MAT_brick_dark
+  m_Shader: {fileID: -6465566751694194690, guid: 80698a510b1e31243a235d9ac04bf3b0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _ALPHAPREMULTIPLY_ON
-  - _SPECULAR_SETUP
-  - _SURFACE_TYPE_TRANSPARENT
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_DoubleSidedGI: 1
+  m_CustomRenderQueue: -1
   stringTagMap:
-    RenderType: Transparent
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -47,6 +44,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Clay_texture:
+        m_Texture: {fileID: 2800000, guid: f02a3af85b42b344d824c062fffc0b16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -73,6 +74,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalFromTexture_065421525a4845f6a4a18e0d57f633df_Texture_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 481d3f420750d09429487ba06ff65341, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -81,12 +86,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_0c2ea3926fcf4bd19f09063e2656b14a_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 415f018755405174fbe34462e2f6c5c2, type: 3}
+    - _SampleTexture2D_d753ca01a13b4d66b7e321e4e78a353f_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 31c82a65efec3874fac1091b5314a100, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texture_doigh:
+        m_Texture: {fileID: 2800000, guid: 1b9ba38212854ab4589072c67548fb68, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -106,55 +115,62 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Apparition: 3
-    - _Apparition_Disparition: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CastShadows: 1
-    - _Center: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 2
+    - _Cull: 0
     - _Cutoff: 0.5
+    - _Density_bumps: 2.81
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
+    - _Divide_du_voronoir: 1.48
+    - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _Eau_Centre: 1
     - _EnvironmentReflections: 1
-    - _Fermeture_Robinet: 1
-    - _Frequence_Vagues: 30
-    - _Frequence_waves: 30
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Gradient: 1
     - _Metallic: 0
+    - _Movement: 0
+    - _Normal_Clay: 5
+    - _Normal_Clay_1: 0.47
+    - _Normal_Fingertips: 0.05
+    - _Normal_Voronoi: 5
     - _OcclusionStrength: 1
-    - _Opacity_control: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Rotation: 1
-    - _Smoothness: 0.5
+    - _Scale: 0.57
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _Surface: 1
-    - _WorkflowMode: 0
+    - _Static: 0
+    - _Strenght_clay_texture: 0.69
+    - _Surface: 0
+    - _Vitesse_des_bumps: 2
+    - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
-    - _ZWriteControl: 1
+    - _ZWriteControl: 0
+    - _smoothness: 0
+    - _speed: 0.42
+    - _strenght_fingerprints: 0.09
+    - _tiling_text: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color_1: {r: 0.30411178, g: 0.6335004, b: 0.9622641, a: 0}
-    - _Color_2: {r: 0, g: 0, b: 0, a: 0}
+    - _BaseColor: {r: 0.5566038, g: 0.2731989, b: 0.27042544, a: 1}
+    - _Color: {r: 0.5566037, g: 0.27319887, b: 0.2704254, a: 1}
+    - _Color_gradient: {r: 0.23584905, g: 0.10243977, b: 0.06563723, a: 0}
+    - _Couleur_ombre: {r: 0.5283019, g: 0.15421124, b: 0.05233179, a: 0}
+    - _Couluer_mask: {r: 0.7176471, g: 0.023529414, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Offset_Centre: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _center: {r: 0, g: 0, b: 0, a: 0}
+    - _Tiling_voronoi: {r: 3, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -71,12 +71,7 @@ public class DayNightCycle : MonoBehaviour
 
     private void OnMinutesChange(int value)
     {
-        // Rotation globale du soleil/lumière
-        globalLight.transform.rotation = Quaternion.Euler(
-            360f * (hours * 60f + minutes) / 1440f, 
-            0f, 
-            0f
-        );
+       //globalLight.transform.rotation = Quaternion.Euler(50f, 360f * (hours * 60f + minutes) / 1440f, 0f);
 
         if (value >= 60)
         {
