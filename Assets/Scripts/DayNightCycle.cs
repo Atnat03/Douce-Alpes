@@ -13,9 +13,7 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Gradient graddientSunriseToDay;
     [SerializeField] private Gradient graddientDayToSunset;
     [SerializeField] private Gradient graddientSunsetToNight;
-
-    [SerializeField] private Light globalLight;
-
+    
     [Header("Virtual Time")]
     [SerializeField] private int minutes;
     [SerializeField] private int hours;
@@ -138,7 +136,6 @@ public class DayNightCycle : MonoBehaviour
     {
         t = Mathf.Clamp01(t);
         Color c = g.Evaluate(t);
-        globalLight.color = c;
         RenderSettings.fogColor = c;
     }
 
@@ -147,13 +144,6 @@ public class DayNightCycle : MonoBehaviour
     /// </summary>
     public void InitializeCycle()
     {
-        // Met à jour la rotation du soleil/lumière
-        globalLight.transform.rotation = Quaternion.Euler(
-            360f * (hours * 60f + minutes) / 1440f, 
-            0f, 
-            0f
-        );
-
         // Applique le bon skybox et la lumière pour l'heure actuelle
         ApplyPhaseByTime();
 
