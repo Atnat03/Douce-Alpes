@@ -5,40 +5,24 @@ using Random = UnityEngine.Random;
 
 public class InteriorSceneManager : MonoBehaviour
 {
-    public List<SheepSkinManager> sheepInside;
+    public List<GameObject> sheepInside = new();
     public List<Transform> randomSpawnPos;
 
     [SerializeField] public GameObject sheepPrefab;
 
     private void OnEnable()
     {
-        Debug.Log("OnEnable");
-
-        if (SwapSceneManager.instance != null)
-        {
-            SwapSceneManager.instance.SwapingInteriorScene += Initialize;
-            SwapSceneManager.instance.SwapingDefaultScene += DestroySheep;
-        }
+        SwapSceneManager.instance.SwapingInteriorScene += Initialize;
     }
 
     private void OnDisable()
     {
-        if (SwapSceneManager.instance != null)
-        {
-            SwapSceneManager.instance.SwapingInteriorScene -= Initialize;
-            SwapSceneManager.instance.SwapingDefaultScene -= DestroySheep;
-        }
+        DestroySheep();
+        SwapSceneManager.instance.SwapingInteriorScene -= Initialize;
     }
-
-    private void Start()
-    {
-        sheepInside = new List<SheepSkinManager>();
-    }
-
+    
     public void Initialize()
     {
-        Debug.Log("Initialize interior sheep");
-
         if (GameData.instance.nbSheep <= 0) 
             return;
 
@@ -58,38 +42,27 @@ public class InteriorSceneManager : MonoBehaviour
             Vector3 rot = new Vector3(0, Random.Range(0, 360), 0);
 
             GameObject newSheep = Instantiate(sheepPrefab, pos.position, Quaternion.Euler(rot), transform);
+            sheepInside.Add(newSheep);
+            
             SheepSkinManager sheep = newSheep.GetComponent<SheepSkinManager>();
 
             sheep.Initialize(sheepData.id, sheepData.name);
             sheep.SetCurrentSkinHat(sheepData.skinHat);
             sheep.SetCurrentSkinClothe(sheepData.skinClothe);
-
-            sheepInside.Add(sheep);
         }
     }
 
     public void DestroySheep()
     {
-        Debug.Log("Destroy interior sheep");
-
         if (sheepInside.Count == 0)
             return;
 
-        foreach (SheepSkinManager sheep in sheepInside)
+        foreach (GameObject sheep in sheepInside)
         {
             if (sheep != null)
                 Destroy(sheep.gameObject);
         }
 
         sheepInside.Clear();
-    }
-
-    private void OnDestroy()
-    {
-        if (SwapSceneManager.instance != null)
-        {
-            SwapSceneManager.instance.SwapingInteriorScene -= Initialize;
-            SwapSceneManager.instance.SwapingDefaultScene -= DestroySheep;
-        }
     }
 }

@@ -47,16 +47,8 @@ public class NicheManager : TouchableObject
     private void Update()
     {
         isInNiche = Vector3.Distance(chien.transform.position, startPos) < 0.2f;
-        
-        if(isInNiche)
+
+        if (isInNiche)
             chien.transform.rotation = Quaternion.Euler(startRot);
     }
-
-    public override void TouchEvent()
-    {
-        GameManager.instance.ChangeCameraState(CamState.Dog);
-        GameManager.instance.ChangeCameraPos(cameraZoomPos.position, cameraZoomPos.rotation.eulerAngles, transform);
-        buttonQuit.SetActive(true);
-    }
-
 }

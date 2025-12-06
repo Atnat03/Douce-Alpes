@@ -21,6 +21,17 @@ public class SheepWindow : MonoBehaviour
         instance = this;
     }
 
+    public void SetName()
+    {
+        foreach (Sheep s in GameManager.instance.sheepList)
+        {
+            if (s.sheepId == sheepId)
+            {
+                s.sheepName = nameText.text;
+            }
+        }
+    }
+
     public void SetNewCurrentSkinHat(int id)
     {
         GameManager.instance.GetSheep(sheepId).SetCurrentSkinHat(id);

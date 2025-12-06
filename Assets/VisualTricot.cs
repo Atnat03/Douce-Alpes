@@ -10,7 +10,7 @@ public class VisualTricot : MonoBehaviour
     [SerializeField] private float maxNumberHorizontal = 5;
     private float maxNumberVertical;
     [SerializeField] private Renderer obejctVisual;
-    private Material shader;
+    private Material shader = null;
     [SerializeField] float duree = 2f;
     
     [Header("Spline")]
@@ -18,23 +18,23 @@ public class VisualTricot : MonoBehaviour
     [SerializeField] private Vector2 positionMax;
     [SerializeField] private GameObject pointAccroche;
     [SerializeField] private SplineMaison splineLaine;
-
-    private void Start()
+    
+    public void Initialise(MeshRenderer mesh)
     {
-        shader = obejctVisual.material;
-        positionMin = obejctVisual.transform.position;
+        shader = mesh.material;
+        positionMin = mesh.transform.position;
+        maxNumberVertical = shader.GetFloat("_MaxVertical");
+        maxNumberHorizontal = shader.GetFloat("_MaxHorizontal");
     }
 
     [ContextMenu("AddLaine")]
-    public void AddLaine(float c)
+    public void AddLaine()
     {
-        StartCoroutine(SmoothAddedLaine(c));
+        StartCoroutine(SmoothAddedLaine());
     }
 
-    IEnumerator SmoothAddedLaine(float c)
-    {
-        maxNumberVertical = c;
-
+    IEnumerator SmoothAddedLaine()
+    { 
         if (value_Vertical >= maxNumberVertical)
         {
             Debug.Log("Fin du tricot");
@@ -73,11 +73,12 @@ public class VisualTricot : MonoBehaviour
 
     void Update()
     {
+        if (shader == null)
+            return;
+        
         shader.SetInt("_Gradient_droite", gradient_Droite ? 1 : 0);
         shader.SetFloat("_ValueVertical", value_Vertical);
         shader.SetFloat("_ValueHorizontal", value_Horizontal);
-        shader.SetFloat("_MaxVertical", maxNumberVertical);
-        shader.SetFloat("_MaxHorizontal", maxNumberHorizontal);
 
         float normH = maxNumberHorizontal > 0 ? value_Horizontal / maxNumberHorizontal : 0f;
         float normV = maxNumberVertical > 0 ? value_Vertical / maxNumberVertical : 0f;

@@ -159,17 +159,18 @@ public class SheepBoidManager : MonoBehaviour
 
         NatureType randomNature = GetRandomNature();
         sheep.SetNature(randomNature);
+        sheep.natureBase = randomNature;
 
         Sheep sheepScript = sheep.GetComponent<Sheep>();
         sheepScript.sheepId = nbInstantSheep;
-        sheepScript.SetCurrentSkinHat(0);
+        
+        sheepScript.Initialize(nbInstantSheep, name);
 
         GameManager.instance.sheepList.Add(sheepScript);
 
         nbInstantSheep++;
         GameData.instance.nbSheep++;
 
-        sheepScript.Initialize(nbInstantSheep, name);
 
         Debug.Log("Created new sheep");
         OnListChanged?.Invoke(sheep);

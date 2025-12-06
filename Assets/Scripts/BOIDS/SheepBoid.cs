@@ -17,6 +17,8 @@ public class SheepBoid : MonoBehaviour
     private float fearDuration = 1f; 
     private float fearTimer;
 
+    public NatureType natureBase;
+
     private Color[] natureColors = new Color[]
     {
         Color.red, 

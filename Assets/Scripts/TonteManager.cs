@@ -8,42 +8,59 @@ public class TonteManager : MiniGameParent
 {
     public static TonteManager instance;
 
+    [Header("Mouton")]
     [SerializeField] private GameObject sheepModel;
-    [SerializeField] private Text nameText;
-    [SerializeField] private Text nbToCutText;
-
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform tontePoint;
     [SerializeField] private Transform destroyPoint;
 
+    [Header("UI")]
+    [SerializeField] private Text nameText;
+    [SerializeField] private Text nbToCutText;
     [SerializeField] private Button tonteButton;
-    private bool canTonte = false;
-
-    private GameObject currentSheep;
-    private int sheepIndex = 0;
-
     [SerializeField] private Button backButton;
 
+    [Header("Particule")]
     [SerializeField] private ParticleSystem particleTonte;
     [SerializeField] private Transform[] listPoints;
-    private List<Transform> curList = new List<Transform>();
 
-    [SerializeField] private float currentValueTonte;
+    [Header("Tonte Settings")]
     [SerializeField] private float touchRadius = 0.15f;
+
+    private GameObject currentSheep;
+    private List<Transform> curList = new List<Transform>();
+    private int sheepIndex = 0;
+    private bool canTonte = false;
+    private float currentValueTonte;
 
     private void Awake()
     {
         instance = this;
-
         SwapSceneManager.instance.SwapingTonteScene += Initialize;
 
         tonteButton.onClick.AddListener(EndTonte);
         backButton.onClick.AddListener(ExitScene);
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        UpdateProgress();
+        if (TouchManager.instance != null)
+        {
+            TouchManager.instance.OnGetFingerPosition += OnFingerMoved;
+            TouchManager.instance.OnEndEvent += OnFingerReleased;
+        }
+
+        if (TutoManager.instance != null)
+            TutoManager.instance.MiniJeuTonte();
+    }
+
+    private void OnDisable()
+    {
+        if (TouchManager.instance != null)
+        {
+            TouchManager.instance.OnGetFingerPosition -= OnFingerMoved;
+            TouchManager.instance.OnEndEvent -= OnFingerReleased;
+        }
     }
 
     public void Initialize()
@@ -62,19 +79,12 @@ public class TonteManager : MiniGameParent
             NextSheep();
     }
 
-    public void Tondre()
-    {
-        SheepData sheepData = GameData.instance.sheepDestroyData[sheepIndex - 1];
-        sheepData.hasWhool = false;
-    }
-
     private void NextSheep()
     {
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)
         {
             nameText.text = "Tous les moutons sont finis !";
             nbToCutText.text = "";
-
             backButton.gameObject.SetActive(true);
 
             EndMiniGame(TypeAmelioration.Tonte);
@@ -94,7 +104,6 @@ public class TonteManager : MiniGameParent
         particleTonte.transform.position = tontePoint.position;
 
         SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
-
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
 
         nameText.text = nextSheepData.name;
@@ -103,6 +112,85 @@ public class TonteManager : MiniGameParent
         StartCoroutine(MoveOverTime(currentSheep.transform, tontePoint.position, 2f, true));
 
         sheepIndex++;
+    }
+
+    private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration, bool isPosTonte)
+    {
+        Vector3 start = target.position;
+        float elapsed = 0f;
+        canTonte = false;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            target.position = Vector3.Lerp(start, destination, t);
+            yield return null;
+        }
+
+        target.position = destination;
+        canTonte = true;
+
+        if (isPosTonte)
+            particleTonte.Stop();
+    }
+
+    private void OnFingerMoved(Vector3 fingerWorldPos)
+    {
+        if (currentSheep == null || !canTonte)
+        {
+            particleTonte.Stop();
+            return;
+        }
+
+        if (!particleTonte.isPlaying)
+            particleTonte.Play();
+
+        // Calcul de la position de la particule autour du mouton
+        Vector3 fromCenter = fingerWorldPos - currentSheep.transform.position;
+        float distance = fromCenter.magnitude;
+        float maxDistance = 0.85f;
+
+        Vector3 direction = fromCenter.normalized;
+        float t = Mathf.Clamp01(distance / maxDistance);
+        t = Mathf.Pow(t, 1.5f);
+        Vector3 offset = direction * Mathf.Lerp(0f, 1.5f, t);
+
+        particleTonte.transform.position = currentSheep.transform.position + offset;
+
+        DetectTouchedPoint(fingerWorldPos);
+    }
+
+    private void OnFingerReleased(Vector2 screenPos, float timer)
+    {
+        if (particleTonte != null)
+            particleTonte.Stop();
+    }
+
+    private void DetectTouchedPoint(Vector3 fingerWorldPos)
+    {
+        for (int i = curList.Count - 1; i >= 0; i--)
+        {
+            float dist = Vector3.Distance(curList[i].position, fingerWorldPos);
+
+            if (dist <= touchRadius)
+            {
+                curList.Remove(curList[i]);
+                break;
+            }
+        }
+
+        UpdateProgress();
+    }
+
+    private void UpdateProgress()
+    {
+        currentValueTonte = 1f - (float)curList.Count / listPoints.Length;
+
+        if (curList.Count <= 0.05 && canTonte)
+        {
+            EndTonte();
+        }
     }
 
     public void EndTonte()
@@ -125,105 +213,14 @@ public class TonteManager : MiniGameParent
         NextSheep();
     }
 
-    private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration, bool isPosTonte)
-    {
-        Vector3 start = target.position;
-        float elapsed = 0f;
-        canTonte = false;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            target.position = Vector3.Lerp(start, destination, t);
-            yield return null;
-        }
-
-        target.position = destination;
-
-        canTonte = true;
-        
-        if (isPosTonte)
-            particleTonte.Play();
-    }
-
-    private void SetEffectPositionToFingerPosition(Vector3 pos)
-    {
-        if (currentSheep == null)
-            return;
-
-        Vector3 fromCenter = pos - currentSheep.transform.position;
-        float distance = fromCenter.magnitude;
-        float maxDistance = 0.85f;
-
-        Vector3 direction = fromCenter.normalized;
-
-        float t = Mathf.Clamp01(distance / maxDistance);
-        t = Mathf.Pow(t, 1.5f);
-
-        float offsetStrength = Mathf.Lerp(0f, 1.5f, t);
-        Vector3 offset = direction * offsetStrength;
-
-        particleTonte.transform.position = currentSheep.transform.position + offset;
-
-        DetectTouchedPoint(pos);
-    }
-
-    void DetectTouchedPoint(Vector3 fingerWorldPos)
-    {
-        for (int i = curList.Count - 1; i >= 0; i--)
-        {
-            float dist = Vector3.Distance(curList[i].position, fingerWorldPos);
-
-            if (dist <= touchRadius)
-            {
-                RemovePoint(curList[i]);
-                break;
-            }
-        }
-    }
-
-    void RemovePoint(Transform t)
-    {
-        curList.Remove(t);
-
-        if (curList.Count == 0)
-            EndTonte();
-    }
-
-    void UpdateProgress()
-    {
-        currentValueTonte = (float)curList.Count / listPoints.Length;
-
-        if (currentValueTonte <= 0.1 && canTonte)
-        {
-            EndTonte();
-        }
-    }
-
-    void ExitScene()
+    private void ExitScene()
     {
         SwapSceneManager.instance.SwapScene(0);
     }
 
     private void OnDestroy()
     {
-        if (SwapSceneManager.instance != null)
-            SwapSceneManager.instance.SwapingTonteScene -= Initialize;
-
+        SwapSceneManager.instance.SwapingTonteScene -= Initialize;
         tonteButton.onClick.RemoveListener(EndTonte);
-    }
-
-    private void OnEnable()
-    {
-        TouchManager.instance.OnGetFingerPosition += SetEffectPositionToFingerPosition;
-
-        if (TutoManager.instance != null)
-            TutoManager.instance.MiniJeuTonte();
-    }
-
-    private void OnDisable()
-    {
-        TouchManager.instance.OnGetFingerPosition -= SetEffectPositionToFingerPosition;
     }
 }
