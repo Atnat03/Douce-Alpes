@@ -108,6 +108,7 @@ Material:
     - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _Control_affect: 0.2
     - _Cull: 2
     - _Cutoff: 0.5
     - _Density_bumps: 2.81
@@ -127,32 +128,39 @@ Material:
     - _Normal_Fingertips: 0.21
     - _Normal_Voronoi: 5
     - _OcclusionStrength: 1
+    - _Offset: 0
     - _Parallax: 0.005
+    - _Posterization_Time: 4
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scale: 0.57
+    - _Scale: 1.2
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
+    - _Smoothness_Transition: 0.39
     - _SpecularHighlights: 1
+    - _Speed: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _Vertex_Offset: 0
     - _Vitesse_des_bumps: 2
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
+    - _intensity: 0.5
     - _smoothness: 0
     - _speed: 0.42
     - _tiling_text: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 0.87208706, b: 0.6933962, a: 1}
-    - _Color: {r: 1, g: 0.87208706, b: 0.6933962, a: 1}
-    - _Couleur_ombre: {r: 0.6117647, g: 0.10588237, b: 0.18431365, a: 1}
+    - _Color: {r: 1, g: 0.9623077, b: 0.8160377, a: 1}
+    - _Couleur_ombre: {r: 1, g: 0.43263507, b: 0.33490568, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tiling_voronoi: {r: 3, g: 2, b: 0, a: 0}
+    - _Wind_Direction: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &4416799305858503266
