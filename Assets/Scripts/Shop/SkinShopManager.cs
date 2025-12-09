@@ -6,7 +6,7 @@ public class SkinShopManager : ShopManager
 {
     private void BuyArticle()
     {
-        PlayerMoney.instance.AddMoney(-selectedArticle.price);
+        //PlayerMoney.instance.AddMoney(-selectedArticle.price);
         
         if(selectedArticle.type == ArticleType.Hat)
             SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);

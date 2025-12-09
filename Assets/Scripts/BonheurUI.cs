@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -19,6 +21,7 @@ public class BonheurUI : MonoBehaviour
     [SerializeField] RectTransform posVisible;
     [SerializeField] RectTransform posInvisible;
     [SerializeField] RectTransform canvaPlayer;
+    [SerializeField] bool isDropped = false;
     
     [Header("Colors")]
     [SerializeField] private Color32 veryLowColor;
@@ -33,6 +36,9 @@ public class BonheurUI : MonoBehaviour
     {
         UpdateCursorAndColor();
 
+        if (isDropped)
+            return;
+        
         Vector2 pos = SwapSceneManager.instance.currentSceneId == 0 ? posVisible.position : posInvisible.position;
         canvaPlayer.transform.position = pos;
     }
@@ -60,9 +66,15 @@ public class BonheurUI : MonoBehaviour
         return veryHighColor;
     }
 
-    public void DropCanva()
+    public void DropCanva(Vector2 posSpawnSprite, int value, GameObject sprite, Vector2 targetPosition)
     {
-        StartCoroutine(AnimatedCanvaTranslation(posVisible, posInvisible));
+        print("Drop Canva");
+        isDropped = true;
+        
+        if(SwapSceneManager.instance.currentSceneId != 0)
+            StartCoroutine(AnimatedCanvaTranslation(posInvisible, posVisible));
+
+        StartCoroutine(SpawnAnimatedSprite(posSpawnSprite, value, sprite, targetPosition));
     }
 
     IEnumerator AnimatedCanvaTranslation(RectTransform startPos, RectTransform target, float duration = 1f)
@@ -75,10 +87,25 @@ public class BonheurUI : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsedTime / duration);
-            startPos.position = Vector3.Lerp(initialPosition, targetPosition, t);
+            canvaPlayer.position = Vector3.Lerp(initialPosition, targetPosition, t);
             yield return null; 
         }
 
-        startPos.position = targetPosition;
+        canvaPlayer.position = targetPosition;
+    }
+
+    IEnumerator SpawnAnimatedSprite(Vector2 posSpawnSprite, int value, GameObject sprite, Vector2 targetPosition)
+    {
+        for (int i = 0; i < value/10; i++)
+        {
+            Vector2 randomPos = Random.insideUnitCircle*100 + posSpawnSprite;
+            
+            GameObject newSprite = Instantiate(sprite, randomPos, Quaternion.identity, canvaPlayer.parent);
+            newSprite.GetComponent<AnimatedSprite>().targetPosition = targetPosition;
+        }
+        
+        yield return new WaitForSeconds(2f);
+        
+        StartCoroutine(AnimatedCanvaTranslation(posVisible, posInvisible));
     }
 }

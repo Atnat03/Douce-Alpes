@@ -13,7 +13,16 @@ public class PlayerMoney : MonoBehaviour
     [Header("Whool")]
     [SerializeField] private int currentWhool;
     [SerializeField] Text txtWhool;
+    
+    public BonheurUI bonheurUI;
+    
+    [Header("Sprite animated")]
+    [SerializeField] private GameObject moneySprite;
+    [SerializeField] private GameObject woolSprite;
 
+    [SerializeField] private RectTransform moneyFinalTarget;
+    [SerializeField] private RectTransform woolFinalTarget;
+    
     private void Awake()
     {
         instance = this;
@@ -24,12 +33,14 @@ public class PlayerMoney : MonoBehaviour
         txtMoney.text = currentMoney.ToString();
         txtWhool.text = currentWhool.ToString();
     }
-
+    
     //Money
-    public void AddMoney(int value)
+    public void AddMoney(int value, Vector2 pos)
     {
         Debug.Log(value  + " money ajouté");
         currentMoney += value;
+        
+        bonheurUI.DropCanva(pos, value, moneySprite, moneyFinalTarget.position);
     }
     
     //Laine
@@ -38,6 +49,8 @@ public class PlayerMoney : MonoBehaviour
         Debug.Log(value  + " whool ajouté");
         
         currentWhool += value;
+        
+        //bonheurUI.DropCanva();
     }
 
     public bool isEnoughtMoney(int value)

@@ -3067,6 +3067,7 @@ RectTransform:
   - {fileID: 1174672624}
   - {fileID: 1090530791}
   - {fileID: 1892101695}
+  - {fileID: 939850314}
   m_Father: {fileID: 922956915}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -15798,6 +15799,8 @@ RectTransform:
   - {fileID: 1696687825}
   - {fileID: 1531568385}
   - {fileID: 1497967077}
+  - {fileID: 1710833913}
+  - {fileID: 1338508961}
   m_Father: {fileID: 1724283567}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -33319,6 +33322,7 @@ MonoBehaviour:
   modelLinePoints: []
   visualTricot: {fileID: 865396459}
   spawnVisual: {fileID: 1258954636}
+  spawnMoney: {fileID: 939850314}
 --- !u!224 &865396458
 RectTransform:
   m_ObjectHideFlags: 0
@@ -36285,6 +36289,41 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6347883791014154093, guid: 2d2b0f7bc891fe340bcf4656428b7e5d, type: 3}
   m_PrefabInstance: {fileID: 936423789}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &939850313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 939850314}
+  m_Layer: 5
+  m_Name: SpawnMoney
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &939850314
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939850313}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 67050022}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -734}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &942346638
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53756,6 +53795,41 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 5512680687374860737, guid: 95df8ec482622614492b2caf71a4f60f, type: 3}
   m_PrefabInstance: {fileID: 1338430123}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1338508960
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1338508961}
+  m_Layer: 0
+  m_Name: WoolTargetPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1338508961
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338508960}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 401354149}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -177.3, y: 1022.1}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1340946996
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -69235,6 +69309,41 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0c401fd3a76b7549a354897282f7aa2, type: 3}
+--- !u!1 &1710833912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1710833913}
+  m_Layer: 0
+  m_Name: MoneyTargetPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1710833913
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710833912}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 401354149}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -441.9, y: 1022.1}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1711460230
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -69995,6 +70104,7 @@ MonoBehaviour:
   posVisible: {fileID: 1531568385}
   posInvisible: {fileID: 1497967077}
   canvaPlayer: {fileID: 1696687825}
+  isDropped: 0
   veryLowColor:
     serializedVersion: 2
     rgba: 4278190080
@@ -70032,6 +70142,11 @@ MonoBehaviour:
   txtMoney: {fileID: 1670251567}
   currentWhool: 1000
   txtWhool: {fileID: 645624971}
+  bonheurUI: {fileID: 1724283569}
+  moneySprite: {fileID: 626944953301569103, guid: 6027b9a3c54f6f547bdc982badd054a4, type: 3}
+  woolSprite: {fileID: 626944953301569103, guid: 0c5f52e7054659d49b1150df3eb568ed, type: 3}
+  moneyFinalTarget: {fileID: 1710833913}
+  woolFinalTarget: {fileID: 1338508961}
 --- !u!114 &1724283571
 MonoBehaviour:
   m_ObjectHideFlags: 0
