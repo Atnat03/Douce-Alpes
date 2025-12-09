@@ -1,110 +1,87 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SkinAgency : MonoBehaviour
 {
     public static SkinAgency instance;
-    
-    [SerializeField] private int[] unlockSkinList;
-    
-    public Dictionary<int, int> dicoHatSkinStack = new Dictionary<int, int>();
-    public Dictionary<int, int> dicoClotheSkinStack = new Dictionary<int, int>();
 
     [SerializeField] private SkinScriptable hatSkinData;
     [SerializeField] private SkinScriptable clotheSkinData;
+
+    public Dictionary<int, int> dicoHatSkinStack = new Dictionary<int, int>();
+    public Dictionary<int, int> dicoClotheSkinStack = new Dictionary<int, int>();
+
+    public Dictionary<int, int> hatSkinEquippedOnSheep = new Dictionary<int, int>();
+    public Dictionary<int, int> clotheSkinEquippedOnSheep = new Dictionary<int, int>();
+    
+    public event Action OnStacksChanged;
 
     private void Awake()
     {
         instance = this;
 
-        foreach (SkinSkelete s in hatSkinData.skins)
-        {
-            dicoHatSkinStack.Add(s.id, 0);
-        }
-        
-        foreach (SkinSkelete s in clotheSkinData.skins)
-        {
-            dicoClotheSkinStack.Add(s.id, 0);
-        }
+        foreach (var s in hatSkinData.skins)
+            dicoHatSkinStack[s.id] = 0;
+
+        foreach (var s in clotheSkinData.skins)
+            dicoClotheSkinStack[s.id] = 0;
     }
 
-    [ContextMenu("AddItemHat")]
-    public void AddItem()
+    [ContextMenu("AddSkin")]
+    public void AddSkin()
     {
+        AddHatSkinInstance(1);
+        AddHatSkinInstance(0);
+        AddHatSkinInstance(1);
         AddHatSkinInstance(0);
     }
-    
-    public void AddHatSkinInstance(int id)
+
+    public void AddHatSkinInstance(int id) => dicoHatSkinStack[id]++;
+    public void AddClotheSkinInstance(int id) => dicoClotheSkinStack[id]++;
+
+    public bool CanEquipHat(int skinId) => dicoHatSkinStack.ContainsKey(skinId) && dicoHatSkinStack[skinId] > 0;
+    public bool CanEquipClothe(int skinId) => dicoClotheSkinStack.ContainsKey(skinId) && dicoClotheSkinStack[skinId] > 0;
+
+    // ⚡ Équipe le skin sur le mouton et réserve le stock
+    public void EquipHat(int sheepId, int skinId) 
     {
-        if (dicoHatSkinStack.TryGetValue(id, out int currentCount))
+        Debug.Log("Hat");
+        if (!CanEquipHat(skinId)) return;
+        if (hatSkinEquippedOnSheep.TryGetValue(sheepId, out int prev)) 
+            dicoHatSkinStack[prev]++;  // Libère l'ancien
+        hatSkinEquippedOnSheep[sheepId] = skinId;
+        dicoHatSkinStack[skinId]--;  // Réserve le nouveau
+        OnStacksChanged?.Invoke();  // Ajout
+    }
+
+    public void UnequipHat(int sheepId) 
+    {
+        if (hatSkinEquippedOnSheep.TryGetValue(sheepId, out int skinId)) 
         {
-            dicoHatSkinStack[id] = currentCount + 1;
-        }
-        else
-        {
-            Debug.LogWarning($"Skin ID {id} n'existe pas dans dicoHatSkinStack.");
+            dicoHatSkinStack[skinId]++;
+            hatSkinEquippedOnSheep.Remove(sheepId);
+            OnStacksChanged?.Invoke();  // Ajout
         }
     }
 
-    public void AddClotheSkinInstance(int id)
+    public void EquipClothe(int sheepId, int skinId) 
     {
-        if (dicoClotheSkinStack.TryGetValue(id, out int currentCount))
-        {
-            dicoClotheSkinStack[id] = currentCount + 1;
-        }
-        else
-        {
-            Debug.LogWarning($"Skin ID {id} n'existe pas dans dicoHatSkinStack.");
-        }
-    }
-    
-    public void RemoveHatSkinInstance(int id)
-    {
-        if (dicoHatSkinStack.TryGetValue(id, out int currentCount))
-        {
-            if(currentCount > 0)
-                dicoHatSkinStack[id] = currentCount - 1;
-        }
-        else
-        {
-            Debug.LogWarning($"Skin ID {id} n'existe pas dans dicoHatSkinStack.");
-        }
+        if (!CanEquipClothe(skinId)) return;
+        if (clotheSkinEquippedOnSheep.TryGetValue(sheepId, out int prev)) 
+            dicoClotheSkinStack[prev]++;
+        clotheSkinEquippedOnSheep[sheepId] = skinId;
+        dicoClotheSkinStack[skinId]--;
+        OnStacksChanged?.Invoke();  // Ajout
     }
 
-    public void RemoveClotheSkinInstance(int id)
+    public void UnequipClothe(int sheepId) 
     {
-        
-        if (dicoClotheSkinStack.TryGetValue(id, out int currentCount))
+        if (clotheSkinEquippedOnSheep.TryGetValue(sheepId, out int skinId)) 
         {
-            if(currentCount > 0)
-                dicoClotheSkinStack[id] = currentCount - 1;
+            dicoClotheSkinStack[skinId]++;
+            clotheSkinEquippedOnSheep.Remove(sheepId);
+            OnStacksChanged?.Invoke();  // Ajout
         }
-        else
-        {
-            Debug.LogWarning($"Skin ID {id} n'existe pas dans dicoHatSkinStack.");
-        }
-    }
-
-    public bool CheckIfEnoughtInstanceHat(int id)
-    {
-        if (dicoHatSkinStack.TryGetValue(id, out int currentCount))
-        {
-            if (currentCount >= 1)
-                return true;
-        }
-
-        return false;
-    }
-    
-    public bool CheckIfEnoughtInstanceClothe(int id)
-    {
-        if (dicoClotheSkinStack.TryGetValue(id, out int currentCount))
-        {
-            if (currentCount >= 1)
-                return true;
-        }
-
-        return false;
     }
 }

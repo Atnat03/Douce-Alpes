@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
 public enum ArticleType
 {
     Hat, Clothe, None

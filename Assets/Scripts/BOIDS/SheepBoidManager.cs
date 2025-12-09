@@ -172,7 +172,6 @@ public class SheepBoidManager : MonoBehaviour
         GameData.instance.nbSheep++;
 
 
-        Debug.Log("Created new sheep");
         OnListChanged?.Invoke(sheep);
     }
 

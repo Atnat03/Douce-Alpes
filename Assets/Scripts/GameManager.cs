@@ -206,6 +206,7 @@ public class GameManager : MonoBehaviour
             isLock = true;
             SheepClicked?.Invoke(sheep);
             curLockSheep = sheep;
+            sheep.isFocusing = true;
         }
     }
 
@@ -215,6 +216,7 @@ public class GameManager : MonoBehaviour
         if (curLockSheep.isOpen) return;
         
         cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetCameraLock(curLockSheep);
+        curLockSheep.isFocusing = false;
         
         curLockSheep = null;
         

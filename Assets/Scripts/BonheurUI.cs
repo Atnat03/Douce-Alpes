@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -14,6 +15,11 @@ public class BonheurUI : MonoBehaviour
     [Range(0, 1)] public float overflowValue = 0f;
     public bool isOverflow = false;
 
+    [Header("Pos UI")]
+    [SerializeField] RectTransform posVisible;
+    [SerializeField] RectTransform posInvisible;
+    [SerializeField] RectTransform canvaPlayer;
+    
     [Header("Colors")]
     [SerializeField] private Color32 veryLowColor;
     [SerializeField] private Color32 lowColor;
@@ -26,6 +32,9 @@ public class BonheurUI : MonoBehaviour
     private void Update()
     {
         UpdateCursorAndColor();
+
+        Vector2 pos = SwapSceneManager.instance.currentSceneId == 0 ? posVisible.position : posInvisible.position;
+        canvaPlayer.transform.position = pos;
     }
 
     private void UpdateCursorAndColor()
@@ -49,5 +58,27 @@ public class BonheurUI : MonoBehaviour
         if (value <= 0.5f) return midColor;
         if (value <= 0.75f) return highColor;
         return veryHighColor;
+    }
+
+    public void DropCanva()
+    {
+        StartCoroutine(AnimatedCanvaTranslation(posVisible, posInvisible));
+    }
+
+    IEnumerator AnimatedCanvaTranslation(RectTransform startPos, RectTransform target, float duration = 1f)
+    {
+        Vector3 initialPosition = startPos.position;
+        Vector3 targetPosition = target.position;    
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsedTime / duration);
+            startPos.position = Vector3.Lerp(initialPosition, targetPosition, t);
+            yield return null; 
+        }
+
+        startPos.position = targetPosition;
     }
 }
