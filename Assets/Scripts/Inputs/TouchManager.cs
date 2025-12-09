@@ -55,6 +55,7 @@ public class TouchManager : MonoBehaviour
 
             touchPressAction.performed += OnTouchPressed;
             touchPressAction.canceled += OnTouchReleased;
+            
         }
 
         swipeInput?.Enable();

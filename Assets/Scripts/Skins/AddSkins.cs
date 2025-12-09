@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using DanielLochner.Assets.SimpleScrollSnap;
 using UnityEngine.UI;
@@ -62,6 +63,7 @@ public class AddSkins : MonoBehaviour
             s.id = skin.id;
             s.name = skin.name;
             s.transform.GetChild(0).GetComponent<Image>().sprite = skin.logo;
+            s.type = skinData.skins.Find(x => x.id == skin.id).type;
 
             scrollSnapBridge.AddExistingPanel(skinGO);
         }
