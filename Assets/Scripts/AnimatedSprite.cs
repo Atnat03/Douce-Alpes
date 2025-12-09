@@ -3,7 +3,7 @@ using UnityEngine;
 public class AnimatedSprite : MonoBehaviour
 {
     public Vector2 targetPosition;
-    float speed = 1500f;
+    float speed = 1200f;
     
     void Update()
     {
