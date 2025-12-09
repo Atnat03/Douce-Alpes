@@ -32,6 +32,8 @@ public class TonteManager : MiniGameParent
     private bool canTonte = false;
     private float currentValueTonte;
     [SerializeField] private float miniValueToEnd;
+    
+    [SerializeField] private RectTransform spawnLaineSprite;
 
     private void Awake()
     {
@@ -225,7 +227,7 @@ public class TonteManager : MiniGameParent
     {
         if (currentSheep != null)
         {
-            PlayerMoney.instance.AddWhool(100);
+            PlayerMoney.instance.AddWhool(100, spawnLaineSprite.position);
             StartCoroutine(SendToDestroy(currentSheep));
         }
     }

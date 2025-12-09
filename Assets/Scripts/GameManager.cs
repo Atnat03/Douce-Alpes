@@ -240,15 +240,18 @@ public class GameManager : MonoBehaviour
 
         float bonus = caresseBaseValue * Mathf.Exp(-sheepFatigue[id] / saturationCarrese);
 
-        if (bonus > 0.01f) 
+        if (bonus > 0.01f)
         {
-            Debug.Log("Carresse" + bonus);
-            BonheurCalculator.instance.currentBonheur = Mathf.Min(BonheurCalculator.instance.maxBonheur, BonheurCalculator.instance.currentBonheur + bonus);
-            sheepFatigue[id] += 1f; 
+            Debug.Log("Carresse " + bonus);
+
+            BonheurCalculator.instance.AddBonheur(Camera.main.WorldToScreenPoint(sheep.gameObject.transform.position), bonus);
+
+            sheepFatigue[id] += 1f;
         }
 
         sheepLastSwipeTime[id] = Time.time;
     }
+
 
     private void Update()
     {
@@ -300,7 +303,7 @@ public class GameManager : MonoBehaviour
     {
         List<SheepData> toRemove = new List<SheepData>();
 
-        BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Sortie));
+        BonheurCalculator.instance.AddBonheur(Vector2.zero, GameData.instance.GetLevelUpgrade(TypeAmelioration.Sortie));
 
         grange.OpenDoors();
         grange.GetPoutre().ResetPoutre();

@@ -19,6 +19,9 @@ public class BonheurCalculator : MonoBehaviour
     [Header("UI")]
     public BonheurUI bonheurUI;
 
+    [SerializeField] private GameObject animatedSpriteHeart;
+    [SerializeField] private RectTransform animatedSpriteHeartTransform;
+
     private void Start()
     {
         currentBonheur = maxBonheur / 2f;
@@ -83,9 +86,10 @@ public class BonheurCalculator : MonoBehaviour
         UpdateUI();
     }
 
-    public void AddBonheur(float value = 20f)
+    public void AddBonheur(Vector2 pos, float value = 20f)
     {
         currentBonheur = Mathf.Min(currentBonheur + value, maxBonheur + overflowMaxValue);
+        bonheurUI.StartAnimatedSprite(pos, 10, animatedSpriteHeart, animatedSpriteHeartTransform.position);
     }
 
     public void RemoveBonheur(float value = 20f)

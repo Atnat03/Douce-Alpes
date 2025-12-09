@@ -44,13 +44,23 @@ public class PlayerMoney : MonoBehaviour
     }
     
     //Laine
-    public void AddWhool(int value)
+    public void AddWhool(int value, Vector2 pos)
     {
         Debug.Log(value  + " whool ajouté");
         
         currentWhool += value;
         
-        //bonheurUI.DropCanva();
+        bonheurUI.DropCanva(pos, value, woolSprite, woolFinalTarget.position);
+    }
+
+    public void RemoveMoney(int value)
+    {
+        currentMoney -= value;
+    }
+
+    public void RemoveWhool(int value)
+    {
+        currentWhool -= value;
     }
 
     public bool isEnoughtMoney(int value)

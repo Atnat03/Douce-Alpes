@@ -161,7 +161,7 @@ public class TricotManager : MonoBehaviour
             return;
         }
         
-        PlayerMoney.instance.AddWhool(-currentPattern[currentModel].neededWool);
+        PlayerMoney.instance.RemoveWhool(currentPattern[currentModel].neededWool);
         
         currentModel++;
         targetFill = (float)currentModel / numberModelOfThisPattern;
