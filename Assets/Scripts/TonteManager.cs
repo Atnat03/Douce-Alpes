@@ -17,7 +17,6 @@ public class TonteManager : MiniGameParent
     [Header("UI")]
     [SerializeField] private Text nameText;
     [SerializeField] private Text nbToCutText;
-    [SerializeField] private Button tonteButton;
     [SerializeField] private Button backButton;
 
     [Header("Particule")]
@@ -32,13 +31,15 @@ public class TonteManager : MiniGameParent
     private int sheepIndex = 0;
     private bool canTonte = false;
     private float currentValueTonte;
+    [SerializeField] private float miniValueToEnd;
+    
+    [SerializeField] private RectTransform spawnLaineSprite;
 
     private void Awake()
     {
         instance = this;
         SwapSceneManager.instance.SwapingTonteScene += Initialize;
 
-        tonteButton.onClick.AddListener(EndTonte);
         backButton.onClick.AddListener(ExitScene);
     }
 
@@ -48,6 +49,7 @@ public class TonteManager : MiniGameParent
         {
             TouchManager.instance.OnGetFingerPosition += OnFingerMoved;
             TouchManager.instance.OnEndEvent += OnFingerReleased;
+            TouchManager.instance.OnStartEvent += OnFingerPressed;
         }
 
         if (TutoManager.instance != null)
@@ -60,6 +62,7 @@ public class TonteManager : MiniGameParent
         {
             TouchManager.instance.OnGetFingerPosition -= OnFingerMoved;
             TouchManager.instance.OnEndEvent -= OnFingerReleased;
+            TouchManager.instance.OnStartEvent -= OnFingerPressed;
         }
     }
 
@@ -113,6 +116,23 @@ public class TonteManager : MiniGameParent
 
         sheepIndex++;
     }
+    
+    private void OnFingerPressed(Vector2 screenPos, float timer)
+    {
+        if (currentSheep == null || !canTonte)
+            return;
+
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            // Déplacer la particule sur le doigt
+            particleTonte.transform.position = hit.point;
+
+            // Puis l’activer
+            particleTonte.Play();
+        }
+    }
+
 
     private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration, bool isPosTonte)
     {
@@ -134,6 +154,7 @@ public class TonteManager : MiniGameParent
         if (isPosTonte)
             particleTonte.Stop();
     }
+    
 
     private void OnFingerMoved(Vector3 fingerWorldPos)
     {
@@ -144,9 +165,8 @@ public class TonteManager : MiniGameParent
         }
 
         if (!particleTonte.isPlaying)
-            particleTonte.Play();
+            return;
 
-        // Calcul de la position de la particule autour du mouton
         Vector3 fromCenter = fingerWorldPos - currentSheep.transform.position;
         float distance = fromCenter.magnitude;
         float maxDistance = 0.85f;
@@ -169,10 +189,12 @@ public class TonteManager : MiniGameParent
 
     private void DetectTouchedPoint(Vector3 fingerWorldPos)
     {
+        posFinger = fingerWorldPos;
+        
         for (int i = curList.Count - 1; i >= 0; i--)
         {
             float dist = Vector3.Distance(curList[i].position, fingerWorldPos);
-
+            
             if (dist <= touchRadius)
             {
                 curList.Remove(curList[i]);
@@ -183,11 +205,19 @@ public class TonteManager : MiniGameParent
         UpdateProgress();
     }
 
+    private Vector3 posFinger;
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(posFinger, touchRadius);
+    }
+
     private void UpdateProgress()
     {
         currentValueTonte = 1f - (float)curList.Count / listPoints.Length;
 
-        if (curList.Count <= 0.05 && canTonte)
+        if (curList.Count <= miniValueToEnd && canTonte)
         {
             EndTonte();
         }
@@ -197,7 +227,7 @@ public class TonteManager : MiniGameParent
     {
         if (currentSheep != null)
         {
-            PlayerMoney.instance.AddWhool(100);
+            PlayerMoney.instance.AddWhool(100, spawnLaineSprite.position);
             StartCoroutine(SendToDestroy(currentSheep));
         }
     }
@@ -221,6 +251,5 @@ public class TonteManager : MiniGameParent
     private void OnDestroy()
     {
         SwapSceneManager.instance.SwapingTonteScene -= Initialize;
-        tonteButton.onClick.RemoveListener(EndTonte);
     }
 }

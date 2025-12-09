@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PanneauShop : TouchableObject
 {
@@ -20,9 +21,9 @@ public class PanneauShop : TouchableObject
     private Coroutine moveCoroutine;
     
     [SerializeField] MeshRenderer[] meshRendererCancelShadow;
-
+    
     [Header("Arrow")]
-    [SerializeField]  private GameObject[] centerArrows;
+    [SerializeField] private GameObject[] centerArrows;
 
     private void Start()
     {

@@ -41,6 +41,9 @@ public class Sheep : TouchableObject
     
     public Transform targetTransiPos;
 
+    [SerializeField] private Text nameText;
+    [SerializeField] public bool isFocusing = false;
+
     private void Start()
     {
         laine.GetComponent<Outline>().enabled = false;
@@ -91,6 +94,9 @@ public class Sheep : TouchableObject
             curPuanteur = 100;
             logoImage.sprite = showerLogo;
         }
+        
+        nameText.text = sheepName;
+        nameText.gameObject.SetActive(isFocusing);
     }
 
     private void ProcessWool()

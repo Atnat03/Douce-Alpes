@@ -33,6 +33,8 @@ public class TricotManager : MonoBehaviour
     [SerializeField] VisualTricot visualTricot;
     [SerializeField] private GameObject spawnVisual;
 
+    [SerializeField] private RectTransform spawnMoney;
+
     private void Start()
     {
         if (okImage != null) okImage.SetActive(false);
@@ -159,7 +161,7 @@ public class TricotManager : MonoBehaviour
             return;
         }
         
-        PlayerMoney.instance.AddWhool(-currentPattern[currentModel].neededWool);
+        PlayerMoney.instance.RemoveWhool(currentPattern[currentModel].neededWool);
         
         currentModel++;
         targetFill = (float)currentModel / numberModelOfThisPattern;
@@ -289,7 +291,7 @@ public class TricotManager : MonoBehaviour
 
     public void SellProduct()
     {
-        PlayerMoney.instance.AddMoney(currentPriceSell);
+        PlayerMoney.instance.AddMoney(currentPriceSell, spawnMoney.position);
         
         currentPattern = null;
         numberModelOfThisPattern = 0;

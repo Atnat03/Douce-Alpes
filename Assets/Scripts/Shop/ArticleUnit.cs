@@ -1,22 +1,34 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
+public enum ArticleType
+{
+    Hat, Clothe, None
+}
+
 public class ArticleUnit : MonoBehaviour
 {
-    public Text titleTxt;
     public Image logoImage;
-    public Text priceTxt;
     public Button buyBtn;
-    public Button cancelBtn;
     public Image backGround;
+    public Text stack;
+    public ArticleType articleType;
+    public int id;
 
-    public void ActivateButtons()
+    public void Update()
     {
-        buyBtn.transform.parent.gameObject.SetActive(true);
-    }
+        int n = 0;
+        
+        if (articleType == ArticleType.Hat)
+            n = SkinAgency.instance.dicoHatSkinStack[id];
+        if (articleType == ArticleType.Clothe)
+            n = SkinAgency.instance.dicoClotheSkinStack[id];
+        
+        
+        stack.gameObject.SetActive(n != 0);
 
-    public void DesactivateButtons()
-    {
-        buyBtn.transform.parent.gameObject.SetActive(false);
+        stack.text = "x" + n;
     }
 }

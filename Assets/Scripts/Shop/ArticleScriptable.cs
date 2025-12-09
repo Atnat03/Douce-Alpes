@@ -16,6 +16,7 @@ public class Article
     public int price;
     public Sprite logo;
     public RareteItem Rarete;
+    public ArticleType type;
 }
 
 public enum RareteItem

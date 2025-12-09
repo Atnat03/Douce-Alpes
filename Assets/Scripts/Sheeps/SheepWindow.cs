@@ -10,11 +10,15 @@ public class SheepWindow : MonoBehaviour
     
     [Header("UI")] 
     [SerializeField] private InputField nameText;
-    private int currentSkinHat;
-    private int currentSkinClothe;
+    public int currentSkinHat;
+    public int currentSkinClothe;
     private int sheepId;
 
     public bool isOpen = false;
+    
+    [Header("Skin Selectors")]  // Ajout : Refs vers tes AddSkins
+    [SerializeField] private AddSkins hatSkinSelector;
+    [SerializeField] private AddSkins clotheSkinSelector;
 
     private void Awake()
     {
@@ -32,14 +36,47 @@ public class SheepWindow : MonoBehaviour
         }
     }
 
-    public void SetNewCurrentSkinHat(int id)
+    public void SetNewCurrentSkinHat(int id) 
     {
-        GameManager.instance.GetSheep(sheepId).SetCurrentSkinHat(id);
+        Debug.Log($"[SheepWindow] SetNewCurrentSkinHat appelée pour sheep {sheepId}, ID {id}");  // Log A : Arrivée ?
+
+        if (SkinAgency.instance == null) 
+        {
+            Debug.LogError("[SheepWindow] SkinAgency null !");
+            return;
+        }
+
+        SkinAgency.instance.EquipHat(sheepId, id);  // Ça appellera les logs de SkinAgency si tu les as ajoutés
+        Debug.Log("[SheepWindow] EquipHat appelée");  // Log B : Après Equip
+
+        Sheep sheep = GameManager.instance.GetSheep(sheepId);
+        if (sheep == null) 
+        {
+            Debug.LogError($"[SheepWindow] Sheep {sheepId} null !");
+            return;
+        }
+        sheep.SetCurrentSkinHat(id);
+        Debug.Log("[SheepWindow] Sheep updated, fin");  // Log C : Fin
     }
-    
-    public void SetNewCurrentSkinClothe(int id)
+
+    public void SetNewCurrentSkinClothe(int id) 
     {
-        GameManager.instance.GetSheep(sheepId).SetCurrentSkinClothe(id);
+        Debug.Log($"[SheepWindow] SetNewCurrentSkinClothe appelée pour sheep {sheepId}, ID {id}");
+        if (SkinAgency.instance == null) 
+        {
+            Debug.LogError("[SheepWindow] SkinAgency null !");
+            return;
+        }
+        SkinAgency.instance.EquipClothe(sheepId, id);
+        Debug.Log("[SheepWindow] EquipClothe appelée");
+        Sheep sheep = GameManager.instance.GetSheep(sheepId);
+        if (sheep == null) 
+        {
+            Debug.LogError($"[SheepWindow] Sheep {sheepId} null !");
+            return;
+        }
+        sheep.SetCurrentSkinClothe(id);
+        Debug.Log("[SheepWindow] Sheep updated, fin");
     }
     
     public InputField GetInputField(){return nameText;}
@@ -49,15 +86,17 @@ public class SheepWindow : MonoBehaviour
         return sheepId;
     }
 
-    public void Initialize(string name, int currentSkinHat, int currentSkinClothe, int sheepId)
+    public void Initialize(string name, int currentSkinHat, int currentSkinClothe, int sheepId) 
     {
         isOpen = true;
-        
         nameText.text = name;
         this.currentSkinHat = currentSkinHat;
         this.currentSkinClothe = currentSkinClothe;
-        
         this.sheepId = sheepId;
+
+        // Ajout : Centre les scrolls sur les skins actuels
+        if (hatSkinSelector != null) hatSkinSelector.SetStartingPanelToCurrent();
+        if (clotheSkinSelector != null) clotheSkinSelector.SetStartingPanelToCurrent();
     }
 
     public void ResetValue()

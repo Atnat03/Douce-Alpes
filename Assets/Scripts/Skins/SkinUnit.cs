@@ -1,4 +1,7 @@
+using System;
+using System.Net.Mime;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum SkinCombo
 {
@@ -15,4 +18,7 @@ public class SkinUnit : MonoBehaviour
 {
     public int id;
     public SkinCombo combo;
+    public ArticleType type;
+    public bool canPutThisSkin = false;
+    [SerializeField] public Text stackText;
 }

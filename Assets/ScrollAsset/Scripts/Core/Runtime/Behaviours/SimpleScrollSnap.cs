@@ -762,7 +762,7 @@ namespace DanielLochner.Assets.SimpleScrollSnap
         {
             return Panels[index].anchoredPosition + Content.anchoredPosition - new Vector2(Viewport.rect.width * (0.5f - Content.anchorMin.x), Viewport.rect.height * (0.5f - Content.anchorMin.y));
         }
-        private int GetNearestPanel()
+        public int GetNearestPanel()
         {
             float[] distances = new float[NumberOfPanels];
             for (int i = 0; i < Panels.Length; i++)
