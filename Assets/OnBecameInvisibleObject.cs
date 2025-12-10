@@ -14,18 +14,17 @@ public class OnBecameInvisibleObject : MonoBehaviour
 
     void Update()
     {
-        if (uiActiveByClick) // On ne checke le frustum que si l'UI a été activée
+        if (uiActiveByClick)
         {
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
             bool isVisible = GeometryUtility.TestPlanesAABB(planes, rend.bounds);
 
             if (!isVisible)
             {
-                Debug.Log($"{gameObject.name} est hors champ !");
                 if(build != null && build.UI != null)
-                    build.UI.SetActive(false);
+                    build.CloseUI();
 
-                uiActiveByClick = false; // Désactive le suivi jusqu'à un nouveau clic
+                uiActiveByClick = false;
             }
         }
     }
@@ -34,7 +33,7 @@ public class OnBecameInvisibleObject : MonoBehaviour
     public void ActivateUI()
     {
         if (build != null && build.UI != null)
-            build.UI.SetActive(true);
+            build.OpenUI();
 
         uiActiveByClick = true;
     }

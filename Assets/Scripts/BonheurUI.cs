@@ -35,6 +35,9 @@ public class BonheurUI : MonoBehaviour
     private void Update()
     {
         UpdateCursorAndColor();
+        
+        if(SwapSceneManager.instance.currentSceneId == 0)
+            isDropped = false;
 
         if (isDropped)
             return;

@@ -102,8 +102,58 @@ Transform:
   - {fileID: 513483288218910328}
   - {fileID: 1509813647227400799}
   - {fileID: 7355973050614721395}
+  - {fileID: 7569264008019097666}
   m_Father: {fileID: 4637469469025211434}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2349532788618102095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7569264008019097666}
+  - component: {fileID: 3652716182064797419}
+  m_Layer: 7
+  m_Name: Nue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7569264008019097666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2349532788618102095}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 121097157915320172}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3652716182064797419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2349532788618102095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab3168024507384fa1517898a36b43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 10
+  combo: 0
+  type: 1
+  canPutThisSkin: 0
+  stackText: {fileID: 0}
 --- !u!1 &2722875930628605413
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,6 +211,7 @@ MonoBehaviour:
   sheepName: Antoine
   currentSkinHat: 0
   currentSkinClothe: 0
+  currentColorID: 0
   hasLaine: 1
   processWool: 0
   curPuanteur: 0
@@ -179,6 +230,7 @@ MonoBehaviour:
   targetTransiPos: {fileID: 8496360103741788287}
   nameText: {fileID: 5738497326467687971}
   isFocusing: 0
+  colorData: {fileID: 11400000, guid: b746193924e3c8b488aa51f1f5db4403, type: 2}
 --- !u!65 &2181534520863901765
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -674,6 +726,7 @@ Transform:
   - {fileID: 5739410931978137873}
   - {fileID: 5653799020103169900}
   - {fileID: 5047699117559571051}
+  - {fileID: 5196827069492559370}
   m_Father: {fileID: 4637469469025211434}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5932192202541913880
@@ -722,6 +775,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808fa92b5666de744b5a232556c6e5ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8130051591198948964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5196827069492559370}
+  - component: {fileID: 5730706601410793516}
+  m_Layer: 7
+  m_Name: Nue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5196827069492559370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130051591198948964}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7602440085396531212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5730706601410793516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130051591198948964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab3168024507384fa1517898a36b43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 13
+  combo: 0
+  type: 0
+  canPutThisSkin: 0
+  stackText: {fileID: 0}
 --- !u!1 &8270886783497250301
 GameObject:
   m_ObjectHideFlags: 0
@@ -1651,7 +1753,7 @@ PrefabInstance:
     - target: {fileID: 17330062676665839, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 6838126ea77d6c94b92a0a0b967bb161, type: 2}
+      objectReference: {fileID: 2100000, guid: 6d516d1899d3c284e8eb94315b8e8fb3, type: 2}
     - target: {fileID: 919132149155446097, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: m_Name
       value: Model
@@ -1676,10 +1778,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3657528102737932051, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3672299806286417845, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 6838126ea77d6c94b92a0a0b967bb161, type: 2}
+      objectReference: {fileID: 2100000, guid: 6d516d1899d3c284e8eb94315b8e8fb3, type: 2}
     - target: {fileID: 5736734181957130605, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

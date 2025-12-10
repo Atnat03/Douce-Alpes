@@ -19,8 +19,6 @@ public class AddSkins : MonoBehaviour
     [SerializeField] Sprite selectedSprite;
 
     [Header("Testing Mode")]
-    [Tooltip("Quand activé, affiche tous les skins du ScriptableObject, même ceux non débloqués.")]
-    [SerializeField] private bool isTesting = false;
 
     private SimpleScrollSnap snap;
     
@@ -71,9 +69,6 @@ public class AddSkins : MonoBehaviour
 
         foreach (SkinSkelete skin in skinData.skins)
         {
-            if (!isTesting && !GameData.instance.HasSkin(skin.id))
-                continue;
-
             GameObject skinGO = Instantiate(skinPrefab, snap.Content);
             SkinUnit s = skinGO.GetComponent<SkinUnit>();
             s.id = skin.id;

@@ -16,7 +16,7 @@ public class SheepWindow : MonoBehaviour
 
     public bool isOpen = false;
     
-    [Header("Skin Selectors")]  // Ajout : Refs vers tes AddSkins
+    [Header("Skin Selectors")]
     [SerializeField] private AddSkins hatSkinSelector;
     [SerializeField] private AddSkins clotheSkinSelector;
 
@@ -32,6 +32,17 @@ public class SheepWindow : MonoBehaviour
             if (s.sheepId == sheepId)
             {
                 s.sheepName = nameText.text;
+            }
+        }
+    }
+
+    public void SetColor(int idColor)
+    {
+        foreach (Sheep s in GameManager.instance.sheepList)
+        {
+            if (s.sheepId == sheepId)
+            {
+                s.SetNewWoolColor(idColor);
             }
         }
     }
