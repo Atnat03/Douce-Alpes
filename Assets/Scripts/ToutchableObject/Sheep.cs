@@ -9,6 +9,8 @@ public class Sheep : TouchableObject
 
     [SerializeField] public int currentSkinHat;
     [SerializeField] public int currentSkinClothe;
+    [SerializeField] public int currentColorID;
+    
     [SerializeField] public bool hasLaine = true;
     [SerializeField] public float processWool;
 
@@ -44,6 +46,8 @@ public class Sheep : TouchableObject
     [SerializeField] private Text nameText;
     [SerializeField] public bool isFocusing = false;
 
+    [SerializeField] private ColorSO colorData;
+
     private void Start()
     {
         laine.GetComponent<Outline>().enabled = false;
@@ -58,13 +62,15 @@ public class Sheep : TouchableObject
         sheepName = name;
 
         skinListManager.Initalize();
-        SetCurrentSkinClothe(0);
-        SetCurrentSkinHat(0);
+        SetCurrentSkinClothe(10);
+        SetCurrentSkinHat(13);
     }
 
     private void Update()
     {
         laine.SetActive(hasLaine);
+        
+        laine.GetComponent<MeshRenderer>().material = colorData.colorData[currentColorID].material;
         
         //bulleUI.SetActive(curPuanteur >= 100 || hasLaine && GameManager.instance.currentCameraState == CamState.Default);
 
@@ -253,5 +259,10 @@ public class Sheep : TouchableObject
         {
             sheepBoid.SetNature(sheepBoid.natureBase);
         }
+    }
+
+    public void SetNewWoolColor(int idColor)
+    {
+        currentColorID = idColor;
     }
 }

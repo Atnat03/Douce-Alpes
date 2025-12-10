@@ -71,6 +71,7 @@ public class FakeSheepBoid : MonoBehaviour
         accel += Alignment() * manager.alignmentWeight;
         accel += Cohesion() * manager.cohesionWeight;
         accel += BoundaryRepulsion();
+        accel += ColliderRepulsion();
 
         // Sécurité : éviter NaN dans accel
         if (float.IsNaN(accel.x) || float.IsNaN(accel.y) || float.IsNaN(accel.z))
@@ -139,6 +140,35 @@ public class FakeSheepBoid : MonoBehaviour
 
         if (count > 0) away /= count;
         return away;
+    }
+    
+    Vector3 ColliderRepulsion()
+    {
+        Vector3 steer = Vector3.zero;
+        Vector3 pos = transform.position;
+
+        foreach (Collider col in manager.forbiddenColliders)
+        {
+            if (col == null) continue;
+
+            // Trouver le point le plus proche sur le collider
+            Vector3 closest = col.ClosestPoint(pos);
+            Vector3 delta = pos - closest;
+            delta.y = 0f;
+
+            float dist = delta.magnitude;
+
+            // Si trop proche → répulsion
+            if (dist < manager.boundaryForceDistance && dist > 0f)
+            {
+                Vector3 repulsion = delta.normalized * (manager.boundaryForceDistance - dist);
+                steer += repulsion;
+
+                Debug.DrawLine(pos + Vector3.up * 0.5f, closest + Vector3.up * 0.5f, Color.cyan);
+            }
+        }
+
+        return steer * manager.boundaryWeight;
     }
 
     Vector3 Alignment()

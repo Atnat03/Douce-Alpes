@@ -42,6 +42,9 @@ public class CameraControl : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     
     [SerializeField] private Collider boundsCollider;
+    
+    [SerializeField] Transform grangeFocus;
+    [SerializeField] private Build grange;
 
     private void Awake() => inputs = new Movements();
 
@@ -147,5 +150,16 @@ public class CameraControl : MonoBehaviour
         Vector3 centerPos = centerPoint.position;
         Vector3 size = new Vector3(boundLeft + boundRight, 0.1f, boundUp + boundDown);
         Gizmos.DrawWireCube(centerPos + new Vector3((boundRight - boundLeft) / 2f, 0, (boundUp - boundDown) / 2f), size);
+    }
+    
+    public void SetRootFocusGrange()
+    {
+        if (root == null) return;
+
+        Vector3 pos = new Vector3(grangeFocus.position.x, 0, grangeFocus.position.z);
+        root.position = pos + Vector3.up * root.position.y;
+        targetPosition = pos + Vector3.up * targetPosition.y;
+        
+        grange.UI.SetActive(true);
     }
 }

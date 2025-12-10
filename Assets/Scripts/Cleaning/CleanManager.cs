@@ -149,13 +149,11 @@ public class CleanManager : MiniGameParent
 
     private void CheckShampoo(Vector3 pos)
     {
-        // Instancie l'effet shower
         GameObject d = Instantiate(shower, pos, Quaternion.identity);
         Destroy(d, 0.3f);
 
-        float radius = 0.1f; // rayon de détection autour de la position de l'eau
+        float radius = 0.1f; 
 
-        // Parcours la liste des boules de shampoo pour supprimer celles proches
         for (int i = shampooList.Count - 1; i >= 0; i--)
         {
             GameObject s = shampooList[i];
@@ -166,7 +164,6 @@ public class CleanManager : MiniGameParent
             }
         }
 
-        // Vérifie si la zone est totalement nettoyée
         if (shampooList.Count == 0)
         {
             allCleaned = true;

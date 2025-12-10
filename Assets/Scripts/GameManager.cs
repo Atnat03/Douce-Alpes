@@ -27,8 +27,9 @@ public class SheepData
     public int skinClothe;
 	public bool hasWhool;
     public NatureType nature;
+    public int colorID;
 
-    public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature)
+    public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature, int colorID)
     {
         this.id = id;
         this.name = name;
@@ -36,6 +37,7 @@ public class SheepData
         this.skinClothe = skinClothe;
 		this.hasWhool = hasWhool;
         this.nature = nature;
+        this.colorID = colorID;
     }
 }
 
@@ -99,6 +101,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<int, float> sheepLastSwipeTime = new Dictionary<int, float>();
 
     [SerializeField] public Button buttonForTonte;
+    [SerializeField] public GameObject friendsUI;
     
     [Header("Caresse Visualizer")]
     public float[] caresseCurveValues;
@@ -258,6 +261,8 @@ public class GameManager : MonoBehaviour
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
 
         CheckAllSheepHasWool();
+        
+        friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
 
         //buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
     }
@@ -275,7 +280,7 @@ public class GameManager : MonoBehaviour
     {
         if (!sheepList.Contains(sheep)) Debug.LogError("Le mouton n'existe pas");
 
-        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkinHat,  sheep.currentSkinClothe, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType);
+        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkinHat,  sheep.currentSkinClothe, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType, sheep.currentColorID);
         GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);

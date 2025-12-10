@@ -19,4 +19,14 @@ public class Build : TouchableObject
 
         GetComponentInChildren<OnBecameInvisibleObject>().ActivateUI();
     }
+    
+    public void OpenUI()
+    {
+        UI.SetActive(true);
+    }
+    
+    public void CloseUI()
+    {
+        UI.SetActive(false);
+    }
 }
