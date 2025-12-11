@@ -3,9 +3,13 @@ using UnityEngine;
 
 public class ChangeCameraRotation : MonoBehaviour
 {
-    [SerializeField] private float dragSensitivity = 0.2f; 
+    [SerializeField] private float dragSensitivity = 0.2f;
     [SerializeField] private float minY = -33f;
     [SerializeField] private float maxY = 33f;
+
+    [Header("Bounce")]
+    [SerializeField] private float bounceStrength = 8f;     
+    [SerializeField] private float bounceReturnSpeed = 6f; 
 
     private float currentY;
 
@@ -24,6 +28,17 @@ public class ChangeCameraRotation : MonoBehaviour
         currentY = transform.eulerAngles.y;
     }
 
+    private void Update()
+    {
+        if (currentY < minY)
+            currentY = Mathf.Lerp(currentY, minY, Time.deltaTime * bounceReturnSpeed);
+
+        if (currentY > maxY)
+            currentY = Mathf.Lerp(currentY, maxY, Time.deltaTime * bounceReturnSpeed);
+
+        transform.rotation = Quaternion.Euler(30f, currentY, 0f);
+    }
+
     private void OnDragCamera(List<Vector2> points)
     {
         if (points.Count < 2) return;
@@ -35,8 +50,6 @@ public class ChangeCameraRotation : MonoBehaviour
 
         currentY += -deltaX * dragSensitivity;
 
-        currentY = Mathf.Clamp(currentY, minY, maxY);
-
-        transform.rotation = Quaternion.Euler(30f, currentY, 0f);
+        currentY = Mathf.Clamp(currentY, minY - bounceStrength, maxY + bounceStrength);
     }
 }
