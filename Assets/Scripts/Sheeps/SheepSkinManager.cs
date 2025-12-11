@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class SheepSkinManager : MonoBehaviour
@@ -12,13 +13,37 @@ public class SheepSkinManager : MonoBehaviour
     [Header("Infos mouton")]
     [SerializeField] private int sheepId;
     [SerializeField] private string sheepName;
+    [SerializeField] private int colorID;
     
-    public void Initialize(int id, string name)
+    [SerializeField] private bool hasLaine;
+    [SerializeField] private MeshRenderer Laine;
+    [SerializeField] private ColorSO colorData;
+
+    private bool isTonte = false;
+
+    public void Initialize(int id, string name, bool hasLaine, int colorID, bool isTonte = false)
     {
         sheepId = id;
         sheepName = name;
+        this.colorID = colorID;
+        this.hasLaine = hasLaine;
+        this.isTonte = isTonte;
+        
+        SetCurrentSkinHat(currentSkinHat);
+        SetCurrentSkinClothe(currentSkinClothe);
     }
-    
+
+    private void Update()
+    {
+        if (isTonte)
+            return;
+            
+        Laine.gameObject.SetActive(hasLaine);
+        
+        if(Laine != null)
+            Laine.material = colorData.colorData[colorID].material;
+    }
+
     public void SetCurrentSkinHat(int skinId)
     {
         currentSkinHat = skinId;
@@ -42,7 +67,6 @@ public class SheepSkinManager : MonoBehaviour
     {
         return currentSkinClothe;
     }
-
 
     public string GetSheepName()
     {

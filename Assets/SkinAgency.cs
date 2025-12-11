@@ -34,8 +34,19 @@ public class SkinAgency : MonoBehaviour
         {
             AddHatSkinInstance(13);
             AddClotheSkinInstance(10);
-            print(dicoHatSkinStack[13]);
-            print(dicoClotheSkinStack[10]);
+        }
+    }
+
+    [ContextMenu("Add All skins")]
+    public void AddSkinInstance()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 13; j++)
+                AddHatSkinInstance(j);
+            
+            for (int j = 0; j < 10; j++)
+                AddClotheSkinInstance(j);
         }
     }
 
@@ -47,7 +58,6 @@ public class SkinAgency : MonoBehaviour
 
     public void EquipHat(int sheepId, int skinId) 
     {
-        Debug.Log("Hat");
         if (!CanEquipHat(skinId)) return;
         if (hatSkinEquippedOnSheep.TryGetValue(sheepId, out int prev)) 
             dicoHatSkinStack[prev]++;  

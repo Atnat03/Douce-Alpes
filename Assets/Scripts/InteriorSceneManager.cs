@@ -46,7 +46,7 @@ public class InteriorSceneManager : MonoBehaviour
             
             SheepSkinManager sheep = newSheep.GetComponent<SheepSkinManager>();
 
-            sheep.Initialize(sheepData.id, sheepData.name);
+            sheep.Initialize(sheepData.id, sheepData.name, sheepData.hasWhool, sheepData.colorID);
             sheep.SetCurrentSkinHat(sheepData.skinHat);
             sheep.SetCurrentSkinClothe(sheepData.skinClothe);
         }

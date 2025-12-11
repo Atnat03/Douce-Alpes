@@ -110,6 +110,12 @@ public class TonteManager : MiniGameParent
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
 
         nameText.text = nextSheepData.name;
+        currentSheep.GetComponent<SheepSkinManager>().Initialize(
+            nextSheepData.id,
+            nextSheepData.name,
+            true,
+            nextSheepData.colorID, true);
+        
         nbToCutText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
 
         StartCoroutine(MoveOverTime(currentSheep.transform, tontePoint.position, 2f, true));
