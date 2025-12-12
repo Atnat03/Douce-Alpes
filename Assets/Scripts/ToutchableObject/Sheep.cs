@@ -61,7 +61,7 @@ public class Sheep : TouchableObject
         sheepId  = id;
         sheepName = name;
 
-        skinListManager.Initalize();
+        skinListManager.Initialize();
         SetCurrentSkinClothe(10);
         SetCurrentSkinHat(13);
     }

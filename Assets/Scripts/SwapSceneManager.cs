@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+[DefaultExecutionOrder(-1)]
 public class SwapSceneManager : MonoBehaviour
 {
     public static SwapSceneManager instance;
@@ -10,7 +11,6 @@ public class SwapSceneManager : MonoBehaviour
 
     [SerializeField] GameObject[] scenes;
     [SerializeField] private int startScene = 0;
-    [SerializeField] private bool isTesting = true;
     public int currentSceneId;
     
     public event Action SwapingInteriorScene;
@@ -26,8 +26,7 @@ public class SwapSceneManager : MonoBehaviour
     
     private void Start()
     {
-        if(isTesting)
-            SwapScene(startScene);
+        SwapScene(0);
         
         fadeImage.gameObject.SetActive(false);
     }
@@ -104,6 +103,8 @@ public class SwapSceneManager : MonoBehaviour
     
     void TriggerInitialiseScene(int sceneID)
     {
+        Debug.Log(sceneID);
+        
         switch (sceneID)
         {
             case 0:

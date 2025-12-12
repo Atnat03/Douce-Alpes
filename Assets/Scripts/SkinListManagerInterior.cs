@@ -4,64 +4,73 @@ using System.Collections.Generic;
 
 public class SkinListManagerInterior : MonoBehaviour
 {
-    List<SkinUnit> skinListHat = new();
-    private List<SkinUnit> skinListClothe = new ();
+    private List<SkinUnit> skinListHatWithWool = new();
+    private List<SkinUnit> skinListClotheWithWool = new();
+    private List<SkinUnit> skinListHatWithoutWool = new();
+    private List<SkinUnit> skinListClotheWithoutWool = new();
 
-    private SheepSkinManager parentSheep;
+    [SerializeField] SheepSkinManager parentSheep;
     
     [SerializeField] private Transform withWoolSkins;
     [SerializeField] private Transform withoutWoolSkins;
-    private Transform t;
-    
-    private void Update()
-    {
-        withoutWoolSkins.gameObject.SetActive(!parentSheep.hasLaine);
-        withWoolSkins.gameObject.SetActive(parentSheep.hasLaine);
-    }
     
     private void Start()
     {
-        parentSheep =  transform.parent.GetComponent<SheepSkinManager>();
-        
-        t = parentSheep.hasLaine ?  withWoolSkins : withoutWoolSkins;
+        skinListHatWithWool.Clear();
+        skinListClotheWithWool.Clear();
+        skinListHatWithoutWool.Clear();
+        skinListClotheWithoutWool.Clear();
 
-        for (int i = 0; i < t.GetChild(0).childCount; i++)
-        {
-            skinListHat.Add(t.GetChild(0).GetChild(i).GetComponent<SkinUnit>());
-        }
-        
-        for (int i = 0; i < t.GetChild(1).childCount; i++)
-        {
-            skinListClothe.Add(t.GetChild(1).GetChild(i).GetComponent<SkinUnit>());
-        }
-        
+        for (int i = 0; i < withWoolSkins.GetChild(0).childCount; i++)
+            skinListHatWithWool.Add(withWoolSkins.GetChild(0).GetChild(i).GetComponent<SkinUnit>());
+
+        for (int i = 0; i < withWoolSkins.GetChild(1).childCount; i++)
+            skinListClotheWithWool.Add(withWoolSkins.GetChild(1).GetChild(i).GetComponent<SkinUnit>());
+
+        for (int i = 0; i < withoutWoolSkins.GetChild(0).childCount; i++)
+            skinListHatWithoutWool.Add(withoutWoolSkins.GetChild(0).GetChild(i).GetComponent<SkinUnit>());
+
+        for (int i = 0; i < withoutWoolSkins.GetChild(1).childCount; i++)
+            skinListClotheWithoutWool.Add(withoutWoolSkins.GetChild(1).GetChild(i).GetComponent<SkinUnit>());
+
+        UpdateAll();
+    }
+
+    private void Update()
+    {
+        withWoolSkins.gameObject.SetActive(parentSheep.hasLaine);
+        withoutWoolSkins.gameObject.SetActive(!parentSheep.hasLaine);
+    }
+
+    public void UpdateAll()
+    {
         UpdateSkinListHat(parentSheep.GetCurrentSkinHat());
         UpdateSkinListClothe(parentSheep.GetCurrentSkinClothe());
     }
 
     public void UpdateSkinListHat(int currentSkinHat)
     {
-        foreach (SkinUnit skinUnit in skinListHat)
-        {
-            skinUnit.gameObject.SetActive(false);
+        var list = GetCurrentSkinHatList();
 
-            if (currentSkinHat == skinUnit.id)
-            {
-                skinUnit.gameObject.SetActive(true);
-            }
-        }
+        foreach (var s in list)
+            s.gameObject.SetActive(s.id == currentSkinHat);
     }
-    
+
     public void UpdateSkinListClothe(int currentSkinClothe)
     {
-        foreach (SkinUnit skinUnit in skinListClothe)
-        {
-            skinUnit.gameObject.SetActive(false);
+        var list = GetCurrentSkinClotheList();
 
-            if (currentSkinClothe == skinUnit.id)
-            {
-                skinUnit.gameObject.SetActive(true);
-            }
-        }
+        foreach (var s in list)
+            s.gameObject.SetActive(s.id == currentSkinClothe);
+    }
+
+    private List<SkinUnit> GetCurrentSkinHatList()
+    {
+        return parentSheep.hasLaine ? skinListHatWithWool : skinListHatWithoutWool;
+    }
+
+    private List<SkinUnit> GetCurrentSkinClotheList()
+    {
+        return parentSheep.hasLaine ? skinListClotheWithWool : skinListClotheWithoutWool;
     }
 }

@@ -47,6 +47,10 @@ public class CameraControl : MonoBehaviour
     [SerializeField] private Build grange;
 
     private void Awake() => inputs = new Movements();
+    
+    private Vector3 startRootPosition;
+    private Quaternion startRootRotation;
+    private float startZoom;
 
     private void Start()
     {
@@ -58,6 +62,11 @@ public class CameraControl : MonoBehaviour
         root.localEulerAngles = new Vector3(angle, -60, 0);
 
         targetPosition = root.position;
+        
+        
+        startRootPosition = root.position;
+        startRootRotation = root.rotation;
+        startZoom = zoom;
     }
 
     private bool ignoreInput = false;
@@ -150,6 +159,20 @@ public class CameraControl : MonoBehaviour
         Vector3 centerPos = centerPoint.position;
         Vector3 size = new Vector3(boundLeft + boundRight, 0.1f, boundUp + boundDown);
         Gizmos.DrawWireCube(centerPos + new Vector3((boundRight - boundLeft) / 2f, 0, (boundUp - boundDown) / 2f), size);
+    }
+
+    public void ResetCameraPoseDefault()
+    {
+        if (root == null) return;
+
+        root.position = startRootPosition;
+        targetPosition = startRootPosition;
+        root.rotation = startRootRotation;
+
+        zoom = startZoom;
+        cam.fieldOfView = startZoom;
+
+        grange.CloseUI();
     }
     
     public void SetRootFocusGrange()

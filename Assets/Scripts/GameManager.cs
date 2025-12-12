@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
 
     public void ResetCamera()
     {
-        cameraFollow.enabled = true;
+        cameraFollow.enabled = false;
         
         ChangePlayerEnvironnement(true);
 
@@ -284,6 +284,8 @@ public class GameManager : MonoBehaviour
         GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);
+        SheepEnter?.Invoke(sheep.gameObject);
+        
         Destroy(sheep.gameObject);
         
         grange.AddSheepInGrange();
@@ -295,24 +297,21 @@ public class GameManager : MonoBehaviour
             GameData.instance.timer.canButtonG = false;
             GameData.instance.timer.canButtonT = true;*/
             
-            ResetCamera();
-
-            StartCoroutine(NextFrameChangeScene());
+            NextFrameChangeScene();
         }
         
-        SheepEnter?.Invoke(sheep.gameObject);
     }
 
-    IEnumerator NextFrameChangeScene()
+    void NextFrameChangeScene()
     {
-        yield return new WaitForSeconds(1f);
-        
-        if(GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
         {
+            grange.CloseUI();
             GameData.instance.timer.UpdateAllButton();
             SwapSceneManager.instance.SwapScene(1);
         }
     }
+
     
     public void SheepGetOutGrange()
     {
@@ -357,6 +356,7 @@ public class GameManager : MonoBehaviour
             TutoManager.instance.GoToShop();
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
+        GameData.instance.timer.UpdateAllButton();
     }
     
     //Abreuvoir
@@ -373,5 +373,24 @@ public class GameManager : MonoBehaviour
             if (!s.hasLaine)
                 GameData.instance.timer.canButtonT = false;
         }
+    }
+
+    void ResetTheScene()
+    {
+        Debug.Log("Reset the scene");
+        
+        cameraFollow.enabled = true;
+        cameraFollow.ResetCameraPoseDefault();
+        cameraFollow.GetComponent<ChangingCamera>().StopAll();
+    }
+
+    void OnEnable()
+    {
+        SwapSceneManager.instance.SwapingDefaultScene += ResetTheScene;
+    }
+    
+    void OnDisable()
+    {
+        SwapSceneManager.instance.SwapingDefaultScene -= ResetTheScene;
     }
 }
