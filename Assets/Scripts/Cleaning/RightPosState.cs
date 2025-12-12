@@ -30,13 +30,14 @@ public class RightPosState : ICleaningState
         }
     }
 
-    public void UpdateState()
-    {
+    public void UpdateState() {
         manager.cleanManager.camera.transform.LookAt(manager.cleanManager.sheepTarget);
-
-        if (IsEnought() && !((manager.cleanManager.currentTool == CleaningTool.Shower) && manager.cleanManager.allCleaned))
-        {
-            manager.cleanManager.SetShampoo();
+        if (IsEnought() && !((manager.cleanManager.currentTool == CleaningTool.Shower) && manager.cleanManager.allCleaned)) {
+            if (manager.cleanManager.currentTool == CleaningTool.Shampoo) {
+                manager.cleanManager.ResetValueClean();  
+                manager.cleanManager.SetShower();        
+                Debug.Log("🚿 Auto-switch vers Douche ! Débute rinçage sur Gauche...");
+            }
             manager.SetState(manager.leftPosState);
         }
     }

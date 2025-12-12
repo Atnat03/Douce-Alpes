@@ -9,18 +9,30 @@ public class SkinListManagerInterior : MonoBehaviour
 
     private SheepSkinManager parentSheep;
     
+    [SerializeField] private Transform withWoolSkins;
+    [SerializeField] private Transform withoutWoolSkins;
+    private Transform t;
+    
+    private void Update()
+    {
+        withoutWoolSkins.gameObject.SetActive(!parentSheep.hasLaine);
+        withWoolSkins.gameObject.SetActive(parentSheep.hasLaine);
+    }
+    
     private void Start()
     {
         parentSheep =  transform.parent.GetComponent<SheepSkinManager>();
+        
+        t = parentSheep.hasLaine ?  withWoolSkins : withoutWoolSkins;
 
-        for (int i = 0; i < transform.GetChild(0).childCount; i++)
+        for (int i = 0; i < t.GetChild(0).childCount; i++)
         {
-            skinListHat.Add(transform.GetChild(0).GetChild(i).GetComponent<SkinUnit>());
+            skinListHat.Add(t.GetChild(0).GetChild(i).GetComponent<SkinUnit>());
         }
         
-        for (int i = 0; i < transform.GetChild(1).childCount; i++)
+        for (int i = 0; i < t.GetChild(1).childCount; i++)
         {
-            skinListClothe.Add(transform.GetChild(1).GetChild(i).GetComponent<SkinUnit>());
+            skinListClothe.Add(t.GetChild(1).GetChild(i).GetComponent<SkinUnit>());
         }
         
         UpdateSkinListHat(parentSheep.GetCurrentSkinHat());

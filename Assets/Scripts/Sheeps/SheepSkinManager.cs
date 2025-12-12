@@ -15,19 +15,21 @@ public class SheepSkinManager : MonoBehaviour
     [SerializeField] private string sheepName;
     [SerializeField] private int colorID;
     
-    [SerializeField] private bool hasLaine;
+    [SerializeField] public bool hasLaine;
     [SerializeField] private MeshRenderer Laine;
     [SerializeField] private ColorSO colorData;
 
     private bool isTonte = false;
 
-    public void Initialize(int id, string name, bool hasLaine, int colorID, bool isTonte = false)
+    public void Initialize(int id, string name, bool hasLaine, int colorID, int skinHatId, int skinClotheId, bool isTonte = false)
     {
         sheepId = id;
         sheepName = name;
         this.colorID = colorID;
         this.hasLaine = hasLaine;
         this.isTonte = isTonte;
+        currentSkinHat = skinHatId;
+        currentSkinClothe = skinClotheId;
         
         SetCurrentSkinHat(currentSkinHat);
         SetCurrentSkinClothe(currentSkinClothe);

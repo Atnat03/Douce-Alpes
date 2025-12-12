@@ -113,7 +113,7 @@ public class TouchManager : MonoBehaviour
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
         
-        if (GameManager.instance.currentCameraState == CamState.MiniGame)
+        if (GameManager.instance != null && GameManager.instance.currentCameraState == CamState.MiniGame)
         {
             if (Physics.Raycast(ray, out RaycastHit hit))
             {

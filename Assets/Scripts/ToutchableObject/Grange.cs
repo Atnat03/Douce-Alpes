@@ -43,8 +43,8 @@ public class Grange : Build
 
     public void OpenDoors()
     {
-        gate1.transform.rotation = Quaternion.Euler(gate1_Open);
-        gate2.transform.rotation = Quaternion.Euler(gate2_Open);
+        gate1.transform.localRotation = Quaternion.Euler(gate1_Open);
+        gate2.transform.localRotation = Quaternion.Euler(gate2_Open);
         gateState = true;
         keyCloseGate.SetActive(false);
         
@@ -54,8 +54,8 @@ public class Grange : Build
     
     public void CloseDoors()
     {
-        gate1.transform.rotation = Quaternion.Euler(gate1_Close);
-        gate2.transform.rotation = Quaternion.Euler(gate2_Close);
+        gate1.transform.localRotation = Quaternion.Euler(gate1_Close);
+        gate2.transform.localRotation = Quaternion.Euler(gate2_Close);
         gateState = false;
         keyCloseGate.SetActive(true);
         

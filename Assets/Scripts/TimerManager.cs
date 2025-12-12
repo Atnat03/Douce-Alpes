@@ -1,9 +1,21 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+
+public enum MiniGames
+{
+    Rentree,
+    Tonte,
+    Nettoyage,
+    Sortie
+}
 
 public class TimerManager : MonoBehaviour
 {
+    public MiniGames currentMiniJeuToDo;
+    
     [Header("UI references")] 
     
     [Header("Buttons")] 
@@ -20,6 +32,13 @@ public class TimerManager : MonoBehaviour
     [SerializeField] public bool canButtonG = true;
     [SerializeField] public bool canButtonT = false;
     [SerializeField] public bool canButtonC = false;
+    
+    [Header("Horloge")]
+    [SerializeField] public RectTransform horloge;
+    [SerializeField] public Image logo1;
+    [SerializeField] public Image logo2;
+    [SerializeField] public Sprite[] spriteMiniJeux;
+    private bool isLogo1Visible = true;
     
     private void OnEnable()
     {
@@ -40,6 +59,9 @@ public class TimerManager : MonoBehaviour
     {
         tonteButton.interactable = false;
         cleanButton.interactable = false;
+        
+        logo1.sprite = spriteMiniJeux[0];
+        logo2.sprite = spriteMiniJeux[1];
     }
 
     private void UpdateButtons(Button button, bool state, bool finishTimer = true)
@@ -52,6 +74,8 @@ public class TimerManager : MonoBehaviour
         grangeButton.interactable = canButtonG;
         tonteButton.interactable = canButtonT;
         cleanButton.interactable = canButtonC;
+        
+        NextMiniGameToDo();
     }
 
     private void UpdateCooldownUI(TypeAmelioration type, float remainingTime, bool state = true)
@@ -99,5 +123,42 @@ public class TimerManager : MonoBehaviour
                 UpdateButtons(cleanButton, canButtonC);
                 break;
         }
+    }
+
+    IEnumerator UpdateHorloge(int nextIndex)
+    {
+        float duration = 2f;
+        float elapsed = 0f;
+
+        Image invisibleLogo = isLogo1Visible ? logo2 : logo1;
+        invisibleLogo.sprite = spriteMiniJeux[nextIndex];
+
+        // 2. rotation smooth
+        Quaternion startRot = horloge.rotation;
+        Quaternion endRot = startRot * Quaternion.Euler(0, 0, 180f);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
+            horloge.rotation = Quaternion.Lerp(startRot, endRot, t);
+            yield return null;
+        }
+
+        horloge.rotation = endRot;
+
+        isLogo1Visible = !isLogo1Visible;
+    }
+    
+    public void NextMiniGameToDo()
+    {
+        MiniGames[] values = (MiniGames[])Enum.GetValues(typeof(MiniGames));
+
+        int index = Array.IndexOf(values, currentMiniJeuToDo);
+        int nextIndex = (index + 1) % values.Length;
+
+        currentMiniJeuToDo = values[nextIndex];
+
+        StartCoroutine(UpdateHorloge(nextIndex));
     }
 }

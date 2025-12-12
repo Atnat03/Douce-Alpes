@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,24 +35,58 @@ public class PlayerMoney : MonoBehaviour
         txtWhool.text = currentWhool.ToString();
     }
     
+    
     //Money
     public void AddMoney(int value, Vector2 pos)
     {
         Debug.Log(value  + " money ajouté");
-        currentMoney += value;
         
         bonheurUI.DropCanva(pos, value, moneySprite, moneyFinalTarget.position);
+
+        StartCoroutine(AddMoneySmooth(currentMoney + value));
     }
+
+    IEnumerator AddMoneySmooth(int finalValue)
+    {
+        yield return new WaitUntil(() => bonheurUI.IsSpawnAnimationFinished());
+
+        while (currentMoney < finalValue)
+        {
+            currentMoney += 1;
+            yield return null;
+        }
+
+        currentMoney = finalValue;
+
+        bonheurUI.RemonteCanva();
+    }
+
     
     //Laine
     public void AddWhool(int value, Vector2 pos)
     {
         Debug.Log(value  + " whool ajouté");
         
-        currentWhool += value;
-        
         bonheurUI.DropCanva(pos, value, woolSprite, woolFinalTarget.position);
+        
+        StartCoroutine(AddWoolSmooth(currentWhool + value));
     }
+    
+    IEnumerator AddWoolSmooth(int finalValue)
+    {
+        yield return new WaitUntil(() => bonheurUI.IsSpawnAnimationFinished());
+
+        while (currentWhool < finalValue)
+        {
+            currentWhool += 1;
+            yield return null;
+        }
+
+        currentWhool = finalValue;
+
+        bonheurUI.RemonteCanva();
+    }
+
 
     public void RemoveMoney(int value)
     {

@@ -291,12 +291,27 @@ public class GameManager : MonoBehaviour
         if (sheepList.Count == 0)
         {
             sheepList = new List<Sheep>();
+            /*
             GameData.instance.timer.canButtonG = false;
-            GameData.instance.timer.canButtonT = true;
-            GameData.instance.timer.UpdateAllButton();
+            GameData.instance.timer.canButtonT = true;*/
+            
+            ResetCamera();
+
+            StartCoroutine(NextFrameChangeScene());
         }
         
         SheepEnter?.Invoke(sheep.gameObject);
+    }
+
+    IEnumerator NextFrameChangeScene()
+    {
+        yield return new WaitForSeconds(1f);
+        
+        if(GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
+        {
+            GameData.instance.timer.UpdateAllButton();
+            SwapSceneManager.instance.SwapScene(1);
+        }
     }
     
     public void SheepGetOutGrange()

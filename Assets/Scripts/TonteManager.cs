@@ -114,7 +114,9 @@ public class TonteManager : MiniGameParent
             nextSheepData.id,
             nextSheepData.name,
             true,
-            nextSheepData.colorID, true);
+            nextSheepData.colorID,
+            nextSheepData.skinHat,
+            nextSheepData.skinClothe, true);
         
         nbToCutText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
 

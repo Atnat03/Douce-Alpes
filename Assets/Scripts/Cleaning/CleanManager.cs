@@ -2,18 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum CleaningTool
-{
-    Shampoo,
-    Shower,
-}
+public enum CleaningTool { Shampoo, Shower, None }
 
-public enum CleaningSide
-{
-    Left,
-    Front,
-    Right
-}
+public enum CleaningSide { Left, Front, Right }
 
 public class CleanManager : MiniGameParent
 {
@@ -26,20 +17,15 @@ public class CleanManager : MiniGameParent
     [Header("Current Tool")]
     public CleaningTool currentTool;
 
-    [Header("Tool Particles")] 
+    [Header("Tool Particles")]
     [SerializeField] private GameObject[] shampoos;
     [SerializeField] private GameObject shower;
-
-    [Header("UI")] 
-    [SerializeField] private GameObject shampooContour;
-    [SerializeField] private GameObject showerContour;
-    [SerializeField] private Button showerButton;
     
     public List<GameObject> shampooList = new List<GameObject>();
 
-    [Header("Clean Values")] 
+    [Header("Clean Values")]
     private float cleanValue = 0;
-    private float totalValueCleaned = 0;
+    public float totalValueCleaned = 0;
     public int maxShampoo = 100;
 
     [Header("Anti-Spam Shampoo Settings")]
@@ -49,36 +35,62 @@ public class CleanManager : MiniGameParent
 
     public int currentCleaningLayer = 0;
     public CleaningSide currentCleaningSide;
-    
+
     [Header("Side Centers")]
     public Transform leftCenter;
     public Transform frontCenter;
     public Transform rightCenter;
     public float maxDistanceFromCenter = 1.0f;
-    
+
     [HideInInspector] public bool allCleaned = false;
     [HideInInspector] public bool canAddShampoo = true;
 
+    private int sheepIndex = 0;
+
     public float GetCleanValue() => cleanValue;
+
+    [Header("Swipe Detection")]
+    [SerializeField] private SwipeDetection swipeDetection;
+    [SerializeField] private RectTransform fingerFollower;
+    [SerializeField] private Image imageTool;
+    [SerializeField] private Sprite logoShampoo;
+    [SerializeField] private Sprite logoShower;
+
+    private Vector2 currentFingerScreenPos = Vector2.zero;
+    private bool isSwiping = false;
 
     private void Awake()
     {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(gameObject);
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
     }
 
     private void Start()
     {
+        if (swipeDetection == null) swipeDetection = SwipeDetection.instance;
+        swipeDetection.OnFingerPositionUpdated += HandleFingerPositionUpdate;
+        swipeDetection.OnSwipeEnded += HandleSwipeEnd;
+
         SetShampoo();
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        showerButton.interactable = totalValueCleaned >= maxShampoo;
+        if (swipeDetection != null)
+        {
+            swipeDetection.OnFingerPositionUpdated -= HandleFingerPositionUpdate;
+            swipeDetection.OnSwipeEnded -= HandleSwipeEnd;
+        }
     }
 
+    private void InitalizeSheep()
+    {
+        SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
+        sheepTarget.GetComponent<SheepSkinManager>().Initialize(
+            nextSheepData.id, nextSheepData.name, false, nextSheepData.colorID, nextSheepData.skinHat, nextSheepData.skinClothe);
+        sheepIndex++;
+    }
+    
     public void ResetValueClean()
     {
         totalValueCleaned += cleanValue;
@@ -90,17 +102,17 @@ public class CleanManager : MiniGameParent
     public void SetShampoo()
     {
         currentTool = CleaningTool.Shampoo;
-        shampooContour.SetActive(true);
-        showerContour.SetActive(false);
+
+        imageTool.sprite = logoShampoo;
     }
 
     public void SetShower()
     {
         currentTool = CleaningTool.Shower;
-        shampooContour.SetActive(false);
-        showerContour.SetActive(true);
+        
+        imageTool.sprite = logoShower;
     }
-    
+
     public void PerformClean(Vector3 pos)
     {
         ApplyClean(pos);
@@ -108,15 +120,15 @@ public class CleanManager : MiniGameParent
 
     public void ApplyClean(Vector3 pos)
     {
-        if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo)
-            return;
+        if (!canAddShampoo) return;
+
+        if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo) return;
 
         switch (currentTool)
         {
             case CleaningTool.Shampoo:
                 TryAddShampoo(pos);
                 break;
-
             case CleaningTool.Shower:
                 CheckShampoo(pos);
                 break;
@@ -128,7 +140,6 @@ public class CleanManager : MiniGameParent
         if (!hasLastPos || Vector3.Distance(lastShampooPos, pos) >= minDistanceBetweenShampoos)
         {
             GameObject prefab = shampoos[Random.Range(0, shampoos.Length)];
-
             float randomY = Random.Range(0f, 360f);
             Quaternion randomRotation = Quaternion.Euler(0f, randomY, 0f);
 
@@ -140,20 +151,18 @@ public class CleanManager : MiniGameParent
 
             shampooList.Add(s);
             cleanValue += 1f;
+
             lastShampooPos = pos;
             hasLastPos = true;
         }
     }
-
-
 
     private void CheckShampoo(Vector3 pos)
     {
         GameObject d = Instantiate(shower, pos, Quaternion.identity);
         Destroy(d, 0.3f);
 
-        float radius = 0.1f; 
-
+        float radius = 0.1f;
         for (int i = shampooList.Count - 1; i >= 0; i--)
         {
             GameObject s = shampooList[i];
@@ -171,40 +180,86 @@ public class CleanManager : MiniGameParent
         }
     }
 
-
-    private void OnAllCleaned()
+    public void OnAllCleaned()
     {
         Debug.Log("✅ Tout est propre !");
         ResetValueClean();
         hasLastPos = false;
-
         EndMiniGame(TypeAmelioration.Nettoyage);
         GameData.instance.timer.canButtonG = true;
         GameData.instance.timer.canButtonC = false;
         GameData.instance.timer.UpdateAllButton();
-        
-        showerContour.SetActive(false);
-        shampooContour.SetActive(true);
     }
 
     public void ResetCleanSystem()
     {
         Debug.Log("🔄 Reset du système de nettoyage...");
-        foreach (GameObject s in shampooList)
-            Destroy(s);
-
+        foreach (GameObject s in shampooList) Destroy(s);
         shampooList.Clear();
         allCleaned = false;
         totalValueCleaned = 0;
         cleanValue = 0;
         hasLastPos = false;
         lastShampooPos = Vector3.zero;
-
         SetShampoo();
     }
 
+    private void HandleFingerPositionUpdate(Vector2 screenPos)
+    {
+        if (screenPos == Vector2.zero)
+        {
+            isSwiping = false;
+            if (fingerFollower != null) fingerFollower.gameObject.SetActive(false);
+            return;
+        }
+
+        currentFingerScreenPos = screenPos;
+        isSwiping = true;
+
+        // Update follower position et active-le
+        UpdateFollowerPosition(screenPos);
+
+        if (currentTool != CleaningTool.None)
+        {
+            Debug.Log($"Doigt à screen pos: {screenPos} | Outil: {currentTool}");
+
+            Vector3 worldPos = camera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 10f));
+            if (Vector3.Distance(worldPos, sheepTarget.position) > maxDistanceFromCenter * 2)
+            {
+                Debug.Log("⚠️ Swipe hors mouton !");
+            }
+
+            // Option : Force un clean si tu veux bypass SwipeDetection (décommente si besoin)
+            // PerformClean(worldPos);
+        }
+    }
+
+    private void UpdateFollowerPosition(Vector2 screenPosition)
+    {
+        if (fingerFollower != null)
+        {
+            fingerFollower.position = screenPosition;
+            fingerFollower.gameObject.SetActive(true);  // Active pendant swipe
+        }
+    }
+
+    private void HandleSwipeEnd()
+    {
+        isSwiping = false;
+        currentFingerScreenPos = Vector2.zero;
+        if (fingerFollower != null) fingerFollower.gameObject.SetActive(false);
+    }
+
+    public Vector2 GetCurrentFingerScreenPosition() => currentFingerScreenPos;
+
     private void OnDisable()
     {
+        if (swipeDetection != null)
+        {
+            swipeDetection.OnFingerPositionUpdated -= HandleFingerPositionUpdate;
+            swipeDetection.OnSwipeEnded -= HandleSwipeEnd;
+        }
+
         foreach (GameObject shampoo in shampooList)
         {
             Destroy(shampoo);
@@ -213,7 +268,13 @@ public class CleanManager : MiniGameParent
 
     void OnEnable()
     {
-        if(TutoManager.instance != null)
-            TutoManager.instance.MiniJeuClean();
+        //InitalizeSheep(); 
+        SetShampoo();
+
+        if (swipeDetection == null) swipeDetection = SwipeDetection.instance;
+        swipeDetection.OnFingerPositionUpdated += HandleFingerPositionUpdate;
+        swipeDetection.OnSwipeEnded += HandleSwipeEnd;
+
+        if (TutoManager.instance != null) TutoManager.instance.MiniJeuClean();
     }
 }

@@ -12,6 +12,8 @@ public class BonheurUI : MonoBehaviour
 
     public Image heartImage;
     
+    private bool spawnAnimationFinished = false;
+    
     [Header("State Values")]
     [Range(0, 1)] public float currentValue = 0f;
     [Range(0, 1)] public float overflowValue = 0f;
@@ -73,10 +75,31 @@ public class BonheurUI : MonoBehaviour
     {
         print("Drop Canva");
         isDropped = true;
+        spawnAnimationFinished = false;
         
         if(SwapSceneManager.instance.currentSceneId != 0)
             StartCoroutine(AnimatedCanvaTranslation(posInvisible, posVisible, posSpawnSprite, value, sprite, targetPosition));
     }
+
+    public void RemonteCanva()
+    {
+        print("Remonte Canva");
+        isDropped = false;
+
+        if (SwapSceneManager.instance.currentSceneId != 0)
+            StartCoroutine(AnimatedCanvaTranslation(
+                posVisible,
+                posInvisible, 
+                Vector2.zero,
+                0, 
+                null, 
+                Vector2.zero, 
+                1f, 
+                false
+            ));
+    }
+
+    
 
     IEnumerator AnimatedCanvaTranslation(RectTransform startPos, RectTransform target, Vector2 posSpawnSprite, int value, GameObject sprite, Vector2 targetAnimPosition,float duration = 1f, bool spawnAnim = true)
     {
@@ -150,10 +173,19 @@ public class BonheurUI : MonoBehaviour
             if (anim != null)
                 anim.enabled = true;
         }
+        
+        spawnAnimationFinished = true;
 
         yield return new WaitForSeconds(1.5f);
         
-        if(undropUI)
+        /*
+         if(undropUI)
             StartCoroutine(AnimatedCanvaTranslation(posVisible, posInvisible, posSpawnSprite, value, spritePrefab, targetPosition, 1f, false));
+        */
+    }
+    
+    public bool IsSpawnAnimationFinished()
+    {
+        return spawnAnimationFinished;
     }
 }
