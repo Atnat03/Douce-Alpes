@@ -293,9 +293,6 @@ public class GameManager : MonoBehaviour
         if (sheepList.Count == 0)
         {
             sheepList = new List<Sheep>();
-            /*
-            GameData.instance.timer.canButtonG = false;
-            GameData.instance.timer.canButtonT = true;*/
             
             NextFrameChangeScene();
         }
@@ -306,6 +303,11 @@ public class GameManager : MonoBehaviour
     {
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
         {
+            GameData.instance.timer.canButtonG = false;
+            GameData.instance.timer.canButtonT = true;
+
+            GameData.instance.StartMiniGameCooldown(TypeAmelioration.Rentree);
+            
             grange.CloseUI();
             GameData.instance.timer.UpdateAllButton();
             SwapSceneManager.instance.SwapScene(1);

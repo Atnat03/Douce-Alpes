@@ -4,42 +4,36 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public enum MiniGames
-{
-    Rentree,
-    Tonte,
-    Nettoyage,
-    Sortie
-}
+public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie }
 
 public class TimerManager : MonoBehaviour
 {
     public MiniGames currentMiniJeuToDo;
-    
-    [Header("UI references")] 
-    
-    [Header("Buttons")] 
+
+    [Header("UI references")]
+    [Header("Buttons")]
     [SerializeField] public Button grangeButton;
     [SerializeField] public Button tonteButton;
     [SerializeField] public Button cleanButton;
-    
-    [Header("Text")]
-    [SerializeField] public Text grangeMiniGameText;
-    [SerializeField] public Text tonteMiniGameText;
-    [SerializeField] public Text cleanMiniGameText;
-    
+
+    [Header("Fill Images")]
+    [SerializeField] public Image grangeFillImage;
+    [SerializeField] public Image tonteFillImage;
+    [SerializeField] public Image cleanFillImage;
+
     [Header("Bools")]
     [SerializeField] public bool canButtonG = true;
     [SerializeField] public bool canButtonT = false;
     [SerializeField] public bool canButtonC = false;
-    
+
     [Header("Horloge")]
     [SerializeField] public RectTransform horloge;
     [SerializeField] public Image logo1;
     [SerializeField] public Image logo2;
     [SerializeField] public Sprite[] spriteMiniJeux;
+
     private bool isLogo1Visible = true;
-    
+
     private void OnEnable()
     {
         GameData.instance.OnCooldownUpdated += UpdateCooldownUI;
@@ -57,11 +51,19 @@ public class TimerManager : MonoBehaviour
 
     private void Start()
     {
+        currentMiniJeuToDo = MiniGames.Rentree;  // Force init pour flux
+
+        canButtonG = true;
+        canButtonT = false;
+        canButtonC = false;
         tonteButton.interactable = false;
         cleanButton.interactable = false;
-        
         logo1.sprite = spriteMiniJeux[0];
         logo2.sprite = spriteMiniJeux[1];
+
+        // Sync initial
+        UpdateFills();
+        Debug.Log("START: Sync fills terminé – Check logs TRACE pour Grange");
     }
 
     private void UpdateButtons(Button button, bool state, bool finishTimer = true)
@@ -74,52 +76,102 @@ public class TimerManager : MonoBehaviour
         grangeButton.interactable = canButtonG;
         tonteButton.interactable = canButtonT;
         cleanButton.interactable = canButtonC;
-        
+
+        UpdateFills();
+
         NextMiniGameToDo();
+    }
+
+    private void Update()
+    {
+        UpdateFills();
+    }
+
+    private void UpdateFills()
+    {
+        UpdateSingleFill(grangeFillImage, canButtonG, TypeAmelioration.Rentree, "Grange");
+        UpdateSingleFill(tonteFillImage, canButtonT, TypeAmelioration.Tonte, "Tonte");
+        UpdateSingleFill(cleanFillImage, canButtonC, TypeAmelioration.Nettoyage, "Nettoyage");
+    }
+
+    private void UpdateSingleFill(Image fillImg, bool canDo, TypeAmelioration type, string debugName)
+    {
+        if (fillImg == null) return;
+
+        float fillAmount = 0f;
+
+        if (canDo)
+        {
+            int currentTimer = GameData.instance.GetCurrentTimer(type);
+            int maxTime = GameData.instance.GetCooldownUpgrade(type);
+
+            Debug.Log($"TRACE [{debugName}]: canDo=true, currentTimer={currentTimer}, maxTime={maxTime}");
+
+            if (currentTimer <= 0)
+            {
+                fillAmount = 1f;
+                Debug.Log($"TRACE [{debugName}]: Timer fini → fill=1");
+            }
+            else if (maxTime > 0)
+            {
+                fillAmount = 1f - (currentTimer / (float)maxTime);
+                Debug.Log($"TRACE [{debugName}]: Timer en cours → fill={fillAmount:F2}");
+            }
+            else
+            {
+                fillAmount = 1f;
+                Debug.LogWarning($"TRACE [{debugName}]: maxTime=0 → fill=1");
+            }
+        }
+        else
+        {
+            Debug.Log($"TRACE [{debugName}]: canDo=false → fill=0");
+        }
+
+        fillImg.fillAmount = Mathf.Clamp01(fillAmount);
+        Debug.Log($"TRACE [{debugName}]: FINAL fillAmount = {fillImg.fillAmount:F2}");
     }
 
     private void UpdateCooldownUI(TypeAmelioration type, float remainingTime, bool state = true)
     {
         int displayTime = Mathf.CeilToInt(remainingTime);
+        float maxTime = GameData.instance.GetCooldownUpgrade(type);
+        float fillAmount = (remainingTime <= 0f) ? 1f : Mathf.Clamp01(1f - (remainingTime / maxTime));
+
         switch (type)
         {
             case TypeAmelioration.Rentree:
-                grangeMiniGameText.text = displayTime.ToString();
-                UpdateButtons(grangeButton, canButtonG, (remainingTime <= 0));
-                break;
             case TypeAmelioration.Sortie:
-                grangeMiniGameText.text = displayTime.ToString();
                 UpdateButtons(grangeButton, canButtonG, (remainingTime <= 0));
+                if (grangeFillImage != null) grangeFillImage.fillAmount = fillAmount;
                 break;
             case TypeAmelioration.Tonte:
-                tonteMiniGameText.text = displayTime.ToString();
                 UpdateButtons(tonteButton, canButtonT, (remainingTime <= 0));
+                if (tonteFillImage != null) tonteFillImage.fillAmount = fillAmount;
                 break;
             case TypeAmelioration.Nettoyage:
-                cleanMiniGameText.text = displayTime.ToString();
                 UpdateButtons(cleanButton, canButtonC, (remainingTime <= 0));
+                if (cleanFillImage != null) cleanFillImage.fillAmount = fillAmount;
                 break;
         }
+
+        UpdateFills();
     }
 
     private void OnTimerFinished(TypeAmelioration type)
     {
+        UpdateFills();
+
         switch (type)
         {
             case TypeAmelioration.Rentree:
-                grangeMiniGameText.text = "Grange";
-                UpdateButtons(grangeButton, canButtonG);
-                break;
             case TypeAmelioration.Sortie:
-                grangeMiniGameText.text = "Grange";
                 UpdateButtons(grangeButton, canButtonG);
                 break;
             case TypeAmelioration.Tonte:
-                tonteMiniGameText.text = "Tonte";
                 UpdateButtons(tonteButton, canButtonT);
                 break;
             case TypeAmelioration.Nettoyage:
-                cleanMiniGameText.text = "Nettoyage";
                 UpdateButtons(cleanButton, canButtonC);
                 break;
         }
@@ -129,11 +181,9 @@ public class TimerManager : MonoBehaviour
     {
         float duration = 2f;
         float elapsed = 0f;
-
         Image invisibleLogo = isLogo1Visible ? logo2 : logo1;
         invisibleLogo.sprite = spriteMiniJeux[nextIndex];
 
-        // 2. rotation smooth
         Quaternion startRot = horloge.rotation;
         Quaternion endRot = startRot * Quaternion.Euler(0, 0, 180f);
 
@@ -144,21 +194,16 @@ public class TimerManager : MonoBehaviour
             horloge.rotation = Quaternion.Lerp(startRot, endRot, t);
             yield return null;
         }
-
         horloge.rotation = endRot;
-
         isLogo1Visible = !isLogo1Visible;
     }
-    
+
     public void NextMiniGameToDo()
     {
         MiniGames[] values = (MiniGames[])Enum.GetValues(typeof(MiniGames));
-
         int index = Array.IndexOf(values, currentMiniJeuToDo);
         int nextIndex = (index + 1) % values.Length;
-
         currentMiniJeuToDo = values[nextIndex];
-
         StartCoroutine(UpdateHorloge(nextIndex));
     }
 }

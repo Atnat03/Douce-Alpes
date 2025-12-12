@@ -53,8 +53,7 @@ public class GameData : MonoBehaviour
 
     private void Start()
     {
-        dicoAmélioration = new()
-        {
+        dicoAmélioration = new() {
             { TypeAmelioration.Tonte, (soUpgradeList[0], 0)},
             { TypeAmelioration.Sortie, (soUpgradeList[1], 0)},
             { TypeAmelioration.Rentree, (soUpgradeList[2], 0)},
@@ -62,9 +61,9 @@ public class GameData : MonoBehaviour
             { TypeAmelioration.Abreuvoir, (soUpgradeList[4], 0)},
             //{ TypeAmelioration.Overflow, (soUpgradeList[5], 0)},
         };
-        
-        UpdateAllCooldownTimers();
-        
+
+        Array.Fill(coolDownTimers, 0);
+
         timer = GetComponent<TimerManager>();
     }
 
@@ -76,11 +75,11 @@ public class GameData : MonoBehaviour
     private void LoadMyData(PlayerData data)
     {
         if (data == null) return;
-
         timeWhenLoad = data.lastTime;
-
         double now = DateTimeOffset.Now.ToUnixTimeSeconds();
         timeSinceLastLoad = now - timeWhenLoad;
+
+        Array.Fill(coolDownTimers, 0);
     }
 
     private void Update()
@@ -125,7 +124,7 @@ public class GameData : MonoBehaviour
         var oldTuple = dicoAmélioration[type];
         var newTuple = (oldTuple.Item1, oldTuple.Item2 + 1);
         dicoAmélioration[type] = newTuple;
-
+        
         Debug.Log($"{dicoAmélioration[type].Item1} + {dicoAmélioration[type].Item2}");
     }
 
@@ -166,14 +165,6 @@ public class GameData : MonoBehaviour
             case TypeAmelioration.Rentree: coolDownTimers[2] = value; break;
             case TypeAmelioration.Nettoyage: coolDownTimers[3] = value; break;
             case TypeAmelioration.Abreuvoir: coolDownTimers[4] = value; break;
-        }
-    }
-
-    public void UpdateAllCooldownTimers()
-    {
-        foreach (var type in dicoAmélioration.Keys)
-        {
-            SetCooldownTimer(type, GetCooldownUpgrade(type));
         }
     }
 
