@@ -395,4 +395,12 @@ public class GameManager : MonoBehaviour
     {
         SwapSceneManager.instance.SwapingDefaultScene -= ResetTheScene;
     }
+
+    public void AnimatedBackFlip()
+    {
+        foreach (Sheep sheep in sheepList)
+        {
+            sheep.GetComponent<Animator>().SetTrigger("Flip");
+        }
+    }
 }

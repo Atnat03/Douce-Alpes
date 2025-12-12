@@ -16,7 +16,7 @@ public class SkinListManager : MonoBehaviour
     
     public void Initialize()
     {
-        parentSheep = transform.parent.GetComponent<Sheep>();
+        parentSheep = transform.parent.parent.GetComponent<Sheep>();
         
         skinListHatWithWool.Clear();
         skinListClotheWithWool.Clear();

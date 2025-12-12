@@ -51,8 +51,7 @@ public class TimerManager : MonoBehaviour
 
     private void Start()
     {
-        currentMiniJeuToDo = MiniGames.Rentree;  // Force init pour flux
-
+        currentMiniJeuToDo = MiniGames.Rentree;
         canButtonG = true;
         canButtonT = false;
         canButtonC = false;
@@ -60,10 +59,7 @@ public class TimerManager : MonoBehaviour
         cleanButton.interactable = false;
         logo1.sprite = spriteMiniJeux[0];
         logo2.sprite = spriteMiniJeux[1];
-
-        // Sync initial
         UpdateFills();
-        Debug.Log("START: Sync fills terminé – Check logs TRACE pour Grange");
     }
 
     private void UpdateButtons(Button button, bool state, bool finishTimer = true)
@@ -76,9 +72,7 @@ public class TimerManager : MonoBehaviour
         grangeButton.interactable = canButtonG;
         tonteButton.interactable = canButtonT;
         cleanButton.interactable = canButtonC;
-
         UpdateFills();
-
         NextMiniGameToDo();
     }
 
@@ -105,31 +99,21 @@ public class TimerManager : MonoBehaviour
             int currentTimer = GameData.instance.GetCurrentTimer(type);
             int maxTime = GameData.instance.GetCooldownUpgrade(type);
 
-            Debug.Log($"TRACE [{debugName}]: canDo=true, currentTimer={currentTimer}, maxTime={maxTime}");
-
             if (currentTimer <= 0)
             {
                 fillAmount = 1f;
-                Debug.Log($"TRACE [{debugName}]: Timer fini → fill=1");
             }
             else if (maxTime > 0)
             {
                 fillAmount = 1f - (currentTimer / (float)maxTime);
-                Debug.Log($"TRACE [{debugName}]: Timer en cours → fill={fillAmount:F2}");
             }
             else
             {
                 fillAmount = 1f;
-                Debug.LogWarning($"TRACE [{debugName}]: maxTime=0 → fill=1");
             }
-        }
-        else
-        {
-            Debug.Log($"TRACE [{debugName}]: canDo=false → fill=0");
         }
 
         fillImg.fillAmount = Mathf.Clamp01(fillAmount);
-        Debug.Log($"TRACE [{debugName}]: FINAL fillAmount = {fillImg.fillAmount:F2}");
     }
 
     private void UpdateCooldownUI(TypeAmelioration type, float remainingTime, bool state = true)
@@ -194,6 +178,7 @@ public class TimerManager : MonoBehaviour
             horloge.rotation = Quaternion.Lerp(startRot, endRot, t);
             yield return null;
         }
+
         horloge.rotation = endRot;
         isLogo1Visible = !isLogo1Visible;
     }
