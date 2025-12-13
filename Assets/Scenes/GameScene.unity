@@ -25253,7 +25253,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1103939914}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -32658,7 +32658,7 @@ MonoBehaviour:
   - {fileID: 304417656}
   startScene: 0
   currentSceneId: 0
-  fadeCanva: {fileID: 1103939918}
+  fadeCanva: {fileID: 1103939919}
   fadeImage: {fileID: 1942337500}
   fadeDuration: 0.5
   dayNightCycle: {fileID: 841336424}
@@ -47397,13 +47397,14 @@ GameObject:
   - component: {fileID: 1103939916}
   - component: {fileID: 1103939915}
   - component: {fileID: 1103939918}
+  - component: {fileID: 1103939919}
   m_Layer: 0
   m_Name: FadeCanva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1103939914
 RectTransform:
   m_ObjectHideFlags: 0
@@ -47479,7 +47480,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -47488,7 +47489,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 4
   m_TargetDisplay: 0
 --- !u!95 &1103939918
 Animator:
@@ -47512,6 +47513,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!225 &1103939919
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103939913}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1105179270
 PrefabInstance:
   m_ObjectHideFlags: 0

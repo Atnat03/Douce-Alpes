@@ -19,7 +19,7 @@ public class SwapSceneManager : MonoBehaviour
     public event Action SwapingCleanScene;
     public event Action SwapingTricotScene;
 
-    [SerializeField] private Animator fadeCanva;
+    [SerializeField] private CanvasGroup fadeCanva;
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration;
 
@@ -29,7 +29,7 @@ public class SwapSceneManager : MonoBehaviour
     {
         SwapScene(0);
         
-        fadeCanva.gameObject.SetActive(false);
+        fadeCanva.alpha = 0f;
         fadeImage.gameObject.SetActive(false);
     }
 
@@ -79,12 +79,14 @@ public class SwapSceneManager : MonoBehaviour
     
     IEnumerator FadeTransitionInteriorExterior(GameObject scene, int i)
     {
-        fadeCanva.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1.5f);
+        fadeCanva.alpha = 1f;
+        fadeCanva.GetComponent<Animator>().SetTrigger("Fade");
+        yield return new WaitForSeconds(1f);
         
         scene.SetActive(true);
         TriggerInitialiseScene(i);
-        fadeCanva.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1f);
+        fadeCanva.alpha = 0f;
     }
 
     
