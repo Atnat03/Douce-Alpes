@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DuckAnimation : MonoBehaviour
+public class DuckAnimation : TouchableObject
 {
     public Transform centerDuckAnimation;
     public float speedMove;
@@ -11,6 +11,8 @@ public class DuckAnimation : MonoBehaviour
     Vector3 destination;
     public float raduisCircle = 2f;
 
+    public AudioClip clip;
+    
     private void Update()
     {
         if (!hasNewDestination)
@@ -55,5 +57,16 @@ public class DuckAnimation : MonoBehaviour
             transform.position.y,
             centerDuckAnimation.position.z + randomCircle.y
         );
+    }
+
+    public override void TouchEvent()
+    {
+        //base.TouchEvent();
+
+        Debug.Log("Canard");
+        
+        float pitch = Random.Range(0.8f, 1f);
+        
+        AudioManager.instance.PlaySound(clip, pitch);
     }
 }

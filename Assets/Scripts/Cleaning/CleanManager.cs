@@ -288,6 +288,8 @@ public class CleanManager : MiniGameParent
 
         if (currentTool != CleaningTool.None)
         {
+            if (camera == null || sheepTarget == null) return;
+            
             Vector3 worldPos = camera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 10f));
 
             if (Vector3.Distance(worldPos, sheepTarget.position) > maxDistanceFromCenter * 2)

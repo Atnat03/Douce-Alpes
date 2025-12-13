@@ -4,7 +4,7 @@ using UnityEngine;
 public class RightPosState : ICleaningState
 {
     private StateMachineClean manager;
-    private Vector3 camPos = new Vector3(0.1f, 0.75f, -2.5f);
+    private Vector3 camPos = new Vector3(0.2f, 0.75f, -3f);
     private const int cleanValueToChange = 40;
     private int rightLayer;
 
@@ -24,11 +24,13 @@ public class RightPosState : ICleaningState
 
     public void UpdateState()
     {
-        // Smooth rotation vers le target
-        var cam = manager.cleanManager.camera.transform;
-        Vector3 direction = manager.cleanManager.sheepTarget.position - cam.position;
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-        cam.rotation = Quaternion.Slerp(cam.rotation, targetRotation, Time.deltaTime * 5f);
+        if (manager.cleanManager.camera != null && manager.cleanManager.sheepTarget != null)
+        {
+            var cam = manager.cleanManager.camera.transform;
+            Vector3 direction = manager.cleanManager.sheepTarget.position - cam.position;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            cam.rotation = Quaternion.Slerp(cam.rotation, targetRotation, Time.deltaTime * 5f);
+        }
 
         if (IsEnought() && !(manager.cleanManager.currentTool == CleaningTool.Shower && manager.cleanManager.allCleaned))
         {
@@ -42,10 +44,14 @@ public class RightPosState : ICleaningState
         }
     }
 
+
     public void ExitState() { }
 
     private IEnumerator ChangePositionCamera(Vector3 end, float duration)
     {
+        if (manager.cleanManager.camera == null || manager.cleanManager.sheepTarget == null)
+            yield break;
+
         Transform cam = manager.cleanManager.camera.transform;
         Vector3 startPos = cam.position;
         Quaternion startRot = cam.rotation;
@@ -55,6 +61,7 @@ public class RightPosState : ICleaningState
         float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
+            if (cam == null) yield break;
             float t = elapsedTime / duration;
             cam.position = Vector3.Slerp(startPos, end, t);
             cam.rotation = Quaternion.Slerp(startRot, endRot, t);
@@ -66,6 +73,7 @@ public class RightPosState : ICleaningState
         cam.rotation = endRot;
         manager.cleanManager.canAddShampoo = true;
     }
+
 
     public bool IsEnought()
     {
