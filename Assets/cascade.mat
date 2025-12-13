@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Eau
+  m_Name: cascade
   m_Shader: {fileID: -6465566751694194690, guid: 1e95af94f73b5244496ff1b738f52d9b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -114,7 +114,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Apparition: 3.39
+    - _Apparition: -1
     - _Apparition_Disparition: -2.1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
@@ -127,6 +127,8 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _Divide_Time: 10
+    - _Divide_Time_1: 0
     - _DstBlend: 10
     - _DstBlendAlpha: 0
     - _Eau_Centre: 0
@@ -152,6 +154,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Strenght_Normal_map: 2
     - _Surface: 1
+    - _Vagues_concentrique: 1
     - _WorkflowMode: 0
     - _ZTest: 4
     - _ZWrite: 1
@@ -164,6 +167,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset_Centre: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _Tiling_txture: {r: 3.76, g: 1.02, b: 0, a: 0}
     - _center: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
