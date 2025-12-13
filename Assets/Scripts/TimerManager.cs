@@ -114,6 +114,7 @@ public class TimerManager : MonoBehaviour
         }
 
         fillImg.fillAmount = Mathf.Clamp01(fillAmount);
+        fillImg.GetComponent<UnityEngine.UI.Outline>().enabled = canDo;
     }
 
     private void UpdateCooldownUI(TypeAmelioration type, float remainingTime, bool state = true)

@@ -4,7 +4,7 @@ using UnityEngine;
 public class FrontPosState : ICleaningState
 {
     private StateMachineClean manager;
-    private Vector3 camPos = new Vector3(2f, 0.75f, 0f);
+    private Vector3 camPos = new Vector3(2.5f, 0.75f, 0f);
     private const int cleanValueToChange = 20;
     private int frontLayer;
 
