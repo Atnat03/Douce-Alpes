@@ -91,8 +91,13 @@ public class SheepSkinManager : MonoBehaviour
     {
         if (other.CompareTag("SauteBaignoire"))
         {
-            //animator.SetTrigger("Jump");
+            animator.SetTrigger("Jump");
             Debug.Log("Sauter !!!");
         }
+    }
+
+    public void PlayShakeAnimation()
+    {
+        animator.SetTrigger("Shake");
     }
 }

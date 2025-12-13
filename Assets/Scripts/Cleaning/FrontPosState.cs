@@ -9,7 +9,8 @@ public class FrontPosState : ICleaningState
     private int frontLayer;
 
     public void EnterState(StateMachineClean managerC)
-    {
+    {        
+
         manager = managerC;
         frontLayer = LayerMask.NameToLayer("FrontSide");
         manager.cleanManager.currentCleaningLayer = frontLayer;
@@ -24,7 +25,9 @@ public class FrontPosState : ICleaningState
 
     public void UpdateState()
     {
-        // Smooth rotation vers le target
+        if (manager.cleanManager.sheepIsMoving)
+            return;
+        
         var cam = manager.cleanManager.camera.transform;
         Vector3 direction = manager.cleanManager.sheepTarget.position - cam.position;
         Quaternion targetRotation = Quaternion.LookRotation(direction);
@@ -36,10 +39,12 @@ public class FrontPosState : ICleaningState
         }
     }
 
-    public void ExitState() { }
 
     private IEnumerator ChangePositionCamera(Vector3 end, float duration)
     {
+        if (manager.cleanManager.sheepIsMoving)
+            yield break;
+        
         Transform cam = manager.cleanManager.camera.transform;
         Vector3 startPos = cam.position;
         Quaternion startRot = cam.rotation;
