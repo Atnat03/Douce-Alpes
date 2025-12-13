@@ -21,6 +21,8 @@ public class SheepSkinManager : MonoBehaviour
     [SerializeField] private ColorSO colorData;
 
     private bool isTonte = false;
+    
+    [SerializeField] Animator animator;
 
     public void Initialize(int id, string name, bool hasLaine, int colorID, int skinHatId, int skinClotheId, bool isTonte = false)
     {

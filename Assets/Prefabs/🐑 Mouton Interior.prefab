@@ -5051,6 +5051,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3582360026584067795}
   - component: {fileID: 1467384432928829159}
+  - component: {fileID: 8263560077928130481}
   m_Layer: 7
   m_Name: "\U0001F411 Mouton Interior"
   m_TagString: Touchable
@@ -5100,6 +5101,28 @@ MonoBehaviour:
   Laine: {fileID: 551067641088561351}
   laineDessous: {fileID: 3850289298540395165}
   colorData: {fileID: 11400000, guid: b746193924e3c8b488aa51f1f5db4403, type: 2}
+--- !u!95 &8263560077928130481
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2722875930628605413}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3292816114a7455469355c00007168f7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3480828354281721098
 GameObject:
   m_ObjectHideFlags: 0
