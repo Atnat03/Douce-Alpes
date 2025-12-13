@@ -281,7 +281,6 @@ public class CleanManager : MiniGameParent
 
         currentFingerScreenPos = screenPos;
         isSwiping = true;
-        // Update follower position et active-le
         UpdateFollowerPosition(screenPos);
 
         if (currentTool != CleaningTool.None)
@@ -292,9 +291,6 @@ public class CleanManager : MiniGameParent
             {
                 Debug.Log("⚠️ Swipe hors mouton !");
             }
-
-            // Option : Force un clean si tu veux bypass SwipeDetection (décommente si besoin)
-            // PerformClean(worldPos);
         }
     }
 
@@ -303,7 +299,7 @@ public class CleanManager : MiniGameParent
         if (fingerFollower != null)
         {
             fingerFollower.position = screenPosition;
-            fingerFollower.gameObject.SetActive(true); // Active pendant swipe
+            fingerFollower.gameObject.SetActive(true);
         }
     }
 

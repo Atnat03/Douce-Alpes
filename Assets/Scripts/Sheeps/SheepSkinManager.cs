@@ -86,4 +86,13 @@ public class SheepSkinManager : MonoBehaviour
     {
         return sheepId;
     }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("SauteBaignoire"))
+        {
+            //animator.SetTrigger("Jump");
+            Debug.Log("Sauter !!!");
+        }
+    }
 }
