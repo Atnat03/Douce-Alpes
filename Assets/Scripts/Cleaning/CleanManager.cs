@@ -250,6 +250,9 @@ public class CleanManager : MiniGameParent
 
     private IEnumerator SendToDestroy(GameObject sheep)
     {
+        if(currentSheep == null)
+            yield break;
+        
         yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f);
         Destroy(sheep);
         currentSheep = null;
