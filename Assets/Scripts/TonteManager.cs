@@ -253,7 +253,7 @@ public class TonteManager : MiniGameParent
 
     private void ExitScene()
     {
-        SwapSceneManager.instance.SwapScene(0);
+        SwapSceneManager.instance.SwapScene(1);
     }
 
     private void OnDestroy()

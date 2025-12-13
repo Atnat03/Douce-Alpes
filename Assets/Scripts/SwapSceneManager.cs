@@ -19,6 +19,7 @@ public class SwapSceneManager : MonoBehaviour
     public event Action SwapingCleanScene;
     public event Action SwapingTricotScene;
 
+    [SerializeField] private Animator fadeCanva;
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration;
 
@@ -28,6 +29,7 @@ public class SwapSceneManager : MonoBehaviour
     {
         SwapScene(0);
         
+        fadeCanva.gameObject.SetActive(false);
         fadeImage.gameObject.SetActive(false);
     }
 
@@ -52,17 +54,49 @@ public class SwapSceneManager : MonoBehaviour
     {
         StartCoroutine(FadeTransition(scene, i));
     }
+    
+    public void SwapSceneInteriorExterior(int sceneID)
+    {
+        currentSceneId = sceneID;
+        
+        for (int i = 0; i < scenes.Length; i++)
+        {
+            if (sceneID == i)
+            {
+                AnimateSwapingSceneInteriorExterior(scenes[i], i);
+            }
+            else
+            {
+                scenes[i].SetActive(false);
+            }
+        }
+    }
 
+    void AnimateSwapingSceneInteriorExterior(GameObject scene, int i)
+    {
+        StartCoroutine(FadeTransitionInteriorExterior(scene, i));
+    }
+    
+    IEnumerator FadeTransitionInteriorExterior(GameObject scene, int i)
+    {
+        fadeCanva.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        
+        scene.SetActive(true);
+        TriggerInitialiseScene(i);
+        fadeCanva.gameObject.SetActive(false);
+    }
+
+    
     IEnumerator FadeTransition(GameObject scene, int i)
     {
-        yield return StartCoroutine(FadeOut()); 
+        yield return StartCoroutine(FadeOut());
         scene.SetActive(true);
         TriggerInitialiseScene(i);
 
         yield return StartCoroutine(FadeIn());
     }
-
-
+    
     public IEnumerator FadeIn()
     {
         float timer = 0f;
@@ -75,7 +109,7 @@ public class SwapSceneManager : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-        
+
         fadeImage.gameObject.SetActive(false);
 
         color.a = 0f;
@@ -86,7 +120,7 @@ public class SwapSceneManager : MonoBehaviour
     {
         float timer = 0f;
         Color color = fadeImage.color;
-        
+
         fadeImage.gameObject.SetActive(true);
 
         while (timer < fadeDuration)

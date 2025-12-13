@@ -41,6 +41,7 @@ public class PianoCailloux : MonoBehaviour
 
     IEnumerator WaitBeforeBackFlip()
     {
+		yield return new WaitForSeconds(0.25f);
         canTouch = false;
         audioSource.PlayOneShot(goodMelody);
         yield return new WaitForSeconds(0.5f);
