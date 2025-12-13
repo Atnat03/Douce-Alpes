@@ -1,71 +1,76 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class FrontPosState : ICleaningState
 {
     private StateMachineClean manager;
-
-    private Vector3 camPos = new Vector3(2, 0.75f, 0);
-    
-    private int cleanValueToChange = 20;
-    
+    private Vector3 camPos = new Vector3(2f, 0.75f, 0f);
+    private const int cleanValueToChange = 20;
     private int frontLayer;
 
-    
     public void EnterState(StateMachineClean managerC)
     {
         manager = managerC;
-        
         frontLayer = LayerMask.NameToLayer("FrontSide");
-        manager.cleanManager.currentCleaningLayer = frontLayer;    
-        
+        manager.cleanManager.currentCleaningLayer = frontLayer;
         manager.cleanManager.currentCleaningSide = CleaningSide.Front;
-        manager.cleanManager.canAddShampoo = false; 
-        manager.cleanManager.StartCoroutine(ChangePositionCamera(manager.cleanManager.camera.transform.position, camPos, 2f));
-        if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
+
+        manager.cleanManager.canAddShampoo = false;
+        manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 2f));
+
+        if (manager.cleanManager.currentTool == CleaningTool.Shampoo)
             manager.cleanManager.ResetValueClean();
     }
 
     public void UpdateState()
     {
-        manager.cleanManager.camera.transform.LookAt(manager.cleanManager.sheepTarget);
-        
-        if (IsEnought() && !((manager.cleanManager.currentTool == CleaningTool.Shower) && manager.cleanManager.allCleaned))
+        // Smooth rotation vers le target
+        var cam = manager.cleanManager.camera.transform;
+        Vector3 direction = manager.cleanManager.sheepTarget.position - cam.position;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        cam.rotation = Quaternion.Slerp(cam.rotation, targetRotation, Time.deltaTime * 5f);
+
+        if (IsEnought() && !(manager.cleanManager.currentTool == CleaningTool.Shower && manager.cleanManager.allCleaned))
         {
             manager.SetState(manager.rightPosState);
         }
     }
 
-    private IEnumerator ChangePositionCamera(Vector3 start, Vector3 end, float duration)
-    {
-        float elapsedTime = 0f;
+    public void ExitState() { }
 
+    private IEnumerator ChangePositionCamera(Vector3 end, float duration)
+    {
+        Transform cam = manager.cleanManager.camera.transform;
+        Vector3 startPos = cam.position;
+        Quaternion startRot = cam.rotation;
+        Vector3 targetDir = manager.cleanManager.sheepTarget.position - end;
+        Quaternion endRot = Quaternion.LookRotation(targetDir);
+
+        float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
-            float t =  elapsedTime / duration;
-            
-            manager.cleanManager.camera.transform.position = Vector3.Slerp(start, end, t);
-            
+            float t = elapsedTime / duration;
+            cam.position = Vector3.Slerp(startPos, end, t);
+            cam.rotation = Quaternion.Slerp(startRot, endRot, t);
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+        cam.position = end;
+        cam.rotation = endRot;
         manager.cleanManager.canAddShampoo = true;
     }
-    
+
     public bool IsEnought()
     {
-        if(manager.cleanManager.currentTool == CleaningTool.Shampoo)
+        if (manager.cleanManager.currentTool == CleaningTool.Shampoo)
             return manager.cleanManager.GetCleanValue() >= cleanValueToChange;
 
         int remaining = 0;
-        foreach(var s in manager.cleanManager.shampooList)
+        foreach (var s in manager.cleanManager.shampooList)
         {
-            if(s.layer == frontLayer)
-                remaining++;
+            if (s.layer == frontLayer) remaining++;
         }
-
         return remaining <= 0;
     }
 }

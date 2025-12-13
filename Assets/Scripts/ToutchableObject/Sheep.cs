@@ -33,6 +33,7 @@ public class Sheep : TouchableObject
     [SerializeField] private ParticleSystem heartParticle;
     [SerializeField] private SkinListManager skinListManager;
     [SerializeField] public GameObject laine;
+    [SerializeField] public GameObject laineDessous;
 
     public SheepBoid sheepBoid;
 
@@ -71,6 +72,9 @@ public class Sheep : TouchableObject
         laine.SetActive(hasLaine);
         
         laine.GetComponent<MeshRenderer>().material = colorData.colorData[currentColorID].material;
+        var mats = laineDessous.GetComponent<MeshRenderer>().materials;
+        mats[1] = colorData.colorData[currentColorID].material;
+        laineDessous.GetComponent<MeshRenderer>().materials = mats;
         
         //bulleUI.SetActive(curPuanteur >= 100 || hasLaine && GameManager.instance.currentCameraState == CamState.Default);
 
