@@ -17,6 +17,7 @@ public class SheepSkinManager : MonoBehaviour
     
     [SerializeField] public bool hasLaine;
     [SerializeField] private MeshRenderer Laine;
+    [SerializeField] private MeshRenderer laineDessous;
     [SerializeField] private ColorSO colorData;
 
     private bool isTonte = false;
@@ -44,6 +45,10 @@ public class SheepSkinManager : MonoBehaviour
         
         if(Laine != null)
             Laine.material = colorData.colorData[colorID].material;
+        
+        var mats = laineDessous.GetComponent<MeshRenderer>().materials;
+        mats[1] = colorData.colorData[colorID].material;
+        laineDessous.GetComponent<MeshRenderer>().materials = mats;
     }
 
     public void SetCurrentSkinHat(int skinId)
