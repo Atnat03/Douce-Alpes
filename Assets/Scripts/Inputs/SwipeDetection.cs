@@ -147,7 +147,7 @@ public class SwipeDetection : MonoBehaviour
                     Vector3 center = GetCleaningCenter();
                     Vector3 cleanPoint = hit.point;
                     if (Vector3.Distance(cleanPoint, center) <= CleanManager.instance.maxDistanceFromCenter) {
-                        CleanManager.instance.PerformClean(cleanPoint);
+                        CleanManager.instance.ApplyClean(cleanPoint);
                         cleaned = true;
                     }
                     if (cleaned) return; 
@@ -158,7 +158,7 @@ public class SwipeDetection : MonoBehaviour
                     Vector3 closestPoint = hit.collider.ClosestPoint(hit.point);
                     Vector3 center = GetCleaningCenter();
                     if (Vector3.Distance(closestPoint, center) <= CleanManager.instance.maxDistanceFromCenter) {
-                        CleanManager.instance.PerformClean(closestPoint);
+                        CleanManager.instance.ApplyClean(closestPoint);
                         cleaned = true;
                     }
                     if (cleaned) return;

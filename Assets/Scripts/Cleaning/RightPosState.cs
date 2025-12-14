@@ -8,8 +8,10 @@ public class RightPosState : ICleaningState
     private const int cleanValueToChange = 40;
     private int rightLayer;
 
+    
     public void EnterState(StateMachineClean managerC)
-    {
+    {        
+
         manager = managerC;
         rightLayer = LayerMask.NameToLayer("RightSide");
         manager.cleanManager.currentCleaningLayer = rightLayer;
@@ -24,6 +26,9 @@ public class RightPosState : ICleaningState
 
     public void UpdateState()
     {
+        if (manager.cleanManager.sheepIsMoving)
+            return;
+        
         if (manager.cleanManager.camera != null && manager.cleanManager.sheepTarget != null)
         {
             var cam = manager.cleanManager.camera.transform;
@@ -44,12 +49,12 @@ public class RightPosState : ICleaningState
         }
     }
 
-
-    public void ExitState() { }
-
     private IEnumerator ChangePositionCamera(Vector3 end, float duration)
     {
         if (manager.cleanManager.camera == null || manager.cleanManager.sheepTarget == null)
+            yield break;
+
+        if (manager.cleanManager.sheepIsMoving)
             yield break;
 
         Transform cam = manager.cleanManager.camera.transform;
