@@ -37,10 +37,8 @@ public class FrontPosState : ICleaningState
         {
             manager.SetState(manager.rightPosState);
         }
-
     }
-
-
+    
     private IEnumerator ChangePositionCamera(Vector3 end, float duration)
     {
         if (manager.cleanManager.sheepIsMoving)

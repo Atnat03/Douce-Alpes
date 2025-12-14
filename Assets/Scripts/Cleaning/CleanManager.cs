@@ -130,7 +130,6 @@ public class CleanManager : MiniGameParent
 
     private void NextSheep()
     {
-        sheepIsMoving = true;
         canRotateCamera = false;
 
         currentCycle = 0;
@@ -178,6 +177,7 @@ public class CleanManager : MiniGameParent
 
     private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration)
     {
+        sheepIsMoving = true;
         Vector3 start = target.position;
         float elapsed = 0f;
 
@@ -342,6 +342,9 @@ public class CleanManager : MiniGameParent
     private void HandleFingerPositionUpdate(Vector2 screenPos)
     {
         currentFingerScreenPos = screenPos;
+
+        if (screenPos != Vector2.zero)
+            imageTool.transform.position = screenPos;
     }
 
     private void HandleSwipeEnd()
