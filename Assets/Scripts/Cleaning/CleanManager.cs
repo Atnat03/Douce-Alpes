@@ -54,7 +54,7 @@ public class CleanManager : MiniGameParent
     [HideInInspector] public bool canAddShampoo = true;
 
     private int sheepIndex = 0;
-    private GameObject currentSheep;
+    public GameObject currentSheep;
 
     public float GetCleanValue() => cleanValue;
 
@@ -75,8 +75,12 @@ public class CleanManager : MiniGameParent
     // 🔀 SHAKE SYSTEM
     // ==========================
     private int currentCycle = 0;            // 2 cycles par mouton
-    private int randomShakeValue = 0;
-    private bool alreadyShaken = false;
+    public int randomShakeValue = 0;
+    public bool alreadyShaken = false;
+    
+    [Header("Head Detection")]
+    public float headDetectionMultiplier = 0.6f;
+    public Vector3 headDetectionOffset = new Vector3(0f, 0.1f, 0.05f);
 
     private void Awake()
     {
@@ -165,6 +169,12 @@ public class CleanManager : MiniGameParent
         ResetCleanSystem();
         FindObjectOfType<StateMachineClean>().InitializedStates();
     }
+    
+    public float GetHeadDetectionRadius()
+    {
+        var skin = currentSheep.GetComponentInChildren<SkinnedMeshRenderer>();
+        return skin.bounds.extents.y * headDetectionMultiplier;
+    }
 
     private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration)
     {
@@ -216,7 +226,7 @@ public class CleanManager : MiniGameParent
         imageTool.sprite = logoShower;
     }
 
-    public void ApplyClean(Vector3 pos)
+    public void ApplyClean(Vector3 pos, bool isHead = false)
     {
         if (!canAddShampoo) return;
         if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo) return;
@@ -224,7 +234,7 @@ public class CleanManager : MiniGameParent
         switch (currentTool)
         {
             case CleaningTool.Shampoo:
-                TryAddShampoo(pos);
+                TryAddShampoo(pos, isHead);
                 break;
             case CleaningTool.Shower:
                 CheckShampoo(pos);
@@ -232,33 +242,38 @@ public class CleanManager : MiniGameParent
         }
     }
 
-    private void TryAddShampoo(Vector3 pos)
+    private void TryAddShampoo(Vector3 pos, bool isHead = false)
     {
+        Transform parent = isHead
+            ? currentSheep.GetComponent<SheepCleanningModel>().head
+            : currentSheep.GetComponent<SheepCleanningModel>().body;
+        
         if (!hasLastPos || Vector3.Distance(lastShampooPos, pos) >= minDistanceBetweenShampoos)
         {
             GameObject prefab = shampoos[Random.Range(0, shampoos.Length)];
             Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
             GameObject s = Instantiate(prefab, pos, rot);
+            s.transform.SetParent(parent, true);;
+            float size = Random.Range(0.75f, 1f);
+            s.transform.localScale *= size;
 
             s.layer = currentCleaningLayer;
-            s.transform.localScale = Vector3.one * Random.Range(0.75f, 1f);
 
             shampooList.Add(s);
             cleanValue += 1f;
 
             lastShampooPos = pos;
             hasLastPos = true;
-
-            // 💥 SHAKE CHECK
-            if (!alreadyShaken && shampooList.Count >= randomShakeValue)
+            
+            int r = Random.Range(0, 10);
+            if (r == 0)
             {
                 TriggerShake();
-                alreadyShaken = true;
             }
         }
     }
 
-    private void TriggerShake()
+    public void TriggerShake()
     {
         Debug.Log("🐑💥 LE MOUTON SE SECOUE !");
         currentSheep.GetComponent<SheepSkinManager>().PlayShakeAnimation();
@@ -298,6 +313,8 @@ public class CleanManager : MiniGameParent
 
     private IEnumerator SendToDestroy(GameObject sheep)
     {
+        currentSheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
+        yield return new WaitForSeconds(0.3f);
         yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f);
         Destroy(sheep);
         currentSheep = null;
@@ -336,4 +353,18 @@ public class CleanManager : MiniGameParent
     {
         SwapSceneManager.instance.SwapScene(1);
     }
+    
+    void OnDrawGizmos()
+    {
+        if (currentSheep == null) return;
+
+        Transform head = currentSheep
+            .GetComponent<SheepCleanningModel>().head;
+
+        Vector3 headCenter = head.TransformPoint(headDetectionOffset);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(headCenter, headDetectionMultiplier);
+    }
+
 }

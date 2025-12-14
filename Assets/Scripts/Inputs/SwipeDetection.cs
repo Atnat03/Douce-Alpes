@@ -142,29 +142,51 @@ public class SwipeDetection : MonoBehaviour
         if (SwapSceneManager.instance.currentSceneId == 3) {
             bool cleaned = false;
 
-            if (Physics.Raycast(ray, out hit, maxDistance)) {
-                if (hit.collider.CompareTag("CleanSheep")) {
-                    Vector3 center = GetCleaningCenter();
+            if (Physics.Raycast(ray, out hit, maxDistance))
+            {
+                if (hit.collider.CompareTag("CleanSheep"))
+                {
                     Vector3 cleanPoint = hit.point;
-                    if (Vector3.Distance(cleanPoint, center) <= CleanManager.instance.maxDistanceFromCenter) {
-                        CleanManager.instance.ApplyClean(cleanPoint);
-                        cleaned = true;
-                    }
-                    if (cleaned) return; 
-                }
-            } 
-            else if (Physics.SphereCast(ray, offset, out hit, maxDistance)) {
-                if (hit.collider.CompareTag("CleanSheep")) {
-                    Vector3 closestPoint = hit.collider.ClosestPoint(hit.point);
                     Vector3 center = GetCleaningCenter();
-                    if (Vector3.Distance(closestPoint, center) <= CleanManager.instance.maxDistanceFromCenter) {
-                        CleanManager.instance.ApplyClean(closestPoint);
-                        cleaned = true;
+
+                    if (Vector3.Distance(cleanPoint, center) <= CleanManager.instance.maxDistanceFromCenter)
+                    {
+                        Transform head = CleanManager.instance.currentSheep
+                            .GetComponent<SheepCleanningModel>().head;
+                        
+                        Vector3 headCenter = head.TransformPoint(CleanManager.instance.headDetectionOffset);
+
+                        bool isHead = Vector3.Distance(cleanPoint, headCenter)
+                                      <= CleanManager.instance.GetHeadDetectionRadius();
+
+                        CleanManager.instance.ApplyClean(cleanPoint, isHead);
+                        return;
                     }
-                    if (cleaned) return;
                 }
             }
-            if (cleaned) return;  // Sécurité : skip tout le reste si cleané
+
+            else if (Physics.SphereCast(ray, offset, out hit, maxDistance))
+            {
+                if (!hit.collider.CompareTag("CleanSheep"))
+                    return;
+
+                Vector3 cleanPoint = hit.collider.ClosestPoint(hit.point);
+                Vector3 center = GetCleaningCenter();
+
+                if (Vector3.Distance(cleanPoint, center) > CleanManager.instance.maxDistanceFromCenter)
+                    return;
+
+                Transform head = CleanManager.instance.currentSheep
+                    .GetComponent<SheepCleanningModel>().head;
+
+                bool isHead = Vector3.Distance(cleanPoint, head.position)
+                              <= CleanManager.instance.GetHeadDetectionRadius();
+
+                CleanManager.instance.ApplyClean(cleanPoint, isHead);
+                return;
+            }
+
+            if (cleaned) return;
         }
 
         if (SwapSceneManager.instance.currentSceneId != 3 && Physics.Raycast(ray, out hit)) {

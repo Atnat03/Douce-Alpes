@@ -32,11 +32,12 @@ public class FrontPosState : ICleaningState
         Vector3 direction = manager.cleanManager.sheepTarget.position - cam.position;
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         cam.rotation = Quaternion.Slerp(cam.rotation, targetRotation, Time.deltaTime * 5f);
-
+        
         if (IsEnought() && !(manager.cleanManager.currentTool == CleaningTool.Shower && manager.cleanManager.allCleaned))
         {
             manager.SetState(manager.rightPosState);
         }
+
     }
 
 

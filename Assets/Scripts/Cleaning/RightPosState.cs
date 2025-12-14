@@ -47,6 +47,7 @@ public class RightPosState : ICleaningState
             }
             manager.SetState(manager.leftPosState);
         }
+
     }
 
     private IEnumerator ChangePositionCamera(Vector3 end, float duration)

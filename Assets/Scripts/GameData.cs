@@ -39,6 +39,8 @@ public class GameData : MonoBehaviour
     public Dictionary<TypeAmelioration, (AmeliorationValueSO, int)> dicoAmélioration = new();
     
     [HideInInspector] public TimerManager timer;
+
+    public bool isTesting = true;
     
     private void Awake()
     {
@@ -65,6 +67,19 @@ public class GameData : MonoBehaviour
         Array.Fill(coolDownTimers, 0);
 
         timer = GetComponent<TimerManager>();
+        
+        SheepData s1 = new SheepData(
+            0,
+            "Antoine",
+            13,
+            10,
+            false,
+            NatureType.Standard,
+            0
+        );
+        
+        sheepDestroyData.Add(s1);
+        sheepDestroyData.Add(s1);
     }
 
     private void SaveMyData()
