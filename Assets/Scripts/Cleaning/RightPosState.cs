@@ -26,9 +26,10 @@ public class RightPosState : ICleaningState
 
     public void UpdateState()
     {
+        // ✅ Ne rien faire si le mouton est en train d'arriver
         if (manager.cleanManager.sheepIsMoving)
             return;
-        
+
         if (manager.cleanManager.camera != null && manager.cleanManager.sheepTarget != null)
         {
             var cam = manager.cleanManager.camera.transform;
@@ -37,19 +38,32 @@ public class RightPosState : ICleaningState
             cam.rotation = Quaternion.Slerp(cam.rotation, targetRotation, Time.deltaTime * 5f);
         }
 
-        if (IsEnought() && !(manager.cleanManager.currentTool == CleaningTool.Shower && manager.cleanManager.allCleaned))
+        if (IsEnought())
         {
             if (manager.cleanManager.currentTool == CleaningTool.Shampoo)
             {
                 manager.cleanManager.ResetValueClean();
                 manager.cleanManager.SetShower();
                 Debug.Log("🚿 Auto-switch vers Douche ! Débute rinçage sur Gauche...");
+                manager.SetState(manager.leftPosState);
             }
-            manager.SetState(manager.leftPosState);
+            else if (manager.cleanManager.currentTool == CleaningTool.Shower)
+            {
+                if (manager.cleanManager.shampooList.Count == 0 && !manager.cleanManager.allCleaned)
+                {
+                    Debug.Log("✅ Mouton complètement nettoyé ! Appel de OnAllCleaned()");
+                    manager.cleanManager.allCleaned = true;
+                    manager.cleanManager.OnAllCleaned();
+                }
+                else if (manager.cleanManager.shampooList.Count > 0)
+                {
+                    Debug.Log($"⚠️ Il reste {manager.cleanManager.shampooList.Count} shampoings à rincer");
+                    manager.SetState(manager.leftPosState);
+                }
+            }
         }
-
     }
-
+    
     private IEnumerator ChangePositionCamera(Vector3 end, float duration)
     {
         if (manager.cleanManager.camera == null || manager.cleanManager.sheepTarget == null)
