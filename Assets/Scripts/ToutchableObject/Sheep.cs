@@ -48,6 +48,7 @@ public class Sheep : TouchableObject
     [SerializeField] public bool isFocusing = false;
 
     [SerializeField] private ColorSO colorData;
+    [SerializeField] private GameObject larmes;
 
     private void Start()
     {
@@ -75,6 +76,8 @@ public class Sheep : TouchableObject
         var mats = laineDessous.GetComponent<MeshRenderer>().materials;
         mats[1] = colorData.colorData[currentColorID].material;
         laineDessous.GetComponent<MeshRenderer>().materials = mats;
+
+        larmes.SetActive(BonheurCalculator.instance.currentBonheur <= 10);
         
         //bulleUI.SetActive(curPuanteur >= 100 || hasLaine && GameManager.instance.currentCameraState == CamState.Default);
 
