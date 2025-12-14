@@ -102,7 +102,7 @@ public class AddSkins : MonoBehaviour
         return scrollSnapBridge.ScrollSnap.Panels[selectedIndex].gameObject;
     }
 
-private void UpdateStackDisplays() 
+    public void UpdateStackDisplays()
     {
         if (snap == null || skinData == null || sheepWindow == null) return;
 
@@ -222,4 +222,26 @@ private void OnPanelCentered(int newIndex, int previousIndex)
                 return;
             }
         }
-    }}
+    }
+    
+    public void SelectPanelVisual(int skinId)
+    {
+        if (snap == null) return;
+
+        for (int i = 0; i < snap.NumberOfPanels; i++)
+        {
+            SkinUnit s = snap.Panels[i].GetComponent<SkinUnit>();
+            if (s == null) continue;
+
+            Image panelImage = snap.Panels[i].GetComponent<Image>();
+            if (panelImage == null) continue;
+
+            if (s.id == skinId)
+                panelImage.sprite = selectedSprite;
+            else
+                panelImage.sprite = unselectedSprite;
+        }
+    }
+
+    
+}

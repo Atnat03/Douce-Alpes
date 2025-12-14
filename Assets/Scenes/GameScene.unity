@@ -14937,6 +14937,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8748965045028363824, guid: ef27313561d5355468602aec3f325e8e, type: 3}
   m_PrefabInstance: {fileID: 342531518}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &345411671 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3714775289944018939, guid: f731a20b49d0a7d4f9331512624e9f37, type: 3}
+  m_PrefabInstance: {fileID: 1809283654390643701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &345411676
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345411671}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &347319592
 GameObject:
   m_ObjectHideFlags: 0
@@ -15181,8 +15198,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -918, y: -0.42679977}
-  m_SizeDelta: {x: 695.4836, y: 2230.5405}
+  m_AnchoredPosition: {x: -918, y: -18.6577}
+  m_SizeDelta: {x: 695.4836, y: 2623.2043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &348998362
 MonoBehaviour:
@@ -18523,6 +18540,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 445119060}
+  - component: {fileID: 445119061}
   m_Layer: 5
   m_Name: LogoTool
   m_TagString: Untagged
@@ -18550,6 +18568,28 @@ RectTransform:
   m_AnchoredPosition: {x: 296.8, y: -796.1}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &445119061
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445119059}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8500eddcbf1ae734384bd1620e27f993, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &454141417
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29312,7 +29352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &703277415
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34674,7 +34714,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -50, y: 50}
-  m_SizeDelta: {x: 200, y: 200}
+  m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &845775368
 MonoBehaviour:
@@ -34696,7 +34736,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b4b11ce3427d5684c8b5e0cb005bc388, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 86f16164f9ed2d74a891c185ea401638, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -45792,8 +45832,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 926, y: -0.42679977}
-  m_SizeDelta: {x: 695.4836, y: 2230.5405}
+  m_AnchoredPosition: {x: 926, y: -18.6577}
+  m_SizeDelta: {x: 695.4836, y: 2623.2043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1083996693
 MonoBehaviour:
@@ -51901,8 +51941,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1213316172}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0015314115, y: 0.9973689, z: -0.0690165, w: -0.022130689}
-  m_LocalPosition: {x: 0, y: 0.75, z: 2.5}
+  m_LocalRotation: {x: -0.0029635981, y: 0.99701965, z: -0.05732872, w: -0.051540755}
+  m_LocalPosition: {x: 0.2, y: 0.75, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -61253,7 +61293,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1439012810
 RectTransform:
   m_ObjectHideFlags: 0
@@ -63062,7 +63102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -65841,7 +65881,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -72449,6 +72489,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: PanneauShop, Assembly-CSharp
         m_MethodName: CloseUI
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 703277414}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -86958,8 +87010,8 @@ MonoBehaviour:
   swipeDetection: {fileID: 2014895559}
   fingerFollower: {fileID: 445119060}
   imageTool: {fileID: 845775368}
-  logoShampoo: {fileID: 21300000, guid: b4b11ce3427d5684c8b5e0cb005bc388, type: 3}
-  logoShower: {fileID: 21300000, guid: 1a0b6865eda4b964cadbbc3f00c45f49, type: 3}
+  logoShampoo: {fileID: 21300000, guid: 86f16164f9ed2d74a891c185ea401638, type: 3}
+  logoShower: {fileID: 21300000, guid: a9c54d8c2e808f24e872a7e4ff33cbd3, type: 3}
   canRotateCamera: 1
   sheepIsMoving: 0
   randomShakeValue: 0
@@ -95932,7 +95984,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3714775289944018939, guid: f731a20b49d0a7d4f9331512624e9f37, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 345411676}
   m_SourcePrefab: {fileID: 100100000, guid: f731a20b49d0a7d4f9331512624e9f37, type: 3}
 --- !u!1 &2378688894111467577
 GameObject:

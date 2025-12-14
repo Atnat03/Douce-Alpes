@@ -149,6 +149,11 @@ public class CleanManager : MiniGameParent
             nbToCleanText.text = "";
             backButton.gameObject.SetActive(true);
             EndMiniGame(TypeAmelioration.Nettoyage);
+
+            GameData.instance.timer.canButtonC = false;
+            GameData.instance.timer.canButtonG = true;
+            
+            GameData.instance.timer.UpdateAllButton();
             SwapSceneManager.instance.SwapScene(1);
             return;
         }
@@ -175,17 +180,13 @@ public class CleanManager : MiniGameParent
         StartCoroutine(InitializeSheep(currentSheep.transform));
     }
 
-// ✅ Nouvelle coroutine pour gérer l'arrivée du mouton
     private IEnumerator InitializeSheep(Transform sheep)
     {
-        // Attendre que le mouton arrive
         yield return StartCoroutine(MoveOverTime(sheep, cleanPoint.position, 2f));
     
-        // ✅ Incrémenter UNIQUEMENT quand le mouton est arrivé
         sheepIndex++;
         Debug.Log($"📈 sheepIndex incrémenté à {sheepIndex}");
     
-        // Initialiser le système de nettoyage
         ResetCleanSystem();
         FindObjectOfType<StateMachineClean>().InitializedStates();
     }
@@ -403,17 +404,22 @@ public class CleanManager : MiniGameParent
     // ==========================
     // 👆 INPUT
     // ==========================
+    
     private void HandleFingerPositionUpdate(Vector2 screenPos)
     {
         currentFingerScreenPos = screenPos;
 
         if (screenPos != Vector2.zero)
-            imageTool.transform.position = screenPos;
+        {
+            imageTool.transform.parent.GetComponent<Animator>().SetBool("Using", true);
+            imageTool.transform.parent.position = screenPos;
+        }
     }
 
     private void HandleSwipeEnd()
     {
         currentFingerScreenPos = Vector2.zero;
+        imageTool.GetComponent<Animator>().SetBool("Using", false);
     }
 
     private void ExitScene()

@@ -211,6 +211,8 @@ public class Sheep : TouchableObject
     public void WidowOpen()
     {
         isOpen = true;
+        
+        laine.GetComponent<Outline>().enabled = false;
 
         lockedPosition = transform.position;
         lockedRotation = Quaternion.Euler(0, 120, 0);
