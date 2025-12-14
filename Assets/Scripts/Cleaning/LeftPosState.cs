@@ -42,7 +42,7 @@ public class LeftPosState : ICleaningState
             targetRotation,
             Time.deltaTime * 5f
         );
-
+        
         if (IsEnought() && !(manager.cleanManager.currentTool == CleaningTool.Shower && manager.cleanManager.allCleaned))
         {
             manager.SetState(manager.frontPosState);
