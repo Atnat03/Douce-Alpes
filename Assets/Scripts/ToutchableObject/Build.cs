@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Build : TouchableObject
@@ -23,6 +24,15 @@ public class Build : TouchableObject
     public void OpenUI()
     {
         UI.SetActive(true);
+
+        StopAllCoroutines();
+        StartCoroutine(CloseUIDecal());
+    }
+
+    IEnumerator CloseUIDecal()
+    {
+        yield return new WaitForSeconds(3f);
+        CloseUI();
     }
     
     public void CloseUI()

@@ -4,12 +4,13 @@ using UnityEngine;
 public class FrontPosState : ICleaningState
 {
     private StateMachineClean manager;
-    private Vector3 camPos = new Vector3(2f, 0.75f, 0f);
+    private Vector3 camPos = new Vector3(2.5f, 0.75f, 0f);
     private const int cleanValueToChange = 20;
     private int frontLayer;
 
     public void EnterState(StateMachineClean managerC)
-    {
+    {        
+
         manager = managerC;
         frontLayer = LayerMask.NameToLayer("FrontSide");
         manager.cleanManager.currentCleaningLayer = frontLayer;
@@ -24,22 +25,25 @@ public class FrontPosState : ICleaningState
 
     public void UpdateState()
     {
-        // Smooth rotation vers le target
+        if (manager.cleanManager.sheepIsMoving)
+            return;
+        
         var cam = manager.cleanManager.camera.transform;
         Vector3 direction = manager.cleanManager.sheepTarget.position - cam.position;
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         cam.rotation = Quaternion.Slerp(cam.rotation, targetRotation, Time.deltaTime * 5f);
-
+        
         if (IsEnought() && !(manager.cleanManager.currentTool == CleaningTool.Shower && manager.cleanManager.allCleaned))
         {
             manager.SetState(manager.rightPosState);
         }
     }
-
-    public void ExitState() { }
-
+    
     private IEnumerator ChangePositionCamera(Vector3 end, float duration)
     {
+        if (manager.cleanManager.sheepIsMoving)
+            yield break;
+        
         Transform cam = manager.cleanManager.camera.transform;
         Vector3 startPos = cam.position;
         Quaternion startRot = cam.rotation;

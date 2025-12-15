@@ -11,6 +11,8 @@ public class NicheManager : TouchableObject
     [SerializeField] private GameObject buttonQuit;
     Vector3 startPos;
     Vector3 startRot;
+
+    public string dogName = "";
     
     private void Start()
     {
@@ -21,6 +23,11 @@ public class NicheManager : TouchableObject
         startRot = chien.transform.rotation.eulerAngles;
 
         chien.enabled = false;
+    }
+
+    public void InitializeDog(string name)
+    {
+        dogName = name;
     }
     
     private void OnDisable()

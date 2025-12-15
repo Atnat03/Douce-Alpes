@@ -151,5 +151,16 @@ public class Grange : Build
             boid.enabled = true;
     }
 
+    public new void CloseUI()
+    {
+        UI.GetComponent<Animator>().SetTrigger("Close");
+        StartCoroutine(CloseDelay());
+    }
+
+    IEnumerator CloseDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        UI.SetActive(false);
+    }
 
 }

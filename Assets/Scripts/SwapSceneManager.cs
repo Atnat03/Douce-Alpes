@@ -27,7 +27,7 @@ public class SwapSceneManager : MonoBehaviour
     
     private void Start()
     {
-        SwapScene(0);
+        SwapScene(startScene);
         
         fadeCanva.alpha = 0f;
         fadeImage.gameObject.SetActive(false);

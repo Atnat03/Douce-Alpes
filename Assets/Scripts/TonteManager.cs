@@ -34,6 +34,7 @@ public class TonteManager : MiniGameParent
     [SerializeField] private float miniValueToEnd;
     
     [SerializeField] private RectTransform spawnLaineSprite;
+    private SheepData currentSheepData;
 
     private void Awake()
     {
@@ -107,8 +108,10 @@ public class TonteManager : MiniGameParent
         particleTonte.transform.position = tontePoint.position;
 
         SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
+        currentSheepData = nextSheepData;
+        
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
-
+        
         nameText.text = nextSheepData.name;
         currentSheep.GetComponent<SheepSkinManager>().Initialize(
             nextSheepData.id,
@@ -235,6 +238,7 @@ public class TonteManager : MiniGameParent
     {
         if (currentSheep != null)
         {
+            currentSheepData.hasWhool = false;
             PlayerMoney.instance.AddWhool(100, spawnLaineSprite.position);
             StartCoroutine(SendToDestroy(currentSheep));
         }
@@ -242,10 +246,14 @@ public class TonteManager : MiniGameParent
 
     private IEnumerator SendToDestroy(GameObject sheep)
     {
-        yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f, false);
+        if (currentSheep == sheep)
+            currentSheep = null;
 
-        Destroy(sheep);
-        currentSheep = null;
+        if (sheep != null)
+            yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f, false);
+
+        if (sheep != null)
+            Destroy(sheep);
 
         yield return new WaitForSeconds(0.25f);
         NextSheep();

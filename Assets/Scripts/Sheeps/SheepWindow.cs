@@ -105,10 +105,25 @@ public class SheepWindow : MonoBehaviour
         this.currentSkinClothe = currentSkinClothe;
         this.sheepId = sheepId;
 
-        // Ajout : Centre les scrolls sur les skins actuels
-        if (hatSkinSelector != null) hatSkinSelector.SetStartingPanelToCurrent();
-        if (clotheSkinSelector != null) clotheSkinSelector.SetStartingPanelToCurrent();
+        // Met à jour les stacks dans SkinAgency
+        SkinAgency.instance.InitializeSheepSkin(sheepId, currentSkinHat, currentSkinClothe);
+
+        // Centre les scrolls sur les skins actuels
+        if (hatSkinSelector != null)
+        {
+            hatSkinSelector.SetStartingPanelToCurrent();
+            hatSkinSelector.SelectPanelVisual(currentSkinHat); // <-- nouveau
+            hatSkinSelector.UpdateStackDisplays();             // met à jour stacks et grisage
+        }
+
+        if (clotheSkinSelector != null)
+        {
+            clotheSkinSelector.SetStartingPanelToCurrent();
+            clotheSkinSelector.SelectPanelVisual(currentSkinClothe); // <-- nouveau
+            clotheSkinSelector.UpdateStackDisplays();
+        }
     }
+
 
     public void ResetValue()
     {
