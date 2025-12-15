@@ -4,21 +4,23 @@ using UnityEngine.UI;
 
 public class SkinShopManager : ShopManager
 {
-    private void BuyArticle()
+    private new void Buy()
     {
-        //PlayerMoney.instance.AddMoney(-selectedArticle.price);
-        
-        if(selectedArticle.type == ArticleType.Hat)
-            SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);
-        else if(selectedArticle.type == ArticleType.Clothe)
-            SkinAgency.instance.AddClotheSkinInstance(selectedArticle.id);
-    }
-
-    private void Update()
-    {
-        if (selectedArticle != null)
+        if (PlayerMoney.instance.isEnoughtMoney(selectedArticle.price))
         {
-            buyPannel.transform.GetChild(1).GetComponent<Button>().interactable = PlayerMoney.instance.isEnoughtMoney(selectedArticle.price);
+            Instantiate(buyInfo, transform);
+            Debug.Log("Buy");
+            
+            PlayerMoney.instance.RemoveMoney(selectedArticle.price);
+                    
+            if(selectedArticle.type == ArticleType.Hat)
+                SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);
+            else if(selectedArticle.type == ArticleType.Clothe)
+                SkinAgency.instance.AddClotheSkinInstance(selectedArticle.id);
+        }
+        else
+        {
+            StartCoroutine(CantBuyIt());
         }
     }
 }

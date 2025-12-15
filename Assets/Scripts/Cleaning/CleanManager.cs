@@ -115,8 +115,10 @@ public class CleanManager : MiniGameParent
 
     public void Initialize()
     {
+        Debug.Log("🔄 Initialize appelé - Réinitialisation du jeu");
+    
         backButton.gameObject.SetActive(false);
-        sheepIndex = 0;
+        sheepIndex = 0;  // ✅ Bien à 0
 
         if (currentSheep != null)
         {
@@ -125,12 +127,16 @@ public class CleanManager : MiniGameParent
         }
 
         if (GameData.instance.sheepDestroyData.Count > 0)
+        {
+            Debug.Log($"📋 {GameData.instance.sheepDestroyData.Count} mouton(s) à nettoyer");
             NextSheep();
+        }
     }
 
     private void NextSheep()
     {
-        sheepIsMoving = true;
+        Debug.Log($"🐑 NextSheep appelé | sheepIndex = {sheepIndex} | Total moutons = {GameData.instance.sheepDestroyData.Count}");
+
         canRotateCamera = false;
 
         currentCycle = 0;
@@ -138,15 +144,22 @@ public class CleanManager : MiniGameParent
 
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)
         {
+            Debug.Log("❌ Fin du jeu : tous les moutons sont finis");
             nameText.text = "Tous les moutons sont finis !";
             nbToCleanText.text = "";
             backButton.gameObject.SetActive(true);
             EndMiniGame(TypeAmelioration.Nettoyage);
+
+            GameData.instance.timer.canButtonC = false;
+            GameData.instance.timer.canButtonG = true;
+            
+            GameData.instance.timer.UpdateAllButton();
             SwapSceneManager.instance.SwapScene(1);
             return;
         }
 
         SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
+        Debug.Log($"✅ Chargement du mouton {nextSheepData.name} (index {sheepIndex})");
 
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
         sheepTarget = currentSheep.transform;
@@ -163,12 +176,21 @@ public class CleanManager : MiniGameParent
 
         nbToCleanText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
 
-        StartCoroutine(MoveOverTime(currentSheep.transform, cleanPoint.position, 2f));
-        sheepIndex++;
+        // ✅ Lancer le mouvement et incrémenter APRÈS
+        StartCoroutine(InitializeSheep(currentSheep.transform));
+    }
 
+    private IEnumerator InitializeSheep(Transform sheep)
+    {
+        yield return StartCoroutine(MoveOverTime(sheep, cleanPoint.position, 2f));
+    
+        sheepIndex++;
+        Debug.Log($"📈 sheepIndex incrémenté à {sheepIndex}");
+    
         ResetCleanSystem();
         FindObjectOfType<StateMachineClean>().InitializedStates();
     }
+    
     
     public float GetHeadDetectionRadius()
     {
@@ -178,6 +200,13 @@ public class CleanManager : MiniGameParent
 
     private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration)
     {
+        if (target == null)
+        {
+            Debug.LogWarning("⚠️ MoveOverTime : target est null");
+            yield break;
+        }
+    
+        sheepIsMoving = true;
         Vector3 start = target.position;
         float elapsed = 0f;
 
@@ -186,17 +215,30 @@ public class CleanManager : MiniGameParent
 
         while (elapsed < duration)
         {
+            // ✅ Vérifier que le target existe toujours
+            if (target == null)
+            {
+                Debug.LogWarning("⚠️ MoveOverTime interrompu : target détruit");
+                sheepIsMoving = false;
+                yield break;
+            }
+        
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
             target.position = Vector3.Lerp(start, destination, t);
             yield return null;
         }
 
-        target.position = destination;
+        if (target != null)
+        {
+            target.position = destination;
+        }
+    
         canAddShampoo = true;
         sheepIsMoving = false;
+    
+        Debug.Log("✅ MoveOverTime terminé");
     }
-
     public void StartNewCycle()
     {
         currentCycle++;
@@ -296,32 +338,55 @@ public class CleanManager : MiniGameParent
             }
         }
 
-        if (shampooList.Count == 0)
-        {
-            allCleaned = true;
-            OnAllCleaned();
-        }
+        // ✅ NE PAS déclencher allCleaned ici, juste vérifier la liste globale
+        // La vérification se fait dans RightPosState après avoir rincé les 3 côtés
     }
 
     public void OnAllCleaned()
     {
+        Debug.Log("🎉 OnAllCleaned appelé");
+    
+        // ✅ Protection : éviter les appels multiples
+        if (currentSheep == null)
+        {
+            Debug.LogWarning("⚠️ OnAllCleaned ignoré : currentSheep est null");
+            return;
+        }
+    
         ResetValueClean();
-
-        if (currentSheep != null)
-            StartCoroutine(SendToDestroy(currentSheep));
+        StartCoroutine(SendToDestroy(currentSheep));
     }
 
     private IEnumerator SendToDestroy(GameObject sheep)
     {
+        Debug.Log("🚀 SendToDestroy démarré");
+    
+        if (sheep == null || currentSheep == null)
+        {
+            Debug.LogWarning("⚠️ SendToDestroy annulé : mouton déjà détruit");
+            yield break;
+        }
+    
+        // ✅ Bloquer les interactions
+        canAddShampoo = false;
+    
         currentSheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
         yield return new WaitForSeconds(0.3f);
-        yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f);
+    
+        // ✅ Déplacer le mouton vers la sortie
+        yield return StartCoroutine(MoveOverTime(sheep.transform, destroyPoint.position, 1f));
+    
+        Debug.Log("🗑️ Destruction du mouton");
         Destroy(sheep);
         currentSheep = null;
+        sheepTarget = null;
+    
         yield return new WaitForSeconds(0.25f);
+    
+        Debug.Log("📞 SendToDestroy appelle NextSheep()");
         NextSheep();
-    }
-
+    }  
+    
     public void ResetCleanSystem()
     {
         foreach (GameObject s in shampooList) Destroy(s);
@@ -339,14 +404,22 @@ public class CleanManager : MiniGameParent
     // ==========================
     // 👆 INPUT
     // ==========================
+    
     private void HandleFingerPositionUpdate(Vector2 screenPos)
     {
         currentFingerScreenPos = screenPos;
+
+        if (screenPos != Vector2.zero)
+        {
+            imageTool.transform.parent.GetComponent<Animator>().SetBool("Using", true);
+            imageTool.transform.parent.position = screenPos;
+        }
     }
 
     private void HandleSwipeEnd()
     {
         currentFingerScreenPos = Vector2.zero;
+        imageTool.GetComponent<Animator>().SetBool("Using", false);
     }
 
     private void ExitScene()
