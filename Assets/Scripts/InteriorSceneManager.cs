@@ -1,17 +1,28 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class InteriorSceneManager : MonoBehaviour
 {
+    public static InteriorSceneManager instance;
+    
     public List<GameObject> sheepInside = new();
     public List<Transform> randomSpawnPos;
 
     [SerializeField] public GameObject sheepPrefab;
 
+    public bool alreadyBubble = false;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     private void OnEnable()
     {
+        alreadyBubble = false;
         SwapSceneManager.instance.SwapingInteriorScene += Initialize;
     }
 
@@ -20,7 +31,26 @@ public class InteriorSceneManager : MonoBehaviour
         DestroySheep();
         SwapSceneManager.instance.SwapingInteriorScene -= Initialize;
     }
-    
+
+    private void Update()
+    {
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Tonte && !alreadyBubble)
+        {
+            alreadyBubble = true;
+            CheckBubble(true);
+        }
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Nettoyage && !alreadyBubble)
+        {
+            alreadyBubble = true;
+            CheckBubble(false);
+        }
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Sortie && !alreadyBubble)
+        {
+            alreadyBubble = true;
+            CheckBubble(false, true);
+        }
+    }
+
     public void Initialize()
     {
         if (GameData.instance.nbSheep <= 0) 
@@ -65,4 +95,104 @@ public class InteriorSceneManager : MonoBehaviour
 
         sheepInside.Clear();
     }
+    
+        #region Bubble
+
+    public SheepSkinManager currentSheepNettoyage = null;
+    public SheepSkinManager currentSheepTonte = null;
+    public SheepSkinManager currentSheepGetOut = null;
+
+    public void CheckBubble(bool isTonte, bool isGetOut = false)
+    {
+        if(!isGetOut)
+        {
+            if (isTonte)
+            {
+                Debug.Log("drink");
+                if (currentSheepTonte == null)
+                {
+                    Debug.Log("drink pas null");
+
+                    List<GameObject> availableSheep = sheepInside.FindAll(sheep =>
+                        !sheep.GetComponent<SheepSkinManager>().HasActiveBubble());
+
+                    if (availableSheep.Count > 0)
+                    {
+                        currentSheepTonte = availableSheep[Random.Range(0, availableSheep.Count)]
+                            .GetComponent<SheepSkinManager>();
+                        currentSheepTonte.ActivatedBubble(true);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Aucun mouton disponible pour la grange");
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("pas drink");
+                if (currentSheepTonte == null)
+                {
+                    Debug.Log("pas drink pas null");
+
+                    List<GameObject> availableSheep = sheepInside.FindAll(sheep =>
+                        !sheep.GetComponent<SheepSkinManager>().HasActiveBubble());
+
+                    if (availableSheep.Count > 0)
+                    {
+                        currentSheepTonte = availableSheep[Random.Range(0, availableSheep.Count)]
+                            .GetComponent<SheepSkinManager>();
+                        currentSheepTonte.ActivatedBubble(false);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Aucun mouton disponible pour la grange");
+                    }
+                }
+            }
+        }else
+        {
+            if (currentSheepGetOut == null)
+            {
+                Debug.Log("pas drink pas null");
+
+                List<GameObject> availableSheep = sheepInside.FindAll(sheep =>
+                    !sheep.GetComponent<SheepSkinManager>().HasActiveBubble());
+
+                if (availableSheep.Count > 0)
+                {
+                    currentSheepGetOut = availableSheep[Random.Range(0, availableSheep.Count)]
+                        .GetComponent<SheepSkinManager>();
+                    currentSheepGetOut.ActivatedBubble(false, true);
+                }
+                else
+                {
+                    Debug.LogWarning("Aucun mouton disponible pour la grange");
+                }
+            }
+        }
+    }
+    public void DisableTonteBubble()
+    {
+        currentSheepTonte.DisableBubble();
+        currentSheepTonte = null;
+    }
+
+    public void DisableCleanBubble()
+    {
+        if(currentSheepNettoyage == null)
+            return;
+        
+        currentSheepNettoyage.DisableBubble();
+        currentSheepNettoyage = null;
+    }
+    
+    public void DisableSortieBubble()
+    {
+        currentSheepGetOut.DisableBubble();
+        currentSheepGetOut = null;
+    }
+
+    #endregion
+
 }

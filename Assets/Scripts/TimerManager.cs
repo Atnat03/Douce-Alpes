@@ -194,6 +194,9 @@ public class TimerManager : MonoBehaviour
         int index = Array.IndexOf(values, currentMiniJeuToDo);
         int nextIndex = (index + 1) % values.Length;
         currentMiniJeuToDo = values[nextIndex];
+        
+        GameData.instance.dayMoment.NextMoment();
+        
         StartCoroutine(UpdateHorloge(nextIndex));
     }
 }

@@ -44,7 +44,9 @@ public class CameraControl : MonoBehaviour
     [SerializeField] private Collider boundsCollider;
     
     [SerializeField] Transform grangeFocus;
+    [SerializeField] Transform abreuvoirFocus;
     [SerializeField] private Build grange;
+    [SerializeField] private AbreuvoirClickOpen abreuvoirClick;
 
     private void Awake() => inputs = new Movements();
     
@@ -184,5 +186,16 @@ public class CameraControl : MonoBehaviour
         targetPosition = pos + Vector3.up * targetPosition.y;
         
         grange.UI.SetActive(true);
+    }
+    
+    public void SetRootFocusAbreuvoir()
+    {
+        if (root == null) return;
+
+        Vector3 pos = new Vector3(abreuvoirFocus.position.x, 0, abreuvoirFocus.position.z);
+        root.position = pos + Vector3.up * root.position.y;
+        targetPosition = pos + Vector3.up * targetPosition.y;
+        
+        abreuvoirClick.ActivateAbreuvoir();
     }
 }
