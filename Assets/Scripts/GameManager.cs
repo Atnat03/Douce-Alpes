@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public enum CamState
 {
@@ -254,17 +255,20 @@ public class GameManager : MonoBehaviour
 
         sheepLastSwipeTime[id] = Time.time;
     }
-
-
+    
     private void Update()
     {
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
-
-        CheckAllSheepHasWool();
         
         friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
 
-        //buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
+        if (CheckAllSheepHasWool())
+        {
+            if (currentSheepGrange == null)
+            {
+                CheckBubble(false);
+            }
+        }
     }
 
     public void AddAllSheep() 
@@ -372,13 +376,18 @@ public class GameManager : MonoBehaviour
         ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles, abreuvoir.transform);
     }
 
-    public void CheckAllSheepHasWool()
+    public bool CheckAllSheepHasWool()
     {
         foreach (Sheep s in sheepList)
         {
             if (!s.hasLaine)
+            {
                 GameData.instance.timer.canButtonT = false;
+                return false;
+            }
         }
+
+        return true;
     }
 
     void ResetTheScene()
@@ -407,4 +416,66 @@ public class GameManager : MonoBehaviour
             sheep.GetComponent<Animator>().SetTrigger("Flip");
         }
     }
+
+    #region Bubble
+
+    public Sheep currentSheepGrange = null;
+    public Sheep currentSheepAbreuvoir = null;
+
+    public void CheckBubble(bool isDrink)
+    {
+        Debug.Log("Checking Bubble");
+        if (isDrink)
+        {
+            Debug.Log("drink");
+            if (currentSheepAbreuvoir == null)
+            {
+                Debug.Log("drink pas null");
+            
+                // Chercher un mouton qui n'a pas de bulle active
+                List<Sheep> availableSheep = sheepList.FindAll(sheep => !sheep.HasActiveBubble());
+            
+                if (availableSheep.Count > 0)
+                {
+                    currentSheepAbreuvoir = availableSheep[Random.Range(0, availableSheep.Count)];
+                    currentSheepAbreuvoir.ActivatedBubble(true);
+                }
+                else
+                {
+                    Debug.LogWarning("Aucun mouton disponible pour l'abreuvoir");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("pas drink");
+            if (currentSheepGrange == null)
+            {
+                Debug.Log("pas drink pas null");
+            
+                // Chercher un mouton qui n'a pas de bulle active
+                List<Sheep> availableSheep = sheepList.FindAll(sheep => !sheep.HasActiveBubble());
+            
+                if (availableSheep.Count > 0)
+                {
+                    currentSheepGrange = availableSheep[Random.Range(0, availableSheep.Count)];
+                    currentSheepGrange.ActivatedBubble(false);
+                }
+                else
+                {
+                    Debug.LogWarning("Aucun mouton disponible pour la grange");
+                }
+            }
+        }
+    }
+    public void DisableDinkBubble()
+    {
+        currentSheepAbreuvoir.DisableBubble();
+        currentSheepAbreuvoir = null;
+        abreuvoir.alreadyBubble = false;
+    }
+    
+    public void DisableGrangeBubble() => currentSheepAbreuvoir.DisableBubble();
+
+    #endregion
 }

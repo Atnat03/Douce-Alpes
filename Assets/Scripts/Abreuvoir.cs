@@ -33,6 +33,8 @@ public class Abreuvoir : MiniGameParent
     bool isPomping = false;
     
     private void Awake() => instance = this;
+
+    public bool alreadyBubble = false;
     
     private void Start()
     {
@@ -65,6 +67,12 @@ public class Abreuvoir : MiniGameParent
         if (float.IsNaN(currentWater) || float.IsInfinity(currentWater) || currentWater < 0)
             currentWater = 0;
 
+        if (currentWater <= 0 && !alreadyBubble)
+        {
+            alreadyBubble = true;
+            GameManager.instance.CheckBubble(true);
+        }
+
         water.transform.localPosition = Vector3.Lerp(noWater, fullWater, currentWater /  maximumWater);
         
         if(splashParticle != null)
@@ -85,6 +93,8 @@ public class Abreuvoir : MiniGameParent
         StartCoroutine(AddWaterSmooth());
         
         EndMiniGame(TypeAmelioration.Abreuvoir);
+
+        GameManager.instance.DisableDinkBubble();
     }
 
     IEnumerator AddWaterSmooth()
@@ -137,7 +147,7 @@ public class Abreuvoir : MiniGameParent
 
     IEnumerator WaitEndOfTransitionToEnableEau()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.2f);
         Eau.gameObject.SetActive(true);
     }
 

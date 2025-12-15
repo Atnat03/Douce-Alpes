@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Sheep : TouchableObject
 {
@@ -36,9 +38,7 @@ public class Sheep : TouchableObject
     [SerializeField] public GameObject laineDessous;
 
     public SheepBoid sheepBoid;
-
-    [SerializeField] private GameObject bulleUI;
-    [SerializeField] private Image logoImage;
+    
     [SerializeField] private Sprite showerLogo;
     [SerializeField] private Sprite zzzzzzLogo;
     [SerializeField] private GameObject puanteurVFX;
@@ -50,7 +50,13 @@ public class Sheep : TouchableObject
 
     [SerializeField] private ColorSO colorData;
     [SerializeField] private GameObject larmes;
-
+    
+    [Header("Bulle")]
+    [SerializeField] private GameObject Bubble;
+    [SerializeField] private Image ImageInBubble;
+    [SerializeField] private Sprite wantToGoIn;
+    [SerializeField] private Sprite wantToDrink;
+    
     private void Start()
     {
         laine.GetComponent<Outline>().enabled = false;
@@ -80,8 +86,6 @@ public class Sheep : TouchableObject
 
         larmes.SetActive(BonheurCalculator.instance.currentBonheur <= 10);
         
-        //bulleUI.SetActive(curPuanteur >= 100 || hasLaine && GameManager.instance.currentCameraState == CamState.Default);
-
         if (isOpen)
         {
             sheepBoid.enabled = false;
@@ -108,7 +112,6 @@ public class Sheep : TouchableObject
         {
             curPuanteur = 100;
             puanteurVFX.SetActive(true);
-            logoImage.sprite = showerLogo;
         }
         
         nameText.text = sheepName;
@@ -122,7 +125,6 @@ public class Sheep : TouchableObject
         if (processWool <= 0)
         {
             hasLaine = true;
-            logoImage.sprite = zzzzzzLogo;
             processWool = Random.Range(50, 100);
             
             GetComponent<Animator>().SetTrigger("WoolPop");
@@ -281,5 +283,38 @@ public class Sheep : TouchableObject
     public void SetNewWoolColor(int idColor)
     {
         currentColorID = idColor;
+    }
+
+    public void DisableBubble()
+    {
+        if (!Bubble.activeSelf)
+            return;
+        
+        Bubble.SetActive(false);
+    }
+
+    public void ActivatedBubble(bool isDrink)
+    {
+        Debug.Log("ActivatedBubble : " + isDrink);
+        
+        if (Bubble.activeSelf)
+            return;
+        
+        Bubble.SetActive(true);
+
+        Action a = isDrink
+            ? Camera.main.GetComponent<CameraControl>().SetRootFocusAbreuvoir
+            : Camera.main.GetComponent<CameraControl>().SetRootFocusGrange;
+
+        Sprite s = isDrink ? wantToDrink : wantToGoIn;
+        
+        Bubble.GetComponent<Button>().onClick.AddListener(() => a());
+        Bubble.GetComponent<Button>().onClick.AddListener(DisableBubble);
+        ImageInBubble.sprite = s;
+    }
+    
+    public bool HasActiveBubble()
+    {
+        return Bubble.activeSelf;
     }
 }

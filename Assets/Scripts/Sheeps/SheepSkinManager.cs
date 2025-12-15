@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SheepSkinManager : MonoBehaviour
 {
@@ -23,6 +24,13 @@ public class SheepSkinManager : MonoBehaviour
     private bool isTonte = false;
     
     [SerializeField] Animator animator;
+    
+    [Header("Bulle")]
+    [SerializeField] private GameObject Bubble;
+    [SerializeField] private Image ImageInBubble;
+    [SerializeField] private Sprite wantToTonte;
+    [SerializeField] private Sprite wantToClean;
+    [SerializeField] private Sprite wantToGoOut;
 
     public void Initialize(int id, string name, bool hasLaine, int colorID, int skinHatId, int skinClotheId, bool isTonte = false)
     {
@@ -104,5 +112,60 @@ public class SheepSkinManager : MonoBehaviour
     public void PlayShakeAnimation()
     {
         animator.SetTrigger("Shake");
+    }
+    
+    public void DisableBubble()
+    {
+        if (!Bubble.activeSelf)
+            return;
+        
+        Bubble.SetActive(false);
+    }
+
+    public void ActivatedBubble(bool isTonte, bool isGetOut = false)
+    {
+        Debug.Log("ActivatedBubble : " + isTonte);
+        
+        if (Bubble.activeSelf)
+            return;
+        
+        Bubble.SetActive(true);
+
+        if(!isGetOut)
+        {
+            Action a = isTonte
+                ? SwapSceneToTonte
+                : SwapSceneToClean;
+
+            Sprite s = isTonte ? wantToTonte : wantToClean;
+                    
+            Bubble.GetComponent<Button>().onClick.AddListener(() => a());
+            Bubble.GetComponent<Button>().onClick.AddListener(DisableBubble);
+            ImageInBubble.sprite = s;
+        }
+        else
+        {
+            Bubble.GetComponent<Button>().onClick.AddListener(GetOffGrange);
+            Bubble.GetComponent<Button>().onClick.AddListener(DisableBubble);
+            ImageInBubble.sprite = wantToGoOut;
+        }
+    }
+
+    public void GetOffGrange()
+    {
+        InteriorSceneManager.instance.DisableSortieBubble();
+        
+        SwapSceneManager.instance.SwapScene(0);
+        
+        if(GameManager.instance != null)
+            GameManager.instance.grange.LaunchMiniGame();
+    }
+
+    public void SwapSceneToTonte() => SwapSceneManager.instance.SwapScene(2);
+    public void SwapSceneToClean() => SwapSceneManager.instance.SwapScene(3);
+    
+    public bool HasActiveBubble()
+    {
+        return Bubble.activeSelf;
     }
 }
