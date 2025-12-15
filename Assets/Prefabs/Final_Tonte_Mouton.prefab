@@ -4140,13 +4140,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 2a926e58f9bf9d7499a750ef0e0c9bee, type: 2}
     - target: {fileID: 17330062676665839, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 17330062676665839, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: dc3f63fecc5c4a9468fe95d44bb11597, type: 2}
+    - target: {fileID: 17330062676665839, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 6d516d1899d3c284e8eb94315b8e8fb3, type: 2}
     - target: {fileID: 919132149155446097, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
       propertyPath: m_Name
       value: Final_Tonte_Mouton
       objectReference: {fileID: 0}
+    - target: {fileID: 1661553956341751060, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -1347223147440968868, guid: facd4de945a9acd44a094470e08c17e7, type: 3}
     - target: {fileID: 3162472070408661616, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
       propertyPath: 'm_Materials.Array.data[2]'
       value: 
@@ -4198,7 +4210,13 @@ MonoBehaviour:
   colorID: 0
   hasLaine: 0
   Laine: {fileID: 6425663446622517028}
+  laineDessous: {fileID: 7775388280963636606}
   colorData: {fileID: 11400000, guid: b746193924e3c8b488aa51f1f5db4403, type: 2}
+--- !u!23 &7775388280963636606 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 17330062676665839, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
+  m_PrefabInstance: {fileID: 7771572398391146641}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7804899330512969594 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a7d8440b4edf8e44798d960307568f61, type: 3}

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,12 @@ public class ShopManager : MonoBehaviour
     protected Article selectedArticle;
     [SerializeField] public GameObject buyPannel;
     [SerializeField] public ArticleType typeArticle;
+    public Article currentArticle;
+    
+    [Header("Buy")]
+    [SerializeField] protected GameObject buyInfo;
+    [SerializeField] protected GameObject cantBuyInfo;
+    private bool isShowingCantBuy = false;
 
     private void Start()
     {
@@ -64,9 +71,36 @@ public class ShopManager : MonoBehaviour
         buyPannel.transform.GetChild(3).GetComponent<Text>().text = articleTitle;
     }
 
-    private void BuyArticle()
-    { }
+    public void Buy()
+    {
+        if (PlayerMoney.instance.isEnoughtMoney(selectedArticle.price))
+        {
+            Instantiate(buyInfo, transform.parent);
+            Debug.Log("Buy");
+        }
+        else
+        {
+            if (!isShowingCantBuy)
+            {
+                StartCoroutine(CantBuyIt());
+            }
+        }
+    }
 
+    protected IEnumerator CantBuyIt()
+    {
+        isShowingCantBuy = true;
+    
+        cantBuyInfo.SetActive(true);
+    
+        yield return new WaitForSeconds(1.5f);
+    
+        cantBuyInfo.SetActive(false);
+    
+        isShowingCantBuy = false;
+    }    
+    
+    
     private Sprite ChangeBackGroundRarete(RareteItem articleRarete)
     {
         return articleRarete switch

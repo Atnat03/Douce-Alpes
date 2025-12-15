@@ -294,13 +294,15 @@ public class GameManager : MonoBehaviour
         {
             sheepList = new List<Sheep>();
             
-            NextFrameChangeScene();
+            StartCoroutine(NextFrameChangeScene());
         }
         
     }
 
-    void NextFrameChangeScene()
+    IEnumerator NextFrameChangeScene()
     {
+        yield return new WaitForSeconds(1f);
+        
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
         {
             GameData.instance.timer.canButtonG = false;
@@ -310,7 +312,7 @@ public class GameManager : MonoBehaviour
             
             grange.CloseUI();
             GameData.instance.timer.UpdateAllButton();
-            SwapSceneManager.instance.SwapScene(1);
+            SwapSceneManager.instance.SwapSceneInteriorExterior(1);
         }
     }
 

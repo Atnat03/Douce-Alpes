@@ -36,6 +36,24 @@ public class SkinAgency : MonoBehaviour
             AddClotheSkinInstance(10);
         }
     }
+    
+    public void InitializeSheepSkin(int sheepId, int hatId, int clotheId)
+    {
+        if (hatId >= 0)
+        {
+            dicoHatSkinStack[hatId] = Mathf.Max(dicoHatSkinStack[hatId] - 1, 0);
+            hatSkinEquippedOnSheep[sheepId] = hatId;
+        }
+
+        if (clotheId >= 0)
+        {
+            dicoClotheSkinStack[clotheId] = Mathf.Max(dicoClotheSkinStack[clotheId] - 1, 0);
+            clotheSkinEquippedOnSheep[sheepId] = clotheId;
+        }
+
+        OnStacksChanged?.Invoke();
+    }
+
 
     [ContextMenu("Add All skins")]
     public void AddSkinInstance()
