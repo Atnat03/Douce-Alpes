@@ -310,6 +310,8 @@ public class GameManager : MonoBehaviour
 
             GameData.instance.StartMiniGameCooldown(TypeAmelioration.Rentree);
             
+            BonheurCalculator.instance.AddBonheur(Vector2.zero, GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
+            
             grange.CloseUI();
             GameData.instance.timer.UpdateAllButton();
             SwapSceneManager.instance.SwapSceneInteriorExterior(1);

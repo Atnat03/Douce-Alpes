@@ -33866,8 +33866,9 @@ GameObject:
   m_Component:
   - component: {fileID: 841336425}
   - component: {fileID: 841336424}
+  - component: {fileID: 841336426}
   m_Layer: 0
-  m_Name: SkyboxManager
+  m_Name: "\U0001F387DayManager"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33880,7 +33881,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 841336423}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc902e7c27968034c9e3efabc0f6e38a, type: 3}
   m_Name: 
@@ -34028,6 +34029,145 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &841336426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841336423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b08080074b6284abc4d010dba51758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skyboxMorning: {fileID: 2800000, guid: 7deb3454b299fae498f2365d40aee326, type: 3}
+  skyboxDay1: {fileID: 2800000, guid: e2c576b6d07638b468b5ba303a3a07cb, type: 3}
+  skyboxDay2: {fileID: 2800000, guid: e2c576b6d07638b468b5ba303a3a07cb, type: 3}
+  skyboxNight: {fileID: 2800000, guid: 13ec4f589b2340646969832fc2e68ec6, type: 3}
+  morningGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.6627948, b: 0.3726415, a: 1}
+    key1: {r: 1, g: 0.6627451, b: 0.36862746, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65342
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  day1Gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.98251945, b: 0.9669811, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  day2Gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.98251945, b: 0.9669811, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  nightGradient:
+    serializedVersion: 2
+    key0: {r: 0.08627451, g: 0.14117648, b: 0.5137255, a: 1}
+    key1: {r: 0.015686275, g: 0.1137255, b: 0.54901963, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  transitionDuration: 3
+  currentMoment: 0
+  directionalLight: {fileID: 410087040}
 --- !u!1 &842062172
 GameObject:
   m_ObjectHideFlags: 0
@@ -35170,7 +35310,7 @@ Transform:
   m_GameObject: {fileID: 858172237}
   serializedVersion: 2
   m_LocalRotation: {x: 0.07486672, y: -0.81214416, z: 0.106920764, w: 0.56866944}
-  m_LocalPosition: {x: -2.3, y: 4.82, z: 8.51}
+  m_LocalPosition: {x: 0.34, y: 6.67, z: 9.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -72521,6 +72661,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1af535ee01d695e4da1a54eaa12bf88d, type: 2}
   timer: {fileID: 1724283571}
   isTesting: 0
+  dayMoment: {fileID: 841336426}
 --- !u!4 &1724283567
 Transform:
   m_ObjectHideFlags: 0

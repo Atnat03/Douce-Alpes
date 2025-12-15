@@ -41,6 +41,8 @@ public class GameData : MonoBehaviour
     [HideInInspector] public TimerManager timer;
 
     public bool isTesting = true;
+
+    public WeatherManager dayMoment;
     
     private void Awake()
     {
