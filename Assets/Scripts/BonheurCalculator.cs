@@ -96,4 +96,9 @@ public class BonheurCalculator : MonoBehaviour
     {
         currentBonheur = Mathf.Max(currentBonheur - value, 0);
     }
+
+    public int GetBonheurPercentage()
+    {
+        return (int)((currentBonheur / maxBonheur) * 100);
+    }
 }

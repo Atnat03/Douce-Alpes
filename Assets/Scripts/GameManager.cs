@@ -367,6 +367,17 @@ public class GameManager : MonoBehaviour
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
         GameData.instance.timer.UpdateAllButton();
+        
+        StartCoroutine(GetOffGrange());
+
+    }
+
+    IEnumerator GetOffGrange()
+    {
+        Camera.main.GetComponent<ChangingCamera>().ResetPosition();
+        
+        yield return new WaitForSeconds(1f);
+        GameData.instance.RecapOfTheDay();
     }
     
     //Abreuvoir
@@ -432,7 +443,6 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("drink pas null");
             
-                // Chercher un mouton qui n'a pas de bulle active
                 List<Sheep> availableSheep = sheepList.FindAll(sheep => !sheep.HasActiveBubble());
             
                 if (availableSheep.Count > 0)
@@ -453,7 +463,6 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("pas drink pas null");
             
-                // Chercher un mouton qui n'a pas de bulle active
                 List<Sheep> availableSheep = sheepList.FindAll(sheep => !sheep.HasActiveBubble());
             
                 if (availableSheep.Count > 0)

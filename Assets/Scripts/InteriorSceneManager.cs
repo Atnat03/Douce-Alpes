@@ -180,6 +180,9 @@ public class InteriorSceneManager : MonoBehaviour
 
     public void DisableCleanBubble()
     {
+        if(currentSheepNettoyage == null)
+            return;
+        
         currentSheepNettoyage.DisableBubble();
         currentSheepNettoyage = null;
     }

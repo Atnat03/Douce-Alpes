@@ -21,6 +21,7 @@ public class GameData : MonoBehaviour
     public int nbSheep;
     public bool isSheepInside = false;
     [SerializeField] public GameObject sheepPrefab;
+    public int numberDay = 0;
 
     public bool hasTonte = false;
     public bool hasClean = false;
@@ -43,6 +44,10 @@ public class GameData : MonoBehaviour
     public bool isTesting = true;
 
     public WeatherManager dayMoment;
+    public DayRecapManager dayRecap;
+    
+    public int currentMoneyDay = 0;
+    public int currentWoolDay = 0;
     
     private void Awake()
     {
@@ -115,7 +120,8 @@ public class GameData : MonoBehaviour
     {
         isSheepInside = sheepDestroyData.Count == nbSheep;
     }
-
+    
+    
     #region SKIN
 
     public bool HasSkin(int id) => unlockedSkinIDs.Contains(id);
@@ -245,4 +251,22 @@ public class GameData : MonoBehaviour
     }
 
     #endregion
+
+    public void RecapOfTheDay()
+    {
+        int happyPercent = BonheurCalculator.instance.GetBonheurPercentage();
+        
+        dayRecap.Recap(
+            numberDay,
+            happyPercent,
+            currentMoneyDay,
+            currentWoolDay);
+    }
+    
+    
+    public void ResetDayStats()
+    {
+        currentMoneyDay = 0;
+        currentWoolDay = 0;
+    }
 }
