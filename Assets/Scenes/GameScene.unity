@@ -4122,8 +4122,8 @@ MonoBehaviour:
   abreuvoir: {fileID: 2049900978}
   cameraPosAbreuvoir: {fileID: 1397747528}
   shopOpen: 0
-  caresseBaseValue: 2
-  saturationCarrese: 5
+  caresseBaseValue: 0.25
+  saturationCarrese: 1
   recoveryTime: 1
   buttonForTonte: {fileID: 0}
   friendsUI: {fileID: 35849454}
@@ -72346,8 +72346,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e799d053d40779b47839ca25372b952d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentBonheur: 0
-  maxBonheur: 100
+  currentBonheur: 200
+  maxBonheur: 1000
   overflowMaxValueRatio: 0.2
   overflowValue: 0
   overflowMaxValue: 0
@@ -72412,7 +72412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentMoney: 0
   txtMoney: {fileID: 1670251567}
-  currentWhool: 1000
+  currentWhool: 0
   txtWhool: {fileID: 645624971}
   bonheurUI: {fileID: 1724283569}
   moneySprite: {fileID: 626944953301569103, guid: 6027b9a3c54f6f547bdc982badd054a4, type: 3}
@@ -87737,6 +87737,7 @@ MonoBehaviour:
   - {fileID: 1546340218}
   touchRadius: 0.1
   miniValueToEnd: 0
+  RawSheepWhoolDrop: 0
   spawnLaineSprite: {fileID: 1740667904}
 --- !u!1001 &1978550312
 PrefabInstance:
