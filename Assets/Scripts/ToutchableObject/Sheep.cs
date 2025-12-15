@@ -41,6 +41,7 @@ public class Sheep : TouchableObject
     [SerializeField] private Image logoImage;
     [SerializeField] private Sprite showerLogo;
     [SerializeField] private Sprite zzzzzzLogo;
+    [SerializeField] private GameObject puanteurVFX;
     
     public Transform targetTransiPos;
 
@@ -101,10 +102,12 @@ public class Sheep : TouchableObject
         if (curPuanteur < 100)
         {
             curPuanteur += 2 * Time.deltaTime;
+            puanteurVFX.SetActive(false);
         }
         else
         {
             curPuanteur = 100;
+            puanteurVFX.SetActive(true);
             logoImage.sprite = showerLogo;
         }
         
@@ -121,6 +124,11 @@ public class Sheep : TouchableObject
             hasLaine = true;
             logoImage.sprite = zzzzzzLogo;
             processWool = Random.Range(50, 100);
+            
+            GetComponent<Animator>().SetTrigger("WoolPop");
+            
+            SetCurrentSkinClothe(currentSkinClothe);
+            SetCurrentSkinHat(currentSkinHat);
         }
     }
 

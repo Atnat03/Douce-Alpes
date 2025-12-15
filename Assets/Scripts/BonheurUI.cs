@@ -43,6 +43,7 @@ public class BonheurUI : MonoBehaviour
 
         if (isDropped)
             return;
+
         
         Vector2 pos = SwapSceneManager.instance.currentSceneId == 0 ? posVisible.position : posInvisible.position;
         canvaPlayer.transform.position = pos;

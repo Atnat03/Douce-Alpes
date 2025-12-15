@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Abreuvoir : MiniGameParent
@@ -14,6 +15,7 @@ public class Abreuvoir : MiniGameParent
     [SerializeField] private Animator animatorPompe;
     [SerializeField] private UnityEngine.UI.Image curDrinkImage;
     [SerializeField] private GameObject ui;
+    [SerializeField] private GameObject buttonQuit;
 
     [Header("Drink Places")]
     [SerializeField] private Transform drinkPlace1;
@@ -40,6 +42,7 @@ public class Abreuvoir : MiniGameParent
         Eau.transform.rotation = Quaternion.Euler(-90, 0, 0);
         
         Eau.gameObject.SetActive(false);
+        buttonQuit.SetActive(false);
     }
 
     private void Update()
@@ -48,6 +51,9 @@ public class Abreuvoir : MiniGameParent
             curDrinkImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
         else
             curDrinkImage.fillAmount = 0;
+        
+        if(currentWater >= maximumWater && !buttonQuit.activeSelf)
+            buttonQuit.SetActive(true);
         
         if (ui != null)
             ui.SetActive(GameManager.instance.currentCameraState == CamState.Drink);
