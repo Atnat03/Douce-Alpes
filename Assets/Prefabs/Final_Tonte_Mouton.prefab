@@ -4095,6 +4095,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9079821031136803109, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7886993330589354345, guid: 70236af0585903044b9d843c69d6df8b, type: 3}
     - target: {fileID: -8679921383154817045, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4136,9 +4140,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1664753392080548126, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -1664753392080548126, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 2a926e58f9bf9d7499a750ef0e0c9bee, type: 2}
+      objectReference: {fileID: 2100000, guid: 06749da8374a9b54faf83fe39beefb17, type: 2}
+    - target: {fileID: -1664753392080548126, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 59071e1083a145c41aed300e9e0ed764, type: 2}
     - target: {fileID: 17330062676665839, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
       propertyPath: m_Materials.Array.size
       value: 2
@@ -4212,6 +4224,7 @@ MonoBehaviour:
   Laine: {fileID: 6425663446622517028}
   laineDessous: {fileID: 7775388280963636606}
   colorData: {fileID: 11400000, guid: b746193924e3c8b488aa51f1f5db4403, type: 2}
+  animator: {fileID: 0}
 --- !u!23 &7775388280963636606 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 17330062676665839, guid: a7d8440b4edf8e44798d960307568f61, type: 3}
