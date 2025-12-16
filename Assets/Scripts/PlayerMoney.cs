@@ -57,6 +57,8 @@ public class PlayerMoney : MonoBehaviour
         }
 
         currentMoney = finalValue;
+        
+        GameData.instance.currentMoneyDay += finalValue;
 
         bonheurUI.RemonteCanva();
     }
@@ -83,6 +85,7 @@ public class PlayerMoney : MonoBehaviour
         }
 
         currentWhool = finalValue;
+        GameData.instance.currentWoolDay += finalValue;
 
         bonheurUI.RemonteCanva();
     }
