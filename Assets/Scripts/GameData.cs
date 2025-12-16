@@ -21,7 +21,7 @@ public class GameData : MonoBehaviour
     public int nbSheep;
     public bool isSheepInside = false;
     [SerializeField] public GameObject sheepPrefab;
-    public int numberDay = 1;
+    public int numberDay = 0;
 
     public bool hasTonte = false;
     public bool hasClean = false;
@@ -255,15 +255,13 @@ public class GameData : MonoBehaviour
     public void RecapOfTheDay()
     {
         int happyPercent = BonheurCalculator.instance.GetBonheurPercentage();
-
-        numberDay++;
         
         dayRecap.Recap(
             numberDay,
             happyPercent,
             currentMoneyDay,
             currentWoolDay,
-            numberDay - 1);
+            numberDay + 1);
     }
     
     

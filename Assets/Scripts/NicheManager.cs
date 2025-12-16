@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public class NicheManager : TouchableObject
 {
     [SerializeField] private Chien chien;
+    [SerializeField] private NavMeshAgent agentChien;
     [SerializeField] private Transform nichePos;
     [SerializeField] private bool isInNiche = false;
     [SerializeField] private Transform cameraZoomPos;
@@ -23,6 +24,11 @@ public class NicheManager : TouchableObject
         startRot = chien.transform.rotation.eulerAngles;
 
         chien.enabled = false;
+    }
+
+    void OnEnable()
+    {
+        RentrerLeChien();
     }
 
     public void InitializeDog(string name)
@@ -48,11 +54,14 @@ public class NicheManager : TouchableObject
     private void RentrerLeChien()
     {
         chien.enabled = false;
-        chien.gameObject.GetComponent<NavMeshAgent>().SetDestination(startPos);
+        agentChien.SetDestination(startPos);
     }
 
     private void Update()
     {
+        if (!chien.enabled)
+            return;
+        
         isInNiche = Vector3.Distance(chien.transform.position, startPos) < 0.2f;
 
         if (isInNiche)

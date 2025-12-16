@@ -19,6 +19,8 @@ public class SheepBoid : MonoBehaviour
 
     public NatureType natureBase;
 
+    public GameObject particleRun;
+
     private Color[] natureColors = new Color[]
     {
         Color.red, 
@@ -51,6 +53,8 @@ public class SheepBoid : MonoBehaviour
             }
             return;
         }
+        
+        particleRun.SetActive(isAfraid);
 
         Vector3 accel = Vector3.zero;
 
