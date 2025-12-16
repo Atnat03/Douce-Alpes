@@ -23615,13 +23615,14 @@ GameObject:
   - component: {fileID: 575461618}
   - component: {fileID: 575461617}
   - component: {fileID: 575461616}
+  - component: {fileID: 575461619}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &575461615
 RectTransform:
   m_ObjectHideFlags: 0
@@ -23705,6 +23706,28 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!95 &575461619
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575461614}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4a2c86972c48e104a9e0ed766ef91480, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &577874716
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26963,7 +26986,8 @@ MonoBehaviour:
   happinessText: {fileID: 161930512}
   moneyText: {fileID: 1508227448}
   woolText: {fileID: 1359735857}
-  numberDay: {fileID: 1109515366}
+  numberDay: {fileID: 965224711}
+  nextDayButtonTxt: {fileID: 1109515366}
 --- !u!1001 &653074813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73110,14 +73134,14 @@ MonoBehaviour:
   unlockedSkinIDs: 00000000010000000200000003000000
   soUpgradeList:
   - {fileID: 11400000, guid: 915f75be1307d9c4091085e4ccf3c92a, type: 2}
-  - {fileID: 11400000, guid: f23c0492aea5d3a4e9a1d510ddf1fdd2, type: 2}
   - {fileID: 11400000, guid: 5c0d2ecf40d0d3041adf33f9e5595e70, type: 2}
+  - {fileID: 11400000, guid: f23c0492aea5d3a4e9a1d510ddf1fdd2, type: 2}
   - {fileID: 11400000, guid: 693460cd48e05fb469d825126c26c267, type: 2}
   - {fileID: 11400000, guid: 1af535ee01d695e4da1a54eaa12bf88d, type: 2}
   timer: {fileID: 1724283571}
   isTesting: 0
   dayMoment: {fileID: 841336426}
-  dayRecap: {fileID: 0}
+  dayRecap: {fileID: 650816178}
   currentMoneyDay: 0
   currentWoolDay: 0
 --- !u!4 &1724283567

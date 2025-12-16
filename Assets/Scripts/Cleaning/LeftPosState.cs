@@ -19,7 +19,7 @@ public class LeftPosState : ICleaningState
         var sheep = manager.cleanManager.sheepTarget;
 
         manager.cleanManager.canAddShampoo = false;
-        manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 2f));
+        manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 1f));
 
         if (manager.cleanManager.currentTool == CleaningTool.Shampoo)
             manager.cleanManager.ResetValueClean();

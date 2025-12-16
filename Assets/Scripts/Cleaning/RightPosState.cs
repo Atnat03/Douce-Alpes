@@ -18,7 +18,7 @@ public class RightPosState : ICleaningState
         manager.cleanManager.currentCleaningSide = CleaningSide.Right;
 
         manager.cleanManager.canAddShampoo = false;
-        manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 2f));
+        manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 1f));
 
         if (manager.cleanManager.currentTool == CleaningTool.Shampoo)
             manager.cleanManager.ResetValueClean();
