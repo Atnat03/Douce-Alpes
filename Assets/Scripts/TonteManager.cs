@@ -240,7 +240,7 @@ public class TonteManager : MiniGameParent
         if (currentSheep != null)
         {
             currentSheepData.hasWhool = false;
-            PlayerMoney.instance.AddWhool(RawSheepWhoolDrop, spawnLaineSprite.position);
+            PlayerMoney.instance.AddWhool(GameData.instance.GetLevelUpgrade(TypeAmelioration.Tonte), spawnLaineSprite.position);
             StartCoroutine(SendToDestroy(currentSheep));
         }
     }
