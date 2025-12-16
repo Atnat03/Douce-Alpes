@@ -11,10 +11,8 @@ public class Grange : Build
     [Header("Gates")]
     public bool gateState = false;
     
-    [SerializeField] private Vector3 gate1_Close, gate1_Open;
     [SerializeField] private GameObject gate1;
     
-    [SerializeField] private Vector3 gate2_Close, gate2_Open;
     [SerializeField] private GameObject gate2;
 
     [SerializeField] private GameObject keyCloseGate;
@@ -27,26 +25,40 @@ public class Grange : Build
     public bool AllSheepAreOutside = true;
 
     public Transform targetTransiPos;
+    public Animator doorAnimator;
     
     void Start()
     {
-        OpenDoors();
+        keyCloseGate.SetActive(false); 
+        gateState = true;
+        //OpenDoors();
     }
-    
+
+    private void OnEnable()
+    {
+        if (gateState)
+        {
+            doorAnimator.SetTrigger("Open");
+        }
+        else
+        {
+            doorAnimator.SetTrigger("Close");
+        }
+    }
+
     public void LaunchMiniGame()
     {
         GameManager.instance.ChangeCameraState(CamState.MiniGame);
-        CloseDoors();
-        OpenDoors();
         UpdateCameraZoom();
     }
 
     public void OpenDoors()
     {
-        gate1.transform.localRotation = Quaternion.Euler(gate1_Open);
-        gate2.transform.localRotation = Quaternion.Euler(gate2_Open);
         gateState = true;
         keyCloseGate.SetActive(false);
+        doorAnimator.ResetTrigger("Close");
+        
+        doorAnimator.SetTrigger("Open");
         
         if(TutoManager.instance != null)
             TutoManager.instance.MiniJeuGrange();
@@ -54,13 +66,22 @@ public class Grange : Build
     
     public void CloseDoors()
     {
-        gate1.transform.localRotation = Quaternion.Euler(gate1_Close);
-        gate2.transform.localRotation = Quaternion.Euler(gate2_Close);
+        doorAnimator.ResetTrigger("Open");
+        
         gateState = false;
-        keyCloseGate.SetActive(true);
+        
+        doorAnimator.SetTrigger("Close");
+
+        StartCoroutine(CloseDoorsDesactivatePoutre());
         
         if(TutoManager.instance != null)
             TutoManager.instance.MiniJeuSortis();
+    }
+
+    IEnumerator CloseDoorsDesactivatePoutre()
+    {
+        yield return new WaitForSeconds(1f);
+        keyCloseGate.SetActive(true);
     }
 
     public void AddSheepInGrange()
@@ -69,8 +90,7 @@ public class Grange : Build
 
         if (nbSheepInGrange >= GameData.instance.nbSheep && GameData.instance.nbSheep >0)
         {
-            Camera.main.gameObject.GetComponent<ChangingCamera>().ResetPosition();
-            CloseDoors();
+            //Camera.main.gameObject.GetComponent<ChangingCamera>().ResetPosition();
         }
     }
     
@@ -162,5 +182,4 @@ public class Grange : Build
         yield return new WaitForSeconds(1f);
         UI.SetActive(false);
     }
-
 }

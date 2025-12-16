@@ -9,20 +9,22 @@ public class DayRecapManager : MonoBehaviour
     [SerializeField] private Text moneyText;
     [SerializeField] private Text woolText;
     [SerializeField] private Text numberDay;
+    [SerializeField] private Text nextDayButtonTxt;
 
     private void OnEnable()
     {
         DesactivatePannel();
     }
 
-    public void Recap(int numberDay, float happiness, int money, int wool)
+    public void Recap(int numberDay, float happiness, int money, int wool, int numberNextDay)
     {
         dayRecapPannel.SetActive(true);
         
         happinessText.text = happiness +" %";
-        moneyText.text = "+"+money;
-        woolText.text = "+" + wool;
+        moneyText.text = " + "+money;
+        woolText.text = " + " + wool;
         this.numberDay.text = "jour " + numberDay;
+        nextDayButtonTxt.text = "Passer au jour " + numberNextDay;
     }
 
     public void DesactivatePannel()

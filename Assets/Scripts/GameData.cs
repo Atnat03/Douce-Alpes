@@ -260,7 +260,8 @@ public class GameData : MonoBehaviour
             numberDay,
             happyPercent,
             currentMoneyDay,
-            currentWoolDay);
+            currentWoolDay,
+            numberDay + 1);
     }
     
     
