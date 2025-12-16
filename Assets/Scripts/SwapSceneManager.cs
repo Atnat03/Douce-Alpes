@@ -22,7 +22,7 @@ public class SwapSceneManager : MonoBehaviour
     [SerializeField] private CanvasGroup fadeCanva;
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration;
-    [SerializeField] private float animationDuration;
+
     
     private void Start()
     {
@@ -80,11 +80,11 @@ public class SwapSceneManager : MonoBehaviour
     {
         fadeCanva.alpha = 1f;
         fadeCanva.GetComponent<Animator>().SetTrigger("Fade");
-        yield return new WaitForSeconds(animationDuration);
+        yield return new WaitForSeconds(1f);
         
         scene.SetActive(true);
         TriggerInitialiseScene(i);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         fadeCanva.alpha = 0f;
     }
 
