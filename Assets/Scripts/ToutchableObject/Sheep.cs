@@ -116,6 +116,8 @@ public class Sheep : TouchableObject
         
         nameText.text = sheepName;
         nameText.gameObject.SetActive(isFocusing);
+
+        Bubble.transform.parent.GetComponent<CanvasGroup>().alpha = isOpen ? 0f : 1f;
     }
 
     private void ProcessWool()

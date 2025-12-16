@@ -182,5 +182,4 @@ public class Grange : Build
         yield return new WaitForSeconds(1f);
         UI.SetActive(false);
     }
-
 }

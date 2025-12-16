@@ -197,6 +197,11 @@ public class TonteManager : MiniGameParent
     {
         if (particleTonte != null)
             particleTonte.Stop();
+        
+        if (curList.Count <= miniValueToEnd && canTonte)
+        {
+            EndTonte();
+        }
     }
 
     private void DetectTouchedPoint(Vector3 fingerWorldPos)
@@ -228,11 +233,6 @@ public class TonteManager : MiniGameParent
     private void UpdateProgress()
     {
         currentValueTonte = 1f - (float)curList.Count / listPoints.Length;
-
-        if (curList.Count <= miniValueToEnd && canTonte)
-        {
-            EndTonte();
-        }
     }
 
     public void EndTonte()

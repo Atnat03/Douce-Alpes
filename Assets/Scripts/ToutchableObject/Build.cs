@@ -26,10 +26,10 @@ public class Build : TouchableObject
         UI.SetActive(true);
 
         StopAllCoroutines();
-        StartCoroutine(CloseUIDecal());
+        StartCoroutine(CloseDelay());
     }
 
-    IEnumerator CloseUIDecal()
+    IEnumerator CloseDelay()
     {
         yield return new WaitForSeconds(3f);
         CloseUI();
