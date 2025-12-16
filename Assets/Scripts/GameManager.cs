@@ -109,6 +109,9 @@ public class GameManager : MonoBehaviour
     
     int RealTime = System.DateTime.Now.Hour;
     
+    [SerializeField] public GameObject poufParticle;
+    [SerializeField] public Transform particleSpawn;
+    
     private void Awake()
     {
         instance = this;
@@ -305,7 +308,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator NextFrameChangeScene()
     {
-        yield return new WaitForSeconds(1f);
+        grange.CloseDoors();
+        
+        yield return new WaitForSeconds(2f);
         
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
         {
@@ -337,14 +342,18 @@ public class GameManager : MonoBehaviour
         grange.OpenDoors();
         grange.GetPoutre().ResetPoutre();
         grange.AllSheepAreOutside = false;
+        
+        yield return new WaitForSeconds(1f);
 
-        float delayBetweenSheep = 1f; 
+        float delayBetweenSheep = 0.75f; 
 
         foreach (SheepData sheepData in GameData.instance.sheepDestroyData)
         {
             GameObject newSheep = SheepBoidManager.instance.SheepGetOffAndRecreate(sheepData, grange.spawnGetOffTransform.position);
             Sheep sheep = newSheep.GetComponent<Sheep>();
 
+            Instantiate(poufParticle, particleSpawn.position + Vector3.right, Quaternion.identity);
+            
             if (sheepData.hasWhool == false)
                 sheep.CutWhool();
             else
@@ -358,7 +367,7 @@ public class GameManager : MonoBehaviour
 
             sheepList.Add(sheep);
             toRemove.Add(sheepData);
-
+            
             yield return new WaitForSeconds(delayBetweenSheep);
         }
 

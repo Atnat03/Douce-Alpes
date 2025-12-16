@@ -5286,9 +5286,15 @@ MonoBehaviour:
   colorID: 0
   hasLaine: 0
   Laine: {fileID: 8727330212798333551}
-  laineDessous: {fileID: 5464700577685841973}
+  laineDessous: {fileID: 1729814781619128556}
+  colorDataTonte: {fileID: 0}
   colorData: {fileID: 11400000, guid: b746193924e3c8b488aa51f1f5db4403, type: 2}
   animator: {fileID: 2208691318966996592}
+  Bubble: {fileID: 0}
+  ImageInBubble: {fileID: 0}
+  wantToTonte: {fileID: 0}
+  wantToClean: {fileID: 0}
+  wantToGoOut: {fileID: 0}
 --- !u!65 &2735621408508966794
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8701,11 +8707,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1347223147440968868, guid: facd4de945a9acd44a094470e08c17e7, type: 3}
---- !u!23 &5464700577685841973 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 17330062676665839, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
-  m_PrefabInstance: {fileID: 5470489954764262874}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5503870281517394481 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5d8e1cc3c7f41a41a51477973d6f996, type: 3}
@@ -10150,6 +10151,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1347223147440968868, guid: facd4de945a9acd44a094470e08c17e7, type: 3}
+--- !u!137 &1729814781619128556 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 9218763243662537543, guid: facd4de945a9acd44a094470e08c17e7, type: 3}
+  m_PrefabInstance: {fileID: 7488968528164174763}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2822192815568065745 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4666952263688138618, guid: facd4de945a9acd44a094470e08c17e7, type: 3}

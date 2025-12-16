@@ -18,7 +18,8 @@ public class SheepSkinManager : MonoBehaviour
     
     [SerializeField] public bool hasLaine;
     [SerializeField] private MeshRenderer Laine;
-    [SerializeField] private MeshRenderer laineDessous;
+    [SerializeField] private Renderer laineDessous;
+    [SerializeField] private ColorSO colorDataTonte;
     [SerializeField] private ColorSO colorData;
 
     private bool isTonte = false;
@@ -48,17 +49,27 @@ public class SheepSkinManager : MonoBehaviour
 
     private void Update()
     {
-        if (isTonte)
-            return;
-            
         Laine.gameObject.SetActive(hasLaine);
         
-        if(Laine != null)
-            Laine.material = colorData.colorData[colorID].material;
+        if(Laine != null && isTonte)
+        {
+            Laine.material = colorDataTonte.colorData[colorID].material;
+            var materials = laineDessous.GetComponent<MeshRenderer>().materials;
+            materials[1] = colorData.colorData[colorID].material;
+            laineDessous.GetComponent<MeshRenderer>().materials = materials;
+        }
         
-        var mats = laineDessous.GetComponent<MeshRenderer>().materials;
+        if (isTonte)
+            return;
+        
+        if(Laine != null)
+        {
+            Laine.material = colorData.colorData[colorID].material;
+        }
+        
+        var mats = laineDessous.GetComponent<Renderer>().materials;
         mats[1] = colorData.colorData[colorID].material;
-        laineDessous.GetComponent<MeshRenderer>().materials = mats;
+        laineDessous.GetComponent<Renderer>().materials = mats;
     }
 
     public void SetCurrentSkinHat(int skinId)
@@ -156,9 +167,6 @@ public class SheepSkinManager : MonoBehaviour
         InteriorSceneManager.instance.DisableSortieBubble();
         
         SwapSceneManager.instance.SwapScene(0);
-        
-        if(GameManager.instance != null)
-            GameManager.instance.grange.LaunchMiniGame();
     }
 
     public void SwapSceneToTonte() => SwapSceneManager.instance.SwapScene(2);
