@@ -22058,7 +22058,7 @@ MonoBehaviour:
   fearRadius: 10
   fearForce: 25
   showDebug: 1
-  particle: {fileID: 0}
+  particle: {fileID: 2117512131}
 --- !u!1001 &547884473
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31775,7 +31775,7 @@ MonoBehaviour:
   currentSceneId: 0
   fadeCanva: {fileID: 1103939919}
   fadeImage: {fileID: 1942337500}
-  fadeDuration: 1
+  fadeDuration: 0.5
 --- !u!4 &792601875
 Transform:
   m_ObjectHideFlags: 0
@@ -33518,7 +33518,7 @@ Transform:
   m_GameObject: {fileID: 836971614}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.769, y: 0, z: 0}
+  m_LocalPosition: {x: -0.825, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -64672,7 +64672,7 @@ Transform:
   m_GameObject: {fileID: 1568125579}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0.209, y: -0.5, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -91512,6 +91512,11 @@ MonoBehaviour:
   m_EffectColor: {r: 0.25556538, g: 0.8018868, b: 0.003782494, a: 1}
   m_EffectDistance: {x: 3, y: -3}
   m_UseGraphicAlpha: 1
+--- !u!1 &2117512131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7655214384621610124, guid: cff8e70b4f9a5094199863dc1b805e76, type: 3}
+  m_PrefabInstance: {fileID: 580552507}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2118940426
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,7 +27,8 @@ public class NicheManager : TouchableObject
 
     public override void TouchEvent()
     {
-        base.TouchEvent();
+        if(GameManager.instance.currentCameraState != CamState.Default)
+            return;
         
         GameManager.instance.ChangeCameraState(CamState.Dog);
         GameManager.instance.ChangeCameraPos(cameraZoomPos.position, cameraZoomPos.rotation.eulerAngles, transform);
@@ -37,11 +38,6 @@ public class NicheManager : TouchableObject
     void OnEnable()
     {
         RentrerLeChien();
-    }
-
-    public void InitializeDog(string name)
-    {
-        dogName = name;
     }
     
     private void OnDisable()
@@ -63,7 +59,6 @@ public class NicheManager : TouchableObject
     {
         chien.enabled = false;
         agentChien.SetDestination(nichePos.position);
-        
     }
 
     private void Update()
@@ -73,8 +68,10 @@ public class NicheManager : TouchableObject
         float distance = Vector3.Distance(transform.position, nichePos.position);
         Debug.Log(distance);
 
-        if (distance < 1f && !isInNiche)
+        if (distance < 0.5f && !isInNiche)
         {
+            Debug.Log(distance);
+            isInNiche = true;
             StartCoroutine(RotateSmoothInNiche());
         }
     }
@@ -84,7 +81,7 @@ public class NicheManager : TouchableObject
         Quaternion startRotation = agentChien.transform.rotation;
         Quaternion targetRotation = Quaternion.Euler(
             0f,
-            -90,
+            116,
             0f
         );
 
@@ -106,9 +103,7 @@ public class NicheManager : TouchableObject
 
             yield return null;
         }
-
         agentChien.transform.rotation = targetRotation;
-        isInNiche = true;
     }
 
 
