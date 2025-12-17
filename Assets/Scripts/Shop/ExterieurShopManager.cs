@@ -1,8 +1,6 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class SkinShopManager : ShopManager
+public class ExterieurShopManager : ShopManager
 {
     private new void Buy()
     {
@@ -13,10 +11,10 @@ public class SkinShopManager : ShopManager
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
             
-            if(selectedArticle.type == ArticleType.Hat)
-                SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);
-            else if(selectedArticle.type == ArticleType.Clothe)
-                SkinAgency.instance.AddClotheSkinInstance(selectedArticle.id);
+            if(selectedArticle.type == ArticleType.Grange)
+                SkinAgency.instance.SetSkinGrange(selectedArticle.id);
+            if(selectedArticle.type == ArticleType.Barriere)
+                SkinAgency.instance.SetSkinBarriere(selectedArticle.id);
         }
         else
         {

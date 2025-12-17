@@ -10,23 +10,41 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 421b0a8d5f198ae4ab52d150d9a56279, type: 3}
-  m_Name: DecorsArticles
+  m_Name: ExteriorArticles
   m_EditorClassIdentifier: 
   articles:
   - id: 0
-    title: Barriere 1
+    title: Rouge
     price: 100
-    logo: {fileID: 21300000, guid: 4c2118b33d799bd4982c14d5b2d7d70b, type: 3}
+    logo: {fileID: 21300000, guid: cfb7e8868e578a24a8d798a719721821, type: 3}
+    Rarete: 0
+    type: 2
+  - id: 1
+    title: Jaune
+    price: 100
+    logo: {fileID: 0}
+    Rarete: 1
+    type: 2
+  - id: 2
+    title: Bleu
+    price: 100
+    logo: {fileID: 0}
+    Rarete: 2
+    type: 2
+  - id: 0
+    title: barriere 1
+    price: 100
+    logo: {fileID: 0}
     Rarete: 0
     type: 3
   - id: 1
-    title: Barriere 2
+    title: barriere 2
     price: 100
     logo: {fileID: 0}
     Rarete: 1
     type: 3
   - id: 2
-    title: Barriere 3
+    title: barriere 3
     price: 100
     logo: {fileID: 0}
     Rarete: 2

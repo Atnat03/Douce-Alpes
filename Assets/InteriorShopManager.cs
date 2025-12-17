@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkinShopManager : ShopManager
+public class InteriorShopManager : ShopManager
 {
     private new void Buy()
     {
@@ -12,11 +14,8 @@ public class SkinShopManager : ShopManager
             Debug.Log("Buy");
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
-            
-            if(selectedArticle.type == ArticleType.Hat)
-                SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);
-            else if(selectedArticle.type == ArticleType.Clothe)
-                SkinAgency.instance.AddClotheSkinInstance(selectedArticle.id);
+                    
+            //SkinAgency.instance.SetSkinBarriere(selectedArticle.id);
         }
         else
         {

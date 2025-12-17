@@ -34,6 +34,15 @@ public class PlayerMoney : MonoBehaviour
         txtMoney.text = currentMoney.ToString();
         txtWhool.text = currentWhool.ToString();
     }
+
+    public void AddMoneyCheat()
+    {
+        currentMoney += 100;
+    }
+    public void AddWoolCheat()
+    {
+        currentWhool += 100;
+    }
     
     
     //Money
