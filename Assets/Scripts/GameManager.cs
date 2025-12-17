@@ -111,6 +111,7 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] public GameObject poufParticle;
     [SerializeField] public Transform particleSpawn;
+    [SerializeField] public GameObject sheepCreatorButton;
     
     private void Awake()
     {
@@ -264,6 +265,7 @@ public class GameManager : MonoBehaviour
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
         
         friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
+        sheepCreatorButton.SetActive(currentCameraState == CamState.Default);
 
         if (CheckAllSheepHasWool())
         {
