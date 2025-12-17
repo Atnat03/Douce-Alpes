@@ -61,6 +61,8 @@ public class NicheManager : TouchableObject
     private void RentrerLeChien()
     {
         chien.enabled = false;
+        agentChien.SetDestination(nichePos.position);
+        
     }
 
     private void Update()
