@@ -30,7 +30,8 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -85,6 +86,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_cff07617735346ba8b3a6165569a148e_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 4c2118b33d799bd4982c14d5b2d7d70b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_d753ca01a13b4d66b7e321e4e78a353f_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 31c82a65efec3874fac1091b5314a100, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -117,8 +122,10 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _Control_affect: 0.2
     - _Cull: 2
     - _Cutoff: 0.5
     - _Density_bumps: 1.23
@@ -131,33 +138,51 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Gradient: 1
+    - _Hard_Color: 1
     - _Metallic: 0
+    - _Movement: 1
+    - _Normal_Clay_1: 0.01
+    - _Normal_Fingertips: 0.2
+    - _Normal_Voronoi: 5
     - _OcclusionStrength: 1
+    - _Offset: 0
     - _Parallax: 0.005
+    - _Posterization_Time: 4
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Scale: 0.57
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _Smoothness_Transition: 0.39
     - _SpecularHighlights: 1
+    - _Speed: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Strenght_clay_texture: 0.33
     - _Surface: 0
+    - _Texture_Color: 1
+    - _Vertex_Offset: 0
     - _Vitesse_des_bumps: 2
     - _WorkflowMode: 1
+    - _ZTest: 4
     - _ZWrite: 1
+    - _ZWriteControl: 0
+    - _hard_Coolr: 1
+    - _intensity: 0.5
     - _smoothness: 0
     - _speed: 0.42
     - _strenght_fingerprints: 0.34
-    - _tiling_text: 1
+    - _tiling_text: 1.19
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.30277678, g: 0.53971684, b: 0.7924528, a: 1}
+    - _Couleur_ombre: {r: 0.07441794, g: 0.13644221, b: 0.2528302, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Gridsize: {r: 2, g: 2, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Tiling_voronoi: {r: 25.86, g: 2, b: 0, a: 0}
+    - _Tiling_voronoi: {r: 4.15, g: 1.11, b: 0, a: 0}
+    - _Wind_Direction: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
