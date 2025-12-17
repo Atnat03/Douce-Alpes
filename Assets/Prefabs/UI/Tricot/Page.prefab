@@ -172,7 +172,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -183,7 +183,7 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 21300000, guid: 332b2a576d9770340bad83569ee463cc, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -285,6 +285,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4899691549691921019}
+  - component: {fileID: 5906653387978885932}
   m_Layer: 5
   m_Name: Page
   m_TagString: Untagged
@@ -316,6 +317,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5906653387978885932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3262113959040261481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d481dd90044b5784b868267bdcba6eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titreProduct: {fileID: 5556158408316421131}
+  laineToDoProduct: {fileID: 5981268969017536364}
+  logoProduct: {fileID: 8169594293858890065}
+  background: {fileID: 8220982795685411570}
+  model: {fileID: 0}
+  buttonSelect: {fileID: 5572622773307359772}
 --- !u!1 &3607902343788555220
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,7 +474,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_RaycastPadding: {x: 600, y: 500, z: 600, w: 600}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

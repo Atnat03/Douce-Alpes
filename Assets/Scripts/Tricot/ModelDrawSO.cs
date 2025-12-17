@@ -7,6 +7,7 @@ public class ModelDrawSO : ScriptableObject
 {
     public string name;
     public Sprite image; 
+    public Sprite background; 
     public List<ModelDraw> pattern = new();
     public int sellPrice;
     public int unlockPrice;
