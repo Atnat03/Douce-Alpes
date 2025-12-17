@@ -306,6 +306,8 @@ public class TricotManager : MonoBehaviour
             StartCoroutine(ShowModelWithDelay(currentPattern[currentModel]));
             ApplyPrevisualisationLine();
         }
+        
+        carnetParent.gameObject.SetActive(false);
     }
 
     private IEnumerator ShowModelWithDelay(ModelDraw model)
@@ -336,5 +338,6 @@ public class TricotManager : MonoBehaviour
         }
         
         sellButton.gameObject.SetActive(false);
+        carnetParent.gameObject.SetActive(true);
     }
 }

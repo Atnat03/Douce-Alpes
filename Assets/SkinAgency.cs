@@ -17,6 +17,12 @@ public class SkinAgency : MonoBehaviour
     
     public event Action OnStacksChanged;
 
+    public int skinGrangeId = 0;
+    public int skinBarriereId = 0;
+
+    [SerializeField]private SkinBuildManager barrierSkinManager;
+    [SerializeField]private SkinBuildManagerGrange grangeSkinManager;
+
     private void Awake()
     {
         instance = this;
@@ -28,6 +34,25 @@ public class SkinAgency : MonoBehaviour
             dicoClotheSkinStack[s.id] = 0;
     }
 
+    [ContextMenu("Swap Skin")]
+    public void ChangeSkin()
+    {
+        SetSkinBarriere(1);
+        SetSkinGrange(2);
+    }
+
+    public void SetSkinGrange(int id)
+    {
+        skinGrangeId = id;
+        grangeSkinManager.SwapSkin(id);
+    }
+    
+    public void SetSkinBarriere(int id)
+    {
+        skinBarriereId = id;
+        barrierSkinManager.SwapSkin(id);
+    }
+
     private void Start()
     {
         for (int i = 0; i < 20; i++)
@@ -35,6 +60,9 @@ public class SkinAgency : MonoBehaviour
             AddHatSkinInstance(13);
             AddClotheSkinInstance(10);
         }
+        
+        SetSkinGrange(skinGrangeId);
+        SetSkinBarriere(skinGrangeId);
     }
     
     public void InitializeSheepSkin(int sheepId, int hatId, int clotheId)
