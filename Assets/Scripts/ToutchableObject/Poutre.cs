@@ -38,10 +38,10 @@ public class Poutre : MonoBehaviour
     {
         if(swipe != SwipeType.Up) return;
         
-        if (canSwipeUp())
+        if (canSwipe())
         {
             gameObject.AddComponent<Rigidbody>();
-            GetComponent<Rigidbody>().AddForce(Vector3.up * Time.deltaTime * 1000, ForceMode.Impulse);
+            GetComponent<Rigidbody>().AddForce(Vector3.up * Time.deltaTime * 500, ForceMode.Impulse);
 
             StartCoroutine(WaitALittle());
         }
@@ -55,7 +55,7 @@ public class Poutre : MonoBehaviour
         GameManager.instance.SheepGetOutGrange();
     }
 
-    bool canSwipeUp()
+    bool canSwipe()
     {
         foreach (Cadenas cadena in cadenas)
         {

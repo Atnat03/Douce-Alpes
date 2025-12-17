@@ -1,39 +1,55 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ChangeCameraRotation : MonoBehaviour
 {
-    private float[] allowedY = { -33f, 0f, 33f };
-    private int currentIndex = 1;
+    [SerializeField] private float dragSensitivity = 0.2f;
+    [SerializeField] private float minY = -33f;
+    [SerializeField] private float maxY = 33f;
 
-    [SerializeField] private float rotationSpeed = 120f;
-    private Quaternion targetRotation;
+    [Header("Bounce")]
+    [SerializeField] private float bounceStrength = 8f;     
+    [SerializeField] private float bounceReturnSpeed = 6f; 
+
+    private float currentY;
+
+    private void OnEnable()
+    {
+        SwipeDetection.instance.OnSwipeUpdated += OnDragCamera;
+    }
+
+    private void OnDisable()
+    {
+        SwipeDetection.instance.OnSwipeUpdated -= OnDragCamera;
+    }
 
     private void Start()
     {
-        SwipeDetection.instance.OnSwipeDetected += SwapCameraRotation;
-        targetRotation = transform.rotation;
+        currentY = transform.eulerAngles.y;
     }
 
     private void Update()
     {
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        if (currentY < minY)
+            currentY = Mathf.Lerp(currentY, minY, Time.deltaTime * bounceReturnSpeed);
+
+        if (currentY > maxY)
+            currentY = Mathf.Lerp(currentY, maxY, Time.deltaTime * bounceReturnSpeed);
+
+        transform.rotation = Quaternion.Euler(30f, currentY, 0f);
     }
 
-    private void SwapCameraRotation(SwipeType direction)
+    private void OnDragCamera(List<Vector2> points)
     {
-        if (direction == SwipeType.Left)
-        {
-            if (currentIndex < allowedY.Length - 1)
-                currentIndex++;
-        }
-        else if (direction == SwipeType.Right)
-        {
-            if (currentIndex > 0)
-                currentIndex--;
-        }
+        if (points.Count < 2) return;
 
-        Vector3 currentEuler = transform.rotation.eulerAngles;
-        currentEuler.y = allowedY[currentIndex];
-        targetRotation = Quaternion.Euler(currentEuler);
+        Vector2 last = points[points.Count - 1];
+        Vector2 prev = points[points.Count - 2];
+
+        float deltaX = last.x - prev.x;
+
+        currentY += -deltaX * dragSensitivity;
+
+        currentY = Mathf.Clamp(currentY, minY - bounceStrength, maxY + bounceStrength);
     }
 }

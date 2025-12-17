@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,28 +34,86 @@ public class PlayerMoney : MonoBehaviour
         txtMoney.text = currentMoney.ToString();
         txtWhool.text = currentWhool.ToString();
     }
+
+    public void AddMoneyCheat()
+    {
+        currentMoney += 100;
+    }
+    public void AddWoolCheat()
+    {
+        currentWhool += 100;
+    }
+    
     
     //Money
     public void AddMoney(int value, Vector2 pos)
     {
         Debug.Log(value  + " money ajouté");
-        currentMoney += value;
         
         bonheurUI.DropCanva(pos, value, moneySprite, moneyFinalTarget.position);
+
+        StartCoroutine(AddMoneySmooth(currentMoney + value));
     }
+
+    IEnumerator AddMoneySmooth(int finalValue)
+    {
+        yield return new WaitUntil(() => bonheurUI.IsSpawnAnimationFinished());
+
+        while (currentMoney < finalValue)
+        {
+            currentMoney += 1;
+            yield return null;
+        }
+
+        currentMoney = finalValue;
+        
+        GameData.instance.currentMoneyDay += finalValue;
+
+        bonheurUI.RemonteCanva();
+    }
+
     
     //Laine
-    public void AddWhool(int value)
+    public void AddWhool(int value, Vector2 pos)
     {
         Debug.Log(value  + " whool ajouté");
         
-        currentWhool += value;
+        bonheurUI.DropCanva(pos, value, woolSprite, woolFinalTarget.position);
         
-        //bonheurUI.DropCanva();
+        StartCoroutine(AddWoolSmooth(currentWhool + value));
+    }
+    
+    IEnumerator AddWoolSmooth(int finalValue)
+    {
+        yield return new WaitUntil(() => bonheurUI.IsSpawnAnimationFinished());
+
+        while (currentWhool < finalValue)
+        {
+            currentWhool += 1;
+            yield return null;
+        }
+
+        currentWhool = finalValue;
+        GameData.instance.currentWoolDay += finalValue;
+
+        bonheurUI.RemonteCanva();
+    }
+
+
+    public void RemoveMoney(int value)
+    {
+        currentMoney -= value;
+    }
+
+    public void RemoveWhool(int value)
+    {
+        currentWhool -= value;
     }
 
     public bool isEnoughtMoney(int value)
     {
+        print(currentMoney - value);
+        
         if (currentMoney - value >= 0)
         {
             return true;

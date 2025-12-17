@@ -16,7 +16,7 @@ public class SheepWindow : MonoBehaviour
 
     public bool isOpen = false;
     
-    [Header("Skin Selectors")]  // Ajout : Refs vers tes AddSkins
+    [Header("Skin Selectors")]
     [SerializeField] private AddSkins hatSkinSelector;
     [SerializeField] private AddSkins clotheSkinSelector;
 
@@ -32,6 +32,17 @@ public class SheepWindow : MonoBehaviour
             if (s.sheepId == sheepId)
             {
                 s.sheepName = nameText.text;
+            }
+        }
+    }
+
+    public void SetColor(int idColor)
+    {
+        foreach (Sheep s in GameManager.instance.sheepList)
+        {
+            if (s.sheepId == sheepId)
+            {
+                s.SetNewWoolColor(idColor);
             }
         }
     }
@@ -94,10 +105,25 @@ public class SheepWindow : MonoBehaviour
         this.currentSkinClothe = currentSkinClothe;
         this.sheepId = sheepId;
 
-        // Ajout : Centre les scrolls sur les skins actuels
-        if (hatSkinSelector != null) hatSkinSelector.SetStartingPanelToCurrent();
-        if (clotheSkinSelector != null) clotheSkinSelector.SetStartingPanelToCurrent();
+        // Met à jour les stacks dans SkinAgency
+        SkinAgency.instance.InitializeSheepSkin(sheepId, currentSkinHat, currentSkinClothe);
+
+        // Centre les scrolls sur les skins actuels
+        if (hatSkinSelector != null)
+        {
+            hatSkinSelector.SetStartingPanelToCurrent();
+            hatSkinSelector.SelectPanelVisual(currentSkinHat); // <-- nouveau
+            hatSkinSelector.UpdateStackDisplays();             // met à jour stacks et grisage
+        }
+
+        if (clotheSkinSelector != null)
+        {
+            clotheSkinSelector.SetStartingPanelToCurrent();
+            clotheSkinSelector.SelectPanelVisual(currentSkinClothe); // <-- nouveau
+            clotheSkinSelector.UpdateStackDisplays();
+        }
     }
+
 
     public void ResetValue()
     {

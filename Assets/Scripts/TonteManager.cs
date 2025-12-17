@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class TonteManager : MiniGameParent
 {
@@ -17,7 +18,6 @@ public class TonteManager : MiniGameParent
     [Header("UI")]
     [SerializeField] private Text nameText;
     [SerializeField] private Text nbToCutText;
-    [SerializeField] private Button backButton;
 
     [Header("Particule")]
     [SerializeField] private ParticleSystem particleTonte;
@@ -32,13 +32,16 @@ public class TonteManager : MiniGameParent
     private bool canTonte = false;
     private float currentValueTonte;
     [SerializeField] private float miniValueToEnd;
+    public int RawSheepWhoolDrop = 0;
+    
+    [SerializeField] private RectTransform spawnLaineSprite;
+    private SheepData currentSheepData;
+    [SerializeField] RectTransform toolUI; 
 
     private void Awake()
     {
         instance = this;
         SwapSceneManager.instance.SwapingTonteScene += Initialize;
-
-        backButton.onClick.AddListener(ExitScene);
     }
 
     private void OnEnable()
@@ -66,8 +69,6 @@ public class TonteManager : MiniGameParent
 
     public void Initialize()
     {
-        backButton.gameObject.SetActive(false);
-
         sheepIndex = 0;
 
         if (currentSheep != null)
@@ -86,13 +87,14 @@ public class TonteManager : MiniGameParent
         {
             nameText.text = "Tous les moutons sont finis !";
             nbToCutText.text = "";
-            backButton.gameObject.SetActive(true);
 
             EndMiniGame(TypeAmelioration.Tonte);
 
             GameData.instance.timer.canButtonT = false;
             GameData.instance.timer.canButtonC = true;
             GameData.instance.timer.UpdateAllButton();
+
+            StartCoroutine(WaitBeforeSwapScene());
 
             return;
         }
@@ -105,14 +107,30 @@ public class TonteManager : MiniGameParent
         particleTonte.transform.position = tontePoint.position;
 
         SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
+        currentSheepData = nextSheepData;
+        
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
-
+        
         nameText.text = nextSheepData.name;
+        currentSheep.GetComponent<SheepSkinManager>().Initialize(
+            nextSheepData.id,
+            nextSheepData.name,
+            true,
+            nextSheepData.colorID,
+            nextSheepData.skinHat,
+            nextSheepData.skinClothe, true);
+        
         nbToCutText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
 
         StartCoroutine(MoveOverTime(currentSheep.transform, tontePoint.position, 2f, true));
 
         sheepIndex++;
+    }
+
+    IEnumerator WaitBeforeSwapScene()
+    {
+        yield return new WaitForSeconds(2f);
+        SwapSceneManager.instance.SwapScene(1);
     }
     
     private void OnFingerPressed(Vector2 screenPos, float timer)
@@ -175,6 +193,12 @@ public class TonteManager : MiniGameParent
         Vector3 offset = direction * Mathf.Lerp(0f, 1.5f, t);
 
         particleTonte.transform.position = currentSheep.transform.position + offset;
+        
+        toolUI.position = Camera.main.WorldToScreenPoint(fingerWorldPos);
+
+        int r = Random.Range(0, 50);
+        if (r == 0)
+            Handheld.Vibrate();
 
         DetectTouchedPoint(fingerWorldPos);
     }
@@ -183,6 +207,11 @@ public class TonteManager : MiniGameParent
     {
         if (particleTonte != null)
             particleTonte.Stop();
+        
+        if (curList.Count <= miniValueToEnd && canTonte)
+        {
+            EndTonte();
+        }
     }
 
     private void DetectTouchedPoint(Vector3 fingerWorldPos)
@@ -214,36 +243,31 @@ public class TonteManager : MiniGameParent
     private void UpdateProgress()
     {
         currentValueTonte = 1f - (float)curList.Count / listPoints.Length;
-
-        if (curList.Count <= miniValueToEnd && canTonte)
-        {
-            EndTonte();
-        }
     }
 
     public void EndTonte()
     {
         if (currentSheep != null)
         {
-            PlayerMoney.instance.AddWhool(100);
+            currentSheepData.hasWhool = false;
+            PlayerMoney.instance.AddWhool(GameData.instance.GetLevelUpgrade(TypeAmelioration.Tonte), spawnLaineSprite.position);
             StartCoroutine(SendToDestroy(currentSheep));
         }
     }
 
     private IEnumerator SendToDestroy(GameObject sheep)
     {
-        yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f, false);
+        if (currentSheep == sheep)
+            currentSheep = null;
 
-        Destroy(sheep);
-        currentSheep = null;
+        if (sheep != null)
+            yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f, false);
+
+        if (sheep != null)
+            Destroy(sheep);
 
         yield return new WaitForSeconds(0.25f);
         NextSheep();
-    }
-
-    private void ExitScene()
-    {
-        SwapSceneManager.instance.SwapScene(0);
     }
 
     private void OnDestroy()

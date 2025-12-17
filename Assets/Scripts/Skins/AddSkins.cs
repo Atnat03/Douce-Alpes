@@ -19,8 +19,6 @@ public class AddSkins : MonoBehaviour
     [SerializeField] Sprite selectedSprite;
 
     [Header("Testing Mode")]
-    [Tooltip("Quand activé, affiche tous les skins du ScriptableObject, même ceux non débloqués.")]
-    [SerializeField] private bool isTesting = false;
 
     private SimpleScrollSnap snap;
     
@@ -71,9 +69,6 @@ public class AddSkins : MonoBehaviour
 
         foreach (SkinSkelete skin in skinData.skins)
         {
-            if (!isTesting && !GameData.instance.HasSkin(skin.id))
-                continue;
-
             GameObject skinGO = Instantiate(skinPrefab, snap.Content);
             SkinUnit s = skinGO.GetComponent<SkinUnit>();
             s.id = skin.id;
@@ -107,7 +102,7 @@ public class AddSkins : MonoBehaviour
         return scrollSnapBridge.ScrollSnap.Panels[selectedIndex].gameObject;
     }
 
-private void UpdateStackDisplays() 
+    public void UpdateStackDisplays()
     {
         if (snap == null || skinData == null || sheepWindow == null) return;
 
@@ -227,4 +222,26 @@ private void OnPanelCentered(int newIndex, int previousIndex)
                 return;
             }
         }
-    }}
+    }
+    
+    public void SelectPanelVisual(int skinId)
+    {
+        if (snap == null) return;
+
+        for (int i = 0; i < snap.NumberOfPanels; i++)
+        {
+            SkinUnit s = snap.Panels[i].GetComponent<SkinUnit>();
+            if (s == null) continue;
+
+            Image panelImage = snap.Panels[i].GetComponent<Image>();
+            if (panelImage == null) continue;
+
+            if (s.id == skinId)
+                panelImage.sprite = selectedSprite;
+            else
+                panelImage.sprite = unselectedSprite;
+        }
+    }
+
+    
+}

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+[DefaultExecutionOrder(-1)]
 public class SwapSceneManager : MonoBehaviour
 {
     public static SwapSceneManager instance;
@@ -10,7 +11,6 @@ public class SwapSceneManager : MonoBehaviour
 
     [SerializeField] GameObject[] scenes;
     [SerializeField] private int startScene = 0;
-    [SerializeField] private bool isTesting = true;
     public int currentSceneId;
     
     public event Action SwapingInteriorScene;
@@ -19,16 +19,16 @@ public class SwapSceneManager : MonoBehaviour
     public event Action SwapingCleanScene;
     public event Action SwapingTricotScene;
 
+    [SerializeField] private CanvasGroup fadeCanva;
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration;
 
-    [SerializeField] private DayNightCycle dayNightCycle;
     
     private void Start()
     {
-        if(isTesting)
-            SwapScene(startScene);
+        SwapScene(startScene);
         
+        fadeCanva.alpha = 0f;
         fadeImage.gameObject.SetActive(false);
     }
 
@@ -53,17 +53,55 @@ public class SwapSceneManager : MonoBehaviour
     {
         StartCoroutine(FadeTransition(scene, i));
     }
+    
+    public void SwapSceneInteriorExterior(int sceneID)
+    {
+        currentSceneId = sceneID;
+        
+        for (int i = 0; i < scenes.Length; i++)
+        {
+            if (sceneID == i)
+            {
+                AnimateSwapingSceneInteriorExterior(scenes[i], i);
+            }
+            else
+            {
+                scenes[i].SetActive(false);
+            }
+        }
+    }
 
+    void AnimateSwapingSceneInteriorExterior(GameObject scene, int i)
+    {
+        StartCoroutine(FadeTransitionInteriorExterior(scene, i));
+    }
+    
+    IEnumerator FadeTransitionInteriorExterior(GameObject scene, int i)
+    {
+        fadeCanva.alpha = 1f;
+        fadeCanva.GetComponent<Animator>().SetTrigger("Fade");
+        yield return new WaitForSeconds(1f);
+        
+        scene.SetActive(true);
+        TriggerInitialiseScene(i);
+
+        yield return null;
+        fadeCanva.GetComponent<Animator>().SetTrigger("Fade");
+        
+        yield return new WaitForSeconds(1f);
+        fadeCanva.alpha = 0f;
+    }
+
+    
     IEnumerator FadeTransition(GameObject scene, int i)
     {
-        yield return StartCoroutine(FadeOut()); 
+        yield return StartCoroutine(FadeOut());
         scene.SetActive(true);
         TriggerInitialiseScene(i);
 
         yield return StartCoroutine(FadeIn());
     }
-
-
+    
     public IEnumerator FadeIn()
     {
         float timer = 0f;
@@ -76,7 +114,7 @@ public class SwapSceneManager : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-        
+
         fadeImage.gameObject.SetActive(false);
 
         color.a = 0f;
@@ -87,7 +125,7 @@ public class SwapSceneManager : MonoBehaviour
     {
         float timer = 0f;
         Color color = fadeImage.color;
-        
+
         fadeImage.gameObject.SetActive(true);
 
         while (timer < fadeDuration)
@@ -104,6 +142,8 @@ public class SwapSceneManager : MonoBehaviour
     
     void TriggerInitialiseScene(int sceneID)
     {
+        Debug.Log(sceneID);
+        
         switch (sceneID)
         {
             case 0:
@@ -122,10 +162,5 @@ public class SwapSceneManager : MonoBehaviour
                 SwapingTricotScene?.Invoke();
                 break;
         }
-    }
-
-    private void Update()
-    {
-        dayNightCycle.enabled = currentSceneId < 2 || currentSceneId > 4;
     }
 }

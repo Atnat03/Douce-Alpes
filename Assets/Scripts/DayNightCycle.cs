@@ -22,7 +22,7 @@ public class DayNightCycle : MonoBehaviour
     private float tempSecond;
 
     [Header("Time Settings")]
-    [SerializeField] private float scaleTime = 2000f; // vitesse du temps
+    [SerializeField] private float scaleTime = 2000f;
 
     public int Minutes
     {

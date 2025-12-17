@@ -12,6 +12,8 @@ public class BonheurUI : MonoBehaviour
 
     public Image heartImage;
     
+    private bool spawnAnimationFinished = false;
+    
     [Header("State Values")]
     [Range(0, 1)] public float currentValue = 0f;
     [Range(0, 1)] public float overflowValue = 0f;
@@ -35,9 +37,13 @@ public class BonheurUI : MonoBehaviour
     private void Update()
     {
         UpdateCursorAndColor();
+        
+        if(SwapSceneManager.instance.currentSceneId == 0)
+            isDropped = false;
 
         if (isDropped)
             return;
+
         
         Vector2 pos = SwapSceneManager.instance.currentSceneId == 0 ? posVisible.position : posInvisible.position;
         canvaPlayer.transform.position = pos;
@@ -70,14 +76,33 @@ public class BonheurUI : MonoBehaviour
     {
         print("Drop Canva");
         isDropped = true;
+        spawnAnimationFinished = false;
         
         if(SwapSceneManager.instance.currentSceneId != 0)
-            StartCoroutine(AnimatedCanvaTranslation(posInvisible, posVisible));
-
-        StartCoroutine(SpawnAnimatedSprite(posSpawnSprite, value, sprite, targetPosition));
+            StartCoroutine(AnimatedCanvaTranslation(posInvisible, posVisible, posSpawnSprite, value, sprite, targetPosition));
     }
 
-    IEnumerator AnimatedCanvaTranslation(RectTransform startPos, RectTransform target, float duration = 1f)
+    public void RemonteCanva()
+    {
+        print("Remonte Canva");
+        isDropped = false;
+
+        if (SwapSceneManager.instance.currentSceneId != 0)
+            StartCoroutine(AnimatedCanvaTranslation(
+                posVisible,
+                posInvisible, 
+                Vector2.zero,
+                0, 
+                null, 
+                Vector2.zero, 
+                1f, 
+                false
+            ));
+    }
+
+    
+
+    IEnumerator AnimatedCanvaTranslation(RectTransform startPos, RectTransform target, Vector2 posSpawnSprite, int value, GameObject sprite, Vector2 targetAnimPosition,float duration = 1f, bool spawnAnim = true)
     {
         Vector3 initialPosition = startPos.position;
         Vector3 targetPosition = target.position;    
@@ -92,20 +117,76 @@ public class BonheurUI : MonoBehaviour
         }
 
         canvaPlayer.position = targetPosition;
+        
+        if(spawnAnim)
+            StartCoroutine(SpawnAnimatedSprite(posSpawnSprite, value, sprite, targetAnimPosition, true));
     }
 
-    IEnumerator SpawnAnimatedSprite(Vector2 posSpawnSprite, int value, GameObject sprite, Vector2 targetPosition)
+    public void StartAnimatedSprite(Vector2 posSpawnSprite, int value, GameObject spritePrefab, Vector2 targetPosition)
     {
-        for (int i = 0; i < value/10; i++)
+        Debug.Log(posSpawnSprite);
+        StartCoroutine(SpawnAnimatedSprite(posSpawnSprite, value, spritePrefab, targetPosition));
+    }
+    
+    IEnumerator SpawnAnimatedSprite(Vector2 posSpawnSprite, int value, GameObject spritePrefab, Vector2 targetPosition, bool undropUI = false)
+    {
+        List<GameObject> sprites = new List<GameObject>();
+        int count = value / 10;
+        float moveDuration = 0.3f;
+        float spawnRadius = 100f;
+
+        for (int i = 0; i < count; i++)
         {
-            Vector2 randomPos = Random.insideUnitCircle*100 + posSpawnSprite;
-            
-            GameObject newSprite = Instantiate(sprite, randomPos, Quaternion.identity, canvaPlayer.parent);
-            newSprite.GetComponent<AnimatedSprite>().targetPosition = targetPosition;
+            GameObject newSprite = Instantiate(spritePrefab, posSpawnSprite, Quaternion.identity, canvaPlayer.parent);
+            sprites.Add(newSprite);
+        }
+
+        List<Vector2> targetPositions = new List<Vector2>();
+        foreach (GameObject s in sprites)
+        {
+            Vector2 randomTarget = posSpawnSprite + Random.insideUnitCircle * spawnRadius;
+            targetPositions.Add(randomTarget);
+        }
+
+        float elapsedTime = 0f;
+        while (elapsedTime < moveDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsedTime / moveDuration);
+
+            for (int i = 0; i < sprites.Count; i++)
+            {
+                sprites[i].transform.position = Vector2.Lerp(posSpawnSprite, targetPositions[i], t);
+            }
+
+            yield return null;
+        }
+
+        for (int i = 0; i < sprites.Count; i++)
+        {
+            sprites[i].transform.position = targetPositions[i];
+        }
+
+        foreach (GameObject s in sprites)
+        {
+            AnimatedSprite anim = s.GetComponent<AnimatedSprite>();
+            anim.targetPosition = targetPosition;
+            if (anim != null)
+                anim.enabled = true;
         }
         
-        yield return new WaitForSeconds(2f);
+        spawnAnimationFinished = true;
+
+        yield return new WaitForSeconds(1.5f);
         
-        StartCoroutine(AnimatedCanvaTranslation(posVisible, posInvisible));
+        /*
+         if(undropUI)
+            StartCoroutine(AnimatedCanvaTranslation(posVisible, posInvisible, posSpawnSprite, value, spritePrefab, targetPosition, 1f, false));
+        */
+    }
+    
+    public bool IsSpawnAnimationFinished()
+    {
+        return spawnAnimationFinished;
     }
 }

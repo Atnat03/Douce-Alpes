@@ -19,6 +19,8 @@ public class SheepBoid : MonoBehaviour
 
     public NatureType natureBase;
 
+    public GameObject particleRun;
+
     private Color[] natureColors = new Color[]
     {
         Color.red, 
@@ -51,10 +53,13 @@ public class SheepBoid : MonoBehaviour
             }
             return;
         }
+        
+        particleRun.SetActive(isAfraid);
 
         Vector3 accel = Vector3.zero;
 
         accel += BoundaryRepulsion();
+        accel += ColliderRepulsion();
 
         velocity += accel * Time.deltaTime;
         velocity.y = 0f;
@@ -64,6 +69,7 @@ public class SheepBoid : MonoBehaviour
         if (isAfraid)
         {
             speed *= fearSpeedMultiplier;
+            speed = Mathf.Min(speed, manager.maxSpeed);
             fearTimer -= Time.deltaTime;
             if (fearTimer <= 0f)
                 CalmDown();
@@ -71,8 +77,24 @@ public class SheepBoid : MonoBehaviour
 
         velocity = velocity.normalized * speed;
 
-        // Déplacement
-        transform.position += velocity * Time.deltaTime;
+        // === Déplacement sécurisé ===
+        Vector3 move = velocity * Time.deltaTime;
+
+        float maxStep = 0.3f; // distance max par frame (ANTI-TUNNELING)
+        if (move.magnitude > maxStep)
+            move = move.normalized * maxStep;
+
+        // Raycast de sécurité
+        if (Physics.Raycast(transform.position, move.normalized, out RaycastHit hit, move.magnitude))
+        {
+            // Stop juste avant l'obstacle
+            transform.position = hit.point - move.normalized * 0.05f;
+            velocity = Vector3.zero;
+        }
+        else
+        {
+            transform.position += move;
+        }
 
         // Rotation du mouton vers la direction du mouvement
         if (velocity.sqrMagnitude > 0.001f)
@@ -123,6 +145,36 @@ public class SheepBoid : MonoBehaviour
         isAfraid = true;
         fearTimer = fearDuration;
     }
+    
+    Vector3 ColliderRepulsion()
+    {
+        Vector3 steer = Vector3.zero;
+        Vector3 pos = transform.position;
+
+        foreach (Collider col in manager.forbiddenColliders)
+        {
+            if (col == null) continue;
+
+            // Trouve le point le plus proche sur le collider
+            Vector3 closest = col.ClosestPoint(pos);
+            Vector3 delta = pos - closest;
+            delta.y = 0f;
+
+            float dist = delta.magnitude;
+
+            // Si trop proche → repousse
+            if (dist < manager.boundaryForceDistance && dist > 0f)
+            {
+                Vector3 repulsion = delta.normalized * (manager.boundaryForceDistance - dist);
+                steer += repulsion;
+
+                Debug.DrawLine(pos + Vector3.up * 0.5f, closest + Vector3.up * 0.5f, Color.cyan);
+            }
+        }
+
+        return steer * manager.boundaryWeight;
+    }
+
 
     public void CalmDown() => isAfraid = false;
     public void SetNature(NatureType type) { natureType = type; natureStrategy = NatureFactory.Create(type); }

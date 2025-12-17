@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public enum CamState
 {
@@ -27,8 +28,9 @@ public class SheepData
     public int skinClothe;
 	public bool hasWhool;
     public NatureType nature;
+    public int colorID;
 
-    public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature)
+    public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature, int colorID)
     {
         this.id = id;
         this.name = name;
@@ -36,6 +38,7 @@ public class SheepData
         this.skinClothe = skinClothe;
 		this.hasWhool = hasWhool;
         this.nature = nature;
+        this.colorID = colorID;
     }
 }
 
@@ -99,11 +102,16 @@ public class GameManager : MonoBehaviour
     private Dictionary<int, float> sheepLastSwipeTime = new Dictionary<int, float>();
 
     [SerializeField] public Button buttonForTonte;
+    [SerializeField] public GameObject friendsUI;
     
     [Header("Caresse Visualizer")]
     public float[] caresseCurveValues;
     
     int RealTime = System.DateTime.Now.Hour;
+    
+    [SerializeField] public GameObject poufParticle;
+    [SerializeField] public Transform particleSpawn;
+    [SerializeField] public GameObject sheepCreatorButton;
     
     private void Awake()
     {
@@ -140,7 +148,7 @@ public class GameManager : MonoBehaviour
 
     public void ResetCamera()
     {
-        cameraFollow.enabled = true;
+        cameraFollow.enabled = false;
         
         ChangePlayerEnvironnement(true);
 
@@ -240,23 +248,32 @@ public class GameManager : MonoBehaviour
 
         float bonus = caresseBaseValue * Mathf.Exp(-sheepFatigue[id] / saturationCarrese);
 
-        if (bonus > 0.01f) 
+        if (bonus > 0.01f)
         {
-            Debug.Log("Carresse" + bonus);
-            BonheurCalculator.instance.currentBonheur = Mathf.Min(BonheurCalculator.instance.maxBonheur, BonheurCalculator.instance.currentBonheur + bonus);
-            sheepFatigue[id] += 1f; 
+            Debug.Log("Carresse " + bonus);
+
+            BonheurCalculator.instance.AddBonheur(Camera.main.WorldToScreenPoint(sheep.gameObject.transform.position), bonus);
+
+            sheepFatigue[id] += 1f;
         }
 
         sheepLastSwipeTime[id] = Time.time;
     }
-
+    
     private void Update()
     {
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
+        
+        friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
+        sheepCreatorButton.SetActive(currentCameraState == CamState.Default);
 
-        CheckAllSheepHasWool();
-
-        //buttonForTonte.interactable = GameData.instance.sheepDestroyData.Count != 0;
+        if (CheckAllSheepHasWool())
+        {
+            if (currentSheepGrange == null)
+            {
+                CheckBubble(false);
+            }
+        }
     }
 
     public void AddAllSheep() 
@@ -272,10 +289,12 @@ public class GameManager : MonoBehaviour
     {
         if (!sheepList.Contains(sheep)) Debug.LogError("Le mouton n'existe pas");
 
-        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkinHat,  sheep.currentSkinClothe, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType);
+        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkinHat,  sheep.currentSkinClothe, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType, sheep.currentColorID);
         GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);
+        SheepEnter?.Invoke(sheep.gameObject);
+        
         Destroy(sheep.gameObject);
         
         grange.AddSheepInGrange();
@@ -283,13 +302,33 @@ public class GameManager : MonoBehaviour
         if (sheepList.Count == 0)
         {
             sheepList = new List<Sheep>();
-            GameData.instance.timer.canButtonG = false;
-            GameData.instance.timer.canButtonT = true;
-            GameData.instance.timer.UpdateAllButton();
+            
+            StartCoroutine(NextFrameChangeScene());
         }
         
-        SheepEnter?.Invoke(sheep.gameObject);
     }
+
+    IEnumerator NextFrameChangeScene()
+    {
+        grange.CloseDoors();
+        
+        yield return new WaitForSeconds(1f);
+        
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
+        {
+            GameData.instance.timer.canButtonG = false;
+            GameData.instance.timer.canButtonT = true;
+
+            GameData.instance.StartMiniGameCooldown(TypeAmelioration.Rentree);
+            
+            BonheurCalculator.instance.AddBonheur(Vector2.zero, GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
+            
+            grange.CloseUI();
+            GameData.instance.timer.UpdateAllButton();
+            SwapSceneManager.instance.SwapSceneInteriorExterior(1);
+        }
+    }
+
     
     public void SheepGetOutGrange()
     {
@@ -300,19 +339,23 @@ public class GameManager : MonoBehaviour
     {
         List<SheepData> toRemove = new List<SheepData>();
 
-        BonheurCalculator.instance.AddBonheur(GameData.instance.GetLevelUpgrade(TypeAmelioration.Sortie));
+        BonheurCalculator.instance.AddBonheur(Vector2.zero, GameData.instance.GetLevelUpgrade(TypeAmelioration.Sortie));
 
         grange.OpenDoors();
         grange.GetPoutre().ResetPoutre();
         grange.AllSheepAreOutside = false;
+        
+        yield return new WaitForSeconds(1f);
 
-        float delayBetweenSheep = 1f; 
+        float delayBetweenSheep = 0.75f; 
 
         foreach (SheepData sheepData in GameData.instance.sheepDestroyData)
         {
             GameObject newSheep = SheepBoidManager.instance.SheepGetOffAndRecreate(sheepData, grange.spawnGetOffTransform.position);
             Sheep sheep = newSheep.GetComponent<Sheep>();
 
+            Instantiate(poufParticle, particleSpawn.position + Vector3.right, Quaternion.identity);
+            
             if (sheepData.hasWhool == false)
                 sheep.CutWhool();
             else
@@ -326,7 +369,7 @@ public class GameManager : MonoBehaviour
 
             sheepList.Add(sheep);
             toRemove.Add(sheepData);
-
+            
             yield return new WaitForSeconds(delayBetweenSheep);
         }
 
@@ -334,6 +377,18 @@ public class GameManager : MonoBehaviour
             TutoManager.instance.GoToShop();
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
+        GameData.instance.timer.UpdateAllButton();
+        
+        StartCoroutine(GetOffGrange());
+
+    }
+
+    IEnumerator GetOffGrange()
+    {
+        Camera.main.GetComponent<ChangingCamera>().ResetPosition();
+        
+        yield return new WaitForSeconds(1f);
+        GameData.instance.RecapOfTheDay();
     }
     
     //Abreuvoir
@@ -343,12 +398,104 @@ public class GameManager : MonoBehaviour
         ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles, abreuvoir.transform);
     }
 
-    public void CheckAllSheepHasWool()
+    public bool CheckAllSheepHasWool()
     {
         foreach (Sheep s in sheepList)
         {
             if (!s.hasLaine)
+            {
                 GameData.instance.timer.canButtonT = false;
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    void ResetTheScene()
+    {
+        Debug.Log("Reset the scene");
+        
+        cameraFollow.enabled = true;
+        cameraFollow.ResetCameraPoseDefault();
+        cameraFollow.GetComponent<ChangingCamera>().StopAll();
+    }
+
+    void OnEnable()
+    {
+        SwapSceneManager.instance.SwapingDefaultScene += ResetTheScene;
+    }
+    
+    void OnDisable()
+    {
+        SwapSceneManager.instance.SwapingDefaultScene -= ResetTheScene;
+    }
+
+    public void AnimatedBackFlip()
+    {
+        foreach (Sheep sheep in sheepList)
+        {
+            sheep.GetComponent<Animator>().SetTrigger("Flip");
         }
     }
+
+    #region Bubble
+
+    public Sheep currentSheepGrange = null;
+    public Sheep currentSheepAbreuvoir = null;
+
+    public void CheckBubble(bool isDrink)
+    {
+        Debug.Log("Checking Bubble");
+        if (isDrink)
+        {
+            Debug.Log("drink");
+            if (currentSheepAbreuvoir == null)
+            {
+                Debug.Log("drink pas null");
+            
+                List<Sheep> availableSheep = sheepList.FindAll(sheep => !sheep.HasActiveBubble());
+            
+                if (availableSheep.Count > 0)
+                {
+                    currentSheepAbreuvoir = availableSheep[Random.Range(0, availableSheep.Count)];
+                    currentSheepAbreuvoir.ActivatedBubble(true);
+                }
+                else
+                {
+                    Debug.LogWarning("Aucun mouton disponible pour l'abreuvoir");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("pas drink");
+            if (currentSheepGrange == null)
+            {
+                Debug.Log("pas drink pas null");
+            
+                List<Sheep> availableSheep = sheepList.FindAll(sheep => !sheep.HasActiveBubble());
+            
+                if (availableSheep.Count > 0)
+                {
+                    currentSheepGrange = availableSheep[Random.Range(0, availableSheep.Count)];
+                    currentSheepGrange.ActivatedBubble(false);
+                }
+                else
+                {
+                    Debug.LogWarning("Aucun mouton disponible pour la grange");
+                }
+            }
+        }
+    }
+    public void DisableDinkBubble()
+    {
+        currentSheepAbreuvoir.DisableBubble();
+        currentSheepAbreuvoir = null;
+        abreuvoir.alreadyBubble = false;
+    }
+    
+    public void DisableGrangeBubble() => currentSheepAbreuvoir.DisableBubble();
+
+    #endregion
 }

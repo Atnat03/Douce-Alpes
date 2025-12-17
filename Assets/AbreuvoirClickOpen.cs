@@ -18,9 +18,10 @@ public class AbreuvoirClickOpen : TouchableObject
         ActivateAbreuvoir();
     }
 
-    private void ActivateAbreuvoir()
+    public void ActivateAbreuvoir()
     {
         GameManager.instance.ChangeCameraState(CamState.Drink);
         GameManager.instance.ChangeCameraPos(camPos.transform.position, camPos.transform.localEulerAngles, targetTransiPos);
+        abreuvoir.EnableEau();
     }
 }

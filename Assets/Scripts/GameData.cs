@@ -21,6 +21,7 @@ public class GameData : MonoBehaviour
     public int nbSheep;
     public bool isSheepInside = false;
     [SerializeField] public GameObject sheepPrefab;
+    public int numberDay = 0;
 
     public bool hasTonte = false;
     public bool hasClean = false;
@@ -39,6 +40,14 @@ public class GameData : MonoBehaviour
     public Dictionary<TypeAmelioration, (AmeliorationValueSO, int)> dicoAmélioration = new();
     
     [HideInInspector] public TimerManager timer;
+
+    public bool isTesting = true;
+
+    public WeatherManager dayMoment;
+    public DayRecapManager dayRecap;
+    
+    public int currentMoneyDay = 0;
+    public int currentWoolDay = 0;
     
     private void Awake()
     {
@@ -53,8 +62,7 @@ public class GameData : MonoBehaviour
 
     private void Start()
     {
-        dicoAmélioration = new()
-        {
+        dicoAmélioration = new() {
             { TypeAmelioration.Tonte, (soUpgradeList[0], 0)},
             { TypeAmelioration.Sortie, (soUpgradeList[1], 0)},
             { TypeAmelioration.Rentree, (soUpgradeList[2], 0)},
@@ -62,10 +70,35 @@ public class GameData : MonoBehaviour
             { TypeAmelioration.Abreuvoir, (soUpgradeList[4], 0)},
             //{ TypeAmelioration.Overflow, (soUpgradeList[5], 0)},
         };
-        
-        UpdateAllCooldownTimers();
-        
+
+        Array.Fill(coolDownTimers, 0);
+
         timer = GetComponent<TimerManager>();
+
+        if (!isTesting)
+            return;
+        
+        SheepData s1 = new SheepData(
+            0,
+            "Antoine",
+            13,
+            10,
+            false,
+            NatureType.Standard,
+            0
+        );
+        SheepData s2 = new SheepData(
+            1,
+            "Antoine",
+            13,
+            10,
+            false,
+            NatureType.Standard,
+            0
+        );
+        
+        sheepDestroyData.Add(s1);
+        sheepDestroyData.Add(s2);
     }
 
     private void SaveMyData()
@@ -76,18 +109,19 @@ public class GameData : MonoBehaviour
     private void LoadMyData(PlayerData data)
     {
         if (data == null) return;
-
         timeWhenLoad = data.lastTime;
-
         double now = DateTimeOffset.Now.ToUnixTimeSeconds();
         timeSinceLastLoad = now - timeWhenLoad;
+
+        Array.Fill(coolDownTimers, 0);
     }
 
     private void Update()
     {
         isSheepInside = sheepDestroyData.Count == nbSheep;
     }
-
+    
+    
     #region SKIN
 
     public bool HasSkin(int id) => unlockedSkinIDs.Contains(id);
@@ -125,7 +159,7 @@ public class GameData : MonoBehaviour
         var oldTuple = dicoAmélioration[type];
         var newTuple = (oldTuple.Item1, oldTuple.Item2 + 1);
         dicoAmélioration[type] = newTuple;
-
+        
         Debug.Log($"{dicoAmélioration[type].Item1} + {dicoAmélioration[type].Item2}");
     }
 
@@ -166,14 +200,6 @@ public class GameData : MonoBehaviour
             case TypeAmelioration.Rentree: coolDownTimers[2] = value; break;
             case TypeAmelioration.Nettoyage: coolDownTimers[3] = value; break;
             case TypeAmelioration.Abreuvoir: coolDownTimers[4] = value; break;
-        }
-    }
-
-    public void UpdateAllCooldownTimers()
-    {
-        foreach (var type in dicoAmélioration.Keys)
-        {
-            SetCooldownTimer(type, GetCooldownUpgrade(type));
         }
     }
 
@@ -225,4 +251,23 @@ public class GameData : MonoBehaviour
     }
 
     #endregion
+
+    public void RecapOfTheDay()
+    {
+        int happyPercent = BonheurCalculator.instance.GetBonheurPercentage();
+        
+        dayRecap.Recap(
+            numberDay,
+            happyPercent,
+            currentMoneyDay,
+            currentWoolDay,
+            numberDay + 1);
+    }
+    
+    
+    public void ResetDayStats()
+    {
+        currentMoneyDay = 0;
+        currentWoolDay = 0;
+    }
 }

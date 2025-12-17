@@ -43,6 +43,9 @@ public class SheepBoidManager : MonoBehaviour
     [SerializeField] public InputField nameInputField;
     
     public int nbInstantSheep = 0;
+    
+    [Header("Colliders à éviter")]
+    public List<Collider> forbiddenColliders = new List<Collider>();
 
     private void Awake() => instance = this;
 
@@ -170,6 +173,8 @@ public class SheepBoidManager : MonoBehaviour
 
         nbInstantSheep++;
         GameData.instance.nbSheep++;
+        
+        GameManager.instance.LockCamOnSheep(sheepScript);
 
 
         OnListChanged?.Invoke(sheep);
@@ -216,6 +221,7 @@ public class SheepBoidManager : MonoBehaviour
         sheepScript.currentSkinClothe = data.skinClothe;
         sheepScript.hasLaine = data.hasWhool;
         sheepScript.sheepName = data.name;
+        sheepScript.currentColorID = data.colorID;
         sheep.natureType = data.nature;
 
         GameManager.instance.sheepList.Add(sheepScript);

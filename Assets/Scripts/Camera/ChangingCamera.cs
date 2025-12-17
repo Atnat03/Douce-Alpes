@@ -50,6 +50,13 @@ public class ChangingCamera : MonoBehaviour
         GameManager.instance.OnClickOnShop -= ChangeCamera;
     }
 
+    public void StopAll()
+    {
+        StopAllCoroutines();
+        isInTransition = false;
+        ResetPosition();
+    }
+
     // ----------------------------------------------------------------------
     private static Quaternion EnsureShortest(Quaternion from, Quaternion to)
     {

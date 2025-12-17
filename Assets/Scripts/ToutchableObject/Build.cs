@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Build : TouchableObject
@@ -18,5 +19,24 @@ public class Build : TouchableObject
             return;
 
         GetComponentInChildren<OnBecameInvisibleObject>().ActivateUI();
+    }
+    
+    public void OpenUI()
+    {
+        UI.SetActive(true);
+
+        StopAllCoroutines();
+        StartCoroutine(CloseDelay());
+    }
+
+    IEnumerator CloseDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        CloseUI();
+    }
+    
+    public void CloseUI()
+    {
+        UI.SetActive(false);
     }
 }

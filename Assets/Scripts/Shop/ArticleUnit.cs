@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [Serializable]
 public enum ArticleType
 {
-    Hat, Clothe, None
+    Hat, Clothe, Grange, Barriere,Amelioration, None
 }
 
 public class ArticleUnit : MonoBehaviour

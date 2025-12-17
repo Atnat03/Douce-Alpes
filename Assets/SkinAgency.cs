@@ -17,6 +17,12 @@ public class SkinAgency : MonoBehaviour
     
     public event Action OnStacksChanged;
 
+    public int skinGrangeId = 0;
+    public int skinBarriereId = 0;
+
+    [SerializeField]private SkinBuildManager barrierSkinManager;
+    [SerializeField]private SkinBuildManagerGrange grangeSkinManager;
+
     private void Awake()
     {
         instance = this;
@@ -28,13 +34,66 @@ public class SkinAgency : MonoBehaviour
             dicoClotheSkinStack[s.id] = 0;
     }
 
-    [ContextMenu("AddSkin")]
-    public void AddSkin()
+    [ContextMenu("Swap Skin")]
+    public void ChangeSkin()
     {
-        AddHatSkinInstance(1);
-        AddHatSkinInstance(0);
-        AddHatSkinInstance(1);
-        AddHatSkinInstance(0);
+        SetSkinBarriere(1);
+        SetSkinGrange(2);
+    }
+
+    public void SetSkinGrange(int id)
+    {
+        skinGrangeId = id;
+        grangeSkinManager.SwapSkin(id);
+    }
+    
+    public void SetSkinBarriere(int id)
+    {
+        skinBarriereId = id;
+        barrierSkinManager.SwapSkin(id);
+    }
+
+    private void Start()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            AddHatSkinInstance(13);
+            AddClotheSkinInstance(10);
+        }
+        
+        SetSkinGrange(skinGrangeId);
+        SetSkinBarriere(skinGrangeId);
+    }
+    
+    public void InitializeSheepSkin(int sheepId, int hatId, int clotheId)
+    {
+        if (hatId >= 0)
+        {
+            dicoHatSkinStack[hatId] = Mathf.Max(dicoHatSkinStack[hatId] - 1, 0);
+            hatSkinEquippedOnSheep[sheepId] = hatId;
+        }
+
+        if (clotheId >= 0)
+        {
+            dicoClotheSkinStack[clotheId] = Mathf.Max(dicoClotheSkinStack[clotheId] - 1, 0);
+            clotheSkinEquippedOnSheep[sheepId] = clotheId;
+        }
+
+        OnStacksChanged?.Invoke();
+    }
+
+
+    [ContextMenu("Add All skins")]
+    public void AddSkinInstance()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 13; j++)
+                AddHatSkinInstance(j);
+            
+            for (int j = 0; j < 10; j++)
+                AddClotheSkinInstance(j);
+        }
     }
 
     public void AddHatSkinInstance(int id) => dicoHatSkinStack[id]++;
@@ -43,16 +102,14 @@ public class SkinAgency : MonoBehaviour
     public bool CanEquipHat(int skinId) => dicoHatSkinStack.ContainsKey(skinId) && dicoHatSkinStack[skinId] > 0;
     public bool CanEquipClothe(int skinId) => dicoClotheSkinStack.ContainsKey(skinId) && dicoClotheSkinStack[skinId] > 0;
 
-    // ⚡ Équipe le skin sur le mouton et réserve le stock
     public void EquipHat(int sheepId, int skinId) 
     {
-        Debug.Log("Hat");
         if (!CanEquipHat(skinId)) return;
         if (hatSkinEquippedOnSheep.TryGetValue(sheepId, out int prev)) 
-            dicoHatSkinStack[prev]++;  // Libère l'ancien
+            dicoHatSkinStack[prev]++;  
         hatSkinEquippedOnSheep[sheepId] = skinId;
-        dicoHatSkinStack[skinId]--;  // Réserve le nouveau
-        OnStacksChanged?.Invoke();  // Ajout
+        dicoHatSkinStack[skinId]--;  
+        OnStacksChanged?.Invoke();  
     }
 
     public void UnequipHat(int sheepId) 
@@ -61,7 +118,7 @@ public class SkinAgency : MonoBehaviour
         {
             dicoHatSkinStack[skinId]++;
             hatSkinEquippedOnSheep.Remove(sheepId);
-            OnStacksChanged?.Invoke();  // Ajout
+            OnStacksChanged?.Invoke();  
         }
     }
 
@@ -72,7 +129,7 @@ public class SkinAgency : MonoBehaviour
             dicoClotheSkinStack[prev]++;
         clotheSkinEquippedOnSheep[sheepId] = skinId;
         dicoClotheSkinStack[skinId]--;
-        OnStacksChanged?.Invoke();  // Ajout
+        OnStacksChanged?.Invoke(); 
     }
 
     public void UnequipClothe(int sheepId) 
@@ -81,7 +138,7 @@ public class SkinAgency : MonoBehaviour
         {
             dicoClotheSkinStack[skinId]++;
             clotheSkinEquippedOnSheep.Remove(sheepId);
-            OnStacksChanged?.Invoke();  // Ajout
+            OnStacksChanged?.Invoke();  
         }
     }
 }

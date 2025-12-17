@@ -9,10 +9,15 @@ public class Cadenas : TouchableObject
 
     [SerializeField] private ParticleSystem touchEffect;
     [SerializeField] private ParticleSystem unlockEffect;
-    [SerializeField] private ParticleSystem touchGroundEffect;
     
     Vector3 pos;
     private Vector3 rot;
+    
+    [SerializeField] Animator animator;
+    [SerializeField] Collider colModel;
+    [SerializeField] Collider colButton;
+    
+    bool fallCadenas = false;
 
     private void Start()
     {
@@ -20,6 +25,18 @@ public class Cadenas : TouchableObject
         
         pos = transform.position;
         rot = transform.rotation.eulerAngles;
+        colModel.enabled = false;
+        colButton.enabled = true;
+    }
+
+    private void Update()
+    {
+        if(!fallCadenas)
+            animator.enabled = GameManager.instance.currentCameraState == CamState.MiniGame;
+        else
+        {
+            animator.enabled = false;
+        }
     }
 
     public override void TouchEvent()
@@ -37,6 +54,9 @@ public class Cadenas : TouchableObject
             unlockEffect.Play();
 
             gameObject.AddComponent<Rigidbody>();
+            colModel.enabled = true;
+            colButton.enabled = false;
+            fallCadenas = true;
             
             StartCoroutine(WaitBeforeDesactivate());
         }
@@ -50,18 +70,8 @@ public class Cadenas : TouchableObject
 
         transform.position = pos;
         rot = transform.rotation.eulerAngles;
-    }
-
-    public void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            ContactPoint contact = other.contacts[0];
-            Vector3 pointDeCollision = contact.point;
-            
-            touchGroundEffect.transform.position = pointDeCollision;
-            
-            touchGroundEffect.Play();
-        }
+        colModel.enabled = false;
+        colButton.enabled = true;
+        fallCadenas = false;
     }
 }
