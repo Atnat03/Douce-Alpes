@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Splines.Examples;
 using UnityEngine;
 using UnityEngine.AI;
@@ -68,7 +69,48 @@ public class NicheManager : TouchableObject
     private void Update()
     {
         dogNameTxt.text = dogName;
+        
+        float distance = Vector3.Distance(transform.position, nichePos.position);
+        Debug.Log(distance);
+
+        if (distance < 1f && !isInNiche)
+        {
+            StartCoroutine(RotateSmoothInNiche());
+        }
     }
+
+    IEnumerator RotateSmoothInNiche()
+    {
+        Quaternion startRotation = agentChien.transform.rotation;
+        Quaternion targetRotation = Quaternion.Euler(
+            0f,
+            -90,
+            0f
+        );
+
+        float duration = 0.8f;
+        float elapsedTime = 0f;
+
+        agentChien.isStopped = true;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+
+            agentChien.transform.rotation = Quaternion.Slerp(
+                startRotation,
+                targetRotation,
+                t
+            );
+
+            yield return null;
+        }
+
+        agentChien.transform.rotation = targetRotation;
+        isInNiche = true;
+    }
+
 
     public void ChangeDogName()
     {
