@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,6 +13,8 @@ public class Chien : MonoBehaviour
     private NavMeshAgent agent;
     private Transform sheepDest;
     private List<GameObject> sheepList = new List<GameObject>();
+    
+    [SerializeField] private ParticleSystem heartParticle;
 
     [SerializeField] private ParticleSystem barkEffect;
 
@@ -116,5 +118,13 @@ public class Chien : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void Carresse()
+    {
+        if (GameManager.instance.currentCameraState == CamState.Dog)
+        {
+                heartParticle.Play();
+        }   
     }
 }

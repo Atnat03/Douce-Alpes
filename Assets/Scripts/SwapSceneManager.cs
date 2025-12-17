@@ -84,6 +84,10 @@ public class SwapSceneManager : MonoBehaviour
         
         scene.SetActive(true);
         TriggerInitialiseScene(i);
+
+        yield return null;
+        fadeCanva.GetComponent<Animator>().SetTrigger("Fade");
+        
         yield return new WaitForSeconds(1f);
         fadeCanva.alpha = 0f;
     }
