@@ -18,7 +18,6 @@ public class TonteManager : MiniGameParent
     [Header("UI")]
     [SerializeField] private Text nameText;
     [SerializeField] private Text nbToCutText;
-    [SerializeField] private Button backButton;
 
     [Header("Particule")]
     [SerializeField] private ParticleSystem particleTonte;
@@ -70,8 +69,6 @@ public class TonteManager : MiniGameParent
 
     public void Initialize()
     {
-        backButton.gameObject.SetActive(false);
-
         sheepIndex = 0;
 
         if (currentSheep != null)
@@ -90,7 +87,6 @@ public class TonteManager : MiniGameParent
         {
             nameText.text = "Tous les moutons sont finis !";
             nbToCutText.text = "";
-            backButton.gameObject.SetActive(true);
 
             EndMiniGame(TypeAmelioration.Tonte);
 

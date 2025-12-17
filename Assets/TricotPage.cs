@@ -13,7 +13,7 @@ public class TricotPage : MonoBehaviour
 
     public void Initialize(ModelDrawSO model)
     {
-        titreProduct.text = name;
+        titreProduct.text = model.name;
         laineToDoProduct.text = numberTotalWool(model.pattern).ToString();
         logoProduct.sprite = model.image;
         background.sprite = model.background;
