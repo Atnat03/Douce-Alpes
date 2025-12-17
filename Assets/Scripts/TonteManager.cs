@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class TonteManager : MiniGameParent
 {
@@ -36,13 +37,12 @@ public class TonteManager : MiniGameParent
     
     [SerializeField] private RectTransform spawnLaineSprite;
     private SheepData currentSheepData;
+    [SerializeField] RectTransform toolUI; 
 
     private void Awake()
     {
         instance = this;
         SwapSceneManager.instance.SwapingTonteScene += Initialize;
-
-        backButton.onClick.AddListener(ExitScene);
     }
 
     private void OnEnable()
@@ -98,6 +98,8 @@ public class TonteManager : MiniGameParent
             GameData.instance.timer.canButtonC = true;
             GameData.instance.timer.UpdateAllButton();
 
+            StartCoroutine(WaitBeforeSwapScene());
+
             return;
         }
 
@@ -127,6 +129,12 @@ public class TonteManager : MiniGameParent
         StartCoroutine(MoveOverTime(currentSheep.transform, tontePoint.position, 2f, true));
 
         sheepIndex++;
+    }
+
+    IEnumerator WaitBeforeSwapScene()
+    {
+        yield return new WaitForSeconds(2f);
+        SwapSceneManager.instance.SwapScene(1);
     }
     
     private void OnFingerPressed(Vector2 screenPos, float timer)
@@ -189,6 +197,12 @@ public class TonteManager : MiniGameParent
         Vector3 offset = direction * Mathf.Lerp(0f, 1.5f, t);
 
         particleTonte.transform.position = currentSheep.transform.position + offset;
+        
+        toolUI.position = Camera.main.WorldToScreenPoint(fingerWorldPos);
+
+        int r = Random.Range(0, 50);
+        if (r == 0)
+            Handheld.Vibrate();
 
         DetectTouchedPoint(fingerWorldPos);
     }
@@ -258,11 +272,6 @@ public class TonteManager : MiniGameParent
 
         yield return new WaitForSeconds(0.25f);
         NextSheep();
-    }
-
-    private void ExitScene()
-    {
-        SwapSceneManager.instance.SwapScene(1);
     }
 
     private void OnDestroy()

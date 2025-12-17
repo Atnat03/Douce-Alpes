@@ -12,7 +12,7 @@ public class SkinShopManager : ShopManager
             Debug.Log("Buy");
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
-                    
+            
             if(selectedArticle.type == ArticleType.Hat)
                 SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);
             else if(selectedArticle.type == ArticleType.Clothe)
