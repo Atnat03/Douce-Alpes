@@ -207,6 +207,15 @@ public class SwipeDetection : MonoBehaviour
                 currentlyCaressedSheep.Remove(s);
             }
         }
+
+        if (SwapSceneManager.instance.currentSceneId == 0 && GameManager.instance.currentCameraState == CamState.Dog &&
+            Physics.Raycast(ray, out hit))
+        {
+            Chien chien = hit.collider.GetComponent<Chien>();
+            if (chien != null) {
+                chien.Carresse();
+            }
+        }
     }
 
     private Vector3 GetCleaningCenter() {

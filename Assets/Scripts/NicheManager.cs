@@ -1,6 +1,8 @@
 using System;
+using Unity.Splines.Examples;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class NicheManager : TouchableObject
 {
@@ -10,8 +12,8 @@ public class NicheManager : TouchableObject
     [SerializeField] private bool isInNiche = false;
     [SerializeField] private Transform cameraZoomPos;
     [SerializeField] private GameObject buttonQuit;
-    Vector3 startPos;
-    Vector3 startRot;
+    [SerializeField] private InputField dogNameTxt;
+    
 
     public string dogName = "";
     
@@ -20,10 +22,15 @@ public class NicheManager : TouchableObject
         GameManager.instance.startMiniGame += SortirLeChien;
         GameManager.instance.endMiniGame += RentrerLeChien;
         
-        startPos = chien.transform.position;
-        startRot = chien.transform.rotation.eulerAngles;
+    }
 
-        chien.enabled = false;
+    public override void TouchEvent()
+    {
+        base.TouchEvent();
+        
+        GameManager.instance.ChangeCameraState(CamState.Dog);
+        GameManager.instance.ChangeCameraPos(cameraZoomPos.position, cameraZoomPos.rotation.eulerAngles, transform);
+        buttonQuit.SetActive(true);
     }
 
     void OnEnable()
@@ -54,17 +61,15 @@ public class NicheManager : TouchableObject
     private void RentrerLeChien()
     {
         chien.enabled = false;
-        agentChien.SetDestination(startPos);
     }
 
     private void Update()
     {
-        if (!chien.enabled)
-            return;
-        
-        isInNiche = Vector3.Distance(chien.transform.position, startPos) < 0.2f;
+        dogNameTxt.text = dogName;
+    }
 
-        if (isInNiche)
-            chien.transform.rotation = Quaternion.Euler(startRot);
+    public void ChangeDogName()
+    {
+        dogName = dogNameTxt.text;
     }
 }

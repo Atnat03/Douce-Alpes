@@ -10,10 +10,14 @@ public class SheepFearZone : MonoBehaviour
     [SerializeField] private bool showDebug = true;
 
     private List<SheepBoid> sheepList = new List<SheepBoid>();
+    
+    public GameObject particle;
 
     private void Update()
     {
         ScareNearbySheep();
+
+        particle.SetActive(!GameData.instance.isSheepInside);
     }
 
     private void ScareNearbySheep()
