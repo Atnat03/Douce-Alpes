@@ -31,7 +31,6 @@ public class Grange : Build
     {
         keyCloseGate.SetActive(false); 
         gateState = true;
-        //OpenDoors();
     }
 
     private void OnEnable()

@@ -21,24 +21,25 @@ public class PianoCailloux : MonoBehaviour
         
         audioSource.PlayOneShot(clip);
         currentTry.Add(id);
-
-        if (currentTry.Count == correctMelody.Count)
+        if (CheckIfCorrectMelody())
         {
-            if (CheckIfCorrectMelody())
-            {
-                StartCoroutine(WaitBeforeBackFlip());
-                Debug.Log("Good melody");
-            }
-            else
-            {
-                audioSource.PlayOneShot(badMelody);
-                Debug.Log("Bad melody");
-            }
-            currentTry =  new List<int>();
+            StartCoroutine(WaitBeforeBackFlip());
+            Debug.Log("Good melody");
         }
-        
+        else
+        {
+            StartCoroutine(WaitBefore());
+        }
     }
 
+    IEnumerator WaitBefore()
+    {
+        yield return new WaitForSeconds(0.25f);
+        audioSource.PlayOneShot(badMelody);
+        currentTry =  new List<int>();
+        Debug.Log("Bad melody");
+    }
+    
     IEnumerator WaitBeforeBackFlip()
     {
 		yield return new WaitForSeconds(0.25f);
@@ -48,6 +49,7 @@ public class PianoCailloux : MonoBehaviour
 
         GameManager.instance.AnimatedBackFlip();
         canTouch = true;
+        currentTry =  new List<int>();
     }
 
     public bool CheckIfCorrectMelody()
