@@ -12,10 +12,12 @@ public class Poutre : MonoBehaviour
     [SerializeField] private ParticleSystem touchGroundEffect;
     
     Vector3 Startpos;
+    Quaternion startRotation;
 
     private void Start()
     {
         Startpos = transform.position;
+        startRotation = transform.rotation;
     }
 
     public void ResetPoutre()
@@ -32,6 +34,7 @@ public class Poutre : MonoBehaviour
         }
 
         gameObject.transform.position = Startpos;
+        gameObject.transform.rotation = startRotation;
     }
 
     public void GetOffPoutre(SwipeType swipe)

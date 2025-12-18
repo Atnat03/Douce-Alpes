@@ -133,6 +133,8 @@ public class Sheep : TouchableObject
             
             SetCurrentSkinClothe(currentSkinClothe);
             SetCurrentSkinHat(currentSkinHat);
+            
+            GameManager.instance.UpdateGrangeAvailability();
         }
     }
 

@@ -118,7 +118,8 @@ public class GameData : MonoBehaviour
 
     private void Update()
     {
-        isSheepInside = sheepDestroyData.Count == nbSheep;
+        if(SheepBoidManager.instance.nbInstantSheep > 0)
+            isSheepInside = sheepDestroyData.Count == nbSheep;
     }
     
     

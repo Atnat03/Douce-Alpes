@@ -265,9 +265,10 @@ public class GameManager : MonoBehaviour
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
         
         friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
-        sheepCreatorButton.SetActive(currentCameraState == CamState.Default);
+        sheepCreatorButton.SetActive(currentCameraState == CamState.Default 
+        && !GameData.instance.isSheepInside); 
 
-        if (CheckAllSheepHasWool())
+        if (CheckAllSheepHasWool() && sheepList.Count > 0)
         {
             if (currentSheepGrange == null)
             {
@@ -324,6 +325,7 @@ public class GameManager : MonoBehaviour
             BonheurCalculator.instance.AddBonheur(Vector2.zero, GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
             
             grange.CloseUI();
+            
             GameData.instance.timer.UpdateAllButton();
             SwapSceneManager.instance.SwapSceneInteriorExterior(1);
         }
@@ -367,7 +369,6 @@ public class GameManager : MonoBehaviour
 
             grange.AnimSheepGetOffGrange(newSheep);
 
-            sheepList.Add(sheep);
             toRemove.Add(sheepData);
             
             yield return new WaitForSeconds(delayBetweenSheep);
@@ -375,8 +376,11 @@ public class GameManager : MonoBehaviour
 
         if(TutoManager.instance != null)
             TutoManager.instance.GoToShop();
+        
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
+        
+        GameData.instance.timer.canButtonG = false;
         GameData.instance.timer.UpdateAllButton();
         
         StartCoroutine(GetOffGrange());
@@ -397,21 +401,30 @@ public class GameManager : MonoBehaviour
         ChangeCameraState(CamState.Drink);
         ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles, abreuvoir.transform);
     }
-
+    
     public bool CheckAllSheepHasWool()
     {
+        if (sheepList.Count == 0)
+            return false;
+
         foreach (Sheep s in sheepList)
         {
             if (!s.hasLaine)
-            {
-                GameData.instance.timer.canButtonT = false;
                 return false;
-            }
         }
 
         return true;
     }
+    
+    public void UpdateGrangeAvailability()
+    {
+        bool canEnterGrange = CheckAllSheepHasWool();
 
+        GameData.instance.timer.canButtonG = canEnterGrange;
+        GameData.instance.timer.grangeButton.interactable = canEnterGrange;
+    }
+
+    
     void ResetTheScene()
     {
         Debug.Log("Reset the scene");

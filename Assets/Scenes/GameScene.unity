@@ -15908,6 +15908,24 @@ RectTransform:
   m_AnchoredPosition: {x: 328.25, y: -50}
   m_SizeDelta: {x: 656.5, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &381626343 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1547472957110268550, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
+  m_PrefabInstance: {fileID: 1997322297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &381626347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381626343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f231e53d09f524193035b0b2301f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  build: {fileID: 1591031781}
 --- !u!1001 &384589817
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -66083,8 +66101,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.033621, y: 1, z: 1.6014674}
-  m_Center: {x: 0.1875065, y: 0, z: 0.031765845}
+  m_Size: {x: 1.0256916, y: 1.1044173, z: 1.6014674}
+  m_Center: {x: 0.19147162, y: 0.052208662, z: 0.031765845}
 --- !u!4 &1591031780
 Transform:
   m_ObjectHideFlags: 0
@@ -71809,6 +71827,24 @@ RectTransform:
   m_AnchoredPosition: {x: 101, y: 333}
   m_SizeDelta: {x: 446.9967, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1718234601 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1547472957110268550, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
+  m_PrefabInstance: {fileID: 1773604877}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1718234605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718234601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f231e53d09f524193035b0b2301f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  build: {fileID: 1591031781}
 --- !u!1 &1719079930
 GameObject:
   m_ObjectHideFlags: 0
@@ -74179,6 +74215,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1773604880}
+    - targetCorrespondingSourceObject: {fileID: -1547472957110268550, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1718234605}
   m_SourcePrefab: {fileID: 100100000, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
 --- !u!4 &1773604878 stripped
 Transform:
@@ -87228,7 +87267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1969014984
 Transform:
   m_ObjectHideFlags: 0
@@ -88271,6 +88310,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997322300}
+    - targetCorrespondingSourceObject: {fileID: -1547472957110268550, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 381626347}
   m_SourcePrefab: {fileID: 100100000, guid: 49ece68a264e2a64db2b505929d6d768, type: 3}
 --- !u!4 &1997322298 stripped
 Transform:
@@ -94466,6 +94508,12 @@ MonoBehaviour:
   - Ferdinand
   - "Marie-H\xE9l\xE8ne"
   - Philibert
+  - Antoine
+  - Icare
+  - Karel
+  - Alexandre
+  - Lillian
+  - Mathis
 --- !u!1001 &2147292478
 PrefabInstance:
   m_ObjectHideFlags: 0
