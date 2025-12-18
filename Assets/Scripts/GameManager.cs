@@ -111,6 +111,7 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] public GameObject poufParticle;
     [SerializeField] public Transform particleSpawn;
+    [SerializeField] public GameObject sheepCreatorButton;
     
     private void Awake()
     {
@@ -264,6 +265,7 @@ public class GameManager : MonoBehaviour
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
         
         friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
+        sheepCreatorButton.SetActive(currentCameraState == CamState.Default);
 
         if (CheckAllSheepHasWool())
         {
@@ -310,7 +312,7 @@ public class GameManager : MonoBehaviour
     {
         grange.CloseDoors();
         
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
         {

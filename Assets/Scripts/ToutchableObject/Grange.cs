@@ -11,9 +11,9 @@ public class Grange : Build
     [Header("Gates")]
     public bool gateState = false;
     
-    [SerializeField] private GameObject gate1;
+    [SerializeField] public GameObject gate1;
     
-    [SerializeField] private GameObject gate2;
+    [SerializeField] public GameObject gate2;
 
     [SerializeField] private GameObject keyCloseGate;
 

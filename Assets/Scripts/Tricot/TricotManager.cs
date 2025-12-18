@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,11 +36,38 @@ public class TricotManager : MonoBehaviour
 
     [SerializeField] private RectTransform spawnMoney;
 
+    [Header("Pages")]
+    [SerializeField] private Transform carnetParent;
+    [SerializeField] private GameObject pagePrefab;
+    [SerializeField] private ModelListeSO models;
+    
     private void Start()
     {
         if (okImage != null) okImage.SetActive(false);
         if (uiLineRenderer != null) uiLineRenderer.enabled = false;
         if (modelLineRenderer != null) modelLineRenderer.enabled = false;
+
+        CreateAllCarnet();
+    }
+
+    private void CreateAllCarnet()
+    {
+        foreach (ModelDrawSO model in models.listeModel)
+        {
+            CreatePage(model);
+        }
+        
+        carnetParent.GetComponent<CarnetTricot>().UpdateCarnet();
+    }
+
+    private void CreatePage(ModelDrawSO model)
+    {
+        GameObject go = Instantiate(pagePrefab, carnetParent);
+        go.transform.SetAsFirstSibling();
+        TricotPage page = go.GetComponent<TricotPage>();
+        page.Initialize(model);
+        page.buttonSelect.onClick.AddListener(() => InitalizePattern(model));
+        carnetParent.GetComponent<CarnetTricot>().AddNewPage(page.gameObject);
     }
 
     private void Update()
@@ -278,6 +306,8 @@ public class TricotManager : MonoBehaviour
             StartCoroutine(ShowModelWithDelay(currentPattern[currentModel]));
             ApplyPrevisualisationLine();
         }
+        
+        carnetParent.gameObject.SetActive(false);
     }
 
     private IEnumerator ShowModelWithDelay(ModelDraw model)
@@ -308,5 +338,6 @@ public class TricotManager : MonoBehaviour
         }
         
         sellButton.gameObject.SetActive(false);
+        carnetParent.gameObject.SetActive(true);
     }
 }

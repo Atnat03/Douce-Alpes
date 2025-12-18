@@ -6,20 +6,19 @@ using UnityEngine.UI;
 
 public class ShopManager : MonoBehaviour
 {
-    [SerializeField] private Transform listArticleParent;
-    [SerializeField] private GameObject articlePrefab;
-    [SerializeField] private ArticleScriptable data;
-    [SerializeField] private List<GameObject> articlesList = new List<GameObject>();
-    [SerializeField] private Sprite[] rareteSprite;
+    [SerializeField] protected Transform listArticleParent;
+    [SerializeField] protected GameObject articlePrefab;
+    [SerializeField] protected ArticleScriptable data;
+    [SerializeField] protected List<GameObject> articlesList = new List<GameObject>();
+    [SerializeField] protected Sprite[] rareteSprite;
     protected Article selectedArticle;
     [SerializeField] public GameObject buyPannel;
-    [SerializeField] public ArticleType typeArticle;
     public Article currentArticle;
     
     [Header("Buy")]
     [SerializeField] protected GameObject buyInfo;
     [SerializeField] protected GameObject cantBuyInfo;
-    private bool isShowingCantBuy = false;
+    protected bool isShowingCantBuy = false;
 
     private void Start()
     {
@@ -56,12 +55,10 @@ public class ShopManager : MonoBehaviour
         uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
         uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
         
-        uiArticle.articleType = typeArticle;
-        if (typeArticle != ArticleType.None)
-            uiArticle.id = article.id;
+        uiArticle.articleType = article.type;
     }
 
-    private void UpdatePrice(int articlePrice, string articleTitle)
+    protected void UpdatePrice(int articlePrice, string articleTitle)
     {
         Debug.Log("Update ui price");
         
@@ -101,7 +98,7 @@ public class ShopManager : MonoBehaviour
     }    
     
     
-    private Sprite ChangeBackGroundRarete(RareteItem articleRarete)
+    protected Sprite ChangeBackGroundRarete(RareteItem articleRarete)
     {
         return articleRarete switch
         {
