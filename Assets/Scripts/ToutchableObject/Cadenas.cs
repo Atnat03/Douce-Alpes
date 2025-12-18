@@ -67,11 +67,15 @@ public class Cadenas : TouchableObject
         yield return new WaitForSeconds(1.5f);
         gameObject.SetActive(false);
         Destroy(GetComponent<Rigidbody>());
-
-        transform.position = pos;
-        rot = transform.rotation.eulerAngles;
+        
         colModel.enabled = false;
         colButton.enabled = true;
         fallCadenas = false;
+    }
+
+    public void ResetCadenas()
+    {
+        transform.position = pos;
+        rot = transform.rotation.eulerAngles;
     }
 }

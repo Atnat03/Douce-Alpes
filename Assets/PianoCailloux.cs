@@ -21,14 +21,18 @@ public class PianoCailloux : MonoBehaviour
         
         audioSource.PlayOneShot(clip);
         currentTry.Add(id);
-        if (CheckIfCorrectMelody())
+        
+        if(currentTry.Count == correctMelody.Count)
         {
-            StartCoroutine(WaitBeforeBackFlip());
-            Debug.Log("Good melody");
-        }
-        else
-        {
-            StartCoroutine(WaitBefore());
+            if (CheckIfCorrectMelody())
+            {
+                StartCoroutine(WaitBeforeBackFlip());
+                Debug.Log("Good melody");
+            }
+            else
+            {
+                StartCoroutine(WaitBefore());
+            }
         }
     }
 

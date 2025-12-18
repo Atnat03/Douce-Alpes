@@ -184,50 +184,59 @@ public class Sheep : TouchableObject
         isBeingCaressed = false;
     }
 
+    private bool isSingleClickCoroutineRunning = false;
+
     public override void TouchEvent()
     {
-        if (GameManager.instance.currentCameraState != CamState.Default)
-            return;
-        
+        if (GameManager.instance.currentCameraState != CamState.Default) return;
         if (GameManager.instance.shopOpen) return;
 
         float timeSinceLastClick = Time.time - lastClickTime;
 
         if (timeSinceLastClick <= doubleClickThreshold)
         {
+            // Double clic détecté
+            lastClickTime = -1f;
+
             if (!isBeingCaressed && !sheepBoid.isAfraid)
             {
-                if (GameManager.instance.currentCameraState != CamState.Default) return;
-                
                 WidowOpen();
             }
+            
+            isSingleClickCoroutineRunning = false;
 
-            lastClickTime = -1f;
             return;
         }
 
+        // C'est le premier clic
         lastClickTime = Time.time;
 
-        if (GameManager.instance.getCurLockSheep() != this)
-            StartCoroutine(LockCamWithDelay());
+        if (!isSingleClickCoroutineRunning)
+            StartCoroutine(SingleClickDelay());
     }
 
-    private IEnumerator LockCamWithDelay()
+    private IEnumerator SingleClickDelay()
     {
-        float startTime = Time.time;
-
-        while (Time.time - startTime < doubleClickThreshold)
+        float elapsed = 0f;
+        while (elapsed < doubleClickThreshold)
         {
-            if (lastClickTime < 0f) yield break;
+            elapsed += Time.deltaTime;
+
+            // Si un deuxième clic est détecté, on annule le simple clic
+            if (lastClickTime < 0f)
+                yield break;
+
             yield return null;
         }
 
+        // Simple clic : lock caméra sur le mouton
         if (GameManager.instance.getCurLockSheep() != this)
             GameManager.instance.LockCamOnSheep(this);
 
         lastClickTime = -1f;
+        isSingleClickCoroutineRunning = false;
     }
-
+    
     public void WidowOpen()
     {
         isOpen = true;

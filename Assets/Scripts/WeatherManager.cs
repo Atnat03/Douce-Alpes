@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 
@@ -32,10 +33,17 @@ public class WeatherManager : MonoBehaviour
     
     [Header("Sun Light")]
     [SerializeField] private Light directionalLight;
+    
+    [SerializeField] private GameObject cameraNightVolume;
 
     private void Start()
     {
         ApplyMomentInstant(currentMoment);
+    }
+
+    private void Update()
+    {
+        cameraNightVolume.SetActive(currentMoment == DayMoment.Night);
     }
 
     public void NextMoment()

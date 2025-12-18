@@ -135,11 +135,14 @@ public class TonteManager : MiniGameParent
         yield return new WaitForSeconds(2f);
         SwapSceneManager.instance.SwapScene(1);
     }
-    
+
+    private bool isFingerDown = false;
     private void OnFingerPressed(Vector2 screenPos, float timer)
     {
         if (currentSheep == null || !canTonte)
             return;
+        
+        isFingerDown = true;
 
         Vector2 offsetScreenPos = screenPos + screenOffset;
         
@@ -200,10 +203,9 @@ public class TonteManager : MiniGameParent
         {
             particleTonte.transform.position = hit.point;
         }
-
-
+        
         int r = Random.Range(0, 50);
-        if (r == 0)
+        if (r == 0 && isFingerDown)
             Handheld.Vibrate();
 
         DetectTouchedPoint(fingerWorldPos);
@@ -212,6 +214,7 @@ public class TonteManager : MiniGameParent
 
     private void OnFingerReleased(Vector2 screenPos, float timer)
     {
+        isFingerDown = false;
         if (particleTonte != null)
             particleTonte.Stop();
         

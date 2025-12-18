@@ -26,6 +26,7 @@ public class Poutre : MonoBehaviour
         {
             cadena.transform.gameObject.SetActive(true);
             cadena.hp = cadena.maxHp;
+            cadena.ResetCadenas();
         }
 
         if (gameObject.GetComponent<Rigidbody>())
