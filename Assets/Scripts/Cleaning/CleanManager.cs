@@ -135,8 +135,6 @@ public class CleanManager : MiniGameParent
 
     private void NextSheep()
     {
-        Debug.Log($"🐑 NextSheep appelé | sheepIndex = {sheepIndex} | Total moutons = {GameData.instance.sheepDestroyData.Count}");
-
         canRotateCamera = false;
 
         currentCycle = 0;
@@ -144,7 +142,8 @@ public class CleanManager : MiniGameParent
 
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)
         {
-            Debug.Log("❌ Fin du jeu : tous les moutons sont finis");
+            ResetCleanSystem();
+            
             nameText.text = "Tous les moutons sont finis !";
             nbToCleanText.text = "";
             backButton.gameObject.SetActive(true);
@@ -159,7 +158,6 @@ public class CleanManager : MiniGameParent
         }
 
         SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
-        Debug.Log($"✅ Chargement du mouton {nextSheepData.name} (index {sheepIndex})");
 
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
         sheepTarget = currentSheep.transform;
@@ -176,7 +174,6 @@ public class CleanManager : MiniGameParent
 
         nbToCleanText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
 
-        // ✅ Lancer le mouvement et incrémenter APRÈS
         StartCoroutine(InitializeSheep(currentSheep.transform));
     }
 
@@ -185,7 +182,6 @@ public class CleanManager : MiniGameParent
         yield return StartCoroutine(MoveOverTime(sheep, cleanPoint.position, 2f));
     
         sheepIndex++;
-        Debug.Log($"📈 sheepIndex incrémenté à {sheepIndex}");
     
         ResetCleanSystem();
         FindObjectOfType<StateMachineClean>().InitializedStates();
@@ -236,16 +232,12 @@ public class CleanManager : MiniGameParent
     
         canAddShampoo = true;
         sheepIsMoving = false;
-    
-        Debug.Log("✅ MoveOverTime terminé");
     }
     public void StartNewCycle()
     {
         currentCycle++;
         alreadyShaken = false;
         randomShakeValue = Random.Range(0, maxShampoo);
-
-        Debug.Log($"🔀 Cycle {currentCycle} | Shake à {randomShakeValue}");
     }
 
     public void ResetValueClean()
@@ -307,7 +299,7 @@ public class CleanManager : MiniGameParent
             lastShampooPos = pos;
             hasLastPos = true;
             
-            int r = Random.Range(0, 10);
+            int r = Random.Range(0, 33);
             if (r == 0)
             {
                 TriggerShake();
@@ -317,7 +309,6 @@ public class CleanManager : MiniGameParent
 
     public void TriggerShake()
     {
-        Debug.Log("🐑💥 LE MOUTON SE SECOUE !");
         currentSheep.GetComponent<SheepSkinManager>().PlayShakeAnimation();
     }
 
@@ -337,16 +328,10 @@ public class CleanManager : MiniGameParent
                 shampooList.RemoveAt(i);
             }
         }
-
-        // ✅ NE PAS déclencher allCleaned ici, juste vérifier la liste globale
-        // La vérification se fait dans RightPosState après avoir rincé les 3 côtés
     }
 
     public void OnAllCleaned()
     {
-        Debug.Log("🎉 OnAllCleaned appelé");
-    
-        // ✅ Protection : éviter les appels multiples
         if (currentSheep == null)
         {
             Debug.LogWarning("⚠️ OnAllCleaned ignoré : currentSheep est null");
@@ -359,7 +344,6 @@ public class CleanManager : MiniGameParent
 
     private IEnumerator SendToDestroy(GameObject sheep)
     {
-        Debug.Log("🚀 SendToDestroy démarré");
     
         if (sheep == null || currentSheep == null)
         {
@@ -373,17 +357,14 @@ public class CleanManager : MiniGameParent
         currentSheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
         yield return new WaitForSeconds(0.3f);
     
-        // ✅ Déplacer le mouton vers la sortie
         yield return StartCoroutine(MoveOverTime(sheep.transform, destroyPoint.position, 1f));
     
-        Debug.Log("🗑️ Destruction du mouton");
         Destroy(sheep);
         currentSheep = null;
         sheepTarget = null;
     
         yield return new WaitForSeconds(0.25f);
     
-        Debug.Log("📞 SendToDestroy appelle NextSheep()");
         NextSheep();
     }  
     

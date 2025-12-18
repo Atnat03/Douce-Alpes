@@ -37,6 +37,9 @@ public class TonteManager : MiniGameParent
     [SerializeField] private RectTransform spawnLaineSprite;
     private SheepData currentSheepData;
     [SerializeField] RectTransform toolUI; 
+    
+    [Header("Finger Offset")]
+    [SerializeField] private Vector2 screenOffset = new Vector2(40f, 60f); 
 
     private void Awake()
     {
@@ -138,7 +141,9 @@ public class TonteManager : MiniGameParent
         if (currentSheep == null || !canTonte)
             return;
 
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        Vector2 offsetScreenPos = screenPos + screenOffset;
+        
+        Ray ray = Camera.main.ScreenPointToRay(offsetScreenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             // Déplacer la particule sur le doigt
@@ -183,18 +188,19 @@ public class TonteManager : MiniGameParent
         if (!particleTonte.isPlaying)
             return;
 
-        Vector3 fromCenter = fingerWorldPos - currentSheep.transform.position;
-        float distance = fromCenter.magnitude;
-        float maxDistance = 0.85f;
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(fingerWorldPos);
 
-        Vector3 direction = fromCenter.normalized;
-        float t = Mathf.Clamp01(distance / maxDistance);
-        t = Mathf.Pow(t, 1.5f);
-        Vector3 offset = direction * Mathf.Lerp(0f, 1.5f, t);
-
-        particleTonte.transform.position = currentSheep.transform.position + offset;
+        toolUI.position = screenPos;
         
-        toolUI.position = Camera.main.WorldToScreenPoint(fingerWorldPos);
+        screenPos.x += screenOffset.x;
+        screenPos.y += screenOffset.y;
+
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            particleTonte.transform.position = hit.point;
+        }
+
 
         int r = Random.Range(0, 50);
         if (r == 0)
@@ -202,6 +208,7 @@ public class TonteManager : MiniGameParent
 
         DetectTouchedPoint(fingerWorldPos);
     }
+
 
     private void OnFingerReleased(Vector2 screenPos, float timer)
     {

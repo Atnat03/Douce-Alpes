@@ -43,6 +43,7 @@ public class SheepBoid : MonoBehaviour
 
     void Update()
     {
+        // Gestion des pauses naturelles
         if (isPaused && !isAfraid)
         {
             pauseTimer -= Time.deltaTime;
@@ -53,61 +54,64 @@ public class SheepBoid : MonoBehaviour
             }
             return;
         }
-        
+
         particleRun.SetActive(isAfraid);
 
-        Vector3 accel = Vector3.zero;
-
-        accel += BoundaryRepulsion();
-        accel += ColliderRepulsion();
-
+        // Calcul des forces
+        Vector3 accel = BoundaryRepulsion() + ColliderRepulsion();
         velocity += accel * Time.deltaTime;
         velocity.y = 0f;
 
-        float speed = Mathf.Clamp(velocity.magnitude, manager.minSpeed, manager.maxSpeed);
-
+        float baseSpeed = velocity.magnitude;
         if (isAfraid)
         {
-            speed *= fearSpeedMultiplier;
-            speed = Mathf.Min(speed, manager.maxSpeed);
+            baseSpeed *= fearSpeedMultiplier;
             fearTimer -= Time.deltaTime;
             if (fearTimer <= 0f)
                 CalmDown();
         }
 
-        velocity = velocity.normalized * speed;
+        velocity = velocity.normalized * baseSpeed;
 
-        // === Déplacement sécurisé ===
-        Vector3 move = velocity * Time.deltaTime;
+        // Déplacement sécurisé
+        Vector3 remainingMove = velocity * Time.deltaTime;
+        float maxStep = 0.5f;
+        int maxIterations = 10; // éviter boucle infinie
 
-        float maxStep = 0.3f; // distance max par frame (ANTI-TUNNELING)
-        if (move.magnitude > maxStep)
-            move = move.normalized * maxStep;
-
-        // Raycast de sécurité
-        if (Physics.Raycast(transform.position, move.normalized, out RaycastHit hit, move.magnitude))
+        while (remainingMove.magnitude > 0.001f && maxIterations > 0)
         {
-            // Stop juste avant l'obstacle
-            transform.position = hit.point - move.normalized * 0.05f;
-            velocity = Vector3.zero;
-        }
-        else
-        {
-            transform.position += move;
+            Vector3 step = Vector3.ClampMagnitude(remainingMove, maxStep);
+
+            if (step.magnitude < 0.0001f)
+                break;
+
+            if (Physics.Raycast(transform.position, step.normalized, out RaycastHit hit, step.magnitude))
+            {
+                transform.position = hit.point - step.normalized * 0.05f;
+                velocity = Vector3.ProjectOnPlane(velocity, hit.normal);
+                break;
+            }
+            else
+            {
+                transform.position += step;
+                remainingMove -= step;
+            }
+
+            maxIterations--;
         }
 
-        // Rotation du mouton vers la direction du mouvement
         if (velocity.sqrMagnitude > 0.001f)
         {
             Quaternion targetRot = Quaternion.LookRotation(velocity);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 0.1f);
         }
 
-        // Gestion de la pause naturelle
         nextPauseTime -= Time.deltaTime;
         if (nextPauseTime <= 0f)
             StartPause();
     }
+
+
 
     Vector3 BoundaryRepulsion()
     {

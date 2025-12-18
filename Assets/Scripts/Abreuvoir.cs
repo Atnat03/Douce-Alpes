@@ -62,7 +62,8 @@ public class Abreuvoir : MiniGameParent
 
         //if (!isOccupied1 && !isOccupied2) return;
 
-        currentWater -= Time.deltaTime * waterDecreaseRate;
+        if(!GameData.instance.isSheepInside)
+            currentWater -= Time.deltaTime * waterDecreaseRate;
 
         if (float.IsNaN(currentWater) || float.IsInfinity(currentWater) || currentWater < 0)
             currentWater = 0;
@@ -109,7 +110,7 @@ public class Abreuvoir : MiniGameParent
         
         while (value > 0f)
         {
-            value -= 0.2f;
+            value -= 0.6f;
             eau.SetFloat("_Apparition", value);
             
             if(value < 1 && value > 0.9)
@@ -119,7 +120,7 @@ public class Abreuvoir : MiniGameParent
         }
 
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         eau.SetFloat("_Fermeture_Robinet", 1);
 
@@ -128,7 +129,7 @@ public class Abreuvoir : MiniGameParent
         value = eau.GetFloat("_Apparition");
         while (value > 0f)
         {
-            value -= 0.2f;
+            value -= 0.6f;
             eau.SetFloat("_Apparition", value);
             yield return null;
         }

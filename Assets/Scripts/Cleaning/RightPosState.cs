@@ -26,7 +26,6 @@ public class RightPosState : ICleaningState
 
     public void UpdateState()
     {
-        // ✅ Ne rien faire si le mouton est en train d'arriver
         if (manager.cleanManager.sheepIsMoving)
             return;
 
@@ -51,6 +50,7 @@ public class RightPosState : ICleaningState
             {
                 if (manager.cleanManager.shampooList.Count == 0 && !manager.cleanManager.allCleaned)
                 {
+                    manager.SetState(manager.leftPosState);
                     Debug.Log("✅ Mouton complètement nettoyé ! Appel de OnAllCleaned()");
                     manager.cleanManager.allCleaned = true;
                     manager.cleanManager.OnAllCleaned();

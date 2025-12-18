@@ -253,6 +253,7 @@ public class GameData : MonoBehaviour
 
     #endregion
 
+    [ContextMenu("Recap")]
     public void RecapOfTheDay()
     {
         int happyPercent = BonheurCalculator.instance.GetBonheurPercentage();

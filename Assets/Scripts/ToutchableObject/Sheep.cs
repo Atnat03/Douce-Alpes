@@ -168,6 +168,9 @@ public class Sheep : TouchableObject
         if (GameManager.instance.shopOpen) return;
         if (isOpen) return;
 
+        if (GameManager.instance.currentCameraState != CamState.Default)
+            return;
+
         isBeingCaressed = true;
         heartParticle.Play();
         GameManager.instance.Caresse(this);

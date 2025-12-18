@@ -11,6 +11,7 @@ public class CarnetTricot : MonoBehaviour
     [SerializeField] Button nextButton;
     [SerializeField] Button previousButton;
     [SerializeField] Animator animator;
+    [SerializeField] TricotManager tricotManager;
 
     public void AddNewPage(GameObject page)
     {

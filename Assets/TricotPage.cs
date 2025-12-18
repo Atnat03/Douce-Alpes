@@ -8,7 +8,7 @@ public class TricotPage : MonoBehaviour
     [SerializeField] private Text laineToDoProduct;
     [SerializeField] private Image logoProduct;
     [SerializeField] private Image background;
-    [SerializeField] private ModelDrawSO model;
+    [SerializeField] public ModelDrawSO model;
     [SerializeField] public Button buttonSelect;
 
     public void Initialize(ModelDrawSO model)
