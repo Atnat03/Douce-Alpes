@@ -227,9 +227,6 @@ public class SheepBoidManager : MonoBehaviour
         GameManager.instance.sheepList.Add(sheepScript);
         sheep.enabled = false;
 
-        nbInstantSheep++;
-        GameData.instance.nbSheep++;
-
         sheepScript.Initialize(nbInstantSheep, data.name);
         OnListChanged?.Invoke(sheep);
         return go;

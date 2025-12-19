@@ -72,7 +72,11 @@ public class Sheep : TouchableObject
 
         skinListManager.Initialize();
         SetCurrentSkinClothe(10);
-        SetCurrentSkinHat(13);
+        
+        if(name == "Seb")
+            SetCurrentSkinHat(0);
+        else
+            SetCurrentSkinHat(13);
     }
 
     private void Update()

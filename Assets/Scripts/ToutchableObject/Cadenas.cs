@@ -11,7 +11,7 @@ public class Cadenas : TouchableObject
     [SerializeField] private ParticleSystem unlockEffect;
     
     Vector3 pos;
-    private Vector3 rot;
+    private Quaternion rot;
     
     [SerializeField] Animator animator;
     [SerializeField] Collider colModel;
@@ -24,7 +24,8 @@ public class Cadenas : TouchableObject
         maxHp = hp;
         
         pos = transform.position;
-        rot = transform.rotation.eulerAngles;
+        rot = transform.rotation;
+        
         colModel.enabled = false;
         colButton.enabled = true;
     }
@@ -75,7 +76,7 @@ public class Cadenas : TouchableObject
 
     public void ResetCadenas()
     {
-        transform.position = pos;
-        rot = transform.rotation.eulerAngles;
+        transform.rotation = rot;
+        transform.position = new Vector3(pos.x, -0.3f, pos.z);
     }
 }

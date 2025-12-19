@@ -67,6 +67,6 @@ public class DuckAnimation : TouchableObject
         
         float pitch = Random.Range(0.8f, 1f);
         
-        AudioManager.instance.PlaySound(clip, pitch);
+        AudioManager.instance.PlaySound(0, pitch);
     }
 }

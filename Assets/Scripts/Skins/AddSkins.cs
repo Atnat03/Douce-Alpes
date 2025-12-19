@@ -130,86 +130,48 @@ public class AddSkins : MonoBehaviour
         }
     }
 
-private void OnPanelCentered(int newIndex, int previousIndex) 
-{
-    Debug.Log($"[AddSkins {skinType}] OnPanelCentered appelée ! New: {newIndex}, Prev: {previousIndex}");  // Log 1 : Événement déclenché ?
-
-    // Null checks
-    if (snap == null || sheepWindow == null || SkinAgency.instance == null) 
+    private void OnPanelCentered(int newIndex, int previousIndex) 
     {
-        Debug.LogError($"[AddSkins {skinType}] SKIP: snap={snap!=null}, sheepWindow={sheepWindow!=null}, SkinAgency={SkinAgency.instance!=null}");
-        return;
+        if (snap == null || sheepWindow == null || SkinAgency.instance == null) return;
+        if (newIndex < 0 || newIndex >= snap.Panels.Length) return;
+
+        SkinUnit newSkinUnit = snap.Panels[newIndex].GetComponent<SkinUnit>();
+        if (newSkinUnit == null) return;
+
+        int skinId = newSkinUnit.id;
+        int currentSkinId = (skinType == SkinType.Hat) ? sheepWindow.currentSkinHat : sheepWindow.currentSkinClothe;
+
+        // Vérifier les stacks mais ne bloque pas le snap
+        Dictionary<int, int> stacksDict = (skinType == SkinType.Hat) ? SkinAgency.instance.dicoHatSkinStack : SkinAgency.instance.dicoClotheSkinStack;
+        int stacks = stacksDict.ContainsKey(skinId) ? stacksDict[skinId] : 0;
+        bool canSelect = (skinId == currentSkinId) || (stacks > 0);
+
+        // Mettre à jour les visuels (sélection)
+        if (previousIndex >= 0 && previousIndex < snap.Panels.Length) 
+        {
+            Image prevImage = snap.Panels[previousIndex].GetComponent<Image>();
+            if (prevImage != null) prevImage.sprite = unselectedSprite;
+        }
+        Image newImage = snap.Panels[newIndex].GetComponent<Image>();
+        if (newImage != null) newImage.sprite = selectedSprite;
+
+        // Appliquer le skin uniquement si on a des stacks
+        if (canSelect)
+        {
+            switch (skinType) 
+            {
+                case SkinType.Hat:
+                    sheepWindow.SetNewCurrentSkinHat(skinId);
+                    break;
+                case SkinType.Clothe:
+                    sheepWindow.SetNewCurrentSkinClothe(skinId);
+                    break;
+            }
+        }
+
+        UpdateStackDisplays();
     }
 
-    if (newIndex < 0 || newIndex >= snap.Panels.Length) 
-    {
-        Debug.LogWarning($"[AddSkins {skinType}] Invalid index {newIndex}");
-        return;
-    }
-
-    SkinUnit newSkinUnit = snap.Panels[newIndex].GetComponent<SkinUnit>();
-    if (newSkinUnit == null) 
-    {
-        Debug.LogError($"[AddSkins {skinType}] No SkinUnit on panel {newIndex}");
-        return;
-    }
-    int skinId = newSkinUnit.id;
-    Debug.Log($"[AddSkins {skinType}] Skin ID sélectionné: {skinId}");  // Log 2 : ID OK ?
-
-    int currentSkinId = (skinType == SkinType.Hat) ? sheepWindow.currentSkinHat : sheepWindow.currentSkinClothe;
-    Debug.Log($"[AddSkins {skinType}] Current skin ID: {currentSkinId}");  // Log 3 : Current OK ?
-
-    // Stacks
-    Dictionary<int, int> stacksDict = (skinType == SkinType.Hat) ? SkinAgency.instance.dicoHatSkinStack : SkinAgency.instance.dicoClotheSkinStack;
-    int stacks = stacksDict.ContainsKey(skinId) ? stacksDict[skinId] : 0;
-    bool canSelect = (skinId == currentSkinId) || (stacks > 0);
-    Debug.Log($"[AddSkins {skinType}] Stacks: {stacks}, CanSelect: {canSelect}");  // Log 4 : Check OK ?
-
-    if (!canSelect) 
-    {
-        Debug.Log($"[AddSkins {skinType}] BLOCK: Snap back to {previousIndex}");
-        snap.ScrollRect.inertia = false;
-        StartCoroutine(SnapBackWithDelay(previousIndex, 0.05f));
-        return;
-    }
-
-    // Visuels (inchangés)
-    if (previousIndex >= 0 && previousIndex < snap.Panels.Length) 
-    {
-        Image prevImage = snap.Panels[previousIndex].GetComponent<Image>();
-        if (prevImage != null) prevImage.sprite = unselectedSprite;
-    }
-    Image newImage = snap.Panels[newIndex].GetComponent<Image>();
-    if (newImage != null) newImage.sprite = selectedSprite;
-
-    // Log avant appel
-    Debug.Log($"[AddSkins {skinType}] Appel SetNewCurrentSkin{skinType}({skinId})");  // Log 5 : Avant switch
-
-    // Switch
-    switch (skinType) 
-    {
-        case SkinType.Hat:
-            sheepWindow.SetNewCurrentSkinHat(skinId);
-            break;
-        case SkinType.Clothe:
-            sheepWindow.SetNewCurrentSkinClothe(skinId);
-            break;
-        default:
-            Debug.LogError($"[AddSkins] Unknown skinType: {skinType}");
-            break;
-    }
-
-    Debug.Log($"[AddSkins {skinType}] Switch fini, refresh displays");  // Log 6 : Après switch
-    UpdateStackDisplays();
-}    // Ajout : Coroutine pour snap back
-    private IEnumerator SnapBackWithDelay(int targetIndex, float delay) 
-    {
-        yield return new WaitForSeconds(delay);
-        snap.GoToPanel(targetIndex);
-        snap.ScrollRect.inertia = true;
-    }
-
-    // Ajout : Pour centrer sur current à l'init
     public void SetStartingPanelToCurrent() 
     {
         if (snap == null || sheepWindow == null || snap.NumberOfPanels == 0) return;

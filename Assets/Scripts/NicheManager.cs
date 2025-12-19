@@ -12,6 +12,7 @@ public class NicheManager : TouchableObject
     [SerializeField] private Transform cameraZoomPos;
     [SerializeField] private GameObject buttonQuit;
     [SerializeField] private InputField dogNameInput;
+    [SerializeField] private GameObject createSheepUI;
 
     [Header("État du chien")]
     [SerializeField] private bool isInNiche = false;
@@ -22,13 +23,11 @@ public class NicheManager : TouchableObject
         GameManager.instance.startMiniGame += SortirLeChien;
         GameManager.instance.endMiniGame += RentrerLeChien;
 
-        // Initialisation du champ
         dogNameInput.text = dogName;
     }
 
     private void OnEnable()
     {
-        // Au début, le chien est dans sa niche
         RentrerLeChien();
     }
 
@@ -40,7 +39,7 @@ public class NicheManager : TouchableObject
 
     public override void TouchEvent()
     {
-        if (GameManager.instance.currentCameraState != CamState.Default)
+        if (GameManager.instance.currentCameraState != CamState.Default && createSheepUI.activeSelf)
             return;
 
         GameManager.instance.ChangeCameraState(CamState.Dog);
