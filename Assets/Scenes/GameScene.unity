@@ -88944,7 +88944,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1969014984
 Transform:
   m_ObjectHideFlags: 0
@@ -89146,12 +89146,15 @@ MonoBehaviour:
   - {fileID: 373264540}
   - {fileID: 1644306749}
   - {fileID: 1546340218}
-  touchRadius: 0.1
-  miniValueToEnd: 0.2
+  touchRadius: 0.2
+  miniValueToEnd: 0.1
   RawSheepWhoolDrop: 0
   spawnLaineSprite: {fileID: 1740667904}
   toolUI: {fileID: 1666760529}
   screenOffset: {x: 40, y: 80}
+  offsetStartDistance: 0.4
+  maxOffset: 0.15
+  offsetStrength: 2
 --- !u!1001 &1978550312
 PrefabInstance:
   m_ObjectHideFlags: 0

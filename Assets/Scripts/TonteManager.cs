@@ -41,6 +41,11 @@ public class TonteManager : MiniGameParent
     [Header("Finger Offset")]
     [SerializeField] private Vector2 screenOffset = new Vector2(40f, 60f); 
 
+    [Header("Radial Offset Correction")]
+    [SerializeField] private float offsetStartDistance = 0.4f; 
+    [SerializeField] private float maxOffset = 0.15f;          
+    [SerializeField] private float offsetStrength = 1.0f;      
+    
     private void Awake()
     {
         instance = this;
@@ -180,6 +185,8 @@ public class TonteManager : MiniGameParent
     }
     
 
+    private Plane tontePlane;
+
     private void OnFingerMoved(Vector3 fingerWorldPos)
     {
         if (currentSheep == null || !canTonte)
@@ -191,25 +198,53 @@ public class TonteManager : MiniGameParent
         if (!particleTonte.isPlaying)
             return;
 
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(fingerWorldPos);
+        // 🔹 Position UI de l'outil (inchangée)
+        Vector3 uiPos = Camera.main.WorldToScreenPoint(fingerWorldPos);
+        toolUI.position = uiPos;
 
-        toolUI.position = screenPos;
-        
+        // 🔹 Position écran + offset doigt
+        Vector3 screenPos = uiPos;
         screenPos.x += screenOffset.x;
         screenPos.y += screenOffset.y;
 
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            particleTonte.transform.position = hit.point;
+            Vector3 hitPos = hit.point;
+
+            // 🔹 Centre du mouton (ou de la laine)
+            Vector3 center = tontePoint.position;
+
+            // 🔹 Direction radiale
+            Vector3 dirFromCenter = (hitPos - center);
+            float distanceFromCenter = dirFromCenter.magnitude;
+
+            if (distanceFromCenter > offsetStartDistance)
+            {
+                float t = Mathf.InverseLerp(
+                    offsetStartDistance,
+                    offsetStartDistance + 0.5f,
+                    distanceFromCenter
+                );
+
+                float offsetAmount = Mathf.Lerp(0f, maxOffset, t) * offsetStrength;
+
+                hitPos += dirFromCenter.normalized * offsetAmount;
+            }
+
+            particleTonte.transform.position = hitPos;
         }
-        
-        int r = Random.Range(0, 50);
+
+
+        // 🔹 Feedback haptique
+        int r = UnityEngine.Random.Range(0, 50);
         if (r == 0 && isFingerDown)
             Handheld.Vibrate();
 
+        // 🔹 Détection logique
         DetectTouchedPoint(fingerWorldPos);
     }
+
 
 
     private void OnFingerReleased(Vector2 screenPos, float timer)
@@ -248,6 +283,9 @@ public class TonteManager : MiniGameParent
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(posFinger, touchRadius);
+        
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(tontePoint.position, particleTonte.transform.position);
     }
 
     private void UpdateProgress()
