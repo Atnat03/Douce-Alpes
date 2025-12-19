@@ -19,12 +19,12 @@ public class VisualTricot : MonoBehaviour
     [SerializeField] private GameObject pointAccroche;
     [SerializeField] private SplineMaison splineLaine;
     
-    public void Initialise(MeshRenderer mesh)
+    public void Initialise(MeshRenderer mesh, int numberVertical)
     {
         shader = mesh.material;
         positionMin = mesh.transform.position;
         maxNumberVertical = shader.GetFloat("_MaxVertical");
-        maxNumberHorizontal = shader.GetFloat("_MaxHorizontal");
+        maxNumberHorizontal = shader.GetFloat("_MaxHorizontal")+1;
     }
 
     [ContextMenu("AddLaine")]
@@ -35,7 +35,7 @@ public class VisualTricot : MonoBehaviour
 
     IEnumerator SmoothAddedLaine()
     { 
-        if (value_Vertical >= maxNumberVertical)
+        if (value_Vertical > maxNumberVertical)
         {
             Debug.Log("Fin du tricot");
             yield break;
@@ -64,7 +64,7 @@ public class VisualTricot : MonoBehaviour
     public void ResetLaine()
     {
         value_Horizontal = 0;
-        value_Vertical = 0;
+        value_Vertical = 1;
         gradient_Droite = true;
 
         pointAccroche.transform.position = splineLaine.points[0];

@@ -325,7 +325,7 @@ public class TricotManager : MonoBehaviour
         
         ResetDrawing();
         
-        visualTricot.Initialise(meshVisual.GetComponent<MeshRenderer>());
+        visualTricot.Initialise(meshVisual.GetComponent<MeshRenderer>(), patternSO.pattern.Count);
 
         if (currentPattern.Count > 0)
         {
