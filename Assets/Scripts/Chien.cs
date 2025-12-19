@@ -120,13 +120,12 @@ public class Chien : MonoBehaviour
         }
     }
 
-    // Pour activer/désactiver le comportement de poursuite
     public void SetMiniGameActive(bool value)
     {
         isMiniGameActive = value;
         if (!value)
         {
-            agent.ResetPath(); // Stop le chien s'il rentre à la niche
+            agent.ResetPath();
         }
     }
 
