@@ -39,7 +39,9 @@ public class NicheManager : TouchableObject
 
     public override void TouchEvent()
     {
-        if (GameManager.instance.currentCameraState != CamState.Default && createSheepUI.activeSelf)
+        if (createSheepUI.activeInHierarchy) return;
+        
+        if (GameManager.instance.currentCameraState != CamState.Default)
             return;
 
         GameManager.instance.ChangeCameraState(CamState.Dog);
