@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using Unity.Splines.Examples;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -23,10 +21,14 @@ public class NicheManager : TouchableObject
     {
         GameManager.instance.startMiniGame += SortirLeChien;
         GameManager.instance.endMiniGame += RentrerLeChien;
+
+        // Initialisation du champ
+        dogNameInput.text = dogName;
     }
 
     private void OnEnable()
     {
+        // Au début, le chien est dans sa niche
         RentrerLeChien();
     }
 
@@ -56,23 +58,23 @@ public class NicheManager : TouchableObject
         if (SheepBoidManager.instance.nbInstantSheep == 0)
             return;
 
-        chien.enabled = true;
+        chien.SetMiniGameActive(true);
         isInNiche = false;
     }
 
     private void RentrerLeChien()
     {
-        chien.enabled = false;
+        chien.SetMiniGameActive(false);
+        agentChien.isStopped = false;
         agentChien.SetDestination(nichePos.position);
+        isInNiche = false;
     }
 
     private void Update()
     {
-        dogNameInput.text = dogName;
-
         float distanceToNiche = Vector3.Distance(agentChien.transform.position, nichePos.position);
 
-        if (distanceToNiche < 0.5f && !isInNiche)
+        if (distanceToNiche < 1f && !isInNiche)
         {
             isInNiche = true;
             StartCoroutine(RotateSmoothInNiche());
@@ -97,6 +99,7 @@ public class NicheManager : TouchableObject
         }
 
         agentChien.transform.rotation = targetRotation;
+        agentChien.isStopped = false;
     }
 
     public void ChangeDogName()

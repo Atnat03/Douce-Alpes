@@ -24,6 +24,8 @@ public class PlayerMoney : MonoBehaviour
     [SerializeField] private RectTransform moneyFinalTarget;
     [SerializeField] private RectTransform woolFinalTarget;
     
+    [SerializeField] private int[] sheepsPrices;
+    
     private void Awake()
     {
         instance = this;
@@ -133,5 +135,10 @@ public class PlayerMoney : MonoBehaviour
     public int CalculateValueWhoolWithTotalHapiness()
     {
         return 0;
+    }
+
+    public int GetCurrentSheepPrice()
+    {
+        return sheepsPrices[GameData.instance.nbSheep];
     }
 }
