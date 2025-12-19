@@ -23,4 +23,20 @@ public class SkinShopManager : ShopManager
             StartCoroutine(CantBuyIt());
         }
     }
+    
+    protected override void AddItem(Article article)
+    {
+        GameObject instance = Instantiate(articlePrefab, listArticleParent);
+        articlesList.Add(instance);
+
+        ArticleUnit uiArticle = instance.GetComponent<ArticleUnit>();
+        
+        uiArticle.logoImage.sprite = article.logo;
+        uiArticle.backGround.sprite = ChangeBackGroundRarete(article.Rarete);
+
+        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
+        uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
+        
+        uiArticle.articleType = article.type;
+    }
 }
