@@ -8,6 +8,7 @@ public class SkinAgency : MonoBehaviour
 
     [SerializeField] private SkinScriptable hatSkinData;
     [SerializeField] private SkinScriptable clotheSkinData;
+    [SerializeField] private ArticleScriptable interiorSkinData;
 
     public Dictionary<int, int> dicoHatSkinStack = new Dictionary<int, int>();
     public Dictionary<int, int> dicoClotheSkinStack = new Dictionary<int, int>();
@@ -20,9 +21,10 @@ public class SkinAgency : MonoBehaviour
     public int skinGrangeId = 0;
     public int skinBarriereId = 0;
 
-    [SerializeField]private SkinBuildManager barrierSkinManager;
-    [SerializeField]private SkinBuildManagerGrange grangeSkinManager;
-
+    [SerializeField] private SkinBuildManager barrierSkinManager;
+    [SerializeField] private SkinBuildManagerGrange grangeSkinManager;
+    public Dictionary<int, bool> dicoInteriorSkin = new Dictionary<int, bool>();
+    
     private void Awake()
     {
         instance = this;
@@ -32,6 +34,9 @@ public class SkinAgency : MonoBehaviour
 
         foreach (var s in clotheSkinData.skins)
             dicoClotheSkinStack[s.id] = 0;
+        
+        foreach (var s in interiorSkinData.articles)
+            dicoInteriorSkin[s.id] = false;
     }
 
     [ContextMenu("Swap Skin")]
@@ -51,6 +56,11 @@ public class SkinAgency : MonoBehaviour
     {
         skinBarriereId = id;
         barrierSkinManager.SwapSkin(id);
+    }
+
+    public void SetSkinInterior(int id)
+    {
+        dicoInteriorSkin[id] = !dicoInteriorSkin[id];
     }
 
     private void Start()
