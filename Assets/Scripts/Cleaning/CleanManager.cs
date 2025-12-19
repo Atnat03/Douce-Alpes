@@ -82,6 +82,8 @@ public class CleanManager : MiniGameParent
     public float headDetectionMultiplier = 0.6f;
     public Vector3 headDetectionOffset = new Vector3(0f, 0.1f, 0.05f);
     public Transform focusCam;
+    
+    [SerializeField] private ParticleSystem cleanVFX;
 
     private void Awake()
     {
@@ -289,7 +291,7 @@ public class CleanManager : MiniGameParent
             Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
             GameObject s = Instantiate(prefab, pos, rot);
             s.transform.SetParent(parent, true);;
-            float size = Random.Range(0.75f, 1f);
+            float size = Random.Range(1f, 1.5f);
             s.transform.localScale *= size;
 
             s.layer = currentCleaningLayer;
@@ -338,36 +340,87 @@ public class CleanManager : MiniGameParent
             Debug.LogWarning("⚠️ OnAllCleaned ignoré : currentSheep est null");
             return;
         }
+
+        StartCoroutine(CleanedSequence());
+    }
     
-        ResetValueClean();
-        StartCoroutine(SendToDestroy(currentSheep));
+    private IEnumerator CleanedSequence()
+    {
+        canAddShampoo = false;
+        canRotateCamera = false;
+        
+        cleanVFX.Play();
+
+        yield return StartCoroutine(
+            RotateCameraAroundSheep(
+                camera.transform.position,
+                camera.transform.position + new Vector3(0f, 0.3f, -0.6f),
+                1.2f
+            )
+        );
+
+        yield return new WaitForSeconds(0.3f);
+        TriggerShake();
+        yield return new WaitForSeconds(1f);
+
+        yield return StartCoroutine(SendToDestroy(currentSheep));
     }
 
+    
+    private IEnumerator RotateCameraAroundSheep(
+        Vector3 startPos,
+        Vector3 endPos,
+        float duration)
+    {
+        Transform cam = camera.transform;
+        Transform focus = focusCam != null ? focusCam : sheepTarget;
+
+        if (cam == null || focus == null)
+            yield break;
+
+        Vector3 center = focus.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+
+            Vector3 dirStart = startPos - center;
+            Vector3 dirEnd = endPos - center;
+
+            Vector3 dir = Vector3.Slerp(dirStart, dirEnd, t);
+            cam.position = center + dir;
+
+            cam.rotation = Quaternion.LookRotation(center - cam.position);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        cam.position = endPos;
+        cam.rotation = Quaternion.LookRotation(center - cam.position);
+    }
+    
     private IEnumerator SendToDestroy(GameObject sheep)
     {
-    
-        if (sheep == null || currentSheep == null)
-        {
-            Debug.LogWarning("⚠️ SendToDestroy annulé : mouton déjà détruit");
+        if (sheep == null)
             yield break;
-        }
-    
-        // ✅ Bloquer les interactions
-        canAddShampoo = false;
-    
-        currentSheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
+
+        sheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
         yield return new WaitForSeconds(0.3f);
-    
-        yield return StartCoroutine(MoveOverTime(sheep.transform, destroyPoint.position, 1f));
-    
+
+        yield return StartCoroutine(
+            MoveOverTime(sheep.transform, destroyPoint.position, 1f)
+        );
+
         Destroy(sheep);
         currentSheep = null;
         sheepTarget = null;
-    
+
         yield return new WaitForSeconds(0.25f);
-    
+
         NextSheep();
-    }  
+    }
     
     public void ResetCleanSystem()
     {

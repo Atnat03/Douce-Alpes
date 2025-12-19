@@ -31,7 +31,7 @@ public class DayRecapManager : MonoBehaviour
 
     private void OnEnable()
     {
-        DesactivatePannel();
+        dayRecapPannel.SetActive(false);
     }
     
     private void UpdateCursorAndColor()
