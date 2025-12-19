@@ -4,22 +4,32 @@ using UnityEngine;
 public class LeftPosState : ICleaningState
 {
     private StateMachineClean manager;
+
+    // Position caméra côté gauche
     private Vector3 camPos = new Vector3(0.2f, 0.75f, 3f);
+
     private const int cleanValueToChange = 40;
     private int leftLayer;
 
-    
     public void EnterState(StateMachineClean managerC)
     {
         manager = managerC;
+
         leftLayer = LayerMask.NameToLayer("LeftSide");
         manager.cleanManager.currentCleaningLayer = leftLayer;
         manager.cleanManager.currentCleaningSide = CleaningSide.Left;
 
-        var sheep = manager.cleanManager.sheepTarget;
-
         manager.cleanManager.canAddShampoo = false;
-        manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 1f));
+        manager.cleanManager.canRotateCamera = false;
+
+        // 🔄 Transition fluide circulaire vers la position gauche
+        manager.cleanManager.StartCoroutine(
+            RotateAroundSheep(
+                manager.cleanManager.camera.transform.position,
+                camPos,
+                1f
+            )
+        );
 
         if (manager.cleanManager.currentTool == CleaningTool.Shampoo)
             manager.cleanManager.ResetValueClean();
@@ -32,49 +42,50 @@ public class LeftPosState : ICleaningState
         if (manager.cleanManager.sheepIsMoving)
             return;
         
-        Debug.Log("Update left");
-
-        var cam = manager.cleanManager.camera;
-        Vector3 direction = manager.cleanManager.sheepTarget.position - cam.transform.position;
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-        cam.transform.rotation = Quaternion.Slerp(
-            cam.transform.rotation,
-            targetRotation,
-            Time.deltaTime * 5f
-        );
-        
-        if (IsEnought() && !(manager.cleanManager.currentTool == CleaningTool.Shower && manager.cleanManager.allCleaned))
+        if (IsEnought() &&
+            !(manager.cleanManager.currentTool == CleaningTool.Shower &&
+              manager.cleanManager.allCleaned))
         {
             manager.SetState(manager.frontPosState);
         }
     }
 
-    
-    private IEnumerator ChangePositionCamera(Vector3 end, float duration)
+    // ==========================
+    // 🎥 CAMERA ROTATION FLUIDE
+    // ==========================
+    private IEnumerator RotateAroundSheep(
+        Vector3 startPos,
+        Vector3 endPos,
+        float duration)
     {
-        if (manager.cleanManager.sheepIsMoving)
-            yield break;
-        
         Transform cam = manager.cleanManager.camera.transform;
-        Vector3 startPos = cam.position;
-        Quaternion startRot = cam.rotation;
+        Transform focus = manager.cleanManager.focusCam;
 
-        Vector3 targetDir = manager.cleanManager.sheepTarget.position - end;
-        Quaternion endRot = Quaternion.LookRotation(targetDir);
+        if (cam == null || focus == null)
+            yield break;
 
-        float elapsedTime = 0f;
-        while (elapsedTime < duration)
+        Vector3 center = focus.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
         {
-            float t = elapsedTime / duration;
-            cam.position = Vector3.Slerp(startPos, end, t);
-            cam.rotation = Quaternion.Slerp(startRot, endRot, t);
+            float t = elapsed / duration;
 
-            elapsedTime += Time.deltaTime;
+            Vector3 dirStart = startPos - center;
+            Vector3 dirEnd = endPos - center;
+
+            Vector3 dir = Vector3.Slerp(dirStart, dirEnd, t);
+            cam.position = center + dir;
+
+            // Toujours regarder le point de nettoyage
+            cam.rotation = Quaternion.LookRotation(center - cam.position);
+
+            elapsed += Time.deltaTime;
             yield return null;
         }
 
-        cam.position = end;
-        cam.rotation = endRot;
+        cam.position = endPos;
+        cam.rotation = Quaternion.LookRotation(center - cam.position);
 
         manager.cleanManager.canAddShampoo = true;
         manager.cleanManager.canRotateCamera = true;
@@ -88,7 +99,8 @@ public class LeftPosState : ICleaningState
         int remaining = 0;
         foreach (var s in manager.cleanManager.shampooList)
         {
-            if (s.layer == leftLayer) remaining++;
+            if (s.layer == leftLayer)
+                remaining++;
         }
         return remaining <= 0;
     }

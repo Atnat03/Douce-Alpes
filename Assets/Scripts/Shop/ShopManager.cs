@@ -27,7 +27,7 @@ public class ShopManager : MonoBehaviour
     
     public void RefreshShop()
     {
-        listArticleParent.GetComponent<ContentScaleModifier>().ResetSize();
+        //listArticleParent.GetComponent<ContentScaleModifier>().ResetSize();
 
         foreach (Transform child in listArticleParent)
             Destroy(child.gameObject);
@@ -37,9 +37,9 @@ public class ShopManager : MonoBehaviour
         foreach (Article article in data.articles)
             AddItem(article);
 
-        listArticleParent
+        /*listArticleParent
             .GetComponent<ContentScaleModifier>()
-            .SetSize(data.articles.Count);
+            .SetSize(data.articles.Count);*/
     }
 
     public void AddItem(Article article)

@@ -60,14 +60,16 @@ public class DayRecapManager : MonoBehaviour
         StartCoroutine(AnimateHappiness());
     }
 
-    public void DesactivatePannel()
+    IEnumerator DesactivatePannel()
     {
+        dayRecapPannel.GetComponent<Animator>().SetTrigger("Close");
+        yield return new WaitForSeconds(2f);
         dayRecapPannel.SetActive(false);
     }
     
     public void NextDay()
     {
-        DesactivatePannel();
+        StartCoroutine(DesactivatePannel());
         GameData.instance.numberDay++;
         GameData.instance.ResetDayStats();
     }

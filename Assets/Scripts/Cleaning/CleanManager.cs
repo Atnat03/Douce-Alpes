@@ -81,6 +81,7 @@ public class CleanManager : MiniGameParent
     [Header("Head Detection")]
     public float headDetectionMultiplier = 0.6f;
     public Vector3 headDetectionOffset = new Vector3(0f, 0.1f, 0.05f);
+    public Transform focusCam;
 
     private void Awake()
     {
