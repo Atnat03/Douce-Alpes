@@ -21,7 +21,9 @@ public class VisualTricot : MonoBehaviour
     
     public void Initialise(MeshRenderer mesh, int numberVertical)
     {
-        shader = mesh.material;
+        shader = new Material(mesh.sharedMaterial);
+        mesh.material = shader;
+        
         positionMin = mesh.transform.position;
         maxNumberVertical = shader.GetFloat("_MaxVertical");
         maxNumberHorizontal = shader.GetFloat("_MaxHorizontal")+1;

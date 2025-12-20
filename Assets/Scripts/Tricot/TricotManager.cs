@@ -192,6 +192,7 @@ public class TricotManager : MonoBehaviour
     {
         currentPassagePoint.Clear();
         linePoints.Clear();
+        
         if (uiLineRenderer != null)
         {
             uiLineRenderer.points = linePoints.ToArray();
@@ -299,12 +300,20 @@ public class TricotManager : MonoBehaviour
             }
         }
 
-        // Petit délai à la fin du tracé (optionnel)
         yield return new WaitForSeconds(0.2f);
     }
 
     public void InitalizePattern(ModelDrawSO patternSO)
     {
+        StartCoroutine(WaitBeforeRemoveCarnet(patternSO));
+    }
+
+    IEnumerator WaitBeforeRemoveCarnet(ModelDrawSO patternSO)
+    {
+        carnetParent.GetComponent<Animator>().SetTrigger("GetOut");
+        
+        yield return new WaitForSeconds(1f);
+        
         currentPattern = patternSO.pattern;
         numberModelOfThisPattern = currentPattern.Count;
         currentModel = 0;
@@ -362,6 +371,8 @@ public class TricotManager : MonoBehaviour
             imageProduct.sprite = null;
             imageProduct.fillAmount = 0f;
         }
+        
+        Destroy(spawnVisual.transform.GetChild(0).gameObject);
         
         sellButton.gameObject.SetActive(false);
         carnetParent.gameObject.SetActive(true);
