@@ -145,7 +145,7 @@ public class SheepBoid : MonoBehaviour
 
     public void AddFearForce(Vector3 fearForce)
     {
-        velocity += fearForce * Time.deltaTime;
+        velocity += fearForce;
         isAfraid = true;
         fearTimer = fearDuration;
     }

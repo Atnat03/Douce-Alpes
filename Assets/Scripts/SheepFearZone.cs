@@ -15,7 +15,7 @@ public class SheepFearZone : MonoBehaviour
 
     private void Update()
     {
-        if (!GameData.instance.isSheepInside)
+        if (GameData.instance.isSheepInside)
             return;
         
         ScareNearbySheep();
