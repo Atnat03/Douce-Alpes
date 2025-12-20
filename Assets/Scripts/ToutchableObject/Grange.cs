@@ -95,10 +95,7 @@ public class Grange : Build
     
     private void UpdateCameraZoom()
     {
-        int totalSheep = GameData.instance.nbSheep;
-        Debug.Log("Total sheep: " + totalSheep);
-
-        if (nbSheepInGrange >= totalSheep && totalSheep > 0)
+        if (GameData.instance.isSheepInside)
         {
             CloseDoors();
             ZoomCamera();

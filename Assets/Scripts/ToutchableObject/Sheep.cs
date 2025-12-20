@@ -41,7 +41,6 @@ public class Sheep : TouchableObject
     
     [SerializeField] private Sprite showerLogo;
     [SerializeField] private Sprite zzzzzzLogo;
-    [SerializeField] private GameObject puanteurVFX;
     
     public Transform targetTransiPos;
 
@@ -146,12 +145,10 @@ public class Sheep : TouchableObject
         if (curPuanteur < 100)
         {
             curPuanteur += 2 * Time.deltaTime;
-            puanteurVFX.SetActive(false);
         }
         else
         {
             curPuanteur = 100;
-            puanteurVFX.SetActive(true);
         }
         
         nameText.text = sheepName;
