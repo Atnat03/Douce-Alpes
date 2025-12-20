@@ -25,8 +25,8 @@ public class VisualTricot : MonoBehaviour
         mesh.material = shader;
         
         positionMin = mesh.transform.position;
-        maxNumberVertical = shader.GetFloat("_MaxVertical");
-        maxNumberHorizontal = shader.GetFloat("_MaxHorizontal")+1;
+        maxNumberVertical = shader.GetFloat("_MaxVertical")+1;
+        maxNumberHorizontal = shader.GetFloat("_MaxHorizontal");
     }
 
     [ContextMenu("AddLaine")]
@@ -53,25 +53,43 @@ public class VisualTricot : MonoBehaviour
             temps += Time.deltaTime;
             yield return null;
         }
-        
-        value_Vertical++;
-        
+
         value_Horizontal = cible;
 
-        gradient_Droite = !gradient_Droite;
+        if (value_Vertical < maxNumberVertical)
+        {
+            value_Vertical++;
+            gradient_Droite = !gradient_Droite;
+        }
+        else
+        {
+            value_Horizontal = maxNumberHorizontal;
+            Debug.Log("Tricot terminé !");
+        }
     }
 
 
     [ContextMenu("ResetLaine")]
     public void ResetLaine()
     {
-        value_Horizontal = 0;
         value_Vertical = 1;
         gradient_Droite = true;
+
+        if (((int)maxNumberVertical) % 2 == 0)
+        {
+            value_Horizontal = maxNumberHorizontal;
+            gradient_Droite = false;
+        }
+        else
+        {
+            value_Horizontal = 0f;
+            gradient_Droite = true;
+        }
 
         pointAccroche.transform.position = splineLaine.points[0];
         splineLaine.SetDernierPoint(pointAccroche.transform.position);
     }
+
 
     void Update()
     {
