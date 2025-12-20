@@ -9,6 +9,8 @@ public class SheepMovingAnimation : TouchableObject
     bool hasNewDestination = false;
     Vector3 destination;
     public float raduisCircle = 2f;
+
+    public Transform center;
     
     private void Update()
     {
@@ -48,11 +50,14 @@ public class SheepMovingAnimation : TouchableObject
 
     Vector3 NewPosition()
     {
-        Vector2 randomCircle = Random.insideUnitCircle * raduisCircle;
-        return new Vector3(
-            randomCircle.x,
-            transform.position.y,
-            randomCircle.y
-        );
+        // angle aléatoire en radians
+        float angle = Random.Range(0f, 2f * Mathf.PI);
+
+        // position sur le cercle autour du centre
+        float x = center.position.x + Mathf.Cos(angle) * raduisCircle;
+        float z = center.position.z + Mathf.Sin(angle) * raduisCircle;
+
+        return new Vector3(x, transform.position.y, z);
     }
+
 }
