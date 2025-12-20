@@ -57,6 +57,43 @@ public class Sheep : TouchableObject
     [SerializeField] private Sprite wantToGoIn;
     [SerializeField] private Sprite wantToDrink;
     
+    [Header("Swipe Rotation")]
+    [SerializeField] private float rotationStep = 30f;
+    private int rotationIndex = 0;
+    
+    [Header("Swipe Zone (Screen %)")]
+    [SerializeField, Range(0f, 1f)]
+    private float swipeMinHeightPercent = 0.3f;
+
+    [SerializeField, Range(0f, 1f)]
+    private float swipeMaxHeightPercent = 0.6f;
+
+    private bool swipeStartedInValidZone = false;
+
+    [Header("Smooth Rotation")]
+    [SerializeField] private float rotationDuration = 0.25f;
+
+    private Coroutine rotationCoroutine;
+
+    private void OnEnable()
+    {
+        if (SwipeDetection.instance != null)
+        {
+            SwipeDetection.instance.OnSwipeDetected += OnSwipeDetected;
+            SwipeDetection.instance.OnFingerPositionUpdated += OnFingerPositionUpdated;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (SwipeDetection.instance != null)
+        {
+            SwipeDetection.instance.OnSwipeDetected -= OnSwipeDetected;
+            SwipeDetection.instance.OnFingerPositionUpdated -= OnFingerPositionUpdated;
+        }
+    }
+
+    
     private void Start()
     {
         laine.GetComponent<Outline>().enabled = false;
@@ -95,7 +132,6 @@ public class Sheep : TouchableObject
             sheepBoid.enabled = false;
 
             transform.position = lockedPosition;
-            transform.rotation = lockedRotation;
         }
         else
         {
@@ -123,6 +159,80 @@ public class Sheep : TouchableObject
 
         Bubble.transform.parent.GetComponent<CanvasGroup>().alpha = isOpen ? 0f : 1f;
     }
+    
+    private void OnSwipeDetected(SwipeType swipe)
+    {
+        if (!isOpen)
+            return;
+
+        if (!swipeStartedInValidZone)
+            return;
+
+        if (GameManager.instance.getCurLockSheep() != this)
+            return;
+
+        if (swipe == SwipeType.Left)
+            rotationIndex--;
+        else if (swipe == SwipeType.Right)
+            rotationIndex++;
+        else
+            return;
+
+        rotationIndex = Mathf.Clamp(rotationIndex, -1, 1);
+
+        float targetY = 120f + rotationIndex * rotationStep;
+        lockedRotation = Quaternion.Euler(0, targetY, 0);
+
+        if (rotationCoroutine != null)
+            StopCoroutine(rotationCoroutine);
+
+        rotationCoroutine = StartCoroutine(SmoothRotateTo(lockedRotation));
+    }
+
+    private IEnumerator SmoothRotateTo(Quaternion targetRotation)
+    {
+        Quaternion startRotation = transform.rotation;
+        float elapsed = 0f;
+
+        while (elapsed < rotationDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / rotationDuration;
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
+    }
+
+    
+    private bool swipeZoneInitialized = false;
+
+    private void OnFingerPositionUpdated(Vector2 pos)
+    {
+        if (!isOpen)
+            return;
+
+        // reset quand le swipe se termine
+        if (pos == Vector2.zero)
+        {
+            swipeZoneInitialized = false;
+            swipeStartedInValidZone = false;
+            return;
+        }
+
+        // On ne teste QUE la première position
+        if (swipeZoneInitialized)
+            return;
+
+        swipeZoneInitialized = true;
+
+        float minY = Screen.height * swipeMinHeightPercent;
+        float maxY = Screen.height * swipeMaxHeightPercent;
+
+        swipeStartedInValidZone = pos.y >= minY && pos.y <= maxY;
+    }
+
 
     private void ProcessWool()
     {
@@ -246,9 +356,13 @@ public class Sheep : TouchableObject
         isOpen = true;
         
         laine.GetComponent<Outline>().enabled = false;
-
+        
+        rotationIndex = 0;
         lockedPosition = transform.position;
         lockedRotation = Quaternion.Euler(0, 120, 0);
+        
+        swipeStartedInValidZone = false;
+        swipeZoneInitialized = false;
 
         transform.position = lockedPosition;
         transform.rotation = lockedRotation;
