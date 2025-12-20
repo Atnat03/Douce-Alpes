@@ -5186,6 +5186,7 @@ GameObject:
   - component: {fileID: 3582360026584067795}
   - component: {fileID: 1467384432928829159}
   - component: {fileID: 8263560077928130481}
+  - component: {fileID: 8611723422671582512}
   m_Layer: 7
   m_Name: "\U0001F411 Mouton Interior"
   m_TagString: Touchable
@@ -5264,6 +5265,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8611723422671582512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2722875930628605413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c4c78714df8d34093e1b81f14dd0b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedMove: 0.1
+  speedRotation: 120
+  raduisCircle: 2
 --- !u!1 &4163964638464663607
 GameObject:
   m_ObjectHideFlags: 0
