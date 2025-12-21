@@ -15,12 +15,12 @@ public class SheepFearZone : MonoBehaviour
 
     private void Update()
     {
-        if (GameData.instance.isSheepInside)
-            return;
+        particle.SetActive(GameManager.instance.grange.AllSheepAreOutside && !GameData.instance.isSheepInside);
+
+        if (GameData.instance.isSheepInside) return;
         
         ScareNearbySheep();
 
-        particle.SetActive(GameManager.instance.grange.AllSheepAreOutside);
     }
 
     private void ScareNearbySheep()

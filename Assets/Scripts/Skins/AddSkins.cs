@@ -29,6 +29,11 @@ public class AddSkins : MonoBehaviour
 
     [Header("References")]  // Ajout
     [SerializeField] private SheepWindow sheepWindow;
+    
+    [SerializeField] private Sprite centerSprite;
+    [SerializeField] private Sprite nearSprite;
+    [SerializeField] private Sprite farSprite;
+    [SerializeField] private Sprite defaultSprite;
 
     private void Awake()
     {

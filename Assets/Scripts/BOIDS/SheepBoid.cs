@@ -11,6 +11,9 @@ public class SheepBoid : MonoBehaviour
     public Vector3 velocity;
     private bool isPaused;
     private float pauseTimer, nextPauseTime;
+    
+    [SerializeField] private float baseSpeed = 2f;
+    [SerializeField] private float maxSpeed = 3f;
 
     public bool isAfraid = false;
     [SerializeField] private float fearSpeedMultiplier = 3f;
@@ -62,16 +65,19 @@ public class SheepBoid : MonoBehaviour
         velocity += accel * Time.deltaTime;
         velocity.y = 0f;
 
-        float baseSpeed = velocity.magnitude;
+        float targetSpeed = baseSpeed;
+
         if (isAfraid)
         {
-            baseSpeed *= fearSpeedMultiplier;
+            targetSpeed = baseSpeed * fearSpeedMultiplier;
+
             fearTimer -= Time.deltaTime;
             if (fearTimer <= 0f)
                 CalmDown();
         }
 
-        velocity = velocity.normalized * baseSpeed;
+        velocity = velocity.normalized * targetSpeed;
+
 
         // Déplacement sécurisé
         Vector3 remainingMove = velocity * Time.deltaTime;
