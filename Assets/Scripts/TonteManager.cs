@@ -21,10 +21,12 @@ public class TonteManager : MiniGameParent
 
     [Header("Particule")]
     [SerializeField] private ParticleSystem particleTonte;
+    [SerializeField] private ParticleSystem particleTonteLevel2;
     [SerializeField] private Transform[] listPoints;
 
     [Header("Tonte Settings")]
-    [SerializeField] private float touchRadius = 0.15f;
+    [SerializeField] private float touchRadius = 0.2f;
+    [SerializeField] private float touchRadiusLevel2 = 0.4f;
 
     private GameObject currentSheep;
     private List<Transform> curList = new List<Transform>();
@@ -54,6 +56,12 @@ public class TonteManager : MiniGameParent
 
     private void OnEnable()
     {
+        if (GameData.instance.dicoAmélioration[TypeAmelioration.Tonte].Item2 > 1)
+        {
+            particleTonte = particleTonteLevel2;
+            touchRadius = touchRadiusLevel2;
+        }
+        
         if (TouchManager.instance != null)
         {
             TouchManager.instance.OnGetFingerPosition += OnFingerMoved;

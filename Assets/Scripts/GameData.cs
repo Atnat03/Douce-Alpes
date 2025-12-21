@@ -14,6 +14,8 @@ public class GameData : MonoBehaviour
 {
     public static GameData instance;
 
+    public bool IsStatGame = false;
+
     public Action<TypeAmelioration, float, bool> OnCooldownUpdated;
     public Action<TypeAmelioration> OnCooldownFinish;
 
@@ -149,6 +151,10 @@ public class GameData : MonoBehaviour
 
     #region AMELIORATION
 
+    public void AddLevelTonte() => AddLevelUpgrade(TypeAmelioration.Tonte);
+    public void AddLevelClean() => AddLevelUpgrade(TypeAmelioration.Nettoyage);
+    public void AddLevelSortie() => AddLevelUpgrade(TypeAmelioration.Sortie);
+
     public void AddLevelUpgrade(TypeAmelioration type)
     {
         if (!MiniGameParent.CheckIfCanUpgrade(type))
@@ -271,5 +277,11 @@ public class GameData : MonoBehaviour
     {
         currentMoneyDay = 0;
         currentWoolDay = 0;
+    }
+
+    public void StartGame()
+    {
+        IsStatGame = true;
+        GetComponent<ActivateStartUI>().ActivateUI();
     }
 }

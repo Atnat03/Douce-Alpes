@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Cadenas : TouchableObject
 {
-    public int hp = 2;
-    [HideInInspector]public int maxHp;
+    public int hp;
+    public int[] maxHp;
 
     [SerializeField] private ParticleSystem touchEffect;
     [SerializeField] private ParticleSystem unlockEffect;
@@ -21,7 +21,7 @@ public class Cadenas : TouchableObject
 
     private void Start()
     {
-        maxHp = hp;
+        hp = maxHp[0];
         
         pos = transform.position;
         rot = transform.rotation;

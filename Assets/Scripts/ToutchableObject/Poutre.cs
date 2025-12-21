@@ -25,7 +25,7 @@ public class Poutre : MonoBehaviour
         foreach (Cadenas cadena in cadenas)
         {
             cadena.transform.gameObject.SetActive(true);
-            cadena.hp = cadena.maxHp;
+            cadena.hp = cadena.maxHp[GameData.instance.dicoAmélioration[TypeAmelioration.Sortie].Item2];
             cadena.ResetCadenas();
         }
 

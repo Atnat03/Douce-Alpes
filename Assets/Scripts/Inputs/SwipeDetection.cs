@@ -137,7 +137,7 @@ public class SwipeDetection : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         RaycastHit hit;
         float maxDistance = 2.6f;
-        float offset = 0.1f;
+        float offset = (GameData.instance.dicoAmélioration[TypeAmelioration.Nettoyage].Item2 > 1) ? 0.25f : 0.1f;
 
         if (SwapSceneManager.instance.currentSceneId == 3) {
             bool cleaned = false;

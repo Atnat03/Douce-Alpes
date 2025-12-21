@@ -218,6 +218,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ActivatedDog()
+    {
+        chien.SetActive(true);
+    }
+
 
     public void DelockSheep()
     {
