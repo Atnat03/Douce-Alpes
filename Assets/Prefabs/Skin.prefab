@@ -96,6 +96,7 @@ MonoBehaviour:
   type: 0
   canPutThisSkin: 0
   stackText: {fileID: 5401854189848328475}
+  baseAnchoredPosition: {x: 0, y: 0}
 --- !u!225 &-5936225452394370232
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -202,6 +203,7 @@ MonoBehaviour:
   type: 0
   canPutThisSkin: 0
   stackText: {fileID: 0}
+  baseAnchoredPosition: {x: 0, y: 0}
 --- !u!225 &4837805208614950796
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -225,7 +227,6 @@ GameObject:
   - component: {fileID: 2281699399722375129}
   - component: {fileID: 6043077062101531386}
   - component: {fileID: 5401854189848328475}
-  - component: {fileID: 7733679955116285391}
   m_Layer: 5
   m_Name: StackTxt
   m_TagString: Untagged
@@ -281,11 +282,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_Font: {fileID: 12800000, guid: dd7900277e84e14499f98a2ac9319c29, type: 3}
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 3
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -294,18 +295,3 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: x2
---- !u!114 &7733679955116285391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4718031874623952740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
-  m_EffectDistance: {x: 2, y: -2}
-  m_UseGraphicAlpha: 1
