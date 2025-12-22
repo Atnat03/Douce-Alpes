@@ -8,10 +8,13 @@ public class ExterieurShopManager : ShopManager
     public GameObject EquipéPannel;
     public Button buttonEquip;
     ArticleActivableUnit selectedUIArticle;
-
-    // Deux variables pour gérer le skin équipé par type
     ArticleActivableUnit currentEquippedGrange;
     ArticleActivableUnit currentEquippedBarriere;
+    ArticleActivableUnit currentEquippedNiche;
+    ArticleActivableUnit currentEquippedShop;
+
+    public NicheManager nicheManager;
+    public GameObject buyDogFirstInfo;
 
     public Text TextTitleSelect;
 
@@ -34,26 +37,23 @@ public class ExterieurShopManager : ShopManager
         if (selectedUIArticle == null)
             return;
 
-        // On choisit la référence du skin actuel selon le type
         ArticleActivableUnit currentEquipped = selectedUIArticle.articleType switch
         {
             ArticleType.Grange => currentEquippedGrange,
             ArticleType.Barriere => currentEquippedBarriere,
+            ArticleType.Shop => currentEquippedShop,
+            ArticleType.Niche => currentEquippedNiche,
             _ => null
         };
 
-        // Si c'est déjà l'article équipé, on ne fait rien
         if (selectedUIArticle == currentEquipped)
             return;
 
-        // Déséquipe l'ancien skin du même type
         if (currentEquipped != null)
             currentEquipped.isActive = false;
 
-        // Équipe le nouveau skin
         selectedUIArticle.isActive = true;
 
-        // Applique le skin
         if (selectedUIArticle.articleType == ArticleType.Grange)
         {
             SkinAgency.instance.SetSkinGrange(selectedUIArticle.id);
@@ -64,6 +64,22 @@ public class ExterieurShopManager : ShopManager
             SkinAgency.instance.SetSkinBarriere(selectedUIArticle.id);
             currentEquippedBarriere = selectedUIArticle;
         }
+                else if (selectedUIArticle.articleType == ArticleType.Barriere)
+        {
+            SkinAgency.instance.SetSkinBarriere(selectedUIArticle.id);
+            currentEquippedBarriere = selectedUIArticle;
+        }
+        else if (selectedUIArticle.articleType == ArticleType.Niche)
+        {
+            SkinAgency.instance.SetSkinNiche(selectedUIArticle.id);
+            currentEquippedNiche = selectedUIArticle;
+        }
+        else if (selectedUIArticle.articleType == ArticleType.Shop)
+        {
+            Debug.Log("Set Shop Skin");
+            SkinAgency.instance.SetSkinShop(selectedUIArticle.id);
+            currentEquippedShop = selectedUIArticle;
+        }
 
         UpdatePrice(selectedArticle.price, selectedArticle.title);
     }
@@ -72,6 +88,12 @@ public class ExterieurShopManager : ShopManager
     {
         if (PlayerMoney.instance.isEnoughtMoney(selectedArticle.price))
         {
+            if(selectedArticle.type == ArticleType.Niche && !nicheManager.gameObject.activeInHierarchy)
+            {
+                Instantiate(buyDogFirstInfo, transform.parent);
+                return;
+            }
+
             Instantiate(buyInfo, transform.parent);
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
@@ -80,7 +102,6 @@ public class ExterieurShopManager : ShopManager
 
             Debug.Log("Buy");
 
-            // Active le skin après achat
             Activate();
         }
         else
@@ -117,6 +138,10 @@ public class ExterieurShopManager : ShopManager
                 currentEquippedGrange = uiArticle;
             else if (uiArticle.articleType == ArticleType.Barriere)
                 currentEquippedBarriere = uiArticle;
+            else if (uiArticle.articleType == ArticleType.Niche)
+                currentEquippedNiche = uiArticle;
+            else if (uiArticle.articleType == ArticleType.Shop)
+                currentEquippedShop = uiArticle;
         }
     }
 

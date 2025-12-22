@@ -21,8 +21,14 @@ public class SkinAgency : MonoBehaviour
     public int skinGrangeId = 0;
     public int skinBarriereId = 0;
 
+    public int skinShopId = 0;
+    public int skinNicheId = 0;
+
     [SerializeField] private SkinBuildManager barrierSkinManager;
     [SerializeField] private SkinBuildManagerGrange grangeSkinManager;
+    [SerializeField] private SkinBuildManager nicheSkinManager;
+    [SerializeField] private SkinBuildManager shopSkinManager;
+
     public Dictionary<int, bool> dicoInteriorSkin = new Dictionary<int, bool>();
     
     private void Awake()
@@ -57,6 +63,16 @@ public class SkinAgency : MonoBehaviour
         skinBarriereId = id;
         barrierSkinManager.SwapSkin(id);
     }
+    public void SetSkinNiche(int id)
+    {
+        skinNicheId = id;
+        nicheSkinManager.SwapSkin(id);
+    }
+    public void SetSkinShop(int id)
+    {
+        skinShopId = id;
+        shopSkinManager.SwapSkin(id);
+    }
 
     public void SetSkinInterior(int id)
     {
@@ -73,6 +89,8 @@ public class SkinAgency : MonoBehaviour
         
         SetSkinGrange(skinGrangeId);
         SetSkinBarriere(skinGrangeId);
+        SetSkinShop(skinShopId);
+        SetSkinNiche(skinNicheId);
     }
     
     public void InitializeSheepSkin(int sheepId, int hatId, int clotheId)
