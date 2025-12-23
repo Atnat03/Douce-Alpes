@@ -13,6 +13,7 @@ public class StartingTitle : MonoBehaviour
 
     public Camera titleCamera;
     public Camera mainCamera;
+    public GameObject titleUI;
 
     public bool isTesting = false;
     bool isAnimating = false;
@@ -22,12 +23,14 @@ public class StartingTitle : MonoBehaviour
         if (!isTesting)
         {
             titleCamera.gameObject.SetActive(true);
+            titleUI.SetActive(true);
             mainCamera.gameObject.SetActive(false);
             GameData.instance.IsStatGame = false;
         }
         else
         {
             titleCamera.gameObject.SetActive(false);
+            titleUI.SetActive(false);
             mainCamera.gameObject.SetActive(true);
             GameData.instance.StartGame();
         }
@@ -58,6 +61,7 @@ public class StartingTitle : MonoBehaviour
         titleCamera.transform.position = to;
         
         mainCamera.gameObject.SetActive(true);
+        titleUI.SetActive(false);
         titleCamera.gameObject.SetActive(false);
         GameData.instance.StartGame();
 
