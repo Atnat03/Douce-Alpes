@@ -12,6 +12,7 @@ public class ExterieurShopManager : ShopManager
     ArticleActivableUnit currentEquippedBarriere;
     ArticleActivableUnit currentEquippedNiche;
     ArticleActivableUnit currentEquippedShop;
+    ArticleActivableUnit currentEquippedTricot;
 
     public NicheManager nicheManager;
     public GameObject buyDogFirstInfo;
@@ -43,6 +44,7 @@ public class ExterieurShopManager : ShopManager
             ArticleType.Barriere => currentEquippedBarriere,
             ArticleType.Shop => currentEquippedShop,
             ArticleType.Niche => currentEquippedNiche,
+            ArticleType.Tricot => currentEquippedTricot,
             _ => null
         };
 
@@ -76,9 +78,13 @@ public class ExterieurShopManager : ShopManager
         }
         else if (selectedUIArticle.articleType == ArticleType.Shop)
         {
-            Debug.Log("Set Shop Skin");
             SkinAgency.instance.SetSkinShop(selectedUIArticle.id);
             currentEquippedShop = selectedUIArticle;
+        }        
+        else if (selectedUIArticle.articleType == ArticleType.Tricot)
+        {
+            SkinAgency.instance.SetSkinTricot(selectedUIArticle.id);
+            currentEquippedTricot = selectedUIArticle;
         }
 
         UpdatePrice(selectedArticle.price, selectedArticle.title);
@@ -142,6 +148,8 @@ public class ExterieurShopManager : ShopManager
                 currentEquippedNiche = uiArticle;
             else if (uiArticle.articleType == ArticleType.Shop)
                 currentEquippedShop = uiArticle;
+            else if (uiArticle.articleType == ArticleType.Tricot)
+                currentEquippedTricot = uiArticle;
         }
     }
 

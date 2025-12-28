@@ -9,14 +9,7 @@ public class ArticleActivableUnit : ArticleUnit
     public bool isBuying = false;
 
     public void Update()
-    {
-        int n = 0;
-        
-        if (articleType == ArticleType.Grange)
-            n = SkinAgency.instance.dicoHatSkinStack[id];
-        if (articleType == ArticleType.Barriere)
-            n = SkinAgency.instance.dicoClotheSkinStack[id];
-        
+    {        
         IsActiveImage.gameObject.SetActive(isActive);
     }
 

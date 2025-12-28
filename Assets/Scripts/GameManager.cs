@@ -351,6 +351,8 @@ public class GameManager : MonoBehaviour
         grange.OpenDoors();
         grange.GetPoutre().ResetPoutre();
         grange.AllSheepAreOutside = false;
+
+        SheepBoidManager.instance.nbInstantSheep = 0;
         
         yield return new WaitForSeconds(1f);
 

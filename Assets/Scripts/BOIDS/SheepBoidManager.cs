@@ -229,6 +229,7 @@ public class SheepBoidManager : MonoBehaviour
 
         sheepScript.Initialize(nbInstantSheep, data.name);
         OnListChanged?.Invoke(sheep);
+        nbInstantSheep++;
         return go;
     }
 
