@@ -7,9 +7,14 @@ public class AbreuvoirClickOpen : TouchableObject
     
     public Transform targetTransiPos;
 
+    [SerializeField] private CameraControl cameraControl;
+
     public override void TouchEvent()
     {
         if(GameManager.instance.currentCameraState != CamState.Default)
+            return;
+
+        if (cameraControl.IsCameraMoving)
             return;
         
         if(TutoManager.instance != null)

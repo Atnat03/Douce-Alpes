@@ -6279,8 +6279,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.79835796, y: 1.8004427, z: 1.9613822}
-  m_Center: {x: 0.10082096, y: 0.40022135, z: 0.026377441}
+  m_Size: {x: 1.086971, y: 1.8232759, z: 2.5591283}
+  m_Center: {x: -0.043485582, y: 0.41163796, z: -0.020749569}
 --- !u!114 &175826659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9756,6 +9756,7 @@ MonoBehaviour:
   abreuvoir: {fileID: 2049900978}
   camPos: {fileID: 1397747528}
   targetTransiPos: {fileID: 819193713}
+  cameraControl: {fileID: 330585550}
 --- !u!1001 &246643204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9926,6 +9927,7 @@ GameObject:
   - component: {fileID: 247222798}
   - component: {fileID: 247222800}
   - component: {fileID: 247222799}
+  - component: {fileID: 247222801}
   m_Layer: 0
   m_Name: SkinJ
   m_TagString: Untagged
@@ -10013,6 +10015,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &247222801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247222797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f231e53d09f524193035b0b2301f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  build: {fileID: 1502896831}
 --- !u!1001 &249962115
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14003,7 +14018,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 330585545}
   timerToTransition: 1
-  transitionCooldown: 0.25
+  transitionCooldown: 0.1
   finalRotationTime: 0.5
   isInTransition: 0
 --- !u!114 &330585550
@@ -45583,7 +45598,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069212578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -45592,7 +45607,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 18, y: 60}
   m_SizeDelta: {x: 450, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1069212580
@@ -67227,7 +67242,6 @@ GameObject:
   - component: {fileID: 1502896827}
   - component: {fileID: 1502896828}
   - component: {fileID: 1502896831}
-  - component: {fileID: 1502896832}
   m_Layer: 0
   m_Name: maison_berger
   m_TagString: Touchable
@@ -67286,19 +67300,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI: {fileID: 1870566815}
---- !u!114 &1502896832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1502896826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98f231e53d09f524193035b0b2301f78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  build: {fileID: 1502896831}
 --- !u!1001 &1506417009
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72381,6 +72382,7 @@ GameObject:
   - component: {fileID: 1629973834}
   - component: {fileID: 1629973836}
   - component: {fileID: 1629973835}
+  - component: {fileID: 1629973837}
   m_Layer: 0
   m_Name: SkinR
   m_TagString: Untagged
@@ -72468,6 +72470,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1629973837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629973833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f231e53d09f524193035b0b2301f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  build: {fileID: 1502896831}
 --- !u!1 &1631269488
 GameObject:
   m_ObjectHideFlags: 0
@@ -74605,6 +74620,7 @@ GameObject:
   - component: {fileID: 1679164632}
   - component: {fileID: 1679164634}
   - component: {fileID: 1679164633}
+  - component: {fileID: 1679164635}
   m_Layer: 0
   m_Name: SkinB
   m_TagString: Untagged
@@ -74692,6 +74708,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1679164635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1679164631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f231e53d09f524193035b0b2301f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  build: {fileID: 1502896831}
 --- !u!1001 &1679302766
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95340,6 +95369,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2129800185}
+        m_TargetAssemblyTypeName: CreateSheepButton, Assembly-CSharp
+        m_MethodName: Exit
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

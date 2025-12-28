@@ -12,7 +12,7 @@ public class CreateSheepButton : MonoBehaviour
         GetComponent<Button>().interactable =
             PlayerMoney.instance.isEnoughtMoney(PlayerMoney.instance.GetCurrentSheepPrice());
         
-        price.text = PlayerMoney.instance.GetCurrentSheepPrice().ToString(); 
+        price.text = PlayerMoney.instance.GetCurrentSheepPrice().ToString();
     }
 
     public void Click()
@@ -20,5 +20,12 @@ public class CreateSheepButton : MonoBehaviour
         PlayerMoney.instance.RemoveMoney(PlayerMoney.instance.GetCurrentSheepPrice());
         sheepcreator.SetActive(true);
         gameObject.SetActive(false);
+
+        GameManager.instance.ChangeCameraState(CamState.CreateSheep);
+    }
+
+    public void Exit()
+    {
+        GameManager.instance.ChangeCameraState(CamState.Default);
     }
 }

@@ -16,7 +16,8 @@ public enum CamState
     MiniGame,
     Drink,
     Dog,
-    Shop
+    Shop,
+    CreateSheep
 }
 
 [System.Serializable]

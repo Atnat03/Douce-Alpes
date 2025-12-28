@@ -34,6 +34,9 @@ public class PanneauShop : TouchableObject
     {
         if (GameManager.instance.currentCameraState != CamState.Default)
             return;
+
+        if(changeCamera.gameObject.GetComponent<CameraControl>().IsCameraMoving)
+            return;
         
         Debug.Log("Touch shop");
         
