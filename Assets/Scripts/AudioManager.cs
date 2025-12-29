@@ -18,4 +18,9 @@ public class AudioManager : MonoBehaviour
         audioSource.pitch = pitch;
         audioSource.PlayOneShot(data.audioClips[id], volume);
     }
+
+    public void ButtonClick()
+    {
+        PlaySound(2);
+    }
 }
