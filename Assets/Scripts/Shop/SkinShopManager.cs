@@ -12,6 +12,8 @@ public class SkinShopManager : ShopManager
             Debug.Log("Buy");
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
+
+            AudioManager.instance.PlaySound(3);
             
             if(selectedArticle.type == ArticleType.Hat)
                 SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);
@@ -20,6 +22,7 @@ public class SkinShopManager : ShopManager
         }
         else
         {
+            AudioManager.instance.PlaySound(5);
             StartCoroutine(CantBuyIt());
         }
     }
