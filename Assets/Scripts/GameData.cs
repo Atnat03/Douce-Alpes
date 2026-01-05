@@ -9,6 +9,12 @@ public enum TypeAmelioration
     Tonte, Sortie, Rentree, Nettoyage, Abreuvoir, Overflow
 }
 
+[Serializable]
+public class SheepDataList
+{
+    public List<SheepData> sheepList;
+}
+
 [DefaultExecutionOrder(-1)]
 public class GameData : MonoBehaviour
 {
@@ -19,7 +25,7 @@ public class GameData : MonoBehaviour
     public Action<TypeAmelioration, float, bool> OnCooldownUpdated;
     public Action<TypeAmelioration> OnCooldownFinish;
 
-    [HideInInspector] public List<SheepData> sheepDestroyData = new ();
+    public List<SheepData> sheepDestroyData = new ();
     public int nbSheep;
     public bool isSheepInside = false;
     [SerializeField] public GameObject sheepPrefab;
@@ -50,6 +56,8 @@ public class GameData : MonoBehaviour
     
     public int currentMoneyDay = 0;
     public int currentWoolDay = 0;
+
+    public SheepBoidManager BoidManager;
     
     private void Awake()
     {
@@ -111,18 +119,47 @@ public class GameData : MonoBehaviour
     private void LoadMyData(PlayerData data)
     {
         if (data == null) return;
-        timeWhenLoad = data.lastTime;
-        double now = DateTimeOffset.Now.ToUnixTimeSeconds();
-        timeSinceLastLoad = now - timeWhenLoad;
 
+        timeWhenLoad = data.lastTime;
+        timeSinceLastLoad =
+            DateTimeOffset.Now.ToUnixTimeSeconds() - timeWhenLoad;
+
+        sheepDestroyData.Clear();
+        GameManager.instance.sheepList.Clear();
+        BoidManager.nbInstantSheep = 0;
+        isSheepInside = data.isInGrange;
+        nbSheep = data.nbSheep;
+
+        if (isSheepInside)
+        {
+            sheepDestroyData.AddRange(data.sheepList);
+        }
+        else
+        {
+            foreach (SheepData sheep in data.sheepList)
+            {
+                BoidManager.SheepGetOffAndRecreate(sheep, sheep.position);
+            }
+        }
+        
+        SkinAgency.instance.ApplySaveData(data.skinAgency);
+        
+        PlayerMoney.instance.LoadStats(data.gold, data.wool);
+        BonheurCalculator.instance.currentBonheur = data.happiness;
+        
+        timer.currentMiniJeuToDo = data.currentMiniJeuToDo;
+        timer.canButtonG = data.canButtonG;
+        timer.canButtonT = data.canButtonT;
+        timer.canButtonC = data.canButtonC;
+        timer.UpdateAllButton();
+        int nextIndex = Array.IndexOf(Enum.GetValues(typeof(MiniGames)), timer.currentMiniJeuToDo);
+        timer.StartCoroutine(timer.UpdateHorloge(nextIndex));
+
+        numberDay = data.nbDay;
+        
         Array.Fill(coolDownTimers, 0);
     }
 
-    private void Update()
-    {
-        if(SheepBoidManager.instance.nbInstantSheep > 0)
-            isSheepInside = sheepDestroyData.Count == nbSheep;
-    }
     
     
     #region SKIN

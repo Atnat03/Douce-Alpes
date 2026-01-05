@@ -55,7 +55,7 @@ public class InteriorSceneManager : MonoBehaviour
 
     public void Initialize()
     {
-        if (GameData.instance.nbSheep <= 0) 
+        if (GameData.instance.nbSheep <= 0)
             return;
 
         List<Transform> spawnPool = new List<Transform>(randomSpawnPos);

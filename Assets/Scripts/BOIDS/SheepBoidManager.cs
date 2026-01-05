@@ -47,11 +47,14 @@ public class SheepBoidManager : MonoBehaviour
     [Header("Colliders à éviter")]
     public List<Collider> forbiddenColliders = new List<Collider>();
 
-    private void Awake() => instance = this;
+    private void Awake()
+    {
+        prefab = GameData.instance.sheepPrefab;
+        instance = this;
+    }
 
     private void Start()
     {
-        prefab = GameData.instance.sheepPrefab;
         if(meshCollider != null) GenerateBoundaryPointsFromMesh();
         StartCoroutine(SpawnSheepRoutine());
     }

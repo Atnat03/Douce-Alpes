@@ -81,7 +81,7 @@ public class TimerManager : MonoBehaviour
         UpdateFills();
     }
 
-    private void UpdateFills()
+    public void UpdateFills()
     {
         UpdateSingleFill(grangeFillImage, canButtonG, TypeAmelioration.Rentree, "Grange");
         UpdateSingleFill(tonteFillImage, canButtonT, TypeAmelioration.Tonte, "Tonte");
@@ -166,7 +166,7 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    IEnumerator UpdateHorloge(int nextIndex)
+    public IEnumerator UpdateHorloge(int nextIndex)
     {
         float duration = 2f;
         float elapsed = 0f;

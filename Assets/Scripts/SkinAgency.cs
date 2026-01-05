@@ -178,4 +178,109 @@ public class SkinAgency : MonoBehaviour
             OnStacksChanged?.Invoke();  
         }
     }
+    
+    private List<IntIntPair> ToIntIntList(Dictionary<int,int> dico)
+    {
+        var list = new List<IntIntPair>();
+        foreach (var kvp in dico)
+            list.Add(new IntIntPair { key = kvp.Key, value = kvp.Value });
+        return list;
+    }
+    private Dictionary<int,int> ToIntIntDico(List<IntIntPair> list)
+    {
+        var dico = new Dictionary<int,int>();
+        foreach (var p in list)
+            dico[p.key] = p.value;
+        return dico;
+    }
+
+    private Dictionary<int,bool> ToIntBoolDico(List<IntBoolPair> list)
+    {
+        var dico = new Dictionary<int,bool>();
+        foreach (var p in list)
+            dico[p.key] = p.value;
+        return dico;
+    }
+
+    
+    private List<IntBoolPair> ToIntBoolList(Dictionary<int,bool> dico)
+    {
+        var list = new List<IntBoolPair>();
+        foreach (var kvp in dico)
+            list.Add(new IntBoolPair { key = kvp.Key, value = kvp.Value });
+        return list;
+    }
+
+    public void ApplySaveData(SkinAgencySaveData data)
+    {
+        dicoHatSkinStack = ToIntIntDico(data.hatStacks);
+        dicoClotheSkinStack = ToIntIntDico(data.clotheStacks);
+
+        hatSkinEquippedOnSheep = ToIntIntDico(data.hatEquipped);
+        clotheSkinEquippedOnSheep = ToIntIntDico(data.clotheEquipped);
+
+        dicoInteriorSkin = ToIntBoolDico(data.interiorSkins);
+
+        SetSkinGrange(data.skinGrangeId);
+        SetSkinBarriere(data.skinBarriereId);
+        SetSkinShop(data.skinShopId);
+        SetSkinNiche(data.skinNicheId);
+        SetSkinTricot(data.skinTricotId);
+
+        OnStacksChanged?.Invoke();
+    }
+
+    
+    public SkinAgencySaveData BuildSaveData()
+    {
+        return new SkinAgencySaveData
+        {
+            hatStacks = ToIntIntList(dicoHatSkinStack),
+            clotheStacks = ToIntIntList(dicoClotheSkinStack),
+
+            hatEquipped = ToIntIntList(hatSkinEquippedOnSheep),
+            clotheEquipped = ToIntIntList(clotheSkinEquippedOnSheep),
+
+            interiorSkins = ToIntBoolList(dicoInteriorSkin),
+
+            skinGrangeId = skinGrangeId,
+            skinBarriereId = skinBarriereId,
+            skinShopId = skinShopId,
+            skinNicheId = skinNicheId,
+            skinTricotId = skinTricotId
+        };
+    }
 }
+
+[Serializable]
+public class IntIntPair
+{
+    public int key;
+    public int value;
+}
+
+[Serializable]
+public class IntBoolPair
+{
+    public int key;
+    public bool value;
+}
+
+[Serializable]
+public class SkinAgencySaveData
+{
+    public List<IntIntPair> hatStacks;
+    public List<IntIntPair> clotheStacks;
+
+    public List<IntIntPair> hatEquipped;
+    public List<IntIntPair> clotheEquipped;
+
+    public List<IntBoolPair> interiorSkins;
+
+    public int skinGrangeId;
+    public int skinBarriereId;
+    public int skinShopId;
+    public int skinNicheId;
+    public int skinTricotId;
+}
+

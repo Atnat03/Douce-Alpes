@@ -9,11 +9,11 @@ public class PlayerMoney : MonoBehaviour
     public static PlayerMoney instance;
     
     [Header("Money")]
-    [SerializeField] private int currentMoney;
+    [SerializeField] public int currentMoney;
     [SerializeField] Text txtMoney;
     
     [Header("Whool")]
-    [SerializeField] private int currentWhool;
+    [SerializeField] public int currentWhool;
     [SerializeField] Text txtWhool;
     
     public BonheurUI bonheurUI;
@@ -133,6 +133,12 @@ public class PlayerMoney : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void LoadStats(int gold, int wool)
+    {
+        currentMoney = gold;
+        currentWhool = wool;
     }
     
     public int CalculateValueWhoolWithTotalHapiness()

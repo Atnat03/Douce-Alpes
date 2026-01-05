@@ -30,6 +30,7 @@ public class SheepData
 	public bool hasWhool;
     public NatureType nature;
     public int colorID;
+    public Vector3 position;
 
     public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature, int colorID)
     {
@@ -325,6 +326,8 @@ public class GameManager : MonoBehaviour
         
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
         {
+            GameData.instance.isSheepInside = true;
+            
             GameData.instance.timer.canButtonG = false;
             GameData.instance.timer.canButtonT = true;
 
@@ -396,7 +399,8 @@ public class GameManager : MonoBehaviour
         GameData.instance.timer.UpdateAllButton();
         
         StartCoroutine(GetOffGrange());
-
+        
+        GameData.instance.isSheepInside = false;
     }
 
     IEnumerator GetOffGrange()
