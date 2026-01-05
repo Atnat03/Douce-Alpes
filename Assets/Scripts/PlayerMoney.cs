@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PlayerMoney : MonoBehaviour
 {
@@ -53,6 +54,8 @@ public class PlayerMoney : MonoBehaviour
         Debug.Log(value  + " money ajouté");
         
         bonheurUI.DropCanva(pos, value, moneySprite, moneyFinalTarget.position);
+        
+        AudioManager.instance.PlaySound(8, Random.Range(0.95f, 1.05f), 0.2f);
 
         StartCoroutine(AddMoneySmooth(currentMoney + value));
     }

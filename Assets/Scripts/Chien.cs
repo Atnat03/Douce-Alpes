@@ -77,7 +77,10 @@ public class Chien : MonoBehaviour
         Vector3 nextDestination = sheepFarPos + dir * offset;
 
         if (!barkEffect.isPlaying)
+        {
             barkEffect.Play();
+            AudioManager.instance.PlaySound(10);
+        }
 
         return nextDestination;
     }

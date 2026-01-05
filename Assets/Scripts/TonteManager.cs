@@ -48,6 +48,8 @@ public class TonteManager : MiniGameParent
     [SerializeField] private float maxOffset = 0.15f;          
     [SerializeField] private float offsetStrength = 1.0f;      
     
+    [SerializeField] AudioSource audioSource;
+    
     private void Awake()
     {
         instance = this;
@@ -103,7 +105,7 @@ public class TonteManager : MiniGameParent
         {
             nameText.text = "Tous les moutons sont finis !";
             nbToCutText.text = "";
-
+            
             EndMiniGame(TypeAmelioration.Tonte);
 
             GameData.instance.timer.canButtonT = false;
@@ -145,7 +147,9 @@ public class TonteManager : MiniGameParent
 
     IEnumerator WaitBeforeSwapScene()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
+        AudioManager.instance.PlaySound(11);
+        yield return new WaitForSeconds(1f);
         SwapSceneManager.instance.SwapScene(1);
     }
 
@@ -162,11 +166,10 @@ public class TonteManager : MiniGameParent
         Ray ray = Camera.main.ScreenPointToRay(offsetScreenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            // Déplacer la particule sur le doigt
             particleTonte.transform.position = hit.point;
-
-            // Puis l’activer
             particleTonte.Play();
+            
+            audioSource.Play();
         }
     }
 
@@ -200,17 +203,16 @@ public class TonteManager : MiniGameParent
         if (currentSheep == null || !canTonte)
         {
             particleTonte.Stop();
+            audioSource.Stop();
             return;
         }
 
         if (!particleTonte.isPlaying)
             return;
 
-        // 🔹 Position UI de l'outil (inchangée)
         Vector3 uiPos = Camera.main.WorldToScreenPoint(fingerWorldPos);
         toolUI.position = uiPos;
 
-        // 🔹 Position écran + offset doigt
         Vector3 screenPos = uiPos;
         screenPos.x += screenOffset.x;
         screenPos.y += screenOffset.y;
@@ -220,10 +222,8 @@ public class TonteManager : MiniGameParent
         {
             Vector3 hitPos = hit.point;
 
-            // 🔹 Centre du mouton (ou de la laine)
             Vector3 center = tontePoint.position;
 
-            // 🔹 Direction radiale
             Vector3 dirFromCenter = (hitPos - center);
             float distanceFromCenter = dirFromCenter.magnitude;
 
@@ -244,12 +244,10 @@ public class TonteManager : MiniGameParent
         }
 
 
-        // 🔹 Feedback haptique
         int r = UnityEngine.Random.Range(0, 50);
         if (r == 0 && isFingerDown)
             Handheld.Vibrate();
 
-        // 🔹 Détection logique
         DetectTouchedPoint(fingerWorldPos);
     }
 
@@ -260,6 +258,8 @@ public class TonteManager : MiniGameParent
         isFingerDown = false;
         if (particleTonte != null)
             particleTonte.Stop();
+        
+        audioSource.Stop();
         
         if (curList.Count <= miniValueToEnd && canTonte)
         {

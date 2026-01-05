@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Timers;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -73,6 +74,8 @@ public class Sheep : TouchableObject
     [SerializeField] private float rotationDuration = 0.25f;
 
     private Coroutine rotationCoroutine;
+
+    private float timerSound = 0;
 
     private void OnEnable()
     {
@@ -155,6 +158,16 @@ public class Sheep : TouchableObject
         nameText.gameObject.SetActive(isFocusing);
 
         Bubble.transform.parent.GetComponent<CanvasGroup>().alpha = isOpen ? 0f : 1f;
+
+        if (timerSound <= 0)
+        {
+            AudioManager.instance.PlaySound(Random.Range(17,20), 1f, 0.1f);
+            timerSound = Random.Range(5, 30);
+        }
+        else
+        {
+            timerSound -= Time.deltaTime;
+        }
     }
     
     private void OnSwipeDetected(SwipeType swipe)
@@ -210,7 +223,6 @@ public class Sheep : TouchableObject
         if (!isOpen)
             return;
 
-        // reset quand le swipe se termine
         if (pos == Vector2.zero)
         {
             swipeZoneInitialized = false;
@@ -218,7 +230,6 @@ public class Sheep : TouchableObject
             return;
         }
 
-        // On ne teste QUE la première position
         if (swipeZoneInitialized)
             return;
 
@@ -230,7 +241,6 @@ public class Sheep : TouchableObject
         swipeStartedInValidZone = pos.y >= minY && pos.y <= maxY;
     }
 
-
     private void ProcessWool()
     {
         processWool -= 2 * Time.deltaTime;
@@ -241,6 +251,8 @@ public class Sheep : TouchableObject
             processWool = Random.Range(50, 100);
             
             GetComponent<Animator>().SetTrigger("WoolPop");
+            
+            AudioManager.instance.PlaySound(23);
             
             SetCurrentSkinClothe(currentSkinClothe);
             SetCurrentSkinHat(currentSkinHat);
@@ -285,6 +297,8 @@ public class Sheep : TouchableObject
         isBeingCaressed = true;
         heartParticle.Play();
         GameManager.instance.Caresse(this);
+        
+        AudioManager.instance.PlaySound(6, Random.Range(0.9f, 1.1f));
 
         CancelInvoke(nameof(StopCaresse));
         Invoke(nameof(StopCaresse), 0.2f);

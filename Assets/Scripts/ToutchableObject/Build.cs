@@ -23,7 +23,12 @@ public class Build : TouchableObject
     
     public void OpenUI()
     {
+        if (UI.activeInHierarchy)
+            return;
+        
         UI.SetActive(true);
+        
+        AudioManager.instance.PlaySound(24);
 
         StopAllCoroutines();
         StartCoroutine(CloseDelay());

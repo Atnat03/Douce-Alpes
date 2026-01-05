@@ -160,9 +160,10 @@ public class AddSkins : MonoBehaviour
         Image newImage = snap.Panels[newIndex].GetComponent<Image>();
         if (newImage != null) newImage.sprite = selectedSprite;
 
-        // Appliquer le skin uniquement si on a des stacks
         if (canSelect)
         {
+            AudioManager.instance.PlaySound(22);
+            
             switch (skinType) 
             {
                 case SkinType.Hat:

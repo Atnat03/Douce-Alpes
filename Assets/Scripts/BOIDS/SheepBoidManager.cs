@@ -149,7 +149,10 @@ public class SheepBoidManager : MonoBehaviour
     public void CreateSheep()
     {
         if (!string.IsNullOrEmpty(nameInputField.text))
+        {
+            AudioManager.instance.PlaySound(20, 1f, 0.2f);
             SpawnNewSheep(nameInputField.text);
+        }
         else
             Debug.LogError("Entrée de nom incorrect");
     }

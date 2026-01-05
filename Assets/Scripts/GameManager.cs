@@ -319,6 +319,8 @@ public class GameManager : MonoBehaviour
     {
         grange.CloseDoors();
         
+        AudioManager.instance.PlaySound(11);
+        
         yield return new WaitForSeconds(1f);
         
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
@@ -384,6 +386,8 @@ public class GameManager : MonoBehaviour
 
         if(TutoManager.instance != null)
             TutoManager.instance.GoToShop();
+        
+        AudioManager.instance.PlaySound(9, 1f, 0.2f);
         
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();

@@ -118,10 +118,8 @@ public class CleanManager : MiniGameParent
 
     public void Initialize()
     {
-        Debug.Log("🔄 Initialize appelé - Réinitialisation du jeu");
-    
         backButton.gameObject.SetActive(false);
-        sheepIndex = 0;  // ✅ Bien à 0
+        sheepIndex = 0;
 
         if (currentSheep != null)
         {
@@ -131,7 +129,6 @@ public class CleanManager : MiniGameParent
 
         if (GameData.instance.sheepDestroyData.Count > 0)
         {
-            Debug.Log($"📋 {GameData.instance.sheepDestroyData.Count} mouton(s) à nettoyer");
             NextSheep();
         }
     }
@@ -151,6 +148,8 @@ public class CleanManager : MiniGameParent
             nbToCleanText.text = "";
             backButton.gameObject.SetActive(true);
             EndMiniGame(TypeAmelioration.Nettoyage);
+            
+            AudioManager.instance.PlaySound(11);
 
             GameData.instance.timer.canButtonC = false;
             GameData.instance.timer.canButtonG = true;
