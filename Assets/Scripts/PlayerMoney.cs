@@ -117,8 +117,6 @@ public class PlayerMoney : MonoBehaviour
 
     public bool isEnoughtMoney(int value)
     {
-        print(currentMoney - value);
-        
         if (currentMoney - value >= 0)
         {
             return true;

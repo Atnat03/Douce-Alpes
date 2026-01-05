@@ -464,6 +464,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (Sheep sheep in sheepList)
         {
+            Debug.Log(sheep.sheepName);
             sheep.GetComponent<Animator>().SetTrigger("Flip");
         }
     }
