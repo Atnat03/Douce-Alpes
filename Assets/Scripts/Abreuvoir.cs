@@ -93,6 +93,8 @@ public class Abreuvoir : MiniGameParent
         if (type != SwipeType.Down) return;
         if (GameManager.instance.currentCameraState != CamState.Drink) return;
         if (isPomping) return;
+        
+        if (!SwipeDetection.instance.IsStartInRightThird()) return;
 
         StartCoroutine(AddWaterSmooth());
 
