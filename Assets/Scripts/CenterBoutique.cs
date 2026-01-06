@@ -51,7 +51,7 @@ public class CenterBoutique : MonoBehaviour
         if (PlayerMoney.instance.isEnoughtMoney(currentArticle.price))
         {
             Transform t = Instantiate(buyInfo, transform).transform;
-            t.localScale = Vector3.one; 
+            t.localScale = Vector3.one;
         }
         else
         {
