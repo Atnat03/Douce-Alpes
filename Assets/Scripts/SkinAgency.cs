@@ -213,6 +213,12 @@ public class SkinAgency : MonoBehaviour
 
     public void ApplySaveData(SkinAgencySaveData data)
     {
+        dicoClotheSkinStack.Clear();
+        dicoHatSkinStack.Clear();
+        hatSkinEquippedOnSheep.Clear();
+        clotheSkinEquippedOnSheep.Clear();
+        dicoInteriorSkin.Clear();
+        
         dicoHatSkinStack = ToIntIntDico(data.hatStacks);
         dicoClotheSkinStack = ToIntIntDico(data.clotheStacks);
 
