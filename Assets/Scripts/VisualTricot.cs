@@ -73,23 +73,12 @@ public class VisualTricot : MonoBehaviour
     public void ResetLaine()
     {
         value_Vertical = 1;
-        gradient_Droite = true;
-
-        if (((int)maxNumberVertical) % 2 == 0)
-        {
-            value_Horizontal = maxNumberHorizontal;
-            gradient_Droite = false;
-        }
-        else
-        {
-            value_Horizontal = 0f;
-            gradient_Droite = true;
-        }
+        gradient_Droite = false;
+        value_Horizontal = 0;
 
         pointAccroche.transform.position = splineLaine.points[0];
         splineLaine.SetDernierPoint(pointAccroche.transform.position);
     }
-
 
     void Update()
     {

@@ -50,6 +50,7 @@ public class TricotManager : MonoBehaviour
         if (modelLineRenderer != null) modelLineRenderer.enabled = false;
 
         CreateAllCarnet();
+        visualTricot.ResetLaine();
     }
 
     private void CreateAllCarnet()
@@ -366,11 +367,7 @@ public class TricotManager : MonoBehaviour
         targetFill = 0f;
         currentPriceSell = 0;
 
-        if (imageProduct != null)
-        {
-            imageProduct.sprite = null;
-            imageProduct.fillAmount = 0f;
-        }
+        visualTricot.ResetLaine();
         
         Destroy(spawnVisual.transform.GetChild(0).gameObject);
         
