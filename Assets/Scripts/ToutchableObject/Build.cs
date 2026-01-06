@@ -23,6 +23,9 @@ public class Build : TouchableObject
     
     public void OpenUI()
     {
+        if (Camera.main.GetComponent<CameraControl>().IsCameraMoving)
+            return;
+        
         if (UI.activeInHierarchy)
             return;
         
