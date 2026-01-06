@@ -80234,16 +80234,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea56108db17a2546a348cc6fdc8b1db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMoney: 1000
+  currentMoney: 100
   txtMoney: {fileID: 1670251567}
-  currentWhool: 1000
+  currentWhool: 0
   txtWhool: {fileID: 645624971}
   bonheurUI: {fileID: 1724283569}
   moneySprite: {fileID: 626944953301569103, guid: 6027b9a3c54f6f547bdc982badd054a4, type: 3}
   woolSprite: {fileID: 626944953301569103, guid: 0c5f52e7054659d49b1150df3eb568ed, type: 3}
   moneyFinalTarget: {fileID: 1710833913}
   woolFinalTarget: {fileID: 1338508961}
-  sheepsPrices: 64000000c80000002c0100009001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  sheepsPrices: 010000000600000012000000280000004d00000083000000cd0000002c0100009f01000026020000be020000650300001b040000df040000af0500008b060000730700006808000068090000750a0000
 --- !u!114 &1724283571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95913,8 +95913,8 @@ MonoBehaviour:
   - {fileID: 373264540}
   - {fileID: 1644306749}
   - {fileID: 1546340218}
-  touchRadius: 0.2
-  touchRadiusLevel2: 0.4
+  touchRadius: 0.15
+  touchRadiusLevel2: 0.3
   miniValueToEnd: 0.05
   RawSheepWhoolDrop: 0
   spawnLaineSprite: {fileID: 1740667904}
@@ -99420,8 +99420,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 162654541}
   maximumWater: 100
-  currentWater: 10
-  waterDecreaseRate: 0.5
+  currentWater: 20
+  waterDecreaseRate: 0.3
   waterAddValue: 15
   animatorPompe: {fileID: 292254196}
   curDrinkImage: {fileID: 1411355615}
@@ -111540,13 +111540,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   priceList:
   - game: 0
-    price: 1000
+    price: 8
   - game: 1
-    price: 1000
+    price: 12
   - game: 2
-    price: 1000
+    price: 10
   - game: 3
-    price: 1000
+    price: 4
   textPrices:
   - {fileID: 1935985774}
   - {fileID: 118715203}
