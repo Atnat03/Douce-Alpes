@@ -73,6 +73,8 @@ public class NicheManager : TouchableObject
 
     private void Update()
     {
+        dogNameInput.enabled = GameManager.instance.currentCameraState == CamState.Dog;
+        
         float distanceToNiche = Vector3.Distance(agentChien.transform.position, nichePos.position);
 
         if (distanceToNiche < 1f && !isInNiche)

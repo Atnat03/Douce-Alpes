@@ -12,14 +12,20 @@ public class Saving : MonoBehaviour
     public event Action savingEvent;
     public event Action<PlayerData> loadingEvent;
 
+    public bool hasToLoadSave = true;
+    
     [Header("Data")]
     [SerializeField] public double curTime;
     [SerializeField] public float savingDuration = 5f;
     [SerializeField] public GameObject savingUI;
     [SerializeField] public Dropdown dropDurations;
     
+    
+    
     private void Start()
     {
+        if (!hasToLoadSave) return;
+
         StartWaitSaving();
         LoadData();
     }

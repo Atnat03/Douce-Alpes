@@ -19,6 +19,8 @@ public class SkinShopManager : ShopManager
                 SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);
             else if(selectedArticle.type == ArticleType.Clothe)
                 SkinAgency.instance.AddClotheSkinInstance(selectedArticle.id);
+
+            selectedArticleUI.UpdateStack();
         }
         else
         {
@@ -34,12 +36,16 @@ public class SkinShopManager : ShopManager
 
         ArticleUnit uiArticle = instance.GetComponent<ArticleUnit>();
         
+        uiArticle.id = article.id;
         uiArticle.logoImage.sprite = article.logo;
         uiArticle.backGround.sprite = ChangeBackGroundRarete(article.Rarete);
 
         uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
-        uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
-        
+        uiArticle.buyBtn.onClick.AddListener(() =>
+        {
+            selectedArticle = article;
+            selectedArticleUI = (ArticleSkinUnit)uiArticle;
+        });        
         uiArticle.articleType = article.type;
     }
 }
