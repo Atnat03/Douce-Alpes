@@ -11,6 +11,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] protected ArticleScriptable data;
     [SerializeField] protected List<GameObject> articlesList = new List<GameObject>();
     [SerializeField] protected Sprite[] rareteSprite;
+    protected ArticleSkinUnit selectedArticleUI;
     protected Article selectedArticle;
     [SerializeField] public GameObject buyPannel;
     public Article currentArticle;

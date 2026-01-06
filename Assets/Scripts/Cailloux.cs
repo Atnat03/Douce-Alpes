@@ -7,6 +7,9 @@ public class Cailloux : TouchableObject
 
     public override void TouchEvent()
     {
+        if(GameManager.instance.currentCameraState != CamState.Default)
+            return;
+        
         Debug.Log("TouchéCailloux");
         
         base.TouchEvent();

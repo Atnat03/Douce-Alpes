@@ -15,8 +15,9 @@ public class Abreuvoir : MiniGameParent
     [SerializeField] private Animator animatorPompe;
     [SerializeField] private UnityEngine.UI.Image curDrinkImage;
     [SerializeField] private GameObject ui;
-    [SerializeField] private GameObject buttonQuit;
-
+    private bool IsInAbreuvoir = false;
+    [SerializeField] private RectTransform uiBonheurSpawn;
+    
     [Header("Drink Places")]
     [SerializeField] private Transform drinkPlace1;
     [SerializeField] private Transform drinkPlace2;
@@ -44,7 +45,6 @@ public class Abreuvoir : MiniGameParent
         Eau.transform.rotation = Quaternion.Euler(-90, 0, 0);
         
         Eau.gameObject.SetActive(false);
-        buttonQuit.SetActive(false);
     }
 
     private void Update()
@@ -53,9 +53,14 @@ public class Abreuvoir : MiniGameParent
             curDrinkImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
         else
             curDrinkImage.fillAmount = 0;
-        
-        if(currentWater >= maximumWater && !buttonQuit.activeSelf)
-            buttonQuit.SetActive(true);
+
+        if (currentWater >= maximumWater && IsInAbreuvoir)
+        {
+            IsInAbreuvoir = false;
+            DisableEau();
+            Camera.main.GetComponent<ChangingCamera>().ResetPosition();
+            BonheurCalculator.instance.AddBonheur(uiBonheurSpawn.position, GameData.instance.GetLevelUpgrade(TypeAmelioration.Abreuvoir));
+        }
         
         if (ui != null)
             ui.SetActive(GameManager.instance.currentCameraState == CamState.Drink);
@@ -88,15 +93,17 @@ public class Abreuvoir : MiniGameParent
         if (type != SwipeType.Down) return;
         if (GameManager.instance.currentCameraState != CamState.Drink) return;
         if (isPomping) return;
-
-        currentWater = Mathf.Min(currentWater + waterAddValue, maximumWater);
         
+        if (!SwipeDetection.instance.IsStartInRightThird()) return;
+        
+        AudioManager.instance.PlaySound(27);
+
         StartCoroutine(AddWaterSmooth());
-        
-        EndMiniGame(TypeAmelioration.Abreuvoir);
 
+        EndMiniGame(TypeAmelioration.Abreuvoir);
         GameManager.instance.DisableDinkBubble();
     }
+
 
     IEnumerator AddWaterSmooth()
     {
@@ -108,6 +115,10 @@ public class Abreuvoir : MiniGameParent
 
         animatorPompe?.SetTrigger("Pompe");
         
+        float startWater = currentWater;
+        float targetWater = Mathf.Min(currentWater + waterAddValue, maximumWater);
+        float duration = 0.5f;
+        
         while (value > 0f)
         {
             value -= 0.6f;
@@ -118,10 +129,18 @@ public class Abreuvoir : MiniGameParent
             
             yield return null;
         }
+        
+        float timer = 0f;
+        
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            currentWater = Mathf.Lerp(startWater, targetWater, timer / duration);
+            yield return null;
+        }
 
-
-        yield return new WaitForSeconds(0.5f);
-
+        currentWater = targetWater;
+        
         eau.SetFloat("_Fermeture_Robinet", 1);
 
         eau.SetFloat("_Apparition", 3f);
@@ -143,6 +162,7 @@ public class Abreuvoir : MiniGameParent
 
     public void EnableEau()
     {
+        IsInAbreuvoir = true;
         StartCoroutine(WaitEndOfTransitionToEnableEau());
     }
 

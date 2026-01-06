@@ -15,6 +15,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySound(int id, float pitch = 1f, float volume = 0.5f)
     {
+        if (!Settings.instance.SFXActivated) return;
+        
         audioSource.pitch = pitch;
         audioSource.PlayOneShot(data.audioClips[id], volume);
     }

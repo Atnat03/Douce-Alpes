@@ -247,5 +247,8 @@ public class SheepBoidManager : MonoBehaviour
             foreach(var p in boundaryPoints)
                 Gizmos.DrawSphere(p, 0.05f);
         }
+        
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireCube(spawnPosition, Vector3.one*0.5f);
     }
 }

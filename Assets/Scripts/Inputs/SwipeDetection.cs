@@ -253,4 +253,9 @@ public class SwipeDetection : MonoBehaviour
         else if (Vector2.Dot(Vector2.right, dir) > 0.8f) OnSwipeDetected?.Invoke(SwipeType.Right);
         else if (Vector2.Dot(Vector2.left, dir) > 0.8f) OnSwipeDetected?.Invoke(SwipeType.Left);
     }
+    
+    public bool IsStartInRightThird()
+    {
+        return startPosition.x >= Screen.width * (2f / 3f);
+    }
 }

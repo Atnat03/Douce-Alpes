@@ -10,8 +10,7 @@ public class RightPosState : ICleaningState
 
     
     public void EnterState(StateMachineClean managerC)
-    {        
-
+    {
         manager = managerC;
         rightLayer = LayerMask.NameToLayer("RightSide");
         manager.cleanManager.currentCleaningLayer = rightLayer;
@@ -43,7 +42,6 @@ public class RightPosState : ICleaningState
             {
                 manager.cleanManager.ResetValueClean();
                 manager.cleanManager.SetShower();
-                Debug.Log("🚿 Auto-switch vers Douche ! Débute rinçage sur Gauche...");
                 manager.SetState(manager.leftPosState);
             }
             else if (manager.cleanManager.currentTool == CleaningTool.Shower)
@@ -51,13 +49,11 @@ public class RightPosState : ICleaningState
                 if (manager.cleanManager.shampooList.Count == 0 && !manager.cleanManager.allCleaned)
                 {
                     manager.SetState(manager.leftPosState);
-                    Debug.Log("✅ Mouton complètement nettoyé ! Appel de OnAllCleaned()");
                     manager.cleanManager.allCleaned = true;
                     manager.cleanManager.OnAllCleaned();
                 }
                 else if (manager.cleanManager.shampooList.Count > 0)
                 {
-                    Debug.Log($"⚠️ Il reste {manager.cleanManager.shampooList.Count} shampoings à rincer");
                     manager.SetState(manager.leftPosState);
                 }
             }

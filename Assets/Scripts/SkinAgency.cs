@@ -133,8 +133,15 @@ public class SkinAgency : MonoBehaviour
         }
     }
 
-    public void AddHatSkinInstance(int id) => dicoHatSkinStack[id]++;
-    public void AddClotheSkinInstance(int id) => dicoClotheSkinStack[id]++;
+    public void AddHatSkinInstance(int id)
+    {
+        dicoHatSkinStack[id]++;
+    }
+
+    public void AddClotheSkinInstance(int id)
+    {
+        dicoClotheSkinStack[id]++;
+    }
 
     public bool CanEquipHat(int skinId) => dicoHatSkinStack.ContainsKey(skinId) && dicoHatSkinStack[skinId] > 0;
     public bool CanEquipClothe(int skinId) => dicoClotheSkinStack.ContainsKey(skinId) && dicoClotheSkinStack[skinId] > 0;

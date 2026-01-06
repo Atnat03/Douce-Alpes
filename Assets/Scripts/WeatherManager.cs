@@ -40,6 +40,9 @@ public class WeatherManager : MonoBehaviour
     
     [SerializeField] private GameObject cameraNightVolume;
 
+    [Header("VFX")] 
+    [SerializeField] private GameObject vfxLucioles;
+
     private void Start()
     {
         ApplyMomentInstant(currentMoment);
@@ -48,6 +51,7 @@ public class WeatherManager : MonoBehaviour
     private void Update()
     {
         cameraNightVolume.SetActive(currentMoment == DayMoment.Night);
+        vfxLucioles.SetActive(currentMoment == DayMoment.Night);
     }
 
     public void NextMoment()
@@ -157,5 +161,10 @@ public class WeatherManager : MonoBehaviour
             DayMoment.Night => nightGradient,
             _ => morningGradient
         };
+    }
+
+    public DayMoment GetCurrentDayMoment()
+    {
+        return currentMoment;
     }
 }
