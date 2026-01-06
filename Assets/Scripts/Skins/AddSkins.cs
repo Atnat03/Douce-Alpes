@@ -22,12 +22,12 @@ public class AddSkins : MonoBehaviour
 
     private SimpleScrollSnap snap;
     
-    [Header("Stack Display")]  // Ajout
+    [Header("Stack Display")]  
     [SerializeField] private bool showStackCount = true;
     [SerializeField] private Color unavailableColor = Color.gray;
     [SerializeField] private Color availableColor = Color.white;
 
-    [Header("References")]  // Ajout
+    [Header("References")] 
     [SerializeField] private SheepWindow sheepWindow;
     
     [SerializeField] private Sprite centerSprite;
@@ -121,16 +121,20 @@ public class AddSkins : MonoBehaviour
             Dictionary<int, int> stacksDict = (skinType == SkinType.Hat) ? SkinAgency.instance.dicoHatSkinStack : SkinAgency.instance.dicoClotheSkinStack;
             int stacks = stacksDict.ContainsKey(s.id) ? stacksDict[s.id] : 0;
 
-            // Affichage count
             if (showStackCount && s.stackText != null) 
                 s.stackText.text = stacks.ToString();
 
-            // Grisage
+            bool isUnavailable = (stacks == 0 && s.id != currentSkinId);
+
             Image panelImage = snap.Panels[i].GetComponent<Image>();
-            if (panelImage != null) 
+            if (panelImage != null)
             {
-                bool isUnavailable = (stacks == 0 && s.id != currentSkinId);
-                panelImage.color = isUnavailable ? unavailableColor : availableColor;
+                panelImage.color = availableColor;
+            }
+
+            if (s.noStackImage != null)
+            {
+                s.noStackImage.gameObject.SetActive(isUnavailable);
             }
         }
     }

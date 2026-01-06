@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -61,5 +62,10 @@ public class MusicManager : MonoBehaviour
         }
 
         audioSource.volume = endVolume;
+    }
+
+    private void Update()
+    {
+        audioSource.enabled = Settings.instance.MusicActivated;
     }
 }

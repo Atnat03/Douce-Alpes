@@ -245,7 +245,7 @@ public class TonteManager : MiniGameParent
 
 
         int r = UnityEngine.Random.Range(0, 50);
-        if (r == 0 && isFingerDown)
+        if (r == 0 && isFingerDown && Settings.instance.VibrationsActivated)
             Handheld.Vibrate();
 
         DetectTouchedPoint(fingerWorldPos);

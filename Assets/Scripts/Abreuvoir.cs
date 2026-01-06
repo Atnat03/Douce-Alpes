@@ -95,6 +95,8 @@ public class Abreuvoir : MiniGameParent
         if (isPomping) return;
         
         if (!SwipeDetection.instance.IsStartInRightThird()) return;
+        
+        AudioManager.instance.PlaySound(27);
 
         StartCoroutine(AddWaterSmooth());
 
@@ -127,7 +129,7 @@ public class Abreuvoir : MiniGameParent
             
             yield return null;
         }
-
+        
         float timer = 0f;
         
         while (timer < duration)

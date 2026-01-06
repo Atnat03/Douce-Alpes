@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public enum CleaningTool { Shampoo, Shower, None }
 public enum CleaningSide { Left, Front, Right }
@@ -70,11 +72,8 @@ public class CleanManager : MiniGameParent
 
     [HideInInspector] public bool canRotateCamera = false;
     [HideInInspector] public bool sheepIsMoving = false;
-
-    // ==========================
-    // 🔀 SHAKE SYSTEM
-    // ==========================
-    private int currentCycle = 0;            // 2 cycles par mouton
+    
+    private int currentCycle = 0;            
     public int randomShakeValue = 0;
     public bool alreadyShaken = false;
     
@@ -84,6 +83,10 @@ public class CleanManager : MiniGameParent
     public Transform focusCam;
     
     [SerializeField] private ParticleSystem cleanVFX;
+    [SerializeField] private AudioSource audioClean;
+    [SerializeField] private AudioClip bubbleClean;
+    [SerializeField] private AudioClip shampooClean;
+    [SerializeField] private AudioClip showerSound;
 
     private void Awake()
     {
@@ -105,6 +108,11 @@ public class CleanManager : MiniGameParent
         SetShampoo();
     }
 
+    private void OnEnable()
+    {
+        TouchManager.instance.OnEndEvent += OnFingerReleased;
+    }
+
     private void OnDestroy()
     {
         if (swipeDetection != null)
@@ -112,8 +120,15 @@ public class CleanManager : MiniGameParent
             swipeDetection.OnFingerPositionUpdated -= HandleFingerPositionUpdate;
             swipeDetection.OnSwipeEnded -= HandleSwipeEnd;
         }
+        
+        TouchManager.instance.OnEndEvent -= OnFingerReleased;
 
         SwapSceneManager.instance.SwapingCleanScene -= Initialize;
+    }
+
+    private void OnFingerReleased(Vector2 screenPos, float timer)
+    {
+        audioClean.Stop();
     }
 
     public void Initialize()
@@ -252,12 +267,14 @@ public class CleanManager : MiniGameParent
 
     public void SetShampoo()
     {
+        audioClean.clip = shampooClean;
         currentTool = CleaningTool.Shampoo;
         imageTool.sprite = logoShampoo;
     }
 
     public void SetShower()
     {
+        audioClean.clip = showerSound;
         currentTool = CleaningTool.Shower;
         imageTool.sprite = logoShower;
     }
@@ -267,6 +284,9 @@ public class CleanManager : MiniGameParent
         if (!canAddShampoo) return;
         if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo) return;
 
+        if(!audioClean.isPlaying)
+            audioClean.Play();
+        
         switch (currentTool)
         {
             case CleaningTool.Shampoo:
@@ -336,7 +356,6 @@ public class CleanManager : MiniGameParent
     {
         if (currentSheep == null)
         {
-            Debug.LogWarning("⚠️ OnAllCleaned ignoré : currentSheep est null");
             return;
         }
 
@@ -349,6 +368,7 @@ public class CleanManager : MiniGameParent
         canRotateCamera = false;
         
         cleanVFX.Play();
+        AudioManager.instance.PlaySound(28);
 
         yield return StartCoroutine(
             RotateCameraAroundSheep(
@@ -434,10 +454,6 @@ public class CleanManager : MiniGameParent
 
         SetShampoo();
     }
-
-    // ==========================
-    // 👆 INPUT
-    // ==========================
     
     private void HandleFingerPositionUpdate(Vector2 screenPos)
     {
@@ -454,6 +470,23 @@ public class CleanManager : MiniGameParent
     {
         currentFingerScreenPos = Vector2.zero;
         imageTool.GetComponent<Animator>().SetBool("Using", false);
+    }
+
+    private float t = 0;
+    private void Update()
+    {
+        if (shampooList.Count > 0)
+        {
+            if (t <= 0)
+            {
+                AudioManager.instance.PlaySound(25, Random.Range(0.8f, 1.2f));
+                t = Random.Range(0.5f, 2f);
+            }
+            else
+            {
+                t -= Time.deltaTime;
+            }
+        }
     }
 
     private void ExitScene()
