@@ -49,6 +49,9 @@ public class Cadenas : TouchableObject
         touchEffect.Play();
         AudioManager.instance.PlaySound(4, 1f, 0.3f);
         
+        if(Settings.instance.VibrationsActivated)
+            Handheld.Vibrate();
+        
         hp--;
 
         if (hp == 0)

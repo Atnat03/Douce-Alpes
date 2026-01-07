@@ -31,8 +31,14 @@ public class NameSheepReset : MonoBehaviour
     {
         imageEmpreinte.gameObject.SetActive(true);
         createSheep.interactable = false;
+        
+        if(Settings.instance.VibrationsActivated)
+            Handheld.Vibrate();
+        
         yield return new WaitForSeconds(0.5f);
+        
         AudioManager.instance.PlaySound(29);
+        
         yield return new WaitForSeconds(0.5f);
 
         SheepBoidManager.instance.CreateSheep();

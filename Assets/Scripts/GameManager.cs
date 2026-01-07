@@ -17,7 +17,8 @@ public enum CamState
     Drink,
     Dog,
     Shop,
-    CreateSheep
+    CreateSheep,
+    Settings
 }
 
 [System.Serializable]

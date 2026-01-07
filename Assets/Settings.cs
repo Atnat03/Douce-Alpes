@@ -11,12 +11,12 @@ public class Settings : MonoBehaviour
         instance = this;
     }
 
-    private void OnEnable()
+    public void OpenSettings()
     {
-        if(specialToggle)
+        if(SpecialSoundActivated)
             AudioManager.instance.PlaySound(31, 1, 0.25f);
     }
-
+    
     public float globalVolume = 1f;
     public bool MusicActivated = true;
     public bool SFXActivated = true;
