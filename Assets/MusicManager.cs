@@ -66,6 +66,6 @@ public class MusicManager : MonoBehaviour
 
     private void Update()
     {
-        audioSource.enabled = Settings.instance.MusicActivated;
+        audioSource.volume = Settings.instance.MusicActivated ? maxVolume : 0f;
     }
 }
