@@ -27,6 +27,8 @@ public class Grange : Build
     public Transform targetTransiPos;
     public Animator doorAnimator;
     
+    public GameObject hand;
+    
     void Start()
     {
         keyCloseGate.SetActive(false); 
@@ -95,6 +97,8 @@ public class Grange : Build
     
     private void UpdateCameraZoom()
     {
+        hand.SetActive(false);
+        
         if (GameData.instance.isSheepInside)
         {
             CloseDoors();

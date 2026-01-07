@@ -18,6 +18,17 @@ public class Poutre : MonoBehaviour
     {
         Startpos = transform.position;
         startRotation = transform.rotation;
+        GetComponent<Animator>().enabled = false;
+    }
+
+    private void Update()
+    {
+        if(canSwipe())
+        {
+            GetComponent<Animator>().enabled = true;
+            grange.hand.SetActive(true);
+        }
+
     }
 
     public void ResetPoutre()
@@ -44,6 +55,7 @@ public class Poutre : MonoBehaviour
         
         if (canSwipe())
         {
+            GetComponent<Animator>().enabled = false;
             gameObject.AddComponent<Rigidbody>();
             GetComponent<Rigidbody>().AddForce(Vector3.up * Time.deltaTime * 500, ForceMode.Impulse);
 

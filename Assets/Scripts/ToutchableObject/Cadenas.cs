@@ -47,6 +47,7 @@ public class Cadenas : TouchableObject
         Debug.Log("Perte d'hp");
         
         touchEffect.Play();
+        AudioManager.instance.PlaySound(4, 1f, 0.3f);
         
         hp--;
 
