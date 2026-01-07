@@ -20,6 +20,8 @@ public class CarnetTricot : MonoBehaviour
 
     public void UpdateCarnet()
     {
+        AudioManager.instance.PlaySound(13);
+        
         nextButton.gameObject.SetActive(indexCurrentPage < pages.Count - 1);
         previousButton.gameObject.SetActive(indexCurrentPage > 0);
         

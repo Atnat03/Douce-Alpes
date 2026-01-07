@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class FrogClignement : MonoBehaviour
+public class FrogClignement : TouchableObject
 {
     [SerializeField] Material materialWhite;
     [SerializeField] private Material materialBlack;
@@ -35,4 +35,10 @@ public class FrogClignement : MonoBehaviour
         meshRenderer.materials = mats;
     }
 
+    public override void TouchEvent()
+    {
+        base.TouchEvent();
+        
+        AudioManager.instance.PlaySound(30, Random.Range(0.9f, 1.1f), 0.3f);
+    }
 }

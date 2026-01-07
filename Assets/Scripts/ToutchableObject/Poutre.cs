@@ -55,9 +55,10 @@ public class Poutre : MonoBehaviour
         
         if (canSwipe())
         {
-            GetComponent<Animator>().enabled = false;
             gameObject.AddComponent<Rigidbody>();
             GetComponent<Rigidbody>().AddForce(Vector3.up * Time.deltaTime * 500, ForceMode.Impulse);
+            
+            GetComponent<Animator>().enabled = false;
 
             StartCoroutine(WaitALittle());
         }
