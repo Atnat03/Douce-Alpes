@@ -114,6 +114,17 @@ public class Sheep : TouchableObject
         
         if(name == "Seb")
             SetCurrentSkinHat(0);
+        else if (name == "Dinnerbone" || name == "Grumm")
+        {
+            Transform model = laine.transform.parent;
+            print(model);
+            model.rotation = Quaternion.Euler(180, -90, 0);
+            model.position += new Vector3(0, 1f, 0);
+            GetComponent<Animator>().enabled = false;
+        }else if (name == "Jeb_")
+        {
+            currentColorID = 6;
+        }
         else
             SetCurrentSkinHat(13);
     }
