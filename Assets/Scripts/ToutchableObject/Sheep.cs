@@ -14,6 +14,8 @@ public class Sheep : TouchableObject
     [SerializeField] public int currentSkinClothe;
     [SerializeField] public int currentColorID;
     
+    [SerializeField] public string birthDate;
+    
     [SerializeField] public bool hasLaine = true;
     [SerializeField] public float processWool;
 
@@ -402,7 +404,7 @@ public class Sheep : TouchableObject
         Camera.main.GetComponent<CameraControl>().ResetFOV();
         
         GameManager.instance.GetSheepWindow().SetActive(true);
-        SheepWindow.instance.Initialize(sheepName, currentSkinHat, currentSkinClothe, sheepId);
+        SheepWindow.instance.Initialize(sheepName, currentSkinHat, currentSkinClothe, sheepId, birthDate);
     }
 
     public void SetCurrentSkinHat(int skinId)

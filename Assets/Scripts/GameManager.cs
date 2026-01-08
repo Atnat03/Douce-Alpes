@@ -32,8 +32,9 @@ public class SheepData
     public NatureType nature;
     public int colorID;
     public Vector3 position;
+    public string birthDate;
 
-    public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature, int colorID)
+    public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature, int colorID, string birthDate)
     {
         this.id = id;
         this.name = name;
@@ -42,6 +43,7 @@ public class SheepData
 		this.hasWhool = hasWhool;
         this.nature = nature;
         this.colorID = colorID;
+        this.birthDate = birthDate;
     }
 }
 
@@ -298,7 +300,7 @@ public class GameManager : MonoBehaviour
     {
         if (!sheepList.Contains(sheep)) Debug.LogError("Le mouton n'existe pas");
 
-        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkinHat,  sheep.currentSkinClothe, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType, sheep.currentColorID);
+        SheepData newDataSheep = new SheepData(sheep.sheepId, sheep.sheepName, sheep.currentSkinHat,  sheep.currentSkinClothe, sheep.hasLaine, sheep.GetComponent<SheepBoid>().natureType, sheep.currentColorID, sheep.birthDate);
         GameData.instance.sheepDestroyData.Add(newDataSheep);
 
         sheepList.Remove(sheep);

@@ -175,6 +175,8 @@ public class SheepBoidManager : MonoBehaviour
         
         sheepScript.Initialize(nbInstantSheep, name);
 
+        sheepScript.birthDate = DateTime.Now.ToString("dd / MM / yyyy");
+
         GameManager.instance.sheepList.Add(sheepScript);
 
         nbInstantSheep++;
@@ -229,6 +231,7 @@ public class SheepBoidManager : MonoBehaviour
         sheepScript.sheepName = data.name;
         sheepScript.currentColorID = data.colorID;
         sheep.natureType = data.nature;
+        sheepScript.birthDate = data.birthDate;
 
         GameManager.instance.sheepList.Add(sheepScript);
         sheep.enabled = false;

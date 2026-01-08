@@ -95,7 +95,8 @@ public class GameData : MonoBehaviour
             10,
             false,
             NatureType.Standard,
-            0
+            0,
+            DateTime.Now.ToString("dd/MM/yyyy")
         );
         SheepData s2 = new SheepData(
             1,
@@ -104,7 +105,8 @@ public class GameData : MonoBehaviour
             10,
             false,
             NatureType.Standard,
-            0
+            0,
+            DateTime.Now.ToString("dd/MM/yyyy")
         );
         
         sheepDestroyData.Add(s1);

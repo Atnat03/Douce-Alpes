@@ -118,7 +118,8 @@ public class PlayerData
                 sheep.currentSkinClothe,
                 sheep.hasLaine,
                 sheep.GetComponent<SheepBoid>().natureType,
-                sheep.currentColorID
+                sheep.currentColorID,
+                sheep.birthDate
             );
             data.position = sheep.transform.position;
             list.Add(data);
