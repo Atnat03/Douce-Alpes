@@ -22,6 +22,11 @@ public class CenterBoutique : MonoBehaviour
         ChangeArticles();
     }
 
+    public void HideBarInfo()
+    {
+        buyPannel.SetActive(false);
+    }
+
     private void ChangeArticles()
     {
         for (int i = 0; i < articles.Length; i++)

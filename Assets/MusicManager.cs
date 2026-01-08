@@ -81,9 +81,4 @@ public class MusicManager : MonoBehaviour
     {
         dlc.ChangeSelect += ChangeMusique;
     }
-    
-    void OnDisable()
-    {
-        dlc.ChangeSelect -= ChangeMusique;
-    }
 }

@@ -24,6 +24,8 @@ public class PanneauShop : TouchableObject
     
     [Header("Arrow")]
     [SerializeField] private GameObject[] centerArrows;
+    
+    [SerializeField] private GameObject IconInfo;
 
     private void Start()
     {
@@ -45,6 +47,7 @@ public class PanneauShop : TouchableObject
             if(TutoManager.instance != null)
                 TutoManager.instance.Shop();
             
+            IconInfo.SetActive(false);
             OpenUI();
         }
     }

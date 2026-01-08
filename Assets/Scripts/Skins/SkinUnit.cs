@@ -1,5 +1,6 @@
 using System;
 using System.Net.Mime;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,6 @@ public class SkinUnit : MonoBehaviour
     public SkinCombo combo;
     public ArticleType type;
     public bool canPutThisSkin = false;
-    [SerializeField] public Text stackText;
+    [SerializeField] public TextMeshProUGUI stackText;
     public Image noStackImage;
 }
