@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Grange : Build
 {
@@ -28,6 +29,8 @@ public class Grange : Build
     public Animator doorAnimator;
     
     public GameObject hand;
+
+    [SerializeField] private Text textGrange;
     
     void Start()
     {
@@ -132,6 +135,12 @@ public class Grange : Build
     private void Update()
     {
         sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
+
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
+            textGrange.text = "Rentrer";
+        
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Sortie)
+            textGrange.text = "Sortir";
     }
     
     public Poutre GetPoutre() { return poutre; }

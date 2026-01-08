@@ -49,6 +49,11 @@ public class ShopManager : MonoBehaviour
         buyPannel.transform.GetChild(2).GetComponent<Text>().text = articlePrice.ToString();
         buyPannel.transform.GetChild(3).GetComponent<Text>().text = articleTitle;
     }
+    
+    public void HideBarInfo()
+    {
+        buyPannel.SetActive(false);
+    }
 
     public void Buy()
     {

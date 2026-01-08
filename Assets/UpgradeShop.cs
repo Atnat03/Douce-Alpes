@@ -15,6 +15,11 @@ public class UpgradeShop : MonoBehaviour
     [SerializeField] protected GameObject buyInfo;
     [SerializeField] protected GameObject cantBuyInfo;
     bool isShowingCantBuy = false;
+    
+    [SerializeField] GameObject barBuy;
+    [SerializeField] Text buyPrice;
+    [SerializeField] Text nameUpgrade;
+    [SerializeField] Button buttonBuy;
 
     public void Awake()
     {
@@ -31,12 +36,28 @@ public class UpgradeShop : MonoBehaviour
         }
     }
     
-    public void AddLevelTonte() => Buy(MiniGames.Tonte);
-    public void AddLevelClean() => Buy(MiniGames.Nettoyage);
-    public void AddLevelSortie() => Buy(MiniGames.Sortie);
-    
-    public void AddLevelRentree() => Buy(MiniGames.Rentree);
-    public void AddLevelAbreuvoir() => Buy(MiniGames.Abreuvoir);
+    public void AddLevelTonte() => UpdatePrice(prices[MiniGames.Tonte], nameof(MiniGames.Tonte),MiniGames.Tonte);
+    public void AddLevelClean() => UpdatePrice(prices[MiniGames.Nettoyage], nameof(MiniGames.Nettoyage),MiniGames.Nettoyage);
+    public void AddLevelSortie() => UpdatePrice(prices[MiniGames.Sortie], nameof(MiniGames.Sortie),MiniGames.Sortie);
+    public void AddLevelRentree() => UpdatePrice(prices[MiniGames.Rentree], nameof(MiniGames.Rentree),MiniGames.Rentree);
+    public void AddLevelAbreuvoir() => UpdatePrice(prices[MiniGames.Abreuvoir], nameof(MiniGames.Abreuvoir),MiniGames.Abreuvoir);
+
+    void UpdatePrice(int articlePrice, string articleTitle, MiniGames game)
+    {
+        articleTitle = "Améliorer " + articleTitle;
+        
+        Debug.Log("Update ui price");
+        
+        barBuy.SetActive(true);
+        
+        buyPrice.text = articlePrice.ToString();
+        nameUpgrade.text = articleTitle;
+        
+        buttonBuy.onClick.RemoveAllListeners();
+        
+        buttonBuy.onClick.AddListener(() => Buy(game));
+        buttonBuy.onClick.AddListener(() => AudioManager.instance.ButtonClick());
+    }
 
     public void Buy(MiniGames game)
     {
@@ -69,6 +90,8 @@ public class UpgradeShop : MonoBehaviour
             buttonsPrices[(int)game].transform.parent.GetComponent<ArticleUpgradeUnit>().SetActive();
 
             Instantiate(buyInfo, transform);
+            
+            HideBarInfo();
         }       
         else
         {
@@ -91,7 +114,12 @@ public class UpgradeShop : MonoBehaviour
         cantBuyInfo.SetActive(false);
     
         isShowingCantBuy = false;
-    }   
+    }
+
+    public void HideBarInfo()
+    {
+        barBuy.SetActive(false);
+    }
 }
 
 [Serializable]

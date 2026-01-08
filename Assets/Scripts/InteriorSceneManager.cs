@@ -100,7 +100,7 @@ public class InteriorSceneManager : MonoBehaviour
         sheepInside.Clear();
     }
     
-        #region Bubble
+    #region Bubble
 
     public SheepSkinManager currentSheepNettoyage = null;
     public SheepSkinManager currentSheepTonte = null;

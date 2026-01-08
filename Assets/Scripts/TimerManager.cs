@@ -69,6 +69,7 @@ public class TimerManager : MonoBehaviour
 
     public void UpdateAllButton()
     {
+        print("next mini game ");
         grangeButton.interactable = canButtonG;
         tonteButton.interactable = canButtonT;
         cleanButton.interactable = canButtonC;
@@ -191,12 +192,17 @@ public class TimerManager : MonoBehaviour
     public void NextMiniGameToDo()
     {
         MiniGames[] values = (MiniGames[])Enum.GetValues(typeof(MiniGames));
+
+        const int miniGamesCount = 4;
+
         int index = Array.IndexOf(values, currentMiniJeuToDo);
-        int nextIndex = (index + 1) % values.Length-1;
+
+        int nextIndex = (index + 1) % miniGamesCount;
+
         currentMiniJeuToDo = values[nextIndex];
-        
+
         GameData.instance.dayMoment.NextMoment();
-        
         StartCoroutine(UpdateHorloge(nextIndex));
     }
+
 }

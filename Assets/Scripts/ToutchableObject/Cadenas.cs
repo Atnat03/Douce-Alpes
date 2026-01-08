@@ -19,6 +19,8 @@ public class Cadenas : TouchableObject
     
     bool fallCadenas = false;
 
+    public Transform startT;
+
     private void Start()
     {
         hp = maxHp[0];
@@ -81,6 +83,6 @@ public class Cadenas : TouchableObject
     public void ResetCadenas()
     {
         transform.rotation = rot;
-        transform.position = pos;
+        transform.position = startT.position;
     }
 }
