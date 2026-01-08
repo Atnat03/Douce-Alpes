@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public enum CleaningTool { Shampoo, Shower, None }
 public enum CleaningSide { Left, Front, Right }
@@ -70,17 +72,21 @@ public class CleanManager : MiniGameParent
 
     [HideInInspector] public bool canRotateCamera = false;
     [HideInInspector] public bool sheepIsMoving = false;
-
-    // ==========================
-    // 🔀 SHAKE SYSTEM
-    // ==========================
-    private int currentCycle = 0;            // 2 cycles par mouton
+    
+    private int currentCycle = 0;            
     public int randomShakeValue = 0;
     public bool alreadyShaken = false;
     
     [Header("Head Detection")]
     public float headDetectionMultiplier = 0.6f;
     public Vector3 headDetectionOffset = new Vector3(0f, 0.1f, 0.05f);
+    public Transform focusCam;
+    
+    [SerializeField] private ParticleSystem cleanVFX;
+    [SerializeField] private AudioSource audioClean;
+    [SerializeField] private AudioClip bubbleClean;
+    [SerializeField] private AudioClip shampooClean;
+    [SerializeField] private AudioClip showerSound;
 
     private void Awake()
     {
@@ -102,6 +108,11 @@ public class CleanManager : MiniGameParent
         SetShampoo();
     }
 
+    private void OnEnable()
+    {
+        TouchManager.instance.OnEndEvent += OnFingerReleased;
+    }
+
     private void OnDestroy()
     {
         if (swipeDetection != null)
@@ -109,16 +120,21 @@ public class CleanManager : MiniGameParent
             swipeDetection.OnFingerPositionUpdated -= HandleFingerPositionUpdate;
             swipeDetection.OnSwipeEnded -= HandleSwipeEnd;
         }
+        
+        TouchManager.instance.OnEndEvent -= OnFingerReleased;
 
         SwapSceneManager.instance.SwapingCleanScene -= Initialize;
     }
 
+    private void OnFingerReleased(Vector2 screenPos, float timer)
+    {
+        audioClean.Stop();
+    }
+
     public void Initialize()
     {
-        Debug.Log("🔄 Initialize appelé - Réinitialisation du jeu");
-    
         backButton.gameObject.SetActive(false);
-        sheepIndex = 0;  // ✅ Bien à 0
+        sheepIndex = 0;
 
         if (currentSheep != null)
         {
@@ -128,15 +144,12 @@ public class CleanManager : MiniGameParent
 
         if (GameData.instance.sheepDestroyData.Count > 0)
         {
-            Debug.Log($"📋 {GameData.instance.sheepDestroyData.Count} mouton(s) à nettoyer");
             NextSheep();
         }
     }
 
     private void NextSheep()
     {
-        Debug.Log($"🐑 NextSheep appelé | sheepIndex = {sheepIndex} | Total moutons = {GameData.instance.sheepDestroyData.Count}");
-
         canRotateCamera = false;
 
         currentCycle = 0;
@@ -144,11 +157,14 @@ public class CleanManager : MiniGameParent
 
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)
         {
-            Debug.Log("❌ Fin du jeu : tous les moutons sont finis");
+            ResetCleanSystem();
+            
             nameText.text = "Tous les moutons sont finis !";
             nbToCleanText.text = "";
             backButton.gameObject.SetActive(true);
             EndMiniGame(TypeAmelioration.Nettoyage);
+            
+            AudioManager.instance.PlaySound(11);
 
             GameData.instance.timer.canButtonC = false;
             GameData.instance.timer.canButtonG = true;
@@ -159,7 +175,6 @@ public class CleanManager : MiniGameParent
         }
 
         SheepData nextSheepData = GameData.instance.sheepDestroyData[sheepIndex];
-        Debug.Log($"✅ Chargement du mouton {nextSheepData.name} (index {sheepIndex})");
 
         currentSheep = Instantiate(sheepModel, spawnPoint.position, spawnPoint.rotation, transform);
         sheepTarget = currentSheep.transform;
@@ -176,7 +191,6 @@ public class CleanManager : MiniGameParent
 
         nbToCleanText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
 
-        // ✅ Lancer le mouvement et incrémenter APRÈS
         StartCoroutine(InitializeSheep(currentSheep.transform));
     }
 
@@ -185,7 +199,6 @@ public class CleanManager : MiniGameParent
         yield return StartCoroutine(MoveOverTime(sheep, cleanPoint.position, 2f));
     
         sheepIndex++;
-        Debug.Log($"📈 sheepIndex incrémenté à {sheepIndex}");
     
         ResetCleanSystem();
         FindObjectOfType<StateMachineClean>().InitializedStates();
@@ -236,16 +249,12 @@ public class CleanManager : MiniGameParent
     
         canAddShampoo = true;
         sheepIsMoving = false;
-    
-        Debug.Log("✅ MoveOverTime terminé");
     }
     public void StartNewCycle()
     {
         currentCycle++;
         alreadyShaken = false;
         randomShakeValue = Random.Range(0, maxShampoo);
-
-        Debug.Log($"🔀 Cycle {currentCycle} | Shake à {randomShakeValue}");
     }
 
     public void ResetValueClean()
@@ -258,12 +267,14 @@ public class CleanManager : MiniGameParent
 
     public void SetShampoo()
     {
+        audioClean.clip = shampooClean;
         currentTool = CleaningTool.Shampoo;
         imageTool.sprite = logoShampoo;
     }
 
     public void SetShower()
     {
+        audioClean.clip = showerSound;
         currentTool = CleaningTool.Shower;
         imageTool.sprite = logoShower;
     }
@@ -273,6 +284,9 @@ public class CleanManager : MiniGameParent
         if (!canAddShampoo) return;
         if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo) return;
 
+        if(!audioClean.isPlaying)
+            audioClean.Play();
+        
         switch (currentTool)
         {
             case CleaningTool.Shampoo:
@@ -296,7 +310,7 @@ public class CleanManager : MiniGameParent
             Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
             GameObject s = Instantiate(prefab, pos, rot);
             s.transform.SetParent(parent, true);;
-            float size = Random.Range(0.75f, 1f);
+            float size = Random.Range(1f, 1.5f);
             s.transform.localScale *= size;
 
             s.layer = currentCleaningLayer;
@@ -307,7 +321,7 @@ public class CleanManager : MiniGameParent
             lastShampooPos = pos;
             hasLastPos = true;
             
-            int r = Random.Range(0, 10);
+            int r = Random.Range(0, 33);
             if (r == 0)
             {
                 TriggerShake();
@@ -317,7 +331,6 @@ public class CleanManager : MiniGameParent
 
     public void TriggerShake()
     {
-        Debug.Log("🐑💥 LE MOUTON SE SECOUE !");
         currentSheep.GetComponent<SheepSkinManager>().PlayShakeAnimation();
     }
 
@@ -337,55 +350,96 @@ public class CleanManager : MiniGameParent
                 shampooList.RemoveAt(i);
             }
         }
-
-        // ✅ NE PAS déclencher allCleaned ici, juste vérifier la liste globale
-        // La vérification se fait dans RightPosState après avoir rincé les 3 côtés
     }
 
     public void OnAllCleaned()
     {
-        Debug.Log("🎉 OnAllCleaned appelé");
-    
-        // ✅ Protection : éviter les appels multiples
         if (currentSheep == null)
         {
-            Debug.LogWarning("⚠️ OnAllCleaned ignoré : currentSheep est null");
             return;
         }
+
+        StartCoroutine(CleanedSequence());
+    }
     
-        ResetValueClean();
-        StartCoroutine(SendToDestroy(currentSheep));
+    private IEnumerator CleanedSequence()
+    {
+        canAddShampoo = false;
+        canRotateCamera = false;
+        
+        cleanVFX.Play();
+        AudioManager.instance.PlaySound(28);
+
+        yield return StartCoroutine(
+            RotateCameraAroundSheep(
+                camera.transform.position,
+                camera.transform.position + new Vector3(0f, 0.3f, -0.6f),
+                1.2f
+            )
+        );
+
+        yield return new WaitForSeconds(0.3f);
+        TriggerShake();
+        yield return new WaitForSeconds(1f);
+
+        yield return StartCoroutine(SendToDestroy(currentSheep));
     }
 
+    
+    private IEnumerator RotateCameraAroundSheep(
+        Vector3 startPos,
+        Vector3 endPos,
+        float duration)
+    {
+        Transform cam = camera.transform;
+        Transform focus = focusCam != null ? focusCam : sheepTarget;
+
+        if (cam == null || focus == null)
+            yield break;
+
+        Vector3 center = focus.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+
+            Vector3 dirStart = startPos - center;
+            Vector3 dirEnd = endPos - center;
+
+            Vector3 dir = Vector3.Slerp(dirStart, dirEnd, t);
+            cam.position = center + dir;
+
+            cam.rotation = Quaternion.LookRotation(center - cam.position);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        cam.position = endPos;
+        cam.rotation = Quaternion.LookRotation(center - cam.position);
+    }
+    
     private IEnumerator SendToDestroy(GameObject sheep)
     {
-        Debug.Log("🚀 SendToDestroy démarré");
-    
-        if (sheep == null || currentSheep == null)
-        {
-            Debug.LogWarning("⚠️ SendToDestroy annulé : mouton déjà détruit");
+        if (sheep == null)
             yield break;
-        }
-    
-        // ✅ Bloquer les interactions
-        canAddShampoo = false;
-    
-        currentSheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
+
+        sheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
         yield return new WaitForSeconds(0.3f);
-    
-        // ✅ Déplacer le mouton vers la sortie
-        yield return StartCoroutine(MoveOverTime(sheep.transform, destroyPoint.position, 1f));
-    
-        Debug.Log("🗑️ Destruction du mouton");
+
+        yield return StartCoroutine(
+            MoveOverTime(sheep.transform, destroyPoint.position, 1f)
+        );
+
         Destroy(sheep);
         currentSheep = null;
         sheepTarget = null;
-    
+
         yield return new WaitForSeconds(0.25f);
-    
-        Debug.Log("📞 SendToDestroy appelle NextSheep()");
+
         NextSheep();
-    }  
+    }
     
     public void ResetCleanSystem()
     {
@@ -400,10 +454,6 @@ public class CleanManager : MiniGameParent
 
         SetShampoo();
     }
-
-    // ==========================
-    // 👆 INPUT
-    // ==========================
     
     private void HandleFingerPositionUpdate(Vector2 screenPos)
     {
@@ -420,6 +470,23 @@ public class CleanManager : MiniGameParent
     {
         currentFingerScreenPos = Vector2.zero;
         imageTool.GetComponent<Animator>().SetBool("Using", false);
+    }
+
+    private float t = 0;
+    private void Update()
+    {
+        if (shampooList.Count > 0)
+        {
+            if (t <= 0)
+            {
+                AudioManager.instance.PlaySound(25, Random.Range(0.8f, 1.2f));
+                t = Random.Range(0.5f, 2f);
+            }
+            else
+            {
+                t -= Time.deltaTime;
+            }
+        }
     }
 
     private void ExitScene()

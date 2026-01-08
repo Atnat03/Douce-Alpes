@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 
@@ -22,6 +23,10 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] private Gradient day1Gradient;
     [SerializeField] private Gradient day2Gradient;
     [SerializeField] private Gradient nightGradient;
+    
+    [SerializeField] private float morningIntensity;
+    [SerializeField] private float dayIntensity;
+    [SerializeField] private float nightIntensity;
 
     [Header("Transition")]
     [SerializeField] private float transitionDuration = 1.5f;
@@ -32,10 +37,21 @@ public class WeatherManager : MonoBehaviour
     
     [Header("Sun Light")]
     [SerializeField] private Light directionalLight;
+    
+    [SerializeField] private GameObject cameraNightVolume;
+
+    [Header("VFX")] 
+    [SerializeField] private GameObject vfxLucioles;
 
     private void Start()
     {
         ApplyMomentInstant(currentMoment);
+    }
+
+    private void Update()
+    {
+        cameraNightVolume.SetActive(currentMoment == DayMoment.Night);
+        vfxLucioles.SetActive(currentMoment == DayMoment.Night);
     }
 
     public void NextMoment()
@@ -69,6 +85,9 @@ public class WeatherManager : MonoBehaviour
         Gradient fromGrad = GetGradient(from);
         Gradient toGrad = GetGradient(to);
 
+        float fromInt = GetIntensity(from);
+        float toInt = GetIntensity(to);
+
         float t = 0f;
 
         while (t < 1f)
@@ -86,8 +105,8 @@ public class WeatherManager : MonoBehaviour
 
             RenderSettings.fogColor = Color.Lerp(fromColor, toColor, smoothT);
             directionalLight.color = Color.Lerp(fromColor, toColor, smoothT);
-
-
+            directionalLight.intensity = Mathf.Lerp(fromInt, toInt, smoothT);
+            
             yield return null;
         }
 
@@ -104,6 +123,7 @@ public class WeatherManager : MonoBehaviour
         Color c = GetGradient(moment).Evaluate(0.5f);
         RenderSettings.fogColor = c;
         directionalLight.color = c;
+        directionalLight.intensity = GetIntensity(moment);
     }
 
 
@@ -118,7 +138,19 @@ public class WeatherManager : MonoBehaviour
             _ => skyboxMorning
         };
     }
-
+    
+    private float GetIntensity(DayMoment moment)
+    {
+        return moment switch
+        {
+            DayMoment.Morning => morningIntensity,
+            DayMoment.Day1 => dayIntensity,
+            DayMoment.Day2 => dayIntensity,
+            DayMoment.Night => nightIntensity,
+            _ => dayIntensity
+        };
+    }
+    
     private Gradient GetGradient(DayMoment moment)
     {
         return moment switch
@@ -129,5 +161,10 @@ public class WeatherManager : MonoBehaviour
             DayMoment.Night => nightGradient,
             _ => morningGradient
         };
+    }
+
+    public DayMoment GetCurrentDayMoment()
+    {
+        return currentMoment;
     }
 }

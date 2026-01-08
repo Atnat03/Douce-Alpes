@@ -54,6 +54,8 @@ public class CameraControl : MonoBehaviour
     private Quaternion startRootRotation;
     private float startZoom;
 
+    public bool IsCameraMoving { get; private set; }
+
     private void Start()
     {
         center = centerPoint.position;
@@ -102,6 +104,8 @@ public class CameraControl : MonoBehaviour
         ApplyBounds();
 
         root.position = Vector3.SmoothDamp(root.position, targetPosition, ref velocity, moveSmoothTime);
+    
+        IsCameraMoving = Vector3.Distance(root.position, targetPosition) > 0.01f;
     }
 
     public void ResetFOV() => zoom = zoomStart;

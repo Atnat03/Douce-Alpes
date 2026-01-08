@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using Unity.Splines.Examples;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -14,6 +12,7 @@ public class NicheManager : TouchableObject
     [SerializeField] private Transform cameraZoomPos;
     [SerializeField] private GameObject buttonQuit;
     [SerializeField] private InputField dogNameInput;
+    [SerializeField] private GameObject createSheepUI;
 
     [Header("État du chien")]
     [SerializeField] private bool isInNiche = false;
@@ -23,6 +22,8 @@ public class NicheManager : TouchableObject
     {
         GameManager.instance.startMiniGame += SortirLeChien;
         GameManager.instance.endMiniGame += RentrerLeChien;
+
+        dogNameInput.text = dogName;
     }
 
     private void OnEnable()
@@ -38,6 +39,8 @@ public class NicheManager : TouchableObject
 
     public override void TouchEvent()
     {
+        if (createSheepUI.activeInHierarchy) return;
+        
         if (GameManager.instance.currentCameraState != CamState.Default)
             return;
 
@@ -56,23 +59,25 @@ public class NicheManager : TouchableObject
         if (SheepBoidManager.instance.nbInstantSheep == 0)
             return;
 
-        chien.enabled = true;
+        chien.SetMiniGameActive(true);
         isInNiche = false;
     }
 
     private void RentrerLeChien()
     {
-        chien.enabled = false;
+        chien.SetMiniGameActive(false);
+        agentChien.isStopped = false;
         agentChien.SetDestination(nichePos.position);
+        isInNiche = false;
     }
 
     private void Update()
     {
-        dogNameInput.text = dogName;
-
+        dogNameInput.enabled = GameManager.instance.currentCameraState == CamState.Dog;
+        
         float distanceToNiche = Vector3.Distance(agentChien.transform.position, nichePos.position);
 
-        if (distanceToNiche < 0.5f && !isInNiche)
+        if (distanceToNiche < 1f && !isInNiche)
         {
             isInNiche = true;
             StartCoroutine(RotateSmoothInNiche());
@@ -97,6 +102,7 @@ public class NicheManager : TouchableObject
         }
 
         agentChien.transform.rotation = targetRotation;
+        agentChien.isStopped = false;
     }
 
     public void ChangeDogName()

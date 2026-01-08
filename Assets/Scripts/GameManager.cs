@@ -16,7 +16,9 @@ public enum CamState
     MiniGame,
     Drink,
     Dog,
-    Shop
+    Shop,
+    CreateSheep,
+    Settings
 }
 
 [System.Serializable]
@@ -29,6 +31,7 @@ public class SheepData
 	public bool hasWhool;
     public NatureType nature;
     public int colorID;
+    public Vector3 position;
 
     public SheepData(int id, string name, int skinHat,int skinClothe, bool hasWhool, NatureType nature, int colorID)
     {
@@ -218,6 +221,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ActivatedDog()
+    {
+        chien.SetActive(true);
+    }
+
 
     public void DelockSheep()
     {
@@ -265,9 +273,10 @@ public class GameManager : MonoBehaviour
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
         
         friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
-        sheepCreatorButton.SetActive(currentCameraState == CamState.Default);
+        sheepCreatorButton.SetActive(currentCameraState == CamState.Default 
+        && !GameData.instance.isSheepInside); 
 
-        if (CheckAllSheepHasWool())
+        if (CheckAllSheepHasWool() && sheepList.Count > 0)
         {
             if (currentSheepGrange == null)
             {
@@ -312,10 +321,14 @@ public class GameManager : MonoBehaviour
     {
         grange.CloseDoors();
         
+        AudioManager.instance.PlaySound(11);
+        
         yield return new WaitForSeconds(1f);
         
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
         {
+            GameData.instance.isSheepInside = true;
+            
             GameData.instance.timer.canButtonG = false;
             GameData.instance.timer.canButtonT = true;
 
@@ -324,6 +337,7 @@ public class GameManager : MonoBehaviour
             BonheurCalculator.instance.AddBonheur(Vector2.zero, GameData.instance.GetLevelUpgrade(TypeAmelioration.Rentree));
             
             grange.CloseUI();
+            
             GameData.instance.timer.UpdateAllButton();
             SwapSceneManager.instance.SwapSceneInteriorExterior(1);
         }
@@ -344,6 +358,8 @@ public class GameManager : MonoBehaviour
         grange.OpenDoors();
         grange.GetPoutre().ResetPoutre();
         grange.AllSheepAreOutside = false;
+
+        SheepBoidManager.instance.nbInstantSheep = 0;
         
         yield return new WaitForSeconds(1f);
 
@@ -367,7 +383,6 @@ public class GameManager : MonoBehaviour
 
             grange.AnimSheepGetOffGrange(newSheep);
 
-            sheepList.Add(sheep);
             toRemove.Add(sheepData);
             
             yield return new WaitForSeconds(delayBetweenSheep);
@@ -375,12 +390,18 @@ public class GameManager : MonoBehaviour
 
         if(TutoManager.instance != null)
             TutoManager.instance.GoToShop();
+        
+        AudioManager.instance.PlaySound(9, 1f, 0.2f);
+        
         grange.AllSheepAreOutside = true;
         GameData.instance.sheepDestroyData.Clear();
+        
+        GameData.instance.timer.canButtonG = false;
         GameData.instance.timer.UpdateAllButton();
         
         StartCoroutine(GetOffGrange());
-
+        
+        GameData.instance.isSheepInside = false;
     }
 
     IEnumerator GetOffGrange()
@@ -397,21 +418,30 @@ public class GameManager : MonoBehaviour
         ChangeCameraState(CamState.Drink);
         ChangeCameraPos(cameraPosAbreuvoir.position, cameraPosAbreuvoir.rotation.eulerAngles, abreuvoir.transform);
     }
-
+    
     public bool CheckAllSheepHasWool()
     {
+        if (sheepList.Count == 0)
+            return false;
+
         foreach (Sheep s in sheepList)
         {
             if (!s.hasLaine)
-            {
-                GameData.instance.timer.canButtonT = false;
                 return false;
-            }
         }
 
         return true;
     }
+    
+    public void UpdateGrangeAvailability()
+    {
+        bool canEnterGrange = CheckAllSheepHasWool();
 
+        GameData.instance.timer.canButtonG = canEnterGrange;
+        GameData.instance.timer.grangeButton.interactable = canEnterGrange;
+    }
+
+    
     void ResetTheScene()
     {
         Debug.Log("Reset the scene");
@@ -435,6 +465,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (Sheep sheep in sheepList)
         {
+            Debug.Log(sheep.sheepName);
             sheep.GetComponent<Animator>().SetTrigger("Flip");
         }
     }

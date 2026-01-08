@@ -11,6 +11,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] protected ArticleScriptable data;
     [SerializeField] protected List<GameObject> articlesList = new List<GameObject>();
     [SerializeField] protected Sprite[] rareteSprite;
+    protected ArticleSkinUnit selectedArticleUI;
     protected Article selectedArticle;
     [SerializeField] public GameObject buyPannel;
     public Article currentArticle;
@@ -20,15 +21,13 @@ public class ShopManager : MonoBehaviour
     [SerializeField] protected GameObject cantBuyInfo;
     protected bool isShowingCantBuy = false;
 
-    private void Start()
+    protected void Start()
     {
         RefreshShop();
     }
     
-    public void RefreshShop()
+    void RefreshShop()
     {
-        listArticleParent.GetComponent<ContentScaleModifier>().ResetSize();
-
         foreach (Transform child in listArticleParent)
             Destroy(child.gameObject);
 
@@ -36,27 +35,10 @@ public class ShopManager : MonoBehaviour
 
         foreach (Article article in data.articles)
             AddItem(article);
-
-        listArticleParent
-            .GetComponent<ContentScaleModifier>()
-            .SetSize(data.articles.Count);
     }
-
-    public void AddItem(Article article)
-    {
-        GameObject instance = Instantiate(articlePrefab, listArticleParent);
-        articlesList.Add(instance);
-
-        ArticleUnit uiArticle = instance.GetComponent<ArticleUnit>();
-        
-        uiArticle.logoImage.sprite = article.logo;
-        uiArticle.backGround.sprite = ChangeBackGroundRarete(article.Rarete);
-
-        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
-        uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
-        
-        uiArticle.articleType = article.type;
-    }
+    
+    protected virtual void AddItem(Article article)
+    { }
 
     protected void UpdatePrice(int articlePrice, string articleTitle)
     {

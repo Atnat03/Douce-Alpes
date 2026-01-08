@@ -1,4 +1,4 @@
- using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,37 +12,21 @@ public class Chien : MonoBehaviour
     private float timer = 0f;
     private NavMeshAgent agent;
     private Transform sheepDest;
-    private List<GameObject> sheepList = new List<GameObject>();
-    
-    [SerializeField] private ParticleSystem heartParticle;
 
+    [SerializeField] private ParticleSystem heartParticle;
     [SerializeField] private ParticleSystem barkEffect;
 
-    private void OnEnable()
-    {
-        GameManager.instance.SheepEnter += ChangeSheepList;
-    }
-
-    private void OnDisable()
-    {
-        GameManager.instance.SheepEnter -= ChangeSheepList;
-    }
+    private bool isMiniGameActive = false;
 
     private void Start()
     {
-        foreach (Sheep sheep in GameManager.instance.sheepList)
-        {
-            sheepList.Add(sheep.gameObject);
-        }
-
         agent = GetComponent<NavMeshAgent>();
         sheepDest = GameManager.instance.grange.GetSheepDestroyer();
     }
 
     private void Update()
     {
-        if (GameData.instance.isSheepInside)
-            return;
+        if (!isMiniGameActive) return;
 
         PerformSheepManagement();
         ScareNearbySheep();
@@ -68,17 +52,15 @@ public class Chien : MonoBehaviour
         agent.SetDestination(GetNextDestination());
     }
 
-    private void ChangeSheepList(GameObject sheep)
-    {
-        sheepList.Remove(sheep);
-    }
-
     private Vector3 GetNextDestination()
     {
         float maxDistance = 0f;
         Vector3 sheepFarPos = Vector3.zero;
 
-        foreach (GameObject sheep in sheepList)
+        if (GameManager.instance.sheepList.Count == 0)
+            return transform.position;
+
+        foreach (Sheep sheep in GameManager.instance.sheepList)
         {
             if (sheep == null) continue;
 
@@ -93,16 +75,22 @@ public class Chien : MonoBehaviour
         Vector3 dir = (sheepFarPos - sheepDest.position).normalized;
         float offset = 1.2f;
         Vector3 nextDestination = sheepFarPos + dir * offset;
-        
-        if(!barkEffect.isPlaying)
+
+        if (!barkEffect.isPlaying)
+        {
             barkEffect.Play();
+            AudioManager.instance.PlaySound(10);
+        }
 
         return nextDestination;
     }
 
     private void ScareNearbySheep()
     {
-        foreach (GameObject sheep in sheepList)
+        if (GameManager.instance.sheepList.Count == 0)
+            return;
+        
+        foreach (Sheep sheep in GameManager.instance.sheepList)
         {
             if (sheep == null) continue;
 
@@ -120,11 +108,22 @@ public class Chien : MonoBehaviour
         }
     }
 
+    public void SetMiniGameActive(bool value)
+    {
+        isMiniGameActive = value;
+        if (value)
+        {
+            agent.SetDestination(GetNextDestination());
+        }
+    }
+
+
+
     public void Carresse()
     {
         if (GameManager.instance.currentCameraState == CamState.Dog)
         {
-                heartParticle.Play();
-        }   
+            heartParticle.Play();
+        }
     }
 }

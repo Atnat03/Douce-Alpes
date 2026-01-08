@@ -53,7 +53,7 @@ public class BonheurCalculator : MonoBehaviour
 
     private void UpdateBonheurState()
     {
-        currentBonheur = Mathf.Clamp(currentBonheur - 0.5f * Time.deltaTime, 0, maxBonheur + overflowMaxValue);
+        currentBonheur = Mathf.Clamp(currentBonheur - 0.36f / 60f * Time.deltaTime, 0, maxBonheur + overflowMaxValue);
 
         if (currentBonheur > maxBonheur)
         {

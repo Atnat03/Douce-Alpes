@@ -2,17 +2,18 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PlayerMoney : MonoBehaviour
 {
     public static PlayerMoney instance;
     
     [Header("Money")]
-    [SerializeField] private int currentMoney;
+    [SerializeField] public int currentMoney;
     [SerializeField] Text txtMoney;
     
     [Header("Whool")]
-    [SerializeField] private int currentWhool;
+    [SerializeField] public int currentWhool;
     [SerializeField] Text txtWhool;
     
     public BonheurUI bonheurUI;
@@ -23,6 +24,8 @@ public class PlayerMoney : MonoBehaviour
 
     [SerializeField] private RectTransform moneyFinalTarget;
     [SerializeField] private RectTransform woolFinalTarget;
+    
+    [SerializeField] private int[] sheepsPrices;
     
     private void Awake()
     {
@@ -51,6 +54,8 @@ public class PlayerMoney : MonoBehaviour
         Debug.Log(value  + " money ajouté");
         
         bonheurUI.DropCanva(pos, value, moneySprite, moneyFinalTarget.position);
+        
+        AudioManager.instance.PlaySound(8, Random.Range(0.95f, 1.05f), 0.2f);
 
         StartCoroutine(AddMoneySmooth(currentMoney + value));
     }
@@ -112,8 +117,6 @@ public class PlayerMoney : MonoBehaviour
 
     public bool isEnoughtMoney(int value)
     {
-        print(currentMoney - value);
-        
         if (currentMoney - value >= 0)
         {
             return true;
@@ -129,9 +132,20 @@ public class PlayerMoney : MonoBehaviour
         }
         return false;
     }
+
+    public void LoadStats(int gold, int wool)
+    {
+        currentMoney = gold;
+        currentWhool = wool;
+    }
     
     public int CalculateValueWhoolWithTotalHapiness()
     {
         return 0;
+    }
+
+    public int GetCurrentSheepPrice()
+    {
+        return sheepsPrices[GameData.instance.nbSheep];
     }
 }

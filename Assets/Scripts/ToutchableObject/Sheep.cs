@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Timers;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -41,7 +42,6 @@ public class Sheep : TouchableObject
     
     [SerializeField] private Sprite showerLogo;
     [SerializeField] private Sprite zzzzzzLogo;
-    [SerializeField] private GameObject puanteurVFX;
     
     public Transform targetTransiPos;
 
@@ -56,6 +56,45 @@ public class Sheep : TouchableObject
     [SerializeField] private Image ImageInBubble;
     [SerializeField] private Sprite wantToGoIn;
     [SerializeField] private Sprite wantToDrink;
+    
+    [Header("Swipe Rotation")]
+    [SerializeField] private float rotationStep = 30f;
+    private int rotationIndex = 0;
+    
+    [Header("Swipe Zone (Screen %)")]
+    [SerializeField, Range(0f, 1f)]
+    private float swipeMinHeightPercent = 0.3f;
+
+    [SerializeField, Range(0f, 1f)]
+    private float swipeMaxHeightPercent = 0.6f;
+
+    private bool swipeStartedInValidZone = false;
+
+    [Header("Smooth Rotation")]
+    [SerializeField] private float rotationDuration = 0.25f;
+
+    private Coroutine rotationCoroutine;
+
+    private float timerSound = 0;
+
+    private void OnEnable()
+    {
+        if (SwipeDetection.instance != null)
+        {
+            SwipeDetection.instance.OnSwipeDetected += OnSwipeDetected;
+            SwipeDetection.instance.OnFingerPositionUpdated += OnFingerPositionUpdated;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (SwipeDetection.instance != null)
+        {
+            SwipeDetection.instance.OnSwipeDetected -= OnSwipeDetected;
+            SwipeDetection.instance.OnFingerPositionUpdated -= OnFingerPositionUpdated;
+        }
+    }
+
     
     private void Start()
     {
@@ -72,7 +111,22 @@ public class Sheep : TouchableObject
 
         skinListManager.Initialize();
         SetCurrentSkinClothe(10);
-        SetCurrentSkinHat(13);
+        
+        if(name == "Seb")
+            SetCurrentSkinHat(0);
+        else if (name == "Dinnerbone" || name == "Grumm")
+        {
+            Transform model = laine.transform.parent;
+            print(model);
+            model.rotation = Quaternion.Euler(180, -90, 0);
+            model.position += new Vector3(0, 1f, 0);
+            GetComponent<Animator>().enabled = false;
+        }else if (name == "Jeb_")
+        {
+            currentColorID = 6;
+        }
+        else
+            SetCurrentSkinHat(13);
     }
 
     private void Update()
@@ -91,7 +145,6 @@ public class Sheep : TouchableObject
             sheepBoid.enabled = false;
 
             transform.position = lockedPosition;
-            transform.rotation = lockedRotation;
         }
         else
         {
@@ -106,18 +159,97 @@ public class Sheep : TouchableObject
         if (curPuanteur < 100)
         {
             curPuanteur += 2 * Time.deltaTime;
-            puanteurVFX.SetActive(false);
         }
         else
         {
             curPuanteur = 100;
-            puanteurVFX.SetActive(true);
         }
         
         nameText.text = sheepName;
         nameText.gameObject.SetActive(isFocusing);
 
         Bubble.transform.parent.GetComponent<CanvasGroup>().alpha = isOpen ? 0f : 1f;
+
+        if (timerSound <= 0)
+        {
+            AudioManager.instance.PlaySound(Random.Range(17,20), 1f, 0.1f);
+            timerSound = Random.Range(5, 30);
+        }
+        else
+        {
+            timerSound -= Time.deltaTime;
+        }
+    }
+    
+    private void OnSwipeDetected(SwipeType swipe)
+    {
+        if (!isOpen)
+            return;
+
+        if (!swipeStartedInValidZone)
+            return;
+
+        if (GameManager.instance.getCurLockSheep() != this)
+            return;
+
+        if (swipe == SwipeType.Left)
+            rotationIndex--;
+        else if (swipe == SwipeType.Right)
+            rotationIndex++;
+        else
+            return;
+
+        rotationIndex = Mathf.Clamp(rotationIndex, -1, 1);
+
+        float targetY = 120f + rotationIndex * rotationStep;
+        lockedRotation = Quaternion.Euler(0, targetY, 0);
+
+        if (rotationCoroutine != null)
+            StopCoroutine(rotationCoroutine);
+
+        rotationCoroutine = StartCoroutine(SmoothRotateTo(lockedRotation));
+    }
+
+    private IEnumerator SmoothRotateTo(Quaternion targetRotation)
+    {
+        Quaternion startRotation = transform.rotation;
+        float elapsed = 0f;
+
+        while (elapsed < rotationDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / rotationDuration;
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
+    }
+
+    
+    private bool swipeZoneInitialized = false;
+
+    private void OnFingerPositionUpdated(Vector2 pos)
+    {
+        if (!isOpen)
+            return;
+
+        if (pos == Vector2.zero)
+        {
+            swipeZoneInitialized = false;
+            swipeStartedInValidZone = false;
+            return;
+        }
+
+        if (swipeZoneInitialized)
+            return;
+
+        swipeZoneInitialized = true;
+
+        float minY = Screen.height * swipeMinHeightPercent;
+        float maxY = Screen.height * swipeMaxHeightPercent;
+
+        swipeStartedInValidZone = pos.y >= minY && pos.y <= maxY;
     }
 
     private void ProcessWool()
@@ -131,8 +263,12 @@ public class Sheep : TouchableObject
             
             GetComponent<Animator>().SetTrigger("WoolPop");
             
+            AudioManager.instance.PlaySound(23);
+            
             SetCurrentSkinClothe(currentSkinClothe);
             SetCurrentSkinHat(currentSkinHat);
+            
+            GameManager.instance.UpdateGrangeAvailability();
         }
     }
 
@@ -166,9 +302,14 @@ public class Sheep : TouchableObject
         if (GameManager.instance.shopOpen) return;
         if (isOpen) return;
 
+        if (GameManager.instance.currentCameraState != CamState.Default)
+            return;
+
         isBeingCaressed = true;
         heartParticle.Play();
         GameManager.instance.Caresse(this);
+        
+        AudioManager.instance.PlaySound(6, Random.Range(0.9f, 1.1f));
 
         CancelInvoke(nameof(StopCaresse));
         Invoke(nameof(StopCaresse), 0.2f);
@@ -179,58 +320,71 @@ public class Sheep : TouchableObject
         isBeingCaressed = false;
     }
 
+    private bool isSingleClickCoroutineRunning = false;
+
     public override void TouchEvent()
     {
-        if (GameManager.instance.currentCameraState != CamState.Default)
-            return;
-        
+        if (GameManager.instance.currentCameraState != CamState.Default) return;
         if (GameManager.instance.shopOpen) return;
 
         float timeSinceLastClick = Time.time - lastClickTime;
 
         if (timeSinceLastClick <= doubleClickThreshold)
         {
+            // Double clic détecté
+            lastClickTime = -1f;
+
             if (!isBeingCaressed && !sheepBoid.isAfraid)
             {
-                if (GameManager.instance.currentCameraState != CamState.Default) return;
-                
                 WidowOpen();
             }
+            
+            isSingleClickCoroutineRunning = false;
 
-            lastClickTime = -1f;
             return;
         }
 
+        // C'est le premier clic
         lastClickTime = Time.time;
 
-        if (GameManager.instance.getCurLockSheep() != this)
-            StartCoroutine(LockCamWithDelay());
+        if (!isSingleClickCoroutineRunning)
+            StartCoroutine(SingleClickDelay());
     }
 
-    private IEnumerator LockCamWithDelay()
+    private IEnumerator SingleClickDelay()
     {
-        float startTime = Time.time;
-
-        while (Time.time - startTime < doubleClickThreshold)
+        float elapsed = 0f;
+        while (elapsed < doubleClickThreshold)
         {
-            if (lastClickTime < 0f) yield break;
+            elapsed += Time.deltaTime;
+
+            // Si un deuxième clic est détecté, on annule le simple clic
+            if (lastClickTime < 0f)
+                yield break;
+
             yield return null;
         }
 
+        // Simple clic : lock caméra sur le mouton
         if (GameManager.instance.getCurLockSheep() != this)
             GameManager.instance.LockCamOnSheep(this);
 
         lastClickTime = -1f;
+        isSingleClickCoroutineRunning = false;
     }
-
+    
     public void WidowOpen()
     {
         isOpen = true;
         
         laine.GetComponent<Outline>().enabled = false;
-
+        
+        rotationIndex = 0;
         lockedPosition = transform.position;
         lockedRotation = Quaternion.Euler(0, 120, 0);
+        
+        swipeStartedInValidZone = false;
+        swipeZoneInitialized = false;
 
         transform.position = lockedPosition;
         transform.rotation = lockedRotation;

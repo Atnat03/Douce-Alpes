@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Cadenas : TouchableObject
 {
-    public int hp = 2;
-    [HideInInspector]public int maxHp;
+    public int hp;
+    public int[] maxHp;
 
     [SerializeField] private ParticleSystem touchEffect;
     [SerializeField] private ParticleSystem unlockEffect;
     
     Vector3 pos;
-    private Vector3 rot;
+    private Quaternion rot;
     
     [SerializeField] Animator animator;
     [SerializeField] Collider colModel;
@@ -21,10 +21,11 @@ public class Cadenas : TouchableObject
 
     private void Start()
     {
-        maxHp = hp;
+        hp = maxHp[0];
         
         pos = transform.position;
-        rot = transform.rotation.eulerAngles;
+        rot = transform.rotation;
+        
         colModel.enabled = false;
         colButton.enabled = true;
     }
@@ -46,6 +47,10 @@ public class Cadenas : TouchableObject
         Debug.Log("Perte d'hp");
         
         touchEffect.Play();
+        AudioManager.instance.PlaySound(4, 1f, 0.3f);
+        
+        if(Settings.instance.VibrationsActivated)
+            Handheld.Vibrate();
         
         hp--;
 
@@ -67,11 +72,15 @@ public class Cadenas : TouchableObject
         yield return new WaitForSeconds(1.5f);
         gameObject.SetActive(false);
         Destroy(GetComponent<Rigidbody>());
-
-        transform.position = pos;
-        rot = transform.rotation.eulerAngles;
+        
         colModel.enabled = false;
         colButton.enabled = true;
         fallCadenas = false;
+    }
+
+    public void ResetCadenas()
+    {
+        transform.rotation = rot;
+        transform.position = pos;
     }
 }

@@ -73,7 +73,7 @@ public class TouchManager : MonoBehaviour
     {
         if (playerInput == null || touchPositionAction == null || Camera.main == null)
             return;
-
+        
         if (TutoManager.instance != null && TutoManager.instance.isTuto && TutoManager.instance.tutoState == TutoState.Start)
         {
             TutoManager.instance.AddMouton();

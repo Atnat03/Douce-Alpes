@@ -27,11 +27,12 @@ public class Grange : Build
     public Transform targetTransiPos;
     public Animator doorAnimator;
     
+    public GameObject hand;
+    
     void Start()
     {
         keyCloseGate.SetActive(false); 
         gateState = true;
-        //OpenDoors();
     }
 
     private void OnEnable()
@@ -96,10 +97,9 @@ public class Grange : Build
     
     private void UpdateCameraZoom()
     {
-        int totalSheep = GameData.instance.nbSheep;
-        Debug.Log("Total sheep: " + totalSheep);
-
-        if (nbSheepInGrange >= totalSheep && totalSheep > 0)
+        hand.SetActive(false);
+        
+        if (GameData.instance.isSheepInside)
         {
             CloseDoors();
             ZoomCamera();

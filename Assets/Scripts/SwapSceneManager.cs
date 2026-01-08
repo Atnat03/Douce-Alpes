@@ -23,6 +23,7 @@ public class SwapSceneManager : MonoBehaviour
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration;
 
+    [SerializeField] private MusicManager musicManager;
     
     private void Start()
     {
@@ -80,7 +81,11 @@ public class SwapSceneManager : MonoBehaviour
     {
         fadeCanva.alpha = 1f;
         fadeCanva.GetComponent<Animator>().SetTrigger("Fade");
+        
+        musicManager.ChangeMusique();
+        
         yield return new WaitForSeconds(1f);
+        AudioManager.instance.PlaySound(1);
         
         scene.SetActive(true);
         TriggerInitialiseScene(i);

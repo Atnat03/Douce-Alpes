@@ -21,10 +21,12 @@ public class TonteManager : MiniGameParent
 
     [Header("Particule")]
     [SerializeField] private ParticleSystem particleTonte;
+    [SerializeField] private ParticleSystem particleTonteLevel2;
     [SerializeField] private Transform[] listPoints;
 
     [Header("Tonte Settings")]
-    [SerializeField] private float touchRadius = 0.15f;
+    [SerializeField] private float touchRadius = 0.2f;
+    [SerializeField] private float touchRadiusLevel2 = 0.4f;
 
     private GameObject currentSheep;
     private List<Transform> curList = new List<Transform>();
@@ -37,7 +39,17 @@ public class TonteManager : MiniGameParent
     [SerializeField] private RectTransform spawnLaineSprite;
     private SheepData currentSheepData;
     [SerializeField] RectTransform toolUI; 
+    
+    [Header("Finger Offset")]
+    [SerializeField] private Vector2 screenOffset = new Vector2(40f, 60f); 
 
+    [Header("Radial Offset Correction")]
+    [SerializeField] private float offsetStartDistance = 0.4f; 
+    [SerializeField] private float maxOffset = 0.15f;          
+    [SerializeField] private float offsetStrength = 1.0f;      
+    
+    [SerializeField] AudioSource audioSource;
+    
     private void Awake()
     {
         instance = this;
@@ -46,6 +58,12 @@ public class TonteManager : MiniGameParent
 
     private void OnEnable()
     {
+        if (GameData.instance.dicoAmélioration[TypeAmelioration.Tonte].Item2 > 1)
+        {
+            particleTonte = particleTonteLevel2;
+            touchRadius = touchRadiusLevel2;
+        }
+        
         if (TouchManager.instance != null)
         {
             TouchManager.instance.OnGetFingerPosition += OnFingerMoved;
@@ -87,7 +105,7 @@ public class TonteManager : MiniGameParent
         {
             nameText.text = "Tous les moutons sont finis !";
             nbToCutText.text = "";
-
+            
             EndMiniGame(TypeAmelioration.Tonte);
 
             GameData.instance.timer.canButtonT = false;
@@ -129,23 +147,29 @@ public class TonteManager : MiniGameParent
 
     IEnumerator WaitBeforeSwapScene()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
+        AudioManager.instance.PlaySound(11);
+        yield return new WaitForSeconds(1f);
         SwapSceneManager.instance.SwapScene(1);
     }
-    
+
+    private bool isFingerDown = false;
     private void OnFingerPressed(Vector2 screenPos, float timer)
     {
         if (currentSheep == null || !canTonte)
             return;
+        
+        isFingerDown = true;
 
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        Vector2 offsetScreenPos = screenPos + screenOffset;
+        
+        Ray ray = Camera.main.ScreenPointToRay(offsetScreenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            // Déplacer la particule sur le doigt
             particleTonte.transform.position = hit.point;
-
-            // Puis l’activer
             particleTonte.Play();
+            
+            audioSource.Play();
         }
     }
 
@@ -172,41 +196,70 @@ public class TonteManager : MiniGameParent
     }
     
 
+    private Plane tontePlane;
+
     private void OnFingerMoved(Vector3 fingerWorldPos)
     {
         if (currentSheep == null || !canTonte)
         {
             particleTonte.Stop();
+            audioSource.Stop();
             return;
         }
 
         if (!particleTonte.isPlaying)
             return;
 
-        Vector3 fromCenter = fingerWorldPos - currentSheep.transform.position;
-        float distance = fromCenter.magnitude;
-        float maxDistance = 0.85f;
+        Vector3 uiPos = Camera.main.WorldToScreenPoint(fingerWorldPos);
+        toolUI.position = uiPos;
 
-        Vector3 direction = fromCenter.normalized;
-        float t = Mathf.Clamp01(distance / maxDistance);
-        t = Mathf.Pow(t, 1.5f);
-        Vector3 offset = direction * Mathf.Lerp(0f, 1.5f, t);
+        Vector3 screenPos = uiPos;
+        screenPos.x += screenOffset.x;
+        screenPos.y += screenOffset.y;
 
-        particleTonte.transform.position = currentSheep.transform.position + offset;
-        
-        toolUI.position = Camera.main.WorldToScreenPoint(fingerWorldPos);
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 hitPos = hit.point;
 
-        int r = Random.Range(0, 50);
-        if (r == 0)
+            Vector3 center = tontePoint.position;
+
+            Vector3 dirFromCenter = (hitPos - center);
+            float distanceFromCenter = dirFromCenter.magnitude;
+
+            if (distanceFromCenter > offsetStartDistance)
+            {
+                float t = Mathf.InverseLerp(
+                    offsetStartDistance,
+                    offsetStartDistance + 0.5f,
+                    distanceFromCenter
+                );
+
+                float offsetAmount = Mathf.Lerp(0f, maxOffset, t) * offsetStrength;
+
+                hitPos += dirFromCenter.normalized * offsetAmount;
+            }
+
+            particleTonte.transform.position = hitPos;
+        }
+
+
+        int r = UnityEngine.Random.Range(0, 50);
+        if (r == 0 && isFingerDown && Settings.instance.VibrationsActivated)
             Handheld.Vibrate();
 
         DetectTouchedPoint(fingerWorldPos);
     }
 
+
+
     private void OnFingerReleased(Vector2 screenPos, float timer)
     {
+        isFingerDown = false;
         if (particleTonte != null)
             particleTonte.Stop();
+        
+        audioSource.Stop();
         
         if (curList.Count <= miniValueToEnd && canTonte)
         {
@@ -238,6 +291,9 @@ public class TonteManager : MiniGameParent
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(posFinger, touchRadius);
+        
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(tontePoint.position, particleTonte.transform.position);
     }
 
     private void UpdateProgress()

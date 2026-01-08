@@ -14,6 +14,8 @@ public class InteriorSceneManager : MonoBehaviour
     [SerializeField] public GameObject sheepPrefab;
 
     public bool alreadyBubble = false;
+    
+    public Transform centerGrange;
 
     private void Awake()
     {
@@ -53,7 +55,7 @@ public class InteriorSceneManager : MonoBehaviour
 
     public void Initialize()
     {
-        if (GameData.instance.nbSheep <= 0) 
+        if (GameData.instance.nbSheep <= 0)
             return;
 
         List<Transform> spawnPool = new List<Transform>(randomSpawnPos);
@@ -79,6 +81,8 @@ public class InteriorSceneManager : MonoBehaviour
             sheep.Initialize(sheepData.id, sheepData.name, sheepData.hasWhool, sheepData.colorID, sheepData.skinHat, sheepData.skinClothe);
             sheep.SetCurrentSkinHat(sheepData.skinHat);
             sheep.SetCurrentSkinClothe(sheepData.skinClothe);
+
+            newSheep.GetComponent<SheepMovingAnimation>().center = centerGrange;
         }
     }
 

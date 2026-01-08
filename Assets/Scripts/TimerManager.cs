@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie }
+public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie, Abreuvoir }
 
 public class TimerManager : MonoBehaviour
 {
@@ -81,7 +81,7 @@ public class TimerManager : MonoBehaviour
         UpdateFills();
     }
 
-    private void UpdateFills()
+    public void UpdateFills()
     {
         UpdateSingleFill(grangeFillImage, canButtonG, TypeAmelioration.Rentree, "Grange");
         UpdateSingleFill(tonteFillImage, canButtonT, TypeAmelioration.Tonte, "Tonte");
@@ -166,7 +166,7 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    IEnumerator UpdateHorloge(int nextIndex)
+    public IEnumerator UpdateHorloge(int nextIndex)
     {
         float duration = 2f;
         float elapsed = 0f;
@@ -192,7 +192,7 @@ public class TimerManager : MonoBehaviour
     {
         MiniGames[] values = (MiniGames[])Enum.GetValues(typeof(MiniGames));
         int index = Array.IndexOf(values, currentMiniJeuToDo);
-        int nextIndex = (index + 1) % values.Length;
+        int nextIndex = (index + 1) % values.Length-1;
         currentMiniJeuToDo = values[nextIndex];
         
         GameData.instance.dayMoment.NextMoment();

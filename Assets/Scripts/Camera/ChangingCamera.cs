@@ -322,7 +322,7 @@ private IEnumerator SmoothReset()
     yield return new WaitForEndOfFrame();
 
     control.enabled = true;
-    follow.enabled = true;
+    follow.enabled = false;
     control.SetIgnoreInput(false);
 
     yield return new WaitForSeconds(transitionCooldown);

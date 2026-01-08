@@ -13,6 +13,7 @@ public class TricotManager : MonoBehaviour
     public UILineDrawer uiLineRenderer;
     public UILineDrawer modelLineRenderer;
     public RectTransform[] _3x3Ui;
+    public GameObject gridParent;
     public Button sellButton;
     
     [Header("Settings")]
@@ -40,6 +41,7 @@ public class TricotManager : MonoBehaviour
     [SerializeField] private Transform carnetParent;
     [SerializeField] private GameObject pagePrefab;
     [SerializeField] private ModelListeSO models;
+    [SerializeField] private GameObject NotEnougthWool;
     
     private void Start()
     {
@@ -48,6 +50,7 @@ public class TricotManager : MonoBehaviour
         if (modelLineRenderer != null) modelLineRenderer.enabled = false;
 
         CreateAllCarnet();
+        visualTricot.ResetLaine();
     }
 
     private void CreateAllCarnet()
@@ -66,8 +69,30 @@ public class TricotManager : MonoBehaviour
         go.transform.SetAsFirstSibling();
         TricotPage page = go.GetComponent<TricotPage>();
         page.Initialize(model);
-        page.buttonSelect.onClick.AddListener(() => InitalizePattern(model));
+
+        page.buttonSelect.onClick.AddListener(() =>
+        {
+            if (!PlayerMoney.instance.isEnoughtWhool(numberTotalWool(model.pattern)))
+            {
+                Debug.Log("Pas assez de laine pour commencer ce modèle !");
+                Instantiate(NotEnougthWool, carnetParent);
+                return;
+            }
+
+            InitalizePattern(model);
+        });
+
         carnetParent.GetComponent<CarnetTricot>().AddNewPage(page.gameObject);
+    }
+
+    public int numberTotalWool(List<ModelDraw> l)
+    {
+        int total = 0;
+        for (int i = 0; i < l.Count; i++)
+        {
+            total += l[i].neededWool;
+        }
+        return total;
     }
 
     private void Update()
@@ -88,6 +113,8 @@ public class TricotManager : MonoBehaviour
             uiLineRenderer.points = linePoints.ToArray();
             uiLineRenderer.SetVerticesDirty();
         }
+        
+        gridParent.SetActive(!carnetParent.gameObject.activeSelf);
     }
 
     public void SetHover(bool hover)
@@ -166,6 +193,7 @@ public class TricotManager : MonoBehaviour
     {
         currentPassagePoint.Clear();
         linePoints.Clear();
+        
         if (uiLineRenderer != null)
         {
             uiLineRenderer.points = linePoints.ToArray();
@@ -273,12 +301,20 @@ public class TricotManager : MonoBehaviour
             }
         }
 
-        // Petit délai à la fin du tracé (optionnel)
         yield return new WaitForSeconds(0.2f);
     }
 
     public void InitalizePattern(ModelDrawSO patternSO)
     {
+        StartCoroutine(WaitBeforeRemoveCarnet(patternSO));
+    }
+
+    IEnumerator WaitBeforeRemoveCarnet(ModelDrawSO patternSO)
+    {
+        carnetParent.GetComponent<Animator>().SetTrigger("GetOut");
+        
+        yield return new WaitForSeconds(1f);
+        
         currentPattern = patternSO.pattern;
         numberModelOfThisPattern = currentPattern.Count;
         currentModel = 0;
@@ -299,7 +335,7 @@ public class TricotManager : MonoBehaviour
         
         ResetDrawing();
         
-        visualTricot.Initialise(meshVisual.GetComponent<MeshRenderer>());
+        visualTricot.Initialise(meshVisual.GetComponent<MeshRenderer>(), patternSO.pattern.Count);
 
         if (currentPattern.Count > 0)
         {
@@ -331,11 +367,9 @@ public class TricotManager : MonoBehaviour
         targetFill = 0f;
         currentPriceSell = 0;
 
-        if (imageProduct != null)
-        {
-            imageProduct.sprite = null;
-            imageProduct.fillAmount = 0f;
-        }
+        visualTricot.ResetLaine();
+        
+        Destroy(spawnVisual.transform.GetChild(0).gameObject);
         
         sellButton.gameObject.SetActive(false);
         carnetParent.gameObject.SetActive(true);

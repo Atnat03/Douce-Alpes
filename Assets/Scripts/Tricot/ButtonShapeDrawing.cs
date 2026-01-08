@@ -26,11 +26,9 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     {
         if (manager == null) return;
         manager.SetHover(true);
-
-        Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(manager.uiLineRenderer.rectTransform, rect.position, null, out localPos);
-        manager.AddPointInList(id, localPos);
+        SnapLineToButtonCenter();
     }
+
 
     public void SetFirstPoint()
     {
@@ -44,11 +42,32 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(manager.uiLineRenderer.rectTransform, rect.position, null, out localPos);
-        manager.AddPointInList(id, localPos);
+        SnapLineToButtonCenter();
     }
 
+
+    private void SnapLineToButtonCenter()
+    {
+        if (manager == null || manager.uiLineRenderer == null) return;
+
+        RectTransform lineRect = manager.uiLineRenderer.rectTransform;
+
+        // Obtenir le centre exact du bouton en world space
+        Vector3 worldCenter = rect.position;
+
+        // Convertir ce point en coordonnées locales par rapport au UILineDrawer
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            lineRect,
+            RectTransformUtility.WorldToScreenPoint(null, worldCenter),
+            null,  // si ton Canvas a un RenderMode ScreenSpaceOverlay, sinon mettre la caméra
+            out localPos
+        );
+
+        // Ajouter ce point dans la liste de la ligne
+        manager.AddPointInList(id, localPos);
+    }
+    
     public void OnPointerUp(PointerEventData eventData)
     {
         if(manager != null)

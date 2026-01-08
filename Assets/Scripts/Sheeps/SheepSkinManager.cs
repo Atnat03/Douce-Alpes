@@ -166,7 +166,7 @@ public class SheepSkinManager : MonoBehaviour
     {
         InteriorSceneManager.instance.DisableSortieBubble();
         
-        SwapSceneManager.instance.SwapScene(0);
+        SwapSceneManager.instance.SwapSceneInteriorExterior(0);
     }
 
     public void SwapSceneToTonte() => SwapSceneManager.instance.SwapScene(2);

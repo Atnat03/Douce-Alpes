@@ -47,11 +47,14 @@ public class SheepBoidManager : MonoBehaviour
     [Header("Colliders à éviter")]
     public List<Collider> forbiddenColliders = new List<Collider>();
 
-    private void Awake() => instance = this;
+    private void Awake()
+    {
+        prefab = GameData.instance.sheepPrefab;
+        instance = this;
+    }
 
     private void Start()
     {
-        prefab = GameData.instance.sheepPrefab;
         if(meshCollider != null) GenerateBoundaryPointsFromMesh();
         StartCoroutine(SpawnSheepRoutine());
     }
@@ -149,7 +152,10 @@ public class SheepBoidManager : MonoBehaviour
     public void CreateSheep()
     {
         if (!string.IsNullOrEmpty(nameInputField.text))
+        {
+            AudioManager.instance.PlaySound(20, 1f, 0.2f);
             SpawnNewSheep(nameInputField.text);
+        }
         else
             Debug.LogError("Entrée de nom incorrect");
     }
@@ -227,11 +233,9 @@ public class SheepBoidManager : MonoBehaviour
         GameManager.instance.sheepList.Add(sheepScript);
         sheep.enabled = false;
 
-        nbInstantSheep++;
-        GameData.instance.nbSheep++;
-
         sheepScript.Initialize(nbInstantSheep, data.name);
         OnListChanged?.Invoke(sheep);
+        nbInstantSheep++;
         return go;
     }
 
@@ -243,5 +247,8 @@ public class SheepBoidManager : MonoBehaviour
             foreach(var p in boundaryPoints)
                 Gizmos.DrawSphere(p, 0.05f);
         }
+        
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireCube(spawnPosition, Vector3.one*0.5f);
     }
 }
