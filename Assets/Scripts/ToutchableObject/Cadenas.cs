@@ -81,6 +81,6 @@ public class Cadenas : TouchableObject
     public void ResetCadenas()
     {
         transform.rotation = rot;
-        transform.position = new Vector3(pos.x, -0.3f, pos.z);
+        transform.position = pos;
     }
 }
