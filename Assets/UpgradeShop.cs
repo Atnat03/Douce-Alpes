@@ -36,6 +36,7 @@ public class UpgradeShop : MonoBehaviour
     public void AddLevelSortie() => Buy(MiniGames.Sortie);
     
     public void AddLevelRentree() => Buy(MiniGames.Rentree);
+    public void AddLevelAbreuvoir() => Buy(MiniGames.Abreuvoir);
 
     public void Buy(MiniGames game)
     {
@@ -57,14 +58,23 @@ public class UpgradeShop : MonoBehaviour
                 case MiniGames.Sortie:
                     GameData.instance.AddLevelSortie();
                     break;
+                case MiniGames.Abreuvoir:
+                    GameData.instance.AddLevelAbreuvoir();
+                    break;
             }
             
+            AudioManager.instance.PlaySound(3);
+            
             buttonsPrices[(int)game].interactable = false;
+            buttonsPrices[(int)game].transform.parent.GetComponent<ArticleUpgradeUnit>().SetActive();
+
+            Instantiate(buyInfo, transform);
         }       
         else
         {
             if (!isShowingCantBuy)
             {
+                AudioManager.instance.PlaySound(5);
                 StartCoroutine(CantBuyIt());
             }
         }

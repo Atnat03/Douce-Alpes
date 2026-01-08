@@ -191,15 +191,10 @@ public class GameData : MonoBehaviour
     public void AddLevelTonte() => AddLevelUpgrade(TypeAmelioration.Tonte);
     public void AddLevelClean() => AddLevelUpgrade(TypeAmelioration.Nettoyage);
     public void AddLevelSortie() => AddLevelUpgrade(TypeAmelioration.Sortie);
+    public void AddLevelAbreuvoir() => AddLevelUpgrade(TypeAmelioration.Abreuvoir);
 
     public void AddLevelUpgrade(TypeAmelioration type)
     {
-        if (!MiniGameParent.CheckIfCanUpgrade(type))
-        {
-            Debug.LogError("Can't upgrade, not enough sheep");
-            return;
-        }
-
         var oldTuple = dicoAmélioration[type];
         var newTuple = (oldTuple.Item1, oldTuple.Item2 + 1);
         dicoAmélioration[type] = newTuple;

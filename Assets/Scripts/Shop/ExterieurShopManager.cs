@@ -66,7 +66,7 @@ public class ExterieurShopManager : ShopManager
             SkinAgency.instance.SetSkinBarriere(selectedUIArticle.id);
             currentEquippedBarriere = selectedUIArticle;
         }
-                else if (selectedUIArticle.articleType == ArticleType.Barriere)
+        else if (selectedUIArticle.articleType == ArticleType.Barriere)
         {
             SkinAgency.instance.SetSkinBarriere(selectedUIArticle.id);
             currentEquippedBarriere = selectedUIArticle;
@@ -104,6 +104,8 @@ public class ExterieurShopManager : ShopManager
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
 
+            AudioManager.instance.PlaySound(3);
+            
             selectedUIArticle.isBuying = true;
 
             Debug.Log("Buy");
@@ -114,6 +116,7 @@ public class ExterieurShopManager : ShopManager
         {
             if (!isShowingCantBuy)
             {
+                AudioManager.instance.PlaySound(5);
                 StartCoroutine(CantBuyIt());
             }
         }
