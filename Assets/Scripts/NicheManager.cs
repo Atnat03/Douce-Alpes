@@ -14,7 +14,8 @@ public class NicheManager : TouchableObject
     [SerializeField] private InputField dogNameInput;
     [SerializeField] private GameObject createSheepUI;
     [SerializeField] private GameObject colorChange;
-
+    [SerializeField] private Collider boxColldier;
+    
     [Header("État du chien")]
     [SerializeField] private bool isInNiche = false;
     public string dogName = "";
@@ -78,6 +79,8 @@ public class NicheManager : TouchableObject
         colorChange.SetActive(GameManager.instance.currentCameraState == CamState.Dog);
         
         float distanceToNiche = Vector3.Distance(agentChien.transform.position, nichePos.position);
+
+        boxColldier.enabled = GameManager.instance.currentCameraState == CamState.Default;
 
         if (distanceToNiche < 1f && !isInNiche)
         {
