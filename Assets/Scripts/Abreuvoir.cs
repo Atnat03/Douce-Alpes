@@ -38,7 +38,7 @@ public class Abreuvoir : MiniGameParent
     private void Awake() => instance = this;
 
     public bool alreadyBubble = false;
-    
+
     private void Start()
     {
         eau = Eau.GetComponent<Renderer>().material;
@@ -48,13 +48,25 @@ public class Abreuvoir : MiniGameParent
         
         Eau.gameObject.SetActive(false);
     }
-
+    
     private void Update()
     {
         if (maximumWater > 0)
         {
-            curDrinkImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
-            curWaveImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
+            float t = Mathf.Clamp01(currentWater / maximumWater);
+            float a = 0.9f;
+            
+            curDrinkImage.fillAmount = t;
+
+            print(t + " / " + a);
+            
+            if(a >= t)
+            {
+                float waveWidth = Mathf.Lerp(0f, 275f, t);
+                curWaveImage.rectTransform.sizeDelta =
+                    new Vector2(waveWidth, 90f);
+            }
+
         }
         else
         {
