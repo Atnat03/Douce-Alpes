@@ -18,6 +18,7 @@ public class Cadenas : TouchableObject
     [SerializeField] Collider colButton;
     
     bool fallCadenas = false;
+    
 
     private void Start()
     {
