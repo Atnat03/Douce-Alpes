@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class Poutre : MonoBehaviour
     
     Vector3 Startpos;
     Quaternion startRotation;
+    bool hasSwipe = false;
 
     private void Start()
     {
@@ -23,7 +25,7 @@ public class Poutre : MonoBehaviour
 
     private void Update()
     {
-        if(canSwipe())
+        if(canSwipe() && !hasSwipe)
         {
             GetComponent<Animator>().enabled = true;
             grange.hand.SetActive(true);
@@ -47,19 +49,25 @@ public class Poutre : MonoBehaviour
 
         gameObject.transform.position = Startpos;
         gameObject.transform.rotation = startRotation;
+
+        hasSwipe = false;
     }
 
-    public void GetOffPoutre(SwipeType swipe)
+    public async Task GetOffPoutre(SwipeType swipe)
     {
         if(swipe != SwipeType.Up) return;
         
         if (canSwipe())
         {
-            gameObject.AddComponent<Rigidbody>();
-            GetComponent<Rigidbody>().AddForce(Vector3.up * Time.deltaTime * 500, ForceMode.Impulse);
+            hasSwipe = true;
             
             GetComponent<Animator>().enabled = false;
-
+            
+            await Task.Yield();
+            
+            gameObject.AddComponent<Rigidbody>();
+            GetComponent<Rigidbody>().AddForce(Vector3.up * 500, ForceMode.Impulse);
+            
             StartCoroutine(WaitALittle());
         }
     }
@@ -81,14 +89,18 @@ public class Poutre : MonoBehaviour
         }
         return true;
     }
-
-
+    
     void OnEnable()
     {
         if(SwipeDetection.instance != null)
-            SwipeDetection.instance.OnSwipeDetected += GetOffPoutre;
+            SwipeDetection.instance.OnSwipeDetected += OnSwipe;
     }
-    void OnDisable() { SwipeDetection.instance.OnSwipeDetected -= GetOffPoutre; }
+    void OnDisable() { SwipeDetection.instance.OnSwipeDetected -= OnSwipe; }
+    
+    void OnSwipe(SwipeType swipe)
+    {
+        _ = GetOffPoutre(swipe);
+    }
     
     public void OnCollisionEnter(Collision other)
     {
