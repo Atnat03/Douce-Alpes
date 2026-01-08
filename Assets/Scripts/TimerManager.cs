@@ -192,18 +192,17 @@ public class TimerManager : MonoBehaviour
     public void NextMiniGameToDo()
     {
         MiniGames[] values = (MiniGames[])Enum.GetValues(typeof(MiniGames));
-        int index = Array.IndexOf(values, currentMiniJeuToDo);
-        int nextIndex = (index + 1) % values.Length;
 
-        if (nextIndex == values.Length)
-        {
-            nextIndex = 0;
-        }
-        
+        const int miniGamesCount = 4;
+
+        int index = Array.IndexOf(values, currentMiniJeuToDo);
+
+        int nextIndex = (index + 1) % miniGamesCount;
+
         currentMiniJeuToDo = values[nextIndex];
-        
+
         GameData.instance.dayMoment.NextMoment();
-        
         StartCoroutine(UpdateHorloge(nextIndex));
     }
+
 }
