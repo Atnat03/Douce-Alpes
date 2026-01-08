@@ -104,7 +104,7 @@ public class ExterieurShopManager : ShopManager
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
 
-            AudioManager.instance.PlaySound(3);
+            AudioManager.instance.PlaySound(3, 1f, 0.25f); 
             
             selectedUIArticle.isBuying = true;
 

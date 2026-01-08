@@ -212,6 +212,11 @@ public class GameData : MonoBehaviour
         return dicoAmélioration[type].Item1.levelsValue[dicoAmélioration[type].Item2].cooldown;
     }
 
+    public int GetLevel(TypeAmelioration type)
+    {
+        return dicoAmélioration[type].Item2;
+    }
+
     public (AmeliorationValueSO, int) GetSOUpgrade(TypeAmelioration type)
     {
         return dicoAmélioration[type];

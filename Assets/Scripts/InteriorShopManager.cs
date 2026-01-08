@@ -45,8 +45,8 @@ public class InteriorShopManager : ShopManager
             Instantiate(buyInfo, transform.parent);
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
-            
-            AudioManager.instance.PlaySound(3);
+
+            AudioManager.instance.PlaySound(3, 1f, 0.25f); 
 
             selectedUIArticle.isBuying = true;
 

@@ -13,6 +13,7 @@ public class NicheManager : TouchableObject
     [SerializeField] private GameObject buttonQuit;
     [SerializeField] private InputField dogNameInput;
     [SerializeField] private GameObject createSheepUI;
+    [SerializeField] private GameObject colorChange;
 
     [Header("État du chien")]
     [SerializeField] private bool isInNiche = false;
@@ -74,6 +75,7 @@ public class NicheManager : TouchableObject
     private void Update()
     {
         dogNameInput.enabled = GameManager.instance.currentCameraState == CamState.Dog;
+        colorChange.SetActive(GameManager.instance.currentCameraState == CamState.Dog);
         
         float distanceToNiche = Vector3.Distance(agentChien.transform.position, nichePos.position);
 

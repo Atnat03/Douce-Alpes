@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Abreuvoir : MiniGameParent
 {
@@ -13,7 +14,8 @@ public class Abreuvoir : MiniGameParent
     [SerializeField] private float waterDecreaseRate = 0.5f;
     [SerializeField] private float waterAddValue = 5f;
     [SerializeField] private Animator animatorPompe;
-    [SerializeField] private UnityEngine.UI.Image curDrinkImage;
+    [SerializeField] private Image curDrinkImage;
+    [SerializeField] private Image curWaveImage;
     [SerializeField] private GameObject ui;
     private bool IsInAbreuvoir = false;
     [SerializeField] private RectTransform uiBonheurSpawn;
@@ -50,9 +52,15 @@ public class Abreuvoir : MiniGameParent
     private void Update()
     {
         if (maximumWater > 0)
+        {
             curDrinkImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
+            curWaveImage.fillAmount = Mathf.Clamp01(currentWater / maximumWater);
+        }
         else
+        {
+            curWaveImage.fillAmount = 0;
             curDrinkImage.fillAmount = 0;
+        }
 
         if (currentWater >= maximumWater && IsInAbreuvoir)
         {

@@ -15,6 +15,8 @@ public class RightPosState : ICleaningState
         rightLayer = LayerMask.NameToLayer("RightSide");
         manager.cleanManager.currentCleaningLayer = rightLayer;
         manager.cleanManager.currentCleaningSide = CleaningSide.Right;
+        
+        AudioManager.instance.PlaySound(25, 1.2f, 0.25f);
 
         manager.cleanManager.canAddShampoo = false;
         manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 1f));

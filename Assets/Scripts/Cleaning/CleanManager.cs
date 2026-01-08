@@ -65,7 +65,7 @@ public class CleanManager : MiniGameParent
     [SerializeField] private RectTransform fingerFollower;
     [SerializeField] private Image imageTool;
     [SerializeField] private Sprite logoShampoo;
-    [SerializeField] private Sprite logoShower;
+    [SerializeField] private Sprite[] logoShower;
 
     private Vector2 currentFingerScreenPos = Vector2.zero;
     private bool isSwiping = false;
@@ -88,6 +88,15 @@ public class CleanManager : MiniGameParent
     [SerializeField] private AudioClip shampooClean;
     [SerializeField] private AudioClip showerSound;
 
+    [Header("Finger Offset")]
+    [SerializeField] private Vector2 screenOffset = new Vector2(40f, 60f);
+
+    [Header("Radial Offset Correction")]
+    [SerializeField] private float offsetStartDistance = 0.4f;
+    [SerializeField] private float maxOffset = 0.15f;
+    [SerializeField] private float offsetStrength = 1.0f;
+
+    
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -276,7 +285,7 @@ public class CleanManager : MiniGameParent
     {
         audioClean.clip = showerSound;
         currentTool = CleaningTool.Shower;
-        imageTool.sprite = logoShower;
+        imageTool.sprite = logoShower[GameData.instance.GetLevel(TypeAmelioration.Nettoyage)];
     }
 
     public void ApplyClean(Vector3 pos, bool isHead = false)
@@ -459,34 +468,45 @@ public class CleanManager : MiniGameParent
     {
         currentFingerScreenPos = screenPos;
 
-        if (screenPos != Vector2.zero)
+        if (screenPos == Vector2.zero)
+            return;
+
+        imageTool.transform.parent.GetComponent<Animator>().SetBool("Using", true);
+
+        Vector2 offsetPos = screenPos + screenOffset;
+        imageTool.transform.parent.position = offsetPos;
+
+        Ray ray = camera.ScreenPointToRay(offsetPos);
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            imageTool.transform.parent.GetComponent<Animator>().SetBool("Using", true);
-            imageTool.transform.parent.position = screenPos;
+            Vector3 hitPos = hit.point;
+
+            Vector3 center = cleanPoint.position;
+            Vector3 dirFromCenter = hitPos - center;
+            float distanceFromCenter = dirFromCenter.magnitude;
+
+            if (distanceFromCenter > offsetStartDistance)
+            {
+                float t = Mathf.InverseLerp(
+                    offsetStartDistance,
+                    offsetStartDistance + 0.5f,
+                    distanceFromCenter
+                );
+
+                float offsetAmount = Mathf.Lerp(0f, maxOffset, t) * offsetStrength;
+                hitPos += dirFromCenter.normalized * offsetAmount;
+            }
+
+            ApplyClean(hitPos);
         }
     }
+
 
     private void HandleSwipeEnd()
     {
         currentFingerScreenPos = Vector2.zero;
-        imageTool.GetComponent<Animator>().SetBool("Using", false);
-    }
-
-    private float t = 0;
-    private void Update()
-    {
-        if (shampooList.Count > 0)
-        {
-            if (t <= 0)
-            {
-                AudioManager.instance.PlaySound(25, Random.Range(0.8f, 1.2f));
-                t = Random.Range(0.5f, 2f);
-            }
-            else
-            {
-                t -= Time.deltaTime;
-            }
-        }
+        imageTool.transform.parent.GetComponent<Animator>().SetBool("Using", false);
+        audioClean.Stop();
     }
 
     private void ExitScene()

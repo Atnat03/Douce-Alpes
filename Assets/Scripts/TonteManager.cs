@@ -49,6 +49,9 @@ public class TonteManager : MiniGameParent
     [SerializeField] private float offsetStrength = 1.0f;      
     
     [SerializeField] AudioSource audioSource;
+
+    [SerializeField] private Image logoTool;
+    [SerializeField] private Sprite[] levelRasoirSprites;
     
     private void Awake()
     {
@@ -329,5 +332,10 @@ public class TonteManager : MiniGameParent
     private void OnDestroy()
     {
         SwapSceneManager.instance.SwapingTonteScene -= Initialize;
+    }
+
+    private void Update()
+    {
+        logoTool.sprite = levelRasoirSprites[GameData.instance.GetLevel(TypeAmelioration.Tonte)];
     }
 }

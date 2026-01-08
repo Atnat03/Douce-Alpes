@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class NameSheepReset : MonoBehaviour
@@ -45,6 +46,6 @@ public class NameSheepReset : MonoBehaviour
         gameObject.SetActive(false);
         createSheepButtonScript.gameObject.SetActive(true);
         createSheepButtonScript.Exit();
-        
     }
+
 }

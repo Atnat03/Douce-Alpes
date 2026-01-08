@@ -5,10 +5,12 @@ using UnityEngine;
 public class Build : TouchableObject
 {
     [SerializeField] public GameObject UI;
+    [SerializeField] public GameObject exclamation;
 
     void Start()
     {
         UI.SetActive(false);
+        exclamation.SetActive(true);
     }
     
     public override void TouchEvent()
@@ -19,6 +21,8 @@ public class Build : TouchableObject
             return;
 
         GetComponentInChildren<OnBecameInvisibleObject>().ActivateUI();
+        
+        exclamation.SetActive(false);
     }
     
     public void OpenUI()

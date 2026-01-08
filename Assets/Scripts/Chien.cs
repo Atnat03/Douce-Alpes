@@ -17,6 +17,10 @@ public class Chien : MonoBehaviour
     [SerializeField] private ParticleSystem barkEffect;
 
     private bool isMiniGameActive = false;
+    
+    [SerializeField] Material marronMaterial;
+    [SerializeField] Material whiteMaterial;
+    [SerializeField] MeshRenderer mesh;
 
     private void Start()
     {
@@ -116,9 +120,7 @@ public class Chien : MonoBehaviour
             agent.SetDestination(GetNextDestination());
         }
     }
-
-
-
+    
     public void Carresse()
     {
         if (GameManager.instance.currentCameraState == CamState.Dog)
@@ -126,4 +128,8 @@ public class Chien : MonoBehaviour
             heartParticle.Play();
         }
     }
+
+    public void SetMarronColor()=> mesh.material = marronMaterial;
+    public void SetWhiteColor()=> mesh.material = whiteMaterial;
+
 }

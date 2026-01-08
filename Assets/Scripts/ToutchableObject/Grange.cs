@@ -31,6 +31,7 @@ public class Grange : Build
     public GameObject hand;
 
     [SerializeField] private Text textGrange;
+    [SerializeField] private BoxCollider boxCollider;
     
     void Start()
     {
@@ -135,6 +136,7 @@ public class Grange : Build
     private void Update()
     {
         sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
+        boxCollider.enabled = GameManager.instance.currentCameraState == CamState.Default;
 
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree)
             textGrange.text = "Rentrer";

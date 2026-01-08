@@ -13,7 +13,7 @@ public class SkinShopManager : ShopManager
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
 
-            AudioManager.instance.PlaySound(3);
+            AudioManager.instance.PlaySound(3, 1f, 0.25f); 
             
             if(selectedArticle.type == ArticleType.Hat)
                 SkinAgency.instance.AddHatSkinInstance(selectedArticle.id);

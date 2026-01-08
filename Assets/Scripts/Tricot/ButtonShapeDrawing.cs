@@ -12,6 +12,9 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     
     Animator animator;
 
+    public Color baseColor;
+    public Color startColor;
+
     private void Awake()
     {
         rect = GetComponent<RectTransform>();
@@ -29,10 +32,10 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
         SnapLineToButtonCenter();
     }
 
-
     public void SetFirstPoint()
     {
         animator.enabled = true;
+        GetComponent<Image>().color = startColor;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -45,26 +48,21 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
         SnapLineToButtonCenter();
     }
 
-
     private void SnapLineToButtonCenter()
     {
         if (manager == null || manager.uiLineRenderer == null) return;
 
         RectTransform lineRect = manager.uiLineRenderer.rectTransform;
 
-        // Obtenir le centre exact du bouton en world space
         Vector3 worldCenter = rect.position;
 
-        // Convertir ce point en coordonnées locales par rapport au UILineDrawer
         Vector2 localPos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             lineRect,
             RectTransformUtility.WorldToScreenPoint(null, worldCenter),
-            null,  // si ton Canvas a un RenderMode ScreenSpaceOverlay, sinon mettre la caméra
+            null, 
             out localPos
         );
-
-        // Ajouter ce point dans la liste de la ligne
         manager.AddPointInList(id, localPos);
     }
     
@@ -72,8 +70,12 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     {
         if(manager != null)
             manager.CheckModel();
-        
+    }
+
+    public void ResetButton()
+    {
         animator.enabled = false;
         transform.localScale = startScale;
+        GetComponent<Image>().color = baseColor;
     }
 }

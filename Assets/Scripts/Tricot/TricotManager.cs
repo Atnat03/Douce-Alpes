@@ -183,6 +183,11 @@ public class TricotManager : MonoBehaviour
 
         // Motif correct
         visualTricot.AddLaine();
+
+        foreach (RectTransform r in _3x3Ui)
+        {
+            r.GetComponent<ButtonShapeDrawing>().ResetButton();
+        }
         
         if (okImage != null) okImage.SetActive(true);
         ResetDrawing();

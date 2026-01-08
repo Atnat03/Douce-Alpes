@@ -21,8 +21,9 @@ public class LeftPosState : ICleaningState
 
         manager.cleanManager.canAddShampoo = false;
         manager.cleanManager.canRotateCamera = false;
+        
+        AudioManager.instance.PlaySound(25, 1f, 0.25f);
 
-        // 🔄 Transition fluide circulaire vers la position gauche
         manager.cleanManager.StartCoroutine(
             RotateAroundSheep(
                 manager.cleanManager.camera.transform.position,

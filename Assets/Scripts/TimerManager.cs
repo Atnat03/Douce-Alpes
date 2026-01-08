@@ -34,6 +34,8 @@ public class TimerManager : MonoBehaviour
 
     private bool isLogo1Visible = true;
 
+    [SerializeField] private Grange grange;
+
     private void OnEnable()
     {
         GameData.instance.OnCooldownUpdated += UpdateCooldownUI;
@@ -201,6 +203,10 @@ public class TimerManager : MonoBehaviour
 
         currentMiniJeuToDo = values[nextIndex];
 
+        if (currentMiniJeuToDo == MiniGames.Rentree || currentMiniJeuToDo == MiniGames.Sortie)
+        {
+            grange.exclamation.SetActive(true);
+        }
         GameData.instance.dayMoment.NextMoment();
         StartCoroutine(UpdateHorloge(nextIndex));
     }

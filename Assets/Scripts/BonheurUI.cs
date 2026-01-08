@@ -38,15 +38,22 @@ public class BonheurUI : MonoBehaviour
     {
         UpdateCursorAndColor();
         
-        if(SwapSceneManager.instance.currentSceneId == 0)
+        if (SwapSceneManager.instance.currentSceneId == 0 ||
+            SwapSceneManager.instance.currentSceneId == 4)
+        {
             isDropped = false;
-
+        }
+        
         if (isDropped)
             return;
-
         
-        Vector2 pos = SwapSceneManager.instance.currentSceneId == 0 ? posVisible.position : posInvisible.position;
-        canvaPlayer.transform.position = pos;
+        bool shouldBeVisible =
+            SwapSceneManager.instance.currentSceneId == 0 ||
+            SwapSceneManager.instance.currentSceneId == 4;
+
+        Vector2 pos = shouldBeVisible ? posVisible.position : posInvisible.position;
+        canvaPlayer.position = pos;
+
     }
 
     private void UpdateCursorAndColor()
@@ -78,7 +85,7 @@ public class BonheurUI : MonoBehaviour
         isDropped = true;
         spawnAnimationFinished = false;
         
-        if(SwapSceneManager.instance.currentSceneId != 0)
+        if(SwapSceneManager.instance.currentSceneId != 0 && SwapSceneManager.instance.currentSceneId != 4)
             StartCoroutine(AnimatedCanvaTranslation(posInvisible, posVisible, posSpawnSprite, value, sprite, targetPosition));
     }
 
@@ -87,7 +94,7 @@ public class BonheurUI : MonoBehaviour
         print("Remonte Canva");
         isDropped = false;
 
-        if (SwapSceneManager.instance.currentSceneId != 0)
+        if (SwapSceneManager.instance.currentSceneId != 0&& SwapSceneManager.instance.currentSceneId != 4)
             StartCoroutine(AnimatedCanvaTranslation(
                 posVisible,
                 posInvisible, 
