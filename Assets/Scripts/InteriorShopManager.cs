@@ -45,6 +45,8 @@ public class InteriorShopManager : ShopManager
             Instantiate(buyInfo, transform.parent);
             
             PlayerMoney.instance.RemoveMoney(selectedArticle.price);
+            
+            AudioManager.instance.PlaySound(3);
 
             selectedUIArticle.isBuying = true;
 
@@ -56,6 +58,7 @@ public class InteriorShopManager : ShopManager
         {
             if (!isShowingCantBuy)
             {
+                AudioManager.instance.PlaySound(5);
                 StartCoroutine(CantBuyIt());
             }
         }

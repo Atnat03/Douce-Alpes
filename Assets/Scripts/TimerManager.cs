@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie }
+public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie, Abreuvoir }
 
 public class TimerManager : MonoBehaviour
 {
@@ -192,7 +192,7 @@ public class TimerManager : MonoBehaviour
     {
         MiniGames[] values = (MiniGames[])Enum.GetValues(typeof(MiniGames));
         int index = Array.IndexOf(values, currentMiniJeuToDo);
-        int nextIndex = (index + 1) % values.Length;
+        int nextIndex = (index + 1) % values.Length-1;
         currentMiniJeuToDo = values[nextIndex];
         
         GameData.instance.dayMoment.NextMoment();
