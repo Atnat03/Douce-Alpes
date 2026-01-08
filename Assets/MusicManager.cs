@@ -7,6 +7,7 @@ public class MusicManager : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip dehorsMusic;
     public AudioClip dedansMusic;
+    public AudioClip playaMusic;
     public bool isDehors = true;
 
     public float maxVolume = 0.5f;
@@ -14,6 +15,8 @@ public class MusicManager : MonoBehaviour
 
     private Coroutine fadeCoroutine;
 
+    [SerializeField] private DLC dlc;
+    
     private void Start()
     {
         audioSource.clip = dehorsMusic;
@@ -42,6 +45,11 @@ public class MusicManager : MonoBehaviour
         {
             audioSource.pitch = 0.85f;
         }
+
+        if (dlc.isSelect)
+        {
+            audioSource.clip = playaMusic;
+        }
         
         audioSource.Play();
         
@@ -67,5 +75,15 @@ public class MusicManager : MonoBehaviour
     private void Update()
     {
         audioSource.volume = Settings.instance.MusicActivated ? maxVolume : 0f;
+    }
+
+    void OnEnable()
+    {
+        dlc.ChangeSelect += ChangeMusique;
+    }
+    
+    void OnDisable()
+    {
+        dlc.ChangeSelect -= ChangeMusique;
     }
 }
