@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,8 +47,8 @@ public class ShopManager : MonoBehaviour
         
         buyPannel.SetActive(true);
         
-        buyPannel.transform.GetChild(2).GetComponent<Text>().text = articlePrice.ToString();
-        buyPannel.transform.GetChild(3).GetComponent<Text>().text = articleTitle;
+        buyPannel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = articlePrice.ToString();
+        buyPannel.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = articleTitle;
     }
     
     public void HideBarInfo()

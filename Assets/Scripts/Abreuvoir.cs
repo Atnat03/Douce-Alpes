@@ -57,8 +57,6 @@ public class Abreuvoir : MiniGameParent
             float a = 0.9f;
             
             curDrinkImage.fillAmount = t;
-
-            print(t + " / " + a);
             
             if(a >= t)
             {

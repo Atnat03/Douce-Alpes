@@ -4,6 +4,6 @@ public class SetFOVLikeParent : MonoBehaviour
 {
     void Update()
     {
-        GetComponent<Camera>().fieldOfView = transform.parent.parent.GetComponent<Camera>().fieldOfView;
+        GetComponent<Camera>().fieldOfView = transform.parent.GetComponent<Camera>().fieldOfView;
     }
 }
