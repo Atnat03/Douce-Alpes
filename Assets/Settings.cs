@@ -35,11 +35,18 @@ public class Settings : MonoBehaviour
     public Animator animatorPlage;
     public Animator animatorMontagne;
     
-    public void Start()
+    private void Start()
     {
         globalVolumeSlider.value = globalVolume;
-        musicPlayaToggle.gameObject.SetActive(false);
+
+        musicToggle.isOn = MusicActivated;
+        musicPlayaToggle.isOn = isPlayaSound;
         
+        SetPlayaSound(false);
+        
+        if (MusicActivated)
+            DLC.ChangeSelect?.Invoke();
+
         UpdateMusicVisuals();
     }
 
@@ -47,40 +54,31 @@ public class Settings : MonoBehaviour
     {
         MusicActivated = musicToggle.isOn;
 
-        if (MusicActivated && isPlayaSound)
+        if (MusicActivated)
         {
-            MusicActivated = true;
             isPlayaSound = false;
             musicPlayaToggle.isOn = false;
+
             DLC.ChangeSelect?.Invoke();
         }
 
         UpdateMusicVisuals();
     }
-    
+
+
+
     private void UpdateMusicVisuals()
     {
-        // Cas 1 : musique plage activée
-        if (isPlayaSound)
+        if (!MusicActivated)
         {
-            animatorPlage.SetBool("Sortis", true);
+            animatorPlage.SetBool("Sortis", false);
             animatorMontagne.SetBool("Sortis", false);
             return;
         }
 
-        // Cas 2 : musique montagne activée
-        if (MusicActivated)
-        {
-            animatorPlage.SetBool("Sortis", false);
-            animatorMontagne.SetBool("Sortis", true);
-            return;
-        }
-
-        // Cas 3 : aucune musique
-        animatorPlage.SetBool("Sortis", false);
-        animatorMontagne.SetBool("Sortis", false);
+        animatorPlage.SetBool("Sortis", isPlayaSound);
+        animatorMontagne.SetBool("Sortis", !isPlayaSound);
     }
-
 
     public void SetSFXVolume()
     {
@@ -101,23 +99,25 @@ public class Settings : MonoBehaviour
     
     public void SetPlayaSound()
     {
-        bool wasPlayaActive = isPlayaSound;
         isPlayaSound = musicPlayaToggle.isOn;
 
-        MusicActivated = true;
-        
-        if (wasPlayaActive && !isPlayaSound)
+        if (isPlayaSound)
         {
+            MusicActivated = true;
             musicToggle.isOn = true;
+
+            DLC.ChangeSelect?.Invoke();
         }
-        else if (isPlayaSound)
+        else
         {
-            musicToggle.isOn = false;
+            // On revient à montagne si musique activée
+            if (MusicActivated)
+                DLC.ChangeSelect?.Invoke();
         }
 
-        DLC.ChangeSelect?.Invoke();
         UpdateMusicVisuals();
     }
+
 
 
     public void SetPlayaSound(bool state)
