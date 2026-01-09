@@ -15,7 +15,6 @@ public class Abreuvoir : MiniGameParent
     [SerializeField] private float waterAddValue = 5f;
     [SerializeField] private Animator animatorPompe;
     [SerializeField] private Image curDrinkImage;
-    [SerializeField] private Image curWaveImage;
     [SerializeField] private GameObject ui;
     private bool IsInAbreuvoir = false;
     [SerializeField] private RectTransform uiBonheurSpawn;
@@ -51,26 +50,9 @@ public class Abreuvoir : MiniGameParent
     
     private void Update()
     {
-        if (maximumWater > 0)
-        {
-            float t = Mathf.Clamp01(currentWater / maximumWater);
-            float a = 0.9f;
+        float t = Mathf.Clamp01(currentWater / maximumWater);
             
-            curDrinkImage.fillAmount = t;
-            
-            if(a >= t)
-            {
-                float waveWidth = Mathf.Lerp(0f, 275f, t);
-                curWaveImage.rectTransform.sizeDelta =
-                    new Vector2(waveWidth, 90f);
-            }
-
-        }
-        else
-        {
-            curWaveImage.fillAmount = 0;
-            curDrinkImage.fillAmount = 0;
-        }
+        curDrinkImage.GetComponent<Image>().material.SetFloat("_Slider", t);
 
         if (currentWater >= maximumWater && IsInAbreuvoir)
         {

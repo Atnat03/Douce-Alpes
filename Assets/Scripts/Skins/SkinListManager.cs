@@ -9,15 +9,13 @@ public class SkinListManager : MonoBehaviour
     private List<SkinUnit> skinListHatWithoutWool = new();
     private List<SkinUnit> skinListClotheWithoutWool = new();
 
-    private Sheep parentSheep;
+    [SerializeField]private Sheep parentSheep;
 
     [SerializeField] private Transform withWoolSkins;
     [SerializeField] private Transform withoutWoolSkins;
     
     public void Initialize()
     {
-        parentSheep = transform.parent.parent.GetComponent<Sheep>();
-        
         skinListHatWithWool.Clear();
         skinListClotheWithWool.Clear();
         skinListHatWithoutWool.Clear();

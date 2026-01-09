@@ -32,16 +32,55 @@ public class Settings : MonoBehaviour
     [SerializeField] private Toggle specialToggle;
     [SerializeField] private Toggle musicPlayaToggle;
 
+    public Animator animatorPlage;
+    public Animator animatorMontagne;
+    
     public void Start()
     {
         globalVolumeSlider.value = globalVolume;
         musicPlayaToggle.gameObject.SetActive(false);
+        
+        UpdateMusicVisuals();
     }
 
     public void SetMusicVolume()
     {
         MusicActivated = musicToggle.isOn;
+
+        if (MusicActivated && isPlayaSound)
+        {
+            MusicActivated = true;
+            isPlayaSound = false;
+            musicPlayaToggle.isOn = false;
+            DLC.ChangeSelect?.Invoke();
+        }
+
+        UpdateMusicVisuals();
     }
+    
+    private void UpdateMusicVisuals()
+    {
+        // Cas 1 : musique plage activée
+        if (isPlayaSound)
+        {
+            animatorPlage.SetBool("Sortis", true);
+            animatorMontagne.SetBool("Sortis", false);
+            return;
+        }
+
+        // Cas 2 : musique montagne activée
+        if (MusicActivated)
+        {
+            animatorPlage.SetBool("Sortis", false);
+            animatorMontagne.SetBool("Sortis", true);
+            return;
+        }
+
+        // Cas 3 : aucune musique
+        animatorPlage.SetBool("Sortis", false);
+        animatorMontagne.SetBool("Sortis", false);
+    }
+
 
     public void SetSFXVolume()
     {
@@ -62,13 +101,30 @@ public class Settings : MonoBehaviour
     
     public void SetPlayaSound()
     {
+        bool wasPlayaActive = isPlayaSound;
         isPlayaSound = musicPlayaToggle.isOn;
+
+        MusicActivated = true;
+        
+        if (wasPlayaActive && !isPlayaSound)
+        {
+            musicToggle.isOn = true;
+        }
+        else if (isPlayaSound)
+        {
+            musicToggle.isOn = false;
+        }
+
         DLC.ChangeSelect?.Invoke();
+        UpdateMusicVisuals();
     }
+
+
     public void SetPlayaSound(bool state)
     {
         isPlayaSound = state;
         musicPlayaToggle.isOn = state;
+        UpdateMusicVisuals();
     }
 
     public void OnValueChanged()
