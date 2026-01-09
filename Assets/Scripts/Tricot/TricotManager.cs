@@ -181,7 +181,6 @@ public class TricotManager : MonoBehaviour
             }
         }
 
-        // Motif correct
         visualTricot.AddLaine();
 
         foreach (RectTransform r in _3x3Ui)
@@ -362,6 +361,8 @@ public class TricotManager : MonoBehaviour
 
     public void SellProduct()
     {
+        print(currentPriceSell);
+        
         PlayerMoney.instance.AddMoney(currentPriceSell, spawnMoney.position);
         
         currentPattern = null;

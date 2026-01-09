@@ -84,10 +84,25 @@ public class BonheurUI : MonoBehaviour
         print("Drop Canva");
         isDropped = true;
         spawnAnimationFinished = false;
-        
-        if(SwapSceneManager.instance.currentSceneId != 0 && SwapSceneManager.instance.currentSceneId != 4)
-            StartCoroutine(AnimatedCanvaTranslation(posInvisible, posVisible, posSpawnSprite, value, sprite, targetPosition));
+
+        if (SwapSceneManager.instance.currentSceneId == 0 ||
+            SwapSceneManager.instance.currentSceneId == 4)
+        {
+            StartCoroutine(SpawnAnimatedSprite(posSpawnSprite, value, sprite, targetPosition));
+        }
+        else
+        {
+            StartCoroutine(AnimatedCanvaTranslation(
+                posInvisible,
+                posVisible,
+                posSpawnSprite,
+                value,
+                sprite,
+                targetPosition
+            ));
+        }
     }
+
 
     public void RemonteCanva()
     {

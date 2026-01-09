@@ -6,6 +6,7 @@ public class TricotPage : MonoBehaviour
 {
     [SerializeField] private Text titreProduct;
     [SerializeField] private Text laineToDoProduct;
+    [SerializeField] private Text gainProduct;
     [SerializeField] private Image logoProduct;
     [SerializeField] private Image background;
     [SerializeField] public ModelDrawSO model;
@@ -17,6 +18,7 @@ public class TricotPage : MonoBehaviour
         laineToDoProduct.text = numberTotalWool(model.pattern).ToString();
         logoProduct.sprite = model.image;
         background.sprite = model.background;
+        gainProduct.text = model.sellPrice.ToString();
     }
 
     public int numberTotalWool(List<ModelDraw> l)

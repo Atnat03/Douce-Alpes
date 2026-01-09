@@ -8,6 +8,7 @@ public class AbreuvoirClickOpen : TouchableObject
     public Transform targetTransiPos;
 
     [SerializeField] private CameraControl cameraControl;
+    [SerializeField] private GameObject exclamation;
 
     public override void TouchEvent()
     {
@@ -19,6 +20,8 @@ public class AbreuvoirClickOpen : TouchableObject
         
         if(TutoManager.instance != null)
             TutoManager.instance.Abreuvoir();
+        
+        exclamation.SetActive(false);
         
         ActivateAbreuvoir();
     }
