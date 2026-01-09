@@ -10,9 +10,9 @@ public class Poutre : MonoBehaviour
     [SerializeField] private ParticleSystem touchGroundEffect;
 
     [Header("Physics")]
-    [SerializeField] private Rigidbody rb;
     [SerializeField] private float impulseForce = 500f;
 
+    private Rigidbody rb;
     private Vector3 startPos;
     private Quaternion startRotation;
     private bool hasSwipe = false;
@@ -21,13 +21,6 @@ public class Poutre : MonoBehaviour
     {
         startPos = transform.position;
         startRotation = transform.rotation;
-
-        if (rb == null)
-            rb = GetComponent<Rigidbody>();
-
-        // Rigidbody prêt mais inactif
-        rb.isKinematic = true;
-        rb.useGravity = true;
 
         GetComponent<Animator>().enabled = false;
     }
@@ -48,13 +41,13 @@ public class Poutre : MonoBehaviour
 
         hasSwipe = true;
 
-        Animator animator = GetComponent<Animator>();
-        animator.enabled = false;
+        GetComponent<Animator>().enabled = false;
 
-        // Active la physique
-        rb.isKinematic = false;
+        rb = gameObject.AddComponent<Rigidbody>();
+        rb.useGravity = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        // Laisse Unity appliquer l'état avant l'impulsion
         await Task.Yield();
 
         rb.AddForce(Vector3.up * impulseForce, ForceMode.Impulse);
@@ -79,9 +72,11 @@ public class Poutre : MonoBehaviour
             cadena.ResetCadenas();
         }
 
-        rb.isKinematic = true;
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        if (rb != null)
+        {
+            Destroy(rb);
+            rb = null;
+        }
 
         transform.position = startPos;
         transform.rotation = startRotation;
