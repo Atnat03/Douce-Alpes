@@ -199,6 +199,8 @@ public class CleanManager : MiniGameParent
         );
 
         nbToCleanText.text = $"{sheepIndex + 1}/{GameData.instance.sheepDestroyData.Count}";
+        
+        currentSheep.GetComponent<SheepSkinManager>().animator.SetBool("Walk", true);
 
         StartCoroutine(InitializeSheep(currentSheep.transform));
     }
@@ -212,8 +214,8 @@ public class CleanManager : MiniGameParent
         ResetCleanSystem();
         FindObjectOfType<StateMachineClean>().InitializedStates();
     }
-    
-    
+
+
     public float GetHeadDetectionRadius()
     {
         var skin = currentSheep.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -227,7 +229,7 @@ public class CleanManager : MiniGameParent
             Debug.LogWarning("⚠️ MoveOverTime : target est null");
             yield break;
         }
-    
+        
         sheepIsMoving = true;
         Vector3 start = target.position;
         float elapsed = 0f;
@@ -258,6 +260,7 @@ public class CleanManager : MiniGameParent
     
         canAddShampoo = true;
         sheepIsMoving = false;
+        target.GetComponent<SheepSkinManager>().animator.SetBool("Walk", false);
     }
     public void StartNewCycle()
     {
@@ -496,8 +499,6 @@ public class CleanManager : MiniGameParent
                 float offsetAmount = Mathf.Lerp(0f, maxOffset, t) * offsetStrength;
                 hitPos += dirFromCenter.normalized * offsetAmount;
             }
-
-            ApplyClean(hitPos);
         }
     }
 

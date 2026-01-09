@@ -38,12 +38,6 @@ public class BonheurUI : MonoBehaviour
     {
         UpdateCursorAndColor();
         
-        if (SwapSceneManager.instance.currentSceneId == 0 ||
-            SwapSceneManager.instance.currentSceneId == 4)
-        {
-            isDropped = false;
-        }
-        
         if (isDropped)
             return;
         
@@ -156,6 +150,12 @@ public class BonheurUI : MonoBehaviour
         int count = value / 10;
         float moveDuration = 0.3f;
         float spawnRadius = 100f;
+        
+        if (value <= 0)
+        {
+            spawnAnimationFinished = true;
+            yield break;
+        }
 
         for (int i = 0; i < count; i++)
         {

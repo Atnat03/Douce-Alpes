@@ -36,7 +36,7 @@ public class TricotManager : MonoBehaviour
     [SerializeField] private GameObject spawnVisual;
 
     [SerializeField] private RectTransform spawnMoney;
-
+    
     [Header("Pages")]
     [SerializeField] private Transform carnetParent;
     [SerializeField] private GameObject pagePrefab;

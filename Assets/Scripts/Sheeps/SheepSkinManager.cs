@@ -24,7 +24,7 @@ public class SheepSkinManager : MonoBehaviour
 
     private bool isTonte = false;
     
-    [SerializeField] Animator animator;
+    [SerializeField] public Animator animator;
     
     [Header("Bulle")]
     [SerializeField] private GameObject Bubble;

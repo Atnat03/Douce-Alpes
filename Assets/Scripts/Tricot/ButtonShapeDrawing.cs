@@ -14,6 +14,7 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
 
     public Color baseColor;
     public Color startColor;
+    public Color passageColor;
 
     private void Awake()
     {
@@ -29,6 +30,7 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     {
         if (manager == null) return;
         manager.SetHover(true);
+        GetComponent<Image>().color = passageColor;
         SnapLineToButtonCenter();
     }
 
@@ -50,21 +52,25 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
 
     private void SnapLineToButtonCenter()
     {
-        if (manager == null || manager.uiLineRenderer == null) return;
+        if (manager == null || manager.uiLineRenderer == null)
+            return;
 
         RectTransform lineRect = manager.uiLineRenderer.rectTransform;
 
-        Vector3 worldCenter = rect.position;
+        Vector3 worldCenter = rect.TransformPoint(rect.rect.center);
 
-        Vector2 localPos;
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, worldCenter);
+
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             lineRect,
-            RectTransformUtility.WorldToScreenPoint(null, worldCenter),
-            null, 
-            out localPos
+            screenPoint,
+            Camera.main,
+            out Vector2 localPos
         );
+
         manager.AddPointInList(id, localPos);
     }
+
     
     public void OnPointerUp(PointerEventData eventData)
     {
