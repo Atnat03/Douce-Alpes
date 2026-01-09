@@ -220,6 +220,9 @@ public class Sheep : TouchableObject
     {
         Quaternion startRotation = transform.rotation;
         float elapsed = 0f;
+        
+        print("SmoothRotat");
+        animator.SetBool("Walk", true);
 
         while (elapsed < rotationDuration)
         {
@@ -230,6 +233,7 @@ public class Sheep : TouchableObject
         }
 
         transform.rotation = targetRotation;
+        animator.SetBool("Walk", false);
     }
 
     
