@@ -9,7 +9,7 @@ public class SheepBoid : MonoBehaviour
     public INatureStrategy natureStrategy;
 
     public Vector3 velocity;
-    private bool isPaused;
+    public bool isPaused;
     private float pauseTimer, nextPauseTime;
     
     [SerializeField] private float baseSpeed = 2f;
@@ -31,6 +31,7 @@ public class SheepBoid : MonoBehaviour
         Color.gray,  
         Color.yellow  
     };
+    
     void Start()
     {
         natureStrategy = NatureFactory.Create(natureType);
@@ -46,7 +47,6 @@ public class SheepBoid : MonoBehaviour
 
     void Update()
     {
-        // Gestion des pauses naturelles
         if (isPaused && !isAfraid)
         {
             pauseTimer -= Time.deltaTime;
@@ -60,7 +60,6 @@ public class SheepBoid : MonoBehaviour
 
         particleRun.SetActive(isAfraid);
 
-        // Calcul des forces
         Vector3 accel = BoundaryRepulsion() + ColliderRepulsion();
         velocity += accel * Time.deltaTime;
         velocity.y = 0f;
@@ -79,10 +78,9 @@ public class SheepBoid : MonoBehaviour
         velocity = velocity.normalized * targetSpeed;
 
 
-        // Déplacement sécurisé
         Vector3 remainingMove = velocity * Time.deltaTime;
         float maxStep = 0.5f;
-        int maxIterations = 10; // éviter boucle infinie
+        int maxIterations = 10;
 
         while (remainingMove.magnitude > 0.001f && maxIterations > 0)
         {

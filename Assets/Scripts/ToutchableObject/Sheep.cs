@@ -78,6 +78,8 @@ public class Sheep : TouchableObject
     private Coroutine rotationCoroutine;
 
     private float timerSound = 0;
+    
+    public Animator animator;
 
     private void OnEnable()
     {
@@ -96,7 +98,6 @@ public class Sheep : TouchableObject
             SwipeDetection.instance.OnFingerPositionUpdated -= OnFingerPositionUpdated;
         }
     }
-
     
     private void Start()
     {
@@ -136,11 +137,14 @@ public class Sheep : TouchableObject
         laine.SetActive(hasLaine);
         
         laine.GetComponent<MeshRenderer>().material = colorData.colorData[currentColorID].material;
-        var mats = laineDessous.GetComponent<MeshRenderer>().materials;
+        var mats = laineDessous.GetComponent<SkinnedMeshRenderer>().materials;
         mats[1] = colorData.colorData[currentColorID].material;
-        laineDessous.GetComponent<MeshRenderer>().materials = mats;
+        laineDessous.GetComponent<SkinnedMeshRenderer>().materials = mats;
 
         larmes.SetActive(BonheurCalculator.instance.currentBonheur <= 10);
+        
+        print(sheepBoid.velocity.magnitude);
+        animator.SetBool("Walk", !sheepBoid.isPaused && sheepBoid.enabled);
         
         if (isOpen)
         {
