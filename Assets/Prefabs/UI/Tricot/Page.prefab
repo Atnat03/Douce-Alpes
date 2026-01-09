@@ -417,6 +417,8 @@ MonoBehaviour:
   background: {fileID: 8220982795685411570}
   model: {fileID: 0}
   buttonSelect: {fileID: 5572622773307359772}
+  id: 0
+  isBuy: 0
 --- !u!1 &3513967924463063373
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,8 +530,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 82, y: 397.25}
-  m_SizeDelta: {x: 358.41, y: 134.4924}
+  m_AnchoredPosition: {x: 82, y: 380}
+  m_SizeDelta: {x: 358.41, y: 165.0986}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1733539538006311832
 CanvasRenderer:
@@ -571,8 +573,8 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: Bonnet
+    m_LineSpacing: 0.5
+  m_Text: Bonnet sans manche
 --- !u!1 &4595608510550255699
 GameObject:
   m_ObjectHideFlags: 0

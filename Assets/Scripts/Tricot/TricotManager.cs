@@ -80,8 +80,8 @@ public class TricotManager : MonoBehaviour
         TricotPage page = go.GetComponent<TricotPage>();
         page.Initialize(model, this, id);
         
-        print(id.ToString());
-        ModelPossede.Add((ModelTricot)id, id==0);
+        ModelPossede[(ModelTricot)id] = id == 0;
+
         page.isBuy = id==0;
 
         page.buttonSelect.onClick.AddListener(() =>
