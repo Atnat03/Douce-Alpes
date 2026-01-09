@@ -71,7 +71,7 @@ public class UpgradeShop : MonoBehaviour
         
         barBuy.SetActive(true);
         
-        nameUpgrade.text = articleTitle;
+        buyPrice.text = articlePrice.ToString();
         
         nameUpgrade.text = articleTitle;
         
