@@ -11,6 +11,7 @@ public class UpgradeShop : MonoBehaviour
     public List<MiniGamesPrices> priceList;
 
     [SerializeField] private Text[] textPrices;
+    [SerializeField] private Text[] textTricotPrices;
     [SerializeField] private Button[] buttonsPrices;
     [SerializeField] private Button[] buttonsTricotPrices;
     [SerializeField] private ModelDrawSO[] modelsTricot;
@@ -38,6 +39,12 @@ public class UpgradeShop : MonoBehaviour
         {
             textPrices[i].text = priceList[i].price.ToString();
         }
+
+        for (int i = 0; i < textTricotPrices.Length; i++)
+        {
+            print(modelsTricot[i].unlockPrice.ToString());
+            textTricotPrices[i].text = modelsTricot[i].unlockPrice.ToString();
+        }
     }
     
     public void AddLevelTonte() => UpdatePrice(prices[MiniGames.Tonte], nameof(MiniGames.Tonte),MiniGames.Tonte);
@@ -61,7 +68,8 @@ public class UpgradeShop : MonoBehaviour
         
         barBuy.SetActive(true);
         
-        buyPrice.text = articlePrice.ToString();
+        nameUpgrade.text = articleTitle;
+        
         nameUpgrade.text = articleTitle;
         
         buttonBuy.onClick.RemoveAllListeners();
