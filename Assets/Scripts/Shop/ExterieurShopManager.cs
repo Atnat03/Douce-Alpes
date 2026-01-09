@@ -161,6 +161,8 @@ public class ExterieurShopManager : ShopManager
             else if (uiArticle.articleType == ArticleType.Tricot)
                 currentEquippedTricot = uiArticle;
         }
+        
+        uiArticle.textPrice.text = article.price.ToString();
     }
 
     protected new void UpdatePrice(int articlePrice, string articleTitle)

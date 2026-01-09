@@ -79,6 +79,8 @@ public class InteriorShopManager : ShopManager
         uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
         uiArticle.buyBtn.onClick.AddListener(() => selectedUIArticle = uiArticle);
         uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
+        
+        uiArticle.textPrice.text = article.price.ToString();
     }
 
     protected new void UpdatePrice(int articlePrice, string articleTitle)
