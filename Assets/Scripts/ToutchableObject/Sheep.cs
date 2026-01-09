@@ -144,7 +144,9 @@ public class Sheep : TouchableObject
         larmes.SetActive(BonheurCalculator.instance.currentBonheur <= 10);
         
         print(sheepBoid.velocity.magnitude);
-        animator.SetBool("Walk", !sheepBoid.isPaused && sheepBoid.enabled);
+        
+        if(!isOpen)
+            animator.SetBool("Walk", !sheepBoid.isPaused);
         
         if (isOpen)
         {
@@ -221,7 +223,6 @@ public class Sheep : TouchableObject
         Quaternion startRotation = transform.rotation;
         float elapsed = 0f;
         
-        print("SmoothRotat");
         animator.SetBool("Walk", true);
 
         while (elapsed < rotationDuration)
