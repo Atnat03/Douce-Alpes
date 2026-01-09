@@ -34,6 +34,8 @@ public class AddSkins : MonoBehaviour
     [SerializeField] private Sprite nearSprite;
     [SerializeField] private Sprite farSprite;
     [SerializeField] private Sprite defaultSprite;
+    [SerializeField] private Sprite centerLockSprite;
+    [SerializeField] private Sprite notCenterLockSprite;
 
     private void Awake()
     {
@@ -86,10 +88,19 @@ public class AddSkins : MonoBehaviour
 
         ResizePanels(snap, skinPrefab);
         snap.Setup();
+        StartCoroutine(UpdateLockSpritesNextFrame());
         
         if (snap != null) UpdateStackDisplays();
     }
 
+    private IEnumerator UpdateLockSpritesNextFrame()
+    {
+        yield return null;
+        UpdateLockSprites();
+        UpdateStackDisplays();
+    }
+
+    
     private void ResizePanels(SimpleScrollSnap snap, GameObject prefab)
     {
         RectTransform prefabRect = prefab.GetComponent<RectTransform>();
@@ -132,9 +143,9 @@ public class AddSkins : MonoBehaviour
                 panelImage.color = availableColor;
             }
 
-            if (s.noStackImage != null)
+            if (s.lockImage != null)
             {
-                s.noStackImage.gameObject.SetActive(isUnavailable);
+                s.lockImage.gameObject.SetActive(isUnavailable);
             }
         }
     }
@@ -178,7 +189,8 @@ public class AddSkins : MonoBehaviour
                     break;
             }
         }
-
+        
+        UpdateLockSprites();
         UpdateStackDisplays();
     }
 
@@ -192,6 +204,28 @@ public class AddSkins : MonoBehaviour
             {
                 snap.GoToPanel(i);
                 return;
+            }
+        }
+    }
+    
+    private void UpdateLockSprites()
+    {
+        if (snap == null) return;
+
+        int centerIndex = snap.CenteredPanel;
+
+        for (int i = 0; i < snap.NumberOfPanels; i++)
+        {
+            SkinUnit s = snap.Panels[i].GetComponent<SkinUnit>();
+            if (s == null || s.lockImage == null) continue;
+
+            if (i == centerIndex)
+            {
+                s.lockImage.sprite = centerLockSprite;
+            }
+            else
+            {
+                s.lockImage.sprite = notCenterLockSprite;
             }
         }
     }

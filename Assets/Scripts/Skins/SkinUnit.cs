@@ -22,5 +22,5 @@ public class SkinUnit : MonoBehaviour
     public ArticleType type;
     public bool canPutThisSkin = false;
     [SerializeField] public TextMeshProUGUI stackText;
-    public Image noStackImage;
+    public Image lockImage;
 }
