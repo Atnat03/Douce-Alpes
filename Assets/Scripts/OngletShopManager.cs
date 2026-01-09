@@ -13,6 +13,7 @@ public class OngletShopManager : MonoBehaviour
     {
         startScale = onglets[0].transform.localScale;
         selectedScale = startScale * 1.1f;
+        ChangePage(0);
     }
 
     public void ChangePage(int id)

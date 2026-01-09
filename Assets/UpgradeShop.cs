@@ -44,6 +44,10 @@ public class UpgradeShop : MonoBehaviour
         {
             print(modelsTricot[i].unlockPrice.ToString());
             textTricotPrices[i].text = modelsTricot[i].unlockPrice.ToString();
+            if (i == 0)
+            {
+                textTricotPrices[i].transform.parent.parent.GetComponent<ArticleUpgradeUnit>().SetActive();
+            }
         }
     }
     
@@ -58,7 +62,6 @@ public class UpgradeShop : MonoBehaviour
         print("buiy tricot");
         UpdatePrice(modelsTricot[id].unlockPrice, modelsTricot[id].name, MiniGames.None, id);
     }
-
 
     void UpdatePrice(int articlePrice, string articleTitle, MiniGames game = MiniGames.None, int id = 0)
     {

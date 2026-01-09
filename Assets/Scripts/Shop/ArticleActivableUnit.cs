@@ -10,6 +10,7 @@ public class ArticleActivableUnit : ArticleUnit
     public Text textPrice;
     public Image Price;
     public Image Selected;
+    public Image Check;
     public Sprite[] spriteSelect;
 
     public void Update()
@@ -18,6 +19,7 @@ public class ArticleActivableUnit : ArticleUnit
         
         Price.gameObject.SetActive(!isBuying);
         Selected.gameObject.SetActive(isBuying);
+        Check.gameObject.SetActive(isActive);
         
         Selected.sprite = isActive ? spriteSelect[0] : spriteSelect[1];
     }

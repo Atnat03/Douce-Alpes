@@ -12,6 +12,8 @@ public class InteriorShopManager : ShopManager
     ArticleActivableUnit selectedUIArticle;
 
     public Text TextTitleSelect;
+    
+    [SerializeField] public Sprite[] spriteSelect;
 
     new void Start()
     {
@@ -24,7 +26,7 @@ public class InteriorShopManager : ShopManager
         if (selectedUIArticle == null || buttonEquip == null) 
             return;
 
-        buttonEquip.GetComponent<Image>().color = selectedUIArticle.isActive ? Color.red : Color.green;
+        buttonEquip.GetComponent<Image>().sprite = selectedUIArticle.isActive ? spriteSelect[0] : spriteSelect[1];
     }
 
     public void Activate()

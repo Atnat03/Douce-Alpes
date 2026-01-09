@@ -14,14 +14,14 @@ public class ExterieurShopManager : ShopManager
     [HideInInspector]public ArticleActivableUnit currentEquippedNiche;
     [HideInInspector]public ArticleActivableUnit currentEquippedShop;
     [HideInInspector]public ArticleActivableUnit currentEquippedTricot;
+    
+    [SerializeField] public Sprite[] spriteSelect;
 
     public NicheManager nicheManager;
     public GameObject buyDogFirstInfo;
 
     public Text TextTitleSelect;
     
-    public GaucheBoutique gaucheBoutique;
-
     new void Start()
     {
         base.Start();
@@ -34,7 +34,7 @@ public class ExterieurShopManager : ShopManager
         if (selectedUIArticle == null || buttonEquip == null) 
             return;
 
-        buttonEquip.GetComponent<Image>().color = selectedUIArticle.isActive ? Color.red : Color.green;
+        buttonEquip.GetComponent<Image>().sprite = selectedUIArticle.isActive ? spriteSelect[0] : spriteSelect[1];
     }
 
     public void Activate()
@@ -90,9 +90,6 @@ public class ExterieurShopManager : ShopManager
             SkinAgency.instance.SetSkinTricot(selectedUIArticle.id);
             currentEquippedTricot = selectedUIArticle;
         }
-        
-        gaucheBoutique.ChangeCurrentArticle(
-            currentEquippedGrange, currentEquippedBarriere,  currentEquippedNiche, currentEquippedShop, currentEquippedTricot);
 
         UpdatePrice(selectedArticle.price, selectedArticle.title);
     }
