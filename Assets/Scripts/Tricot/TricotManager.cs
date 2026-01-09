@@ -4,6 +4,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum ModelTricot
+{
+    Bonnet, Chaussettes, Echarpe, Gants, GiletManche, GiletCourt, Pull
+}
+
 public class TricotManager : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -42,6 +47,9 @@ public class TricotManager : MonoBehaviour
     [SerializeField] private GameObject pagePrefab;
     [SerializeField] private ModelListeSO models;
     [SerializeField] private GameObject NotEnougthWool;
+    [SerializeField] private GameObject DontBuyWool;
+    
+    public Dictionary<ModelTricot, bool> ModelPossede = new Dictionary<ModelTricot, bool>();
     
     private void Start()
     {
@@ -55,34 +63,52 @@ public class TricotManager : MonoBehaviour
 
     private void CreateAllCarnet()
     {
+        int i = 0;
         foreach (ModelDrawSO model in models.listeModel)
         {
-            CreatePage(model);
+            CreatePage(model, i);
+            i++;
         }
         
         carnetParent.GetComponent<CarnetTricot>().UpdateCarnet();
     }
 
-    private void CreatePage(ModelDrawSO model)
+    private void CreatePage(ModelDrawSO model, int id)
     {
         GameObject go = Instantiate(pagePrefab, carnetParent);
         go.transform.SetAsFirstSibling();
         TricotPage page = go.GetComponent<TricotPage>();
-        page.Initialize(model);
+        page.Initialize(model, this, id);
+        
+        print(id.ToString());
+        ModelPossede.Add((ModelTricot)id, id==0);
+        page.isBuy = id==0;
 
         page.buttonSelect.onClick.AddListener(() =>
         {
-            if (!PlayerMoney.instance.isEnoughtWhool(numberTotalWool(model.pattern)))
+            if(page.isBuy)
             {
-                Debug.Log("Pas assez de laine pour commencer ce modèle !");
-                Instantiate(NotEnougthWool, carnetParent);
-                return;
+                if (!PlayerMoney.instance.isEnoughtWhool(numberTotalWool(model.pattern)))
+                {
+                    Debug.Log("Pas assez de laine pour commencer ce modèle !");
+                    Instantiate(NotEnougthWool, carnetParent);
+                    return;
+                }
+
+                InitalizePattern(model);
             }
-
-            InitalizePattern(model);
+            else
+            {
+                Instantiate(DontBuyWool, carnetParent);
+            }
         });
-
+        
         carnetParent.GetComponent<CarnetTricot>().AddNewPage(page.gameObject);
+    }
+
+    public void BuyNewPage(int id)
+    {
+        ModelPossede[(ModelTricot)id] = true;
     }
 
     public int numberTotalWool(List<ModelDraw> l)

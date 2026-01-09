@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie, Abreuvoir }
+public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie, Abreuvoir, None }
 
 public class TimerManager : MonoBehaviour
 {

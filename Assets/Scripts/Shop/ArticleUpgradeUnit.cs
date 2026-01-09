@@ -13,7 +13,7 @@ public class ArticleUpgradeUnit : ArticleUnit
     public Image upgradeEndImage;
 
     public void Update()
-    {        
+    {
         logoImage.sprite = isUpgrade ?  IsUnupgradeImage : IsUpgradeImage;
         upgradeEndImage.gameObject.SetActive(isUpgrade);
         price.SetActive(!isUpgrade);
