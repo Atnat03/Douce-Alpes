@@ -544,7 +544,7 @@ public class GameManager : MonoBehaviour
         
         change.ResetPosition();
         
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         
         panneauShop.OpenUI();
         
