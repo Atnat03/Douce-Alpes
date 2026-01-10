@@ -38,7 +38,10 @@ public class InteriorSceneManager : MonoBehaviour
         if (isTutoInterior)
         {
             NextMessage(true);
-            return;
+        }
+        else
+        {
+            papy.SetActive(false);
         }
         
         alreadyBubble = false;
