@@ -18,6 +18,7 @@ public class TricotPage : MonoBehaviour
 
     public void Initialize(ModelDrawSO model, TricotManager tricotManager,int id)
     {
+        
         titreProduct.text = model.name;
         laineToDoProduct.text = numberTotalWool(model.pattern).ToString();
         logoProduct.sprite = model.image;
@@ -25,6 +26,11 @@ public class TricotPage : MonoBehaviour
         gainProduct.text = model.sellPrice.ToString();
         this.tricotManager = tricotManager;
         this.id = id;
+        
+        if (id.Equals(0))
+        {
+            logoProduct.transform.position += new Vector3(0, 40, 0);
+        }
     }
 
     public int numberTotalWool(List<ModelDraw> l)
