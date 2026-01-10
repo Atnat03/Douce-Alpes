@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-    
+using UnityEngine.UI;
+
 public class StartingTitle : MonoBehaviour
 {
     public static StartingTitle instance;
@@ -25,6 +26,12 @@ public class StartingTitle : MonoBehaviour
     public TextMeshProUGUI message;
     private int idMessage = -1;
     public GameObject nextMessage;
+
+    public Button buttonSheepCreate;
+    public RectTransform ScreenCenter;
+    public RectTransform EndPosSheepButton;
+
+    private bool isWritting = false;
     
     private void Start()
     {
@@ -74,13 +81,16 @@ public class StartingTitle : MonoBehaviour
 
     public void NextMessage(bool isFirst = false)
     {
+        if (isWritting) return;
+        
         nextMessage.SetActive(false);
         
         idMessage++;
 
         if (idMessage >= messages.Length)
         {
-            PlayGame();
+            StartCoroutine(ButtonSheepAnimation());
+            
             return;
         }
         
@@ -90,6 +100,8 @@ public class StartingTitle : MonoBehaviour
 
     IEnumerator WriteSmooth(string fullMessage, bool isFirst = false, float charDelay = 0.025f)
     {
+        isWritting = true;
+        
         if(!isFirst)
         {
             papy.GetComponent<Animator>().SetTrigger("NextMessage");
@@ -105,6 +117,49 @@ public class StartingTitle : MonoBehaviour
         }
         
         nextMessage.SetActive(true);
+        isWritting = false;
+    }
+
+    IEnumerator ButtonSheepAnimation()
+    { 
+        float t = 0f;
+        
+        papy.SetActive(false);
+        buttonSheepCreate.transform.localScale = Vector3.one * 0;
+        buttonSheepCreate.transform.position = ScreenCenter.position;
+        
+        buttonSheepCreate.transform.parent.gameObject.SetActive(true);
+        
+        while (t <= 0.3f)
+        {
+            buttonSheepCreate.transform.localScale = Vector3.Lerp(buttonSheepCreate.transform.localScale, Vector3.one*2, t);
+            
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        t = 0f;
+        
+        buttonSheepCreate.interactable = false;
+        
+        yield return new WaitForSeconds(1.5f);
+
+        while (t <= 1)
+        {
+            buttonSheepCreate.transform.localScale = Vector3.Lerp(buttonSheepCreate.transform.localScale, Vector3.one, t);
+            buttonSheepCreate.transform.position = Vector2.Lerp(ScreenCenter.position, EndPosSheepButton.position, t);
+            
+            t += Time.deltaTime;
+            yield return null;
+        }
+        
+        
+        buttonSheepCreate.transform.position = EndPosSheepButton.position;
+        buttonSheepCreate.transform.localScale = Vector3.one;
+        
+        buttonSheepCreate.interactable = true;
+        
+        PlayGame();
     }
 
     void PlayGame()
