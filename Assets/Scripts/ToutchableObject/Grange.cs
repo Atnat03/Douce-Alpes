@@ -151,6 +151,11 @@ public class Grange : Build
             interiorImageButton.SetActive(false);
             interiorButton.SetActive(false);
         }
+        else
+        {
+            interiorImageButton.SetActive(false);
+            interiorButton.SetActive(false);
+        }
         
         sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
         boxCollider.enabled = GameManager.instance.currentCameraState == CamState.Default;

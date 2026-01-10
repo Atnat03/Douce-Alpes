@@ -20,7 +20,7 @@ public class ExterieurShopManager : ShopManager
     public NicheManager nicheManager;
     public GameObject buyDogFirstInfo;
 
-    public Text TextTitleSelect;
+    public TextMeshProUGUI TextTitleSelect;
     
     new void Start()
     {

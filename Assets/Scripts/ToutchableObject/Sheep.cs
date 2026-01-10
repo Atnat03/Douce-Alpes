@@ -412,6 +412,8 @@ public class Sheep : TouchableObject
 
         Camera.main.GetComponent<CameraControl>().ResetFOV();
         
+        animator.SetBool("Walk", false);
+        
         GameManager.instance.GetSheepWindow().SetActive(true);
         SheepWindow.instance.Initialize(sheepName, currentSkinHat, currentSkinClothe, sheepId, birthDate);
     }

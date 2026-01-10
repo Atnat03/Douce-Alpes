@@ -29,7 +29,7 @@ public class TricotPage : MonoBehaviour
         
         if (id.Equals(0))
         {
-            logoProduct.transform.position += new Vector3(0, 40, 0);
+            logoProduct.transform.position += new Vector3(0, 30, 0);
         }
     }
 
