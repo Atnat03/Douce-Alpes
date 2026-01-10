@@ -124,6 +124,8 @@ public class StartingTitle : MonoBehaviour
     { 
         float t = 0f;
         
+        buttonSheepCreate.interactable = false;
+        
         papy.SetActive(false);
         buttonSheepCreate.transform.localScale = Vector3.one * 0;
         buttonSheepCreate.transform.position = ScreenCenter.position;
@@ -139,8 +141,6 @@ public class StartingTitle : MonoBehaviour
         }
 
         t = 0f;
-        
-        buttonSheepCreate.interactable = false;
         
         yield return new WaitForSeconds(1.5f);
 
