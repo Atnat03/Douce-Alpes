@@ -21,7 +21,6 @@ public class StartingTitle : MonoBehaviour
     bool isAnimating = false;
 
     public string[] messages;
-    public int currentMessage;
     public GameObject papy;
     public TextMeshProUGUI message;
     private int idMessage = -1;

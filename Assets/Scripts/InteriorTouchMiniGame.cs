@@ -11,11 +11,20 @@ public class InteriorTouchMiniGame : TouchableObject
 
     private void Update()
     {
+        if (sceneManager.isTutoInterior)
+        {
+            exclamation.SetActive(false);
+            return;
+        }
+        
         exclamation.SetActive(GameData.instance.timer.currentMiniJeuToDo == minijeu);
     }
 
     public override void TouchEvent()
     {
+        if(sceneManager.isTutoInterior)
+            return;
+        
         if(GameData.instance.timer.currentMiniJeuToDo == minijeu)
         {
             if(isTonte)
