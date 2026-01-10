@@ -5,7 +5,6 @@ public class LeftPosState : ICleaningState
 {
     private StateMachineClean manager;
 
-    // Position caméra côté gauche
     private Vector3 camPos = new Vector3(0.2f, 0.75f, 3f);
 
     private const int cleanValueToChange = 40;

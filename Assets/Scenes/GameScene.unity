@@ -376,6 +376,11 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 5512680687374860737, guid: 95df8ec482622614492b2caf71a4f60f, type: 3}
   m_PrefabInstance: {fileID: 8163615}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &10021200 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 9190668559592246956, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &13532002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12165,6 +12170,11 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 626141998527015951, guid: 9abfa7906d32a9d4aa33404936f9a0a5, type: 3}
   m_PrefabInstance: {fileID: 284477387}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &285326419 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 1087579447721890383, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &288115814 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8079560471343259234, guid: 6f59392bd9b315a4faa8d602c54e5f9b, type: 3}
@@ -18002,6 +18012,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437534142}
   m_CullTransparentMesh: 1
+--- !u!65 &437771015 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 1309246330059723087, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &441266926
 GameObject:
   m_ObjectHideFlags: 0
@@ -19048,14 +19063,15 @@ MonoBehaviour:
   - {fileID: 2049900977}
   - {fileID: 175826658}
   - {fileID: 1591031777}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 437771015}
+  - {fileID: 719922414}
+  - {fileID: 285326419}
+  - {fileID: 1106605161}
+  - {fileID: 10021200}
+  - {fileID: 962295590}
+  - {fileID: 1058666062}
+  - {fileID: 495570973}
+  - {fileID: 495570973}
 --- !u!1001 &481151761
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19820,6 +19836,32 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4947939810852051946, guid: 26fbb0b9649b2434999ce2e9e510585d, type: 3}
   m_PrefabInstance: {fileID: 489939577}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &495570969 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5953124100373717270, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &495570973
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495570969}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4300065, y: 0.76816404, z: 1.7281148}
+  m_Center: {x: -0.00000046938658, y: 0.38949972, z: 0.00023207068}
 --- !u!1001 &500133291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23586,7 +23628,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &586839804
 Transform:
   m_ObjectHideFlags: 0
@@ -28352,6 +28394,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 718833757}
   m_CullTransparentMesh: 1
+--- !u!65 &719922414 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 5662498093937168938, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &721682389
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29057,7 +29104,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &744223141
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37039,6 +37086,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1592113733390082232, guid: ac22212ad55374b419d119045f03f93b, type: 3}
   m_PrefabInstance: {fileID: 960742208}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &962295590 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 7177611700535779096, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &963201488
 GameObject:
   m_ObjectHideFlags: 0
@@ -42866,6 +42918,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d99fe1d63e3ccbc43a84c81cc222f0f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &1058666062 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 8308677803167500578, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1058672696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43091,7 +43148,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 476389304317413655, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
       insertIndex: 0
       addedObject: {fileID: 1179575077}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5953124100373717270, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 495570973}
   m_SourcePrefab: {fileID: 100100000, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
 --- !u!4 &1063991364 stripped
 Transform:
@@ -45009,6 +45069,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1105568307}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &1106605161 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 5750044557450611031, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1109515364
 GameObject:
   m_ObjectHideFlags: 0
@@ -76842,7 +76907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1820062541
 RectTransform:
   m_ObjectHideFlags: 0
