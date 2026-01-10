@@ -5,7 +5,7 @@ public class ActivateStartUI : MonoBehaviour
 {
     [SerializeField] private GameObject[] uis;
 
-    private void Start()
+    private void Awake()
     {
         foreach (GameObject g in uis)
         {

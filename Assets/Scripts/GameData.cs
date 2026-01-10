@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
+using UnityEngine.Serialization;
 
 public enum TypeAmelioration
 {
@@ -51,7 +52,7 @@ public class GameData : MonoBehaviour
     
     public TricotManager tricotManager;
 
-    public bool isTesting = true;
+    public bool isTuto = true;
 
     public WeatherManager dayMoment;
     public DayRecapManager dayRecap;
@@ -87,7 +88,7 @@ public class GameData : MonoBehaviour
 
         timer = GetComponent<TimerManager>();
 
-        if (!isTesting)
+        if (!isTuto)
             return;
         
         SheepData s1 = new SheepData(
@@ -164,6 +165,8 @@ public class GameData : MonoBehaviour
         LoadUpgrades(data.upgrades);
         
         tricotManager.LoadTricotState(data.tricotData);
+        
+        isTuto = data.isTuto;
         
         Array.Fill(coolDownTimers, 0);
     }
@@ -365,6 +368,7 @@ public class GameData : MonoBehaviour
     {
         IsStatGame = true;
         GetComponent<ActivateStartUI>().ActivateUI();
+        isTuto = false;
     }
 }
 

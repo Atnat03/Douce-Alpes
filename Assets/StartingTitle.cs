@@ -24,12 +24,14 @@ public class StartingTitle : MonoBehaviour
     public GameObject papy;
     public TextMeshProUGUI message;
     private int idMessage = -1;
+    public GameObject nextMessage;
     
     private void Start()
     {
         papy.SetActive(false);
+        
 
-        if (!isTesting)
+        if (isTesting)
         {
             titleCamera.gameObject.SetActive(true);
             titleUI.SetActive(true);
@@ -38,10 +40,8 @@ public class StartingTitle : MonoBehaviour
         }
         else
         {
-            titleCamera.gameObject.SetActive(false);
-            titleUI.SetActive(false);
-            mainCamera.gameObject.SetActive(true);
-            GameData.instance.StartGame();
+
+            PlayGame();
         }
     }
 
@@ -70,18 +70,43 @@ public class StartingTitle : MonoBehaviour
         titleCamera.transform.position = to;
         
         papy.SetActive(true);
+
+        NextMessage(true);
     }
 
-    public void NextMessage()
+    public void NextMessage(bool isFirst = false)
     {
+        nextMessage.SetActive(false);
+        
         idMessage++;
 
         if (idMessage >= messages.Length)
         {
             PlayGame();
+            return;
         }
         
-        message.text = messages[idMessage];
+        StopAllCoroutines();
+        StartCoroutine(WriteSmooth(messages[idMessage], isFirst));
+    }
+
+    IEnumerator WriteSmooth(string fullMessage, bool isFirst = false, float charDelay = 0.025f)
+    {
+        if(!isFirst)
+        {
+            papy.GetComponent<Animator>().SetTrigger("NextMessage");
+
+            yield return new WaitForSeconds(0.3f);
+        }
+        
+        message.text = "";
+        foreach (char c in fullMessage)
+        {
+            message.text += c;
+            yield return new WaitForSeconds(charDelay);
+        }
+        
+        nextMessage.SetActive(true);
     }
 
     void PlayGame()
