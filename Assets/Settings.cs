@@ -40,55 +40,24 @@ public class Settings : MonoBehaviour
     [SerializeField] private Toggle vibrationsToggle;
     [SerializeField] private Toggle specialToggle;
     [SerializeField] private Toggle musicPlayaToggle;
-
-    public Animator animatorPlage;
-    public Animator animatorMontagne;
     
     public GameManager gameManager;
     
     private void Start()
     {
         globalVolumeSlider.value = globalVolume;
+        AudioListener.volume = globalVolume;
 
         musicToggle.isOn = MusicActivated;
         musicPlayaToggle.isOn = isPlayaSound;
-        
-        musicPlayaToggle.gameObject.SetActive(false);
-        
-        SetPlayaSound(false);
-        
-        if (MusicActivated)
-            DLC.ChangeSelect?.Invoke();
 
-        UpdateMusicVisuals();
+        musicPlayaToggle.gameObject.SetActive(false);
     }
+
 
     public void SetMusicVolume()
     {
         MusicActivated = musicToggle.isOn;
-
-        if (MusicActivated)
-        {
-            isPlayaSound = false;
-            musicPlayaToggle.isOn = false;
-
-            DLC.ChangeSelect?.Invoke();
-        }
-
-        UpdateMusicVisuals();
-    }
-
-    private void UpdateMusicVisuals()
-    {
-        if (!MusicActivated)
-        {
-            animatorPlage.SetBool("Sortis", false);
-            animatorMontagne.SetBool("Sortis", false);
-            return;
-        }
-
-        animatorPlage.SetBool("Sortis", isPlayaSound);
-        animatorMontagne.SetBool("Sortis", !isPlayaSound);
     }
 
     public void SetSFXVolume()
@@ -111,31 +80,13 @@ public class Settings : MonoBehaviour
     public void SetPlayaSound()
     {
         isPlayaSound = musicPlayaToggle.isOn;
-
-        if (isPlayaSound)
-        {
-            MusicActivated = true;
-            musicToggle.isOn = true;
-
-            DLC.ChangeSelect?.Invoke();
-        }
-        else
-        {
-            // On revient à montagne si musique activée
-            if (MusicActivated)
-                DLC.ChangeSelect?.Invoke();
-        }
-
-        UpdateMusicVisuals();
+        DLC.ChangeSelect?.Invoke();
     }
-
-
 
     public void SetPlayaSound(bool state)
     {
         isPlayaSound = state;
         musicPlayaToggle.isOn = state;
-        UpdateMusicVisuals();
     }
 
     public void OnValueChanged()

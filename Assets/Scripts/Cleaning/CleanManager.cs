@@ -166,6 +166,8 @@ public class CleanManager : MiniGameParent
 
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)
         {
+            StartCoroutine(WaitBeforeChange());
+            
             ResetCleanSystem();
             
             nameText.text = "Tous les moutons sont finis !";
@@ -203,6 +205,11 @@ public class CleanManager : MiniGameParent
         currentSheep.GetComponent<SheepSkinManager>().animator.SetBool("Walk", true);
 
         StartCoroutine(InitializeSheep(currentSheep.transform));
+    }
+
+    IEnumerator WaitBeforeChange()
+    {
+        yield return new WaitForSeconds(1f);
     }
 
     private IEnumerator InitializeSheep(Transform sheep)
@@ -392,7 +399,7 @@ public class CleanManager : MiniGameParent
 
         yield return new WaitForSeconds(0.3f);
         TriggerShake();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         yield return StartCoroutine(SendToDestroy(currentSheep));
     }
