@@ -20,7 +20,8 @@ public class Chien : MonoBehaviour
     
     [SerializeField] Material marronMaterial;
     [SerializeField] Material whiteMaterial;
-    [SerializeField] MeshRenderer mesh;
+    [SerializeField] SkinnedMeshRenderer mesh;
+    [SerializeField] Animator animator;
 
     private void Start()
     {
@@ -30,6 +31,8 @@ public class Chien : MonoBehaviour
 
     private void Update()
     {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+        
         if (!isMiniGameActive) return;
 
         PerformSheepManagement();
@@ -82,6 +85,7 @@ public class Chien : MonoBehaviour
 
         if (!barkEffect.isPlaying)
         {
+            animator.SetTrigger("Bark");
             barkEffect.Play();
             AudioManager.instance.PlaySound(10);
         }
@@ -129,7 +133,21 @@ public class Chien : MonoBehaviour
         }
     }
 
-    public void SetMarronColor()=> mesh.material = marronMaterial;
-    public void SetWhiteColor()=> mesh.material = whiteMaterial;
+    public void SetMarronColor()
+    {
+        Material[] mats = mesh.materials; 
+        mats[0] = marronMaterial;
+        mats[3] = marronMaterial;
+        mesh.materials = mats;
+    }
+
+    public void SetWhiteColor()
+    {
+        Material[] mats = mesh.materials;
+        mats[0] = whiteMaterial;
+        mats[3] = whiteMaterial;
+        mesh.materials = mats;
+    }
+
 
 }
