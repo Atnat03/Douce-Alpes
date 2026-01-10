@@ -6,7 +6,7 @@ using UnityEngine.Rendering.UI;
 
 public enum TypeAmelioration
 {
-    Tonte, Sortie, Rentree, Nettoyage, Abreuvoir, Overflow
+    Rentree, Tonte, Nettoyage, Sortie, Abreuvoir, Overflow
 }
 
 [Serializable]
@@ -48,6 +48,8 @@ public class GameData : MonoBehaviour
     public Dictionary<TypeAmelioration, (AmeliorationValueSO, int)> dicoAmélioration = new();
     
     [HideInInspector] public TimerManager timer;
+    
+    public TricotManager tricotManager;
 
     public bool isTesting = true;
 
@@ -159,10 +161,39 @@ public class GameData : MonoBehaviour
 
         numberDay = data.nbDay;
         
+        LoadUpgrades(data.upgrades);
+        
+        tricotManager.LoadTricotState(data.tricotData);
+        
         Array.Fill(coolDownTimers, 0);
     }
 
+    public UpgradesSaveData GetSaveData()
+    {
+        var save = new UpgradesSaveData();
     
+        foreach (var kvp in dicoAmélioration)
+        {
+            save.niveaux[kvp.Key] = kvp.Value.Item2;
+        }
+    
+        return save;
+    }
+
+    public void LoadUpgrades(UpgradesSaveData saveData)
+    {
+        if (saveData == null || saveData.niveaux == null)
+            return;
+
+        foreach (var kvp in saveData.niveaux)
+        {
+            if (dicoAmélioration.ContainsKey(kvp.Key))
+            {
+                var tuple = dicoAmélioration[kvp.Key];
+                dicoAmélioration[kvp.Key] = (tuple.Item1, kvp.Value);
+            }
+        }
+    }
     
     #region SKIN
 
@@ -223,6 +254,18 @@ public class GameData : MonoBehaviour
     {
         return dicoAmélioration[type];
     }
+    
+    public bool HasUpgrade(TypeAmelioration type)
+    {
+        return dicoAmélioration[type].Item2 > 0;
+    }
+
+    public bool IsUpgradeMax(TypeAmelioration type)
+    {
+        (AmeliorationValueSO so, int level) = dicoAmélioration[type];
+        return level >= 2;
+    }
+
 
     public int GetCurrentTimer(TypeAmelioration type)
     {
@@ -323,4 +366,9 @@ public class GameData : MonoBehaviour
         IsStatGame = true;
         GetComponent<ActivateStartUI>().ActivateUI();
     }
+}
+
+public class UpgradesSaveData
+{
+    public Dictionary<TypeAmelioration, int> niveaux =  new Dictionary<TypeAmelioration, int>();
 }

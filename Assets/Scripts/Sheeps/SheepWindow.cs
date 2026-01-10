@@ -96,7 +96,11 @@ public class SheepWindow : MonoBehaviour
             clotheSkinSelector.UpdateStackDisplays();
         }
     }
-
+    
+    public void CloseSheepAndOpenShop()
+    {
+        GameManager.instance.CloseWindowShopAndGoToShop();
+    }
 
     public void ResetValue()
     {

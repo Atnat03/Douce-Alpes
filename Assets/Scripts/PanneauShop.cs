@@ -52,7 +52,7 @@ public class PanneauShop : TouchableObject
         }
     }
 
-    void OpenUI()
+    public void OpenUI()
     {
         shopUI.SetActive(true);
         buttonQuit.SetActive(true);

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class VisualTricot : MonoBehaviour
 {
-    [SerializeField] private bool gradient_Droite = false;
-    [SerializeField] private float value_Vertical = 0;
-    [SerializeField] private float value_Horizontal = 0;
-    [SerializeField] private float maxNumberHorizontal = 5;
-    private float maxNumberVertical;
+    [SerializeField] public bool gradient_Droite = false;
+    [SerializeField] public float value_Vertical = 0;
+    [SerializeField] public float value_Horizontal = 0;
+    [SerializeField] public float maxNumberHorizontal = 5;
+    public float maxNumberVertical;
     [SerializeField] private Renderer obejctVisual;
     private Material shader = null;
     [SerializeField] float duree = 2f;

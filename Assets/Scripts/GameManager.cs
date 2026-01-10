@@ -117,6 +117,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public GameObject poufParticle;
     [SerializeField] public Transform particleSpawn;
     [SerializeField] public GameObject sheepCreatorButton;
+    [SerializeField] public PanneauShop panneauShop;
     
     private void Awake()
     {
@@ -531,4 +532,21 @@ public class GameManager : MonoBehaviour
     public void DisableGrangeBubble() => currentSheepAbreuvoir.DisableBubble();
 
     #endregion
+
+    public void CloseWindowShopAndGoToShop()
+    {
+        StartCoroutine(GoToShop());
+    }
+
+    IEnumerator GoToShop()
+    {
+        ChangingCamera change = cameraFollow.GetComponent<ChangingCamera>();
+        
+        change.ResetPosition();
+        
+        yield return new WaitForSeconds(1.5f);
+        
+        panneauShop.OpenUI();
+        
+    }
 }

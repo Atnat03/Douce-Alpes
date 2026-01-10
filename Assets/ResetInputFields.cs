@@ -13,7 +13,6 @@ public class ResetInputFields : MonoBehaviour
 
     public void OnSelect(BaseEventData eventData)
     {
-        input.Select();
         input.ActivateInputField();
         input.selectionAnchorPosition = 0;
         input.selectionFocusPosition = input.text.Length;
