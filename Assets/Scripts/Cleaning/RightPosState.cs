@@ -40,23 +40,19 @@ public class RightPosState : ICleaningState
 
         if (IsEnought())
         {
+            manager.SetState(manager.leftPosState);
             if (manager.cleanManager.currentTool == CleaningTool.Shampoo)
             {
                 manager.cleanManager.ResetValueClean();
                 manager.cleanManager.SetShower();
-                manager.SetState(manager.leftPosState);
             }
             else if (manager.cleanManager.currentTool == CleaningTool.Shower)
             {
                 if (manager.cleanManager.shampooList.Count == 0 && !manager.cleanManager.allCleaned)
                 {
-                    manager.SetState(manager.leftPosState);
+                    
                     manager.cleanManager.allCleaned = true;
                     manager.cleanManager.OnAllCleaned();
-                }
-                else if (manager.cleanManager.shampooList.Count > 0)
-                {
-                    manager.SetState(manager.leftPosState);
                 }
             }
         }

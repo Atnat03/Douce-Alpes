@@ -9,6 +9,9 @@ public class CreateSheepButton : MonoBehaviour
 
     public void Update()
     {
+        if(!GameData.instance.IsStatGame)
+            return;
+        
         GetComponent<Button>().interactable =
             PlayerMoney.instance.isEnoughtMoney(PlayerMoney.instance.GetCurrentSheepPrice());
         

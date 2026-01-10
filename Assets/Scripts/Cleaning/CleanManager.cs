@@ -166,20 +166,7 @@ public class CleanManager : MiniGameParent
 
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)
         {
-            ResetCleanSystem();
-            
-            nameText.text = "Tous les moutons sont finis !";
-            nbToCleanText.text = "";
-            backButton.gameObject.SetActive(true);
-            EndMiniGame(TypeAmelioration.Nettoyage);
-            
-            AudioManager.instance.PlaySound(11);
-
-            GameData.instance.timer.canButtonC = false;
-            GameData.instance.timer.canButtonG = true;
-            
-            GameData.instance.timer.UpdateAllButton();
-            SwapSceneManager.instance.SwapScene(1);
+            StartCoroutine(WaitBeforeChange());
             return;
         }
 
@@ -203,6 +190,26 @@ public class CleanManager : MiniGameParent
         currentSheep.GetComponent<SheepSkinManager>().animator.SetBool("Walk", true);
 
         StartCoroutine(InitializeSheep(currentSheep.transform));
+    }
+
+    IEnumerator WaitBeforeChange()
+    {
+        yield return new WaitForSeconds(1f);
+        
+        ResetCleanSystem();
+            
+        nameText.text = "Tous les moutons sont finis !";
+        nbToCleanText.text = "";
+        backButton.gameObject.SetActive(true);
+        EndMiniGame(TypeAmelioration.Nettoyage);
+            
+        AudioManager.instance.PlaySound(11);
+
+        GameData.instance.timer.canButtonC = false;
+        GameData.instance.timer.canButtonG = true;
+            
+        GameData.instance.timer.UpdateAllButton();
+        SwapSceneManager.instance.SwapScene(1);
     }
 
     private IEnumerator InitializeSheep(Transform sheep)
@@ -392,7 +399,7 @@ public class CleanManager : MiniGameParent
 
         yield return new WaitForSeconds(0.3f);
         TriggerShake();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         yield return StartCoroutine(SendToDestroy(currentSheep));
     }

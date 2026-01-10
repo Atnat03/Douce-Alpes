@@ -90,33 +90,6 @@ public class GameData : MonoBehaviour
         Array.Fill(coolDownTimers, 0);
 
         timer = GetComponent<TimerManager>();
-
-        if (!isTuto)
-            return;
-        
-        SheepData s1 = new SheepData(
-            0,
-            "Antoine",
-            13,
-            10,
-            false,
-            NatureType.Standard,
-            0,
-            DateTime.Now.ToString("dd/MM/yyyy")
-        );
-        SheepData s2 = new SheepData(
-            1,
-            "Antoine",
-            13,
-            10,
-            false,
-            NatureType.Standard,
-            0,
-            DateTime.Now.ToString("dd/MM/yyyy")
-        );
-        
-        sheepDestroyData.Add(s1);
-        sheepDestroyData.Add(s2);
     }
 
     private void SaveMyData()
