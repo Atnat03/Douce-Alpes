@@ -30,19 +30,10 @@ public class StartingTitle : MonoBehaviour
     {
         papy.SetActive(false);
         
-
-        if (isTesting)
-        {
-            titleCamera.gameObject.SetActive(true);
-            titleUI.SetActive(true);
-            mainCamera.gameObject.SetActive(false);
-            GameData.instance.IsStatGame = false;
-        }
-        else
-        {
-
-            PlayGame();
-        }
+        titleCamera.gameObject.SetActive(true);
+        titleUI.SetActive(true);
+        mainCamera.gameObject.SetActive(false);
+        GameData.instance.IsStatGame = false;
     }
 
     public void StartAnimation()
@@ -69,9 +60,16 @@ public class StartingTitle : MonoBehaviour
 
         titleCamera.transform.position = to;
         
-        papy.SetActive(true);
+        if(GameData.instance.isTuto)
+        {
+            papy.SetActive(true);
 
-        NextMessage(true);
+            NextMessage(true);
+        }
+        else
+        {
+            PlayGame();
+        }
     }
 
     public void NextMessage(bool isFirst = false)
