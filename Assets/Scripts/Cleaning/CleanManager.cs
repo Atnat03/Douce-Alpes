@@ -167,21 +167,6 @@ public class CleanManager : MiniGameParent
         if (sheepIndex >= GameData.instance.sheepDestroyData.Count)
         {
             StartCoroutine(WaitBeforeChange());
-            
-            ResetCleanSystem();
-            
-            nameText.text = "Tous les moutons sont finis !";
-            nbToCleanText.text = "";
-            backButton.gameObject.SetActive(true);
-            EndMiniGame(TypeAmelioration.Nettoyage);
-            
-            AudioManager.instance.PlaySound(11);
-
-            GameData.instance.timer.canButtonC = false;
-            GameData.instance.timer.canButtonG = true;
-            
-            GameData.instance.timer.UpdateAllButton();
-            SwapSceneManager.instance.SwapScene(1);
             return;
         }
 
@@ -210,6 +195,21 @@ public class CleanManager : MiniGameParent
     IEnumerator WaitBeforeChange()
     {
         yield return new WaitForSeconds(1f);
+        
+        ResetCleanSystem();
+            
+        nameText.text = "Tous les moutons sont finis !";
+        nbToCleanText.text = "";
+        backButton.gameObject.SetActive(true);
+        EndMiniGame(TypeAmelioration.Nettoyage);
+            
+        AudioManager.instance.PlaySound(11);
+
+        GameData.instance.timer.canButtonC = false;
+        GameData.instance.timer.canButtonG = true;
+            
+        GameData.instance.timer.UpdateAllButton();
+        SwapSceneManager.instance.SwapScene(1);
     }
 
     private IEnumerator InitializeSheep(Transform sheep)
