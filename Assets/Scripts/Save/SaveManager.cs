@@ -76,6 +76,8 @@ public class PlayerData
     public UpgradesSaveData upgrades;
     
     public int timeBetweenSave;
+
+    public bool isTuto;
     
     public PlayerData(Saving manager)
     {
@@ -108,6 +110,8 @@ public class PlayerData
             canButtonT = timer.canButtonT;
             canButtonC = timer.canButtonC;
         }
+        
+        isTuto = GameData.instance.isTuto;
     }
 
     private List<SheepData> BuildSheepDataList()
