@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.Serialization;
@@ -64,6 +65,16 @@ public class GameData : MonoBehaviour
 
     public PanneauShop PanneauShop;
     public Build bergerie;
+    public InteriorSceneManager interiorSceneManager;
+
+    [Header("2e Tuto")] 
+    public bool is2eTuto = false;
+    public string[] messages;
+    public GameObject papy;
+    public TextMeshProUGUI message;
+    private int idMessage = -1;
+    public GameObject nextMessage;
+    private bool isWritting = false;
     
     private void Awake()
     {
@@ -78,6 +89,8 @@ public class GameData : MonoBehaviour
 
     private void Start()
     {
+        papy.SetActive(false);
+        
         dicoAmélioration = new() {
             { TypeAmelioration.Tonte, (soUpgradeList[0], 0)},
             { TypeAmelioration.Sortie, (soUpgradeList[1], 0)},
@@ -143,6 +156,7 @@ public class GameData : MonoBehaviour
         tricotManager.LoadTricotState(data.tricotData);
         
         isTuto = data.isTuto;
+        interiorSceneManager.isTutoInterior = data.isTutoInterior;
         
         Array.Fill(coolDownTimers, 0);
     }
@@ -344,6 +358,13 @@ public class GameData : MonoBehaviour
         
         currentMoneyDay = 0;
         currentWoolDay = 0;
+
+        if (is2eTuto)
+        {
+            IsStatGame = true;
+            papy.SetActive(true);
+            NextMessage(true);
+        }
     }
 
     public void StartGame()
@@ -352,6 +373,59 @@ public class GameData : MonoBehaviour
         GetComponent<ActivateStartUI>().ActivateUI();
         isTuto = false;
     }
+    
+    #region 2eTuto
+    
+    private void StopTuto()
+    {
+        IsStatGame = false;
+        is2eTuto = false;
+        papy.SetActive(false);
+    }
+    
+    public void NextMessage(bool isFirst = false)
+    {
+        if (isWritting) return;
+        
+        nextMessage.SetActive(false);
+        
+        idMessage++;
+        
+        if (idMessage >= messages.Length)
+        {
+            StopTuto();
+            
+            return;
+        }
+        
+        StopAllCoroutines();
+        StartCoroutine(WriteSmooth(messages[idMessage], isFirst));
+    }
+
+
+    IEnumerator WriteSmooth(string fullMessage, bool isFirst = false, float charDelay = 0.025f)
+    {
+        isWritting = true;
+        
+        if(!isFirst)
+        {
+            papy.GetComponent<Animator>().SetTrigger("NextMessage");
+
+            yield return new WaitForSeconds(0.3f);
+        }
+        
+        message.text = "";
+        foreach (char c in fullMessage)
+        {
+            message.text += c;
+            yield return new WaitForSeconds(charDelay);
+        }
+        
+        nextMessage.SetActive(true);
+        isWritting = false;
+    }
+    
+    #endregion
 }
 
 public class UpgradesSaveData

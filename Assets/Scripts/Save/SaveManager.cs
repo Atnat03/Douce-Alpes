@@ -78,6 +78,7 @@ public class PlayerData
     public int timeBetweenSave;
 
     public bool isTuto;
+    public bool isTutoInterior;
     
     public PlayerData(Saving manager)
     {
@@ -112,6 +113,7 @@ public class PlayerData
         }
         
         isTuto = GameData.instance.isTuto;
+        isTutoInterior = GameData.instance.interiorSceneManager.isTutoInterior;
     }
 
     private List<SheepData> BuildSheepDataList()

@@ -9,7 +9,7 @@ public class ChangeCameraRotation : MonoBehaviour
 
     [Header("Bounce")]
     [SerializeField] private float bounceStrength = 8f;     
-    [SerializeField] private float bounceReturnSpeed = 6f; 
+    [SerializeField] private float bounceReturnSpeed = 6f;
 
     private float currentY;
 
@@ -36,7 +36,7 @@ public class ChangeCameraRotation : MonoBehaviour
         if (currentY > maxY)
             currentY = Mathf.Lerp(currentY, maxY, Time.deltaTime * bounceReturnSpeed);
 
-        transform.rotation = Quaternion.Euler(15f, currentY, 0f);
+        transform.rotation = Quaternion.Euler(17f, currentY, 0f);
     }
 
     private void OnDragCamera(List<Vector2> points)
