@@ -13,8 +13,17 @@ public class Settings : MonoBehaviour
 
     public void OpenSettings()
     {
+        if(gameManager != null)
+            gameManager.ChangeCameraState(CamState.UI);
+        
         if(SpecialSoundActivated)
             AudioManager.instance.PlaySound(31, 1, 0.25f);
+    }
+
+    public void ExitSettings()
+    {
+        if(gameManager != null)
+            gameManager.ChangeCameraState(CamState.Default);
     }
     
     public float globalVolume = 1f;
@@ -34,6 +43,8 @@ public class Settings : MonoBehaviour
 
     public Animator animatorPlage;
     public Animator animatorMontagne;
+    
+    public GameManager gameManager;
     
     private void Start()
     {

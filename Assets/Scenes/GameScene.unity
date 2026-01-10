@@ -13281,6 +13281,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6036316225081538113, guid: 83b07461995a96842a6ddcb5e5159fdf, type: 3}
   m_PrefabInstance: {fileID: 308502858}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &310537616 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8626556171524285589, guid: 1784eb4ab24447a43bfe6cd4662424c7, type: 3}
+  m_PrefabInstance: {fileID: 1257763080}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &314246977
 GameObject:
   m_ObjectHideFlags: 0
@@ -29095,6 +29100,7 @@ MonoBehaviour:
   musicPlayaToggle: {fileID: 1167462618}
   animatorPlage: {fileID: 1167462619}
   animatorMontagne: {fileID: 1768091865}
+  gameManager: {fileID: 0}
 --- !u!4 &750002780
 Transform:
   m_ObjectHideFlags: 0
@@ -31751,7 +31757,8 @@ MonoBehaviour:
   barkEffect: {fileID: 1595408706}
   marronMaterial: {fileID: -4834660577332483713, guid: 1784eb4ab24447a43bfe6cd4662424c7, type: 3}
   whiteMaterial: {fileID: 1508649840708412723, guid: a66ee9be475a43c40bd63b3a5cc00c01, type: 3}
-  mesh: {fileID: 0}
+  mesh: {fileID: 310537616}
+  animator: {fileID: 1257763083}
 --- !u!65 &836971617
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -54521,6 +54528,7 @@ MonoBehaviour:
   marronMaterial: {fileID: 0}
   whiteMaterial: {fileID: 0}
   mesh: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!65 &1372313342
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -66706,6 +66714,7 @@ MonoBehaviour:
   marronMaterial: {fileID: 0}
   whiteMaterial: {fileID: 0}
   mesh: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!65 &1556147561
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -73748,7 +73757,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1af535ee01d695e4da1a54eaa12bf88d, type: 2}
   timer: {fileID: 1724283571}
   tricotManager: {fileID: 0}
-  isTuto: 1
+  isTuto: 0
   dayMoment: {fileID: 841336426}
   dayRecap: {fileID: 650816178}
   currentMoneyDay: 0
@@ -92243,6 +92252,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: CameraControl, Assembly-CSharp
         m_MethodName: set_enabled
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 750002779}
+        m_TargetAssemblyTypeName: Settings, Assembly-CSharp
+        m_MethodName: ExitSettings
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
