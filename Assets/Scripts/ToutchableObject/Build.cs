@@ -12,6 +12,11 @@ public class Build : TouchableObject
         UI.SetActive(false);
         exclamation.SetActive(true);
     }
+
+    public void ActivateExclamation()
+    {
+        exclamation.SetActive(true);
+    }
     
     public override void TouchEvent()
     {

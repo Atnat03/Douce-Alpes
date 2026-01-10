@@ -52,6 +52,11 @@ public class PanneauShop : TouchableObject
         }
     }
 
+    public void ActivateExclamation()
+    {
+        IconInfo.SetActive(true);
+    }
+    
     public void OpenUI()
     {
         shopUI.SetActive(true);

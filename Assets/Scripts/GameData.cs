@@ -61,6 +61,9 @@ public class GameData : MonoBehaviour
     public int currentWoolDay = 0;
 
     public SheepBoidManager BoidManager;
+
+    public PanneauShop PanneauShop;
+    public Build bergerie;
     
     private void Awake()
     {
@@ -360,6 +363,12 @@ public class GameData : MonoBehaviour
     
     public void ResetDayStats()
     {
+        if(numberDay == 1)
+        {        
+            PanneauShop.ActivateExclamation();
+            bergerie.ActivateExclamation();
+        }
+        
         currentMoneyDay = 0;
         currentWoolDay = 0;
     }

@@ -6978,7 +6978,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &175826653
 Transform:
   m_ObjectHideFlags: 0
@@ -70513,6 +70513,17 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1659920599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8900835279605254865, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f09571c3117fda74f8877a15d83d5c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1661310324
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73763,6 +73774,8 @@ MonoBehaviour:
   currentMoneyDay: 0
   currentWoolDay: 0
   BoidManager: {fileID: 473546752}
+  PanneauShop: {fileID: 6413355688208725464}
+  bergerie: {fileID: 1659920599}
 --- !u!4 &1724283567
 Transform:
   m_ObjectHideFlags: 0
