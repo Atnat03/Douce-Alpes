@@ -34,7 +34,7 @@ public class SkinShopManager : ShopManager
         GameObject instance = Instantiate(articlePrefab, listArticleParent);
         articlesList.Add(instance);
 
-        ArticleUnit uiArticle = instance.GetComponent<ArticleUnit>();
+        ArticleSkinUnit uiArticle = instance.GetComponent<ArticleSkinUnit>();
         
         uiArticle.id = article.id;
         uiArticle.logoImage.sprite = article.logo;
@@ -44,8 +44,9 @@ public class SkinShopManager : ShopManager
         uiArticle.buyBtn.onClick.AddListener(() =>
         {
             selectedArticle = article;
-            selectedArticleUI = (ArticleSkinUnit)uiArticle;
+            selectedArticleUI = uiArticle;
         });        
         uiArticle.articleType = article.type;
+        uiArticle.price.text = article.price.ToString();
     }
 }

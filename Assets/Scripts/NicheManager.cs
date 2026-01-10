@@ -15,6 +15,7 @@ public class NicheManager : TouchableObject
     [SerializeField] private GameObject createSheepUI;
     [SerializeField] private GameObject colorChange;
     [SerializeField] private Collider boxColldier;
+    [SerializeField] private GameObject exclamation;
     
     [Header("État du chien")]
     [SerializeField] private bool isInNiche = false;
@@ -45,6 +46,8 @@ public class NicheManager : TouchableObject
         
         if (GameManager.instance.currentCameraState != CamState.Default)
             return;
+        
+        exclamation.SetActive(false);
 
         GameManager.instance.ChangeCameraState(CamState.Dog);
         GameManager.instance.ChangeCameraPos(

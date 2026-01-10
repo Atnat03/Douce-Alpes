@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie, Abreuvoir }
+public enum MiniGames { Rentree, Tonte, Nettoyage, Sortie, Abreuvoir, None }
 
 public class TimerManager : MonoBehaviour
 {
@@ -203,10 +203,6 @@ public class TimerManager : MonoBehaviour
 
         currentMiniJeuToDo = values[nextIndex];
 
-        if (currentMiniJeuToDo == MiniGames.Rentree || currentMiniJeuToDo == MiniGames.Sortie)
-        {
-            grange.exclamation.SetActive(true);
-        }
         GameData.instance.dayMoment.NextMoment();
         StartCoroutine(UpdateHorloge(nextIndex));
     }

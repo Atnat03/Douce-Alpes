@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class InteriorShopManager : ShopManager
     ArticleActivableUnit selectedUIArticle;
 
     public Text TextTitleSelect;
+    
+    [SerializeField] public Sprite[] spriteSelect;
 
     new void Start()
     {
@@ -23,7 +26,7 @@ public class InteriorShopManager : ShopManager
         if (selectedUIArticle == null || buttonEquip == null) 
             return;
 
-        buttonEquip.GetComponent<Image>().color = selectedUIArticle.isActive ? Color.red : Color.green;
+        buttonEquip.GetComponent<Image>().sprite = selectedUIArticle.isActive ? spriteSelect[0] : spriteSelect[1];
     }
 
     public void Activate()
@@ -78,6 +81,8 @@ public class InteriorShopManager : ShopManager
         uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
         uiArticle.buyBtn.onClick.AddListener(() => selectedUIArticle = uiArticle);
         uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
+        
+        uiArticle.textPrice.text = article.price.ToString();
     }
 
     protected new void UpdatePrice(int articlePrice, string articleTitle)
@@ -93,8 +98,8 @@ public class InteriorShopManager : ShopManager
         else
         {
             buyPannel.SetActive(true);
-            buyPannel.transform.GetChild(2).GetComponent<Text>().text = articlePrice.ToString();
-            buyPannel.transform.GetChild(3).GetComponent<Text>().text = articleTitle;
+            buyPannel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = articlePrice.ToString();
+            buyPannel.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = articleTitle;
         }
     }
 }

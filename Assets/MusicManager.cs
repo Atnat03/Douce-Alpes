@@ -46,7 +46,7 @@ public class MusicManager : MonoBehaviour
             audioSource.pitch = 0.85f;
         }
 
-        if (dlc.isSelect)
+        if (Settings.instance.isPlayaSound)
         {
             audioSource.clip = playaMusic;
         }
@@ -79,6 +79,6 @@ public class MusicManager : MonoBehaviour
 
     void OnEnable()
     {
-        dlc.ChangeSelect += ChangeMusique;
+        DLC.ChangeSelect += ChangeMusique;
     }
 }

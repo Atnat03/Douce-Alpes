@@ -1,86 +1,91 @@
-using System;
 using System.Collections;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Poutre : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Cadenas[] cadenas;
-    [SerializeField] SwipeDetection swipeDetection;
     [SerializeField] private Grange grange;
-    
     [SerializeField] private ParticleSystem touchGroundEffect;
-    
-    Vector3 Startpos;
-    Quaternion startRotation;
-    bool hasSwipe = false;
 
-    private void Start()
+    [Header("Physics")]
+    [SerializeField] private float impulseForce = 500f;
+
+    private Rigidbody rb;
+    private Vector3 startPos;
+    private Quaternion startRotation;
+    private bool hasSwipe = false;
+
+    private void Awake()
     {
-        Startpos = transform.position;
+        startPos = transform.position;
         startRotation = transform.rotation;
+
         GetComponent<Animator>().enabled = false;
     }
 
     private void Update()
     {
-        if(canSwipe() && !hasSwipe)
+        if (CanSwipe() && !hasSwipe)
         {
             GetComponent<Animator>().enabled = true;
             grange.hand.SetActive(true);
         }
+    }
 
+    public async Task GetOffPoutre(SwipeType swipe)
+    {
+        if (swipe != SwipeType.Up) return;
+        if (!CanSwipe()) return;
+
+        hasSwipe = true;
+
+        GetComponent<Animator>().enabled = false;
+
+        rb = gameObject.AddComponent<Rigidbody>();
+        rb.useGravity = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+        await Task.Yield();
+
+        rb.AddForce(Vector3.up * impulseForce, ForceMode.Impulse);
+
+        StartCoroutine(WaitALittle());
+    }
+
+    IEnumerator WaitALittle()
+    {
+        yield return new WaitForSeconds(2f);
+
+        grange.OpenDoors();
+        GameManager.instance.SheepGetOutGrange();
     }
 
     public void ResetPoutre()
     {
         foreach (Cadenas cadena in cadenas)
         {
-            cadena.transform.gameObject.SetActive(true);
+            cadena.gameObject.SetActive(true);
             cadena.hp = cadena.maxHp[GameData.instance.dicoAmélioration[TypeAmelioration.Sortie].Item2];
             cadena.ResetCadenas();
         }
 
-        if (gameObject.GetComponent<Rigidbody>())
+        if (rb != null)
         {
-            Destroy(gameObject.GetComponent<Rigidbody>());
+            Destroy(rb);
+            rb = null;
         }
 
-        gameObject.transform.position = Startpos;
-        gameObject.transform.rotation = startRotation;
+        transform.position = startPos;
+        transform.rotation = startRotation;
 
         hasSwipe = false;
+        GetComponent<Animator>().enabled = false;
     }
 
-    public async Task GetOffPoutre(SwipeType swipe)
-    {
-        if(swipe != SwipeType.Up) return;
-        
-        if (canSwipe())
-        {
-            hasSwipe = true;
-            
-            GetComponent<Animator>().enabled = false;
-            
-            await Task.Yield();
-            
-            gameObject.AddComponent<Rigidbody>();
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 500, ForceMode.Impulse);
-            
-            StartCoroutine(WaitALittle());
-        }
-    }
-
-    IEnumerator WaitALittle()
-    {
-        yield return new WaitForSeconds(2f);
-                    
-        grange.OpenDoors();
-        GameManager.instance.SheepGetOutGrange();
-    }
-
-    bool canSwipe()
+    private bool CanSwipe()
     {
         foreach (Cadenas cadena in cadenas)
         {
@@ -89,29 +94,30 @@ public class Poutre : MonoBehaviour
         }
         return true;
     }
-    
-    void OnEnable()
+
+    private void OnCollisionEnter(Collision other)
     {
-        if(SwipeDetection.instance != null)
+        if (!other.gameObject.CompareTag("Ground")) return;
+
+        ContactPoint contact = other.contacts[0];
+        touchGroundEffect.transform.position = contact.point;
+        touchGroundEffect.Play();
+    }
+
+    private void OnEnable()
+    {
+        if (SwipeDetection.instance != null)
             SwipeDetection.instance.OnSwipeDetected += OnSwipe;
     }
-    void OnDisable() { SwipeDetection.instance.OnSwipeDetected -= OnSwipe; }
-    
-    void OnSwipe(SwipeType swipe)
+
+    private void OnDisable()
+    {
+        if (SwipeDetection.instance != null)
+            SwipeDetection.instance.OnSwipeDetected -= OnSwipe;
+    }
+
+    private void OnSwipe(SwipeType swipe)
     {
         _ = GetOffPoutre(swipe);
-    }
-    
-    public void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            ContactPoint contact = other.contacts[0];
-            Vector3 pointDeCollision = contact.point;
-            
-            touchGroundEffect.transform.position = pointDeCollision;
-            
-            touchGroundEffect.Play();
-        }
     }
 }

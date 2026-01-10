@@ -49,6 +49,12 @@ public class Grange : Build
         {
             doorAnimator.SetTrigger("Close");
         }
+        
+                
+        if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Rentree || GameData.instance.timer.currentMiniJeuToDo == MiniGames.Sortie)
+        {
+            exclamation.SetActive(true);
+        }
     }
 
     public void LaunchMiniGame()

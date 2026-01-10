@@ -18,13 +18,13 @@ public class SheepSkinManager : MonoBehaviour
     
     [SerializeField] public bool hasLaine;
     [SerializeField] private MeshRenderer Laine;
-    [SerializeField] private Renderer laineDessous;
+    [SerializeField] private SkinnedMeshRenderer laineDessous;
     [SerializeField] private ColorSO colorDataTonte;
     [SerializeField] private ColorSO colorData;
 
     private bool isTonte = false;
     
-    [SerializeField] Animator animator;
+    [SerializeField] public Animator animator;
     
     [Header("Bulle")]
     [SerializeField] private GameObject Bubble;

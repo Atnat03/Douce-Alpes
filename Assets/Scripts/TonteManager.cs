@@ -321,7 +321,7 @@ public class TonteManager : MiniGameParent
 
         if (sheep != null)
             yield return MoveOverTime(sheep.transform, destroyPoint.position, 1f, false);
-
+ 
         if (sheep != null)
             Destroy(sheep);
 

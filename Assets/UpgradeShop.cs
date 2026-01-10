@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,16 +11,20 @@ public class UpgradeShop : MonoBehaviour
     public List<MiniGamesPrices> priceList;
 
     [SerializeField] private Text[] textPrices;
+    [SerializeField] private Text[] textTricotPrices;
     [SerializeField] private Button[] buttonsPrices;
+    [SerializeField] private Button[] buttonsTricotPrices;
+    [SerializeField] private ModelDrawSO[] modelsTricot;
     
     [SerializeField] protected GameObject buyInfo;
     [SerializeField] protected GameObject cantBuyInfo;
     bool isShowingCantBuy = false;
     
     [SerializeField] GameObject barBuy;
-    [SerializeField] Text buyPrice;
-    [SerializeField] Text nameUpgrade;
+    [SerializeField] TextMeshProUGUI buyPrice;
+    [SerializeField] TextMeshProUGUI nameUpgrade;
     [SerializeField] Button buttonBuy;
+    public TricotManager tricot;
 
     public void Awake()
     {
@@ -34,6 +39,16 @@ public class UpgradeShop : MonoBehaviour
         {
             textPrices[i].text = priceList[i].price.ToString();
         }
+
+        for (int i = 0; i < textTricotPrices.Length; i++)
+        {
+            print(modelsTricot[i].unlockPrice.ToString());
+            textTricotPrices[i].text = modelsTricot[i].unlockPrice.ToString();
+            if (i == 0)
+            {
+                textTricotPrices[i].transform.parent.parent.GetComponent<ArticleUpgradeUnit>().SetActive();
+            }
+        }
     }
     
     public void AddLevelTonte() => UpdatePrice(prices[MiniGames.Tonte], nameof(MiniGames.Tonte),MiniGames.Tonte);
@@ -42,7 +57,13 @@ public class UpgradeShop : MonoBehaviour
     public void AddLevelRentree() => UpdatePrice(prices[MiniGames.Rentree], nameof(MiniGames.Rentree),MiniGames.Rentree);
     public void AddLevelAbreuvoir() => UpdatePrice(prices[MiniGames.Abreuvoir], nameof(MiniGames.Abreuvoir),MiniGames.Abreuvoir);
 
-    void UpdatePrice(int articlePrice, string articleTitle, MiniGames game)
+    public void AddTricot(int id)
+    {
+        print("buiy tricot");
+        UpdatePrice(modelsTricot[id].unlockPrice, modelsTricot[id].name, MiniGames.None, id);
+    }
+
+    void UpdatePrice(int articlePrice, string articleTitle, MiniGames game = MiniGames.None, int id = 0)
     {
         articleTitle = "Améliorer " + articleTitle;
         
@@ -51,19 +72,20 @@ public class UpgradeShop : MonoBehaviour
         barBuy.SetActive(true);
         
         buyPrice.text = articlePrice.ToString();
+        
         nameUpgrade.text = articleTitle;
         
         buttonBuy.onClick.RemoveAllListeners();
         
-        buttonBuy.onClick.AddListener(() => Buy(game));
+        buttonBuy.onClick.AddListener(() => Buy(articlePrice, game, id));
         buttonBuy.onClick.AddListener(() => AudioManager.instance.ButtonClick());
     }
 
-    public void Buy(MiniGames game)
+    public void Buy(int cost, MiniGames game = MiniGames.None, int id = 0)
     {
-        if (PlayerMoney.instance.isEnoughtMoney(prices[game]))
+        if (PlayerMoney.instance.isEnoughtMoney(cost))
         {
-            PlayerMoney.instance.RemoveMoney(prices[game]);
+            PlayerMoney.instance.RemoveMoney(cost);
             
             switch (game)
             {
@@ -81,6 +103,18 @@ public class UpgradeShop : MonoBehaviour
                     break;
                 case MiniGames.Abreuvoir:
                     GameData.instance.AddLevelAbreuvoir();
+                    break;
+                default:
+                    tricot.BuyNewPage(id);
+                    AudioManager.instance.PlaySound(3);
+            
+                    buttonsTricotPrices[id].interactable = false;
+                    buttonsTricotPrices[id].transform.parent.GetComponent<ArticleUpgradeUnit>().SetActive();
+
+                    Instantiate(buyInfo, transform);
+            
+                    HideBarInfo();
+                    return;
                     break;
             }
             

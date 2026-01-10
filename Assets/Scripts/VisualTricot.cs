@@ -24,7 +24,7 @@ public class VisualTricot : MonoBehaviour
         shader = new Material(mesh.sharedMaterial);
         mesh.material = shader;
         
-        positionMin = mesh.transform.position;
+        positionMin = mesh.transform.localPosition;
         maxNumberVertical = shader.GetFloat("_MaxVertical")+1;
         maxNumberHorizontal = shader.GetFloat("_MaxHorizontal");
     }
@@ -37,7 +37,7 @@ public class VisualTricot : MonoBehaviour
 
     IEnumerator SmoothAddedLaine()
     { 
-        if (value_Vertical > maxNumberVertical)
+        if (value_Vertical >= maxNumberVertical)
         {
             Debug.Log("Fin du tricot");
             yield break;
@@ -72,13 +72,16 @@ public class VisualTricot : MonoBehaviour
     [ContextMenu("ResetLaine")]
     public void ResetLaine()
     {
+        StopAllCoroutines();
+
         value_Vertical = 1;
-        gradient_Droite = false;
         value_Horizontal = 0;
+        gradient_Droite = false;
 
         pointAccroche.transform.position = splineLaine.points[0];
         splineLaine.SetDernierPoint(pointAccroche.transform.position);
     }
+
 
     void Update()
     {
@@ -98,14 +101,13 @@ public class VisualTricot : MonoBehaviour
         Vector3 minPos = positionMin;
         Vector3 maxPos = new Vector3(positionMax.x, positionMax.y, minPos.z);
 
-        Vector3 cible = new Vector3(
+        Vector3 cibleLocal = new Vector3(
             Mathf.Lerp(minPos.x, maxPos.x, normH),
             Mathf.Lerp(minPos.y, maxPos.y, normV),
-            pointAccroche.transform.position.z
+            minPos.z
         );
 
-        pointAccroche.transform.position = cible;
-        
-        splineLaine.SetDernierPoint(cible);
+        pointAccroche.transform.localPosition = cibleLocal;
+        splineLaine.SetDernierPoint(pointAccroche.transform.position);
     }
 }
