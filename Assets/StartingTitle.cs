@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
     
 public class StartingTitle : MonoBehaviour
@@ -17,9 +18,17 @@ public class StartingTitle : MonoBehaviour
 
     public bool isTesting = false;
     bool isAnimating = false;
+
+    public string[] messages;
+    public int currentMessage;
+    public GameObject papy;
+    public TextMeshProUGUI message;
+    private int idMessage = -1;
     
     private void Start()
     {
+        papy.SetActive(false);
+
         if (!isTesting)
         {
             titleCamera.gameObject.SetActive(true);
@@ -60,6 +69,24 @@ public class StartingTitle : MonoBehaviour
 
         titleCamera.transform.position = to;
         
+        papy.SetActive(true);
+    }
+
+    public void NextMessage()
+    {
+        idMessage++;
+
+        if (idMessage >= messages.Length)
+        {
+            PlayGame();
+        }
+        
+        message.text = messages[idMessage];
+    }
+
+    void PlayGame()
+    {
+        papy.SetActive(false);
         mainCamera.gameObject.SetActive(true);
         titleUI.SetActive(false);
         titleCamera.gameObject.SetActive(false);
