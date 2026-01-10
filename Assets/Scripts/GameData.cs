@@ -363,7 +363,7 @@ public class GameData : MonoBehaviour
     
     public void ResetDayStats()
     {
-        if(numberDay == 1)
+        if(numberDay == 2)
         {        
             PanneauShop.ActivateExclamation();
             bergerie.ActivateExclamation();

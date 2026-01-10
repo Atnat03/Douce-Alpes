@@ -10,7 +10,6 @@ public class Build : TouchableObject
     void Start()
     {
         UI.SetActive(false);
-        exclamation.SetActive(true);
     }
 
     public void ActivateExclamation()
