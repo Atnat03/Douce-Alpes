@@ -33,6 +33,10 @@ public class Grange : Build
     [SerializeField] private Text textGrange;
     [SerializeField] private BoxCollider boxCollider;
     
+    [SerializeField] private GameObject interiorButton;
+    [SerializeField] private GameObject interiorImageButton;
+    [SerializeField] private InteriorSceneManager interiorScene;
+    
     void Start()
     {
         keyCloseGate.SetActive(false); 
@@ -141,6 +145,13 @@ public class Grange : Build
 
     private void Update()
     {
+        if (interiorScene.isTutoInterior)
+        {
+            print("Check interior ");
+            interiorImageButton.SetActive(false);
+            interiorButton.SetActive(false);
+        }
+        
         sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
         boxCollider.enabled = GameManager.instance.currentCameraState == CamState.Default;
 

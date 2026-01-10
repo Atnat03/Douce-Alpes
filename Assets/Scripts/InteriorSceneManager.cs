@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -17,6 +19,15 @@ public class InteriorSceneManager : MonoBehaviour
     
     public Transform centerGrange;
 
+    [Header("Tuto")]
+    public bool isTutoInterior = true;
+    public string[] messages;
+    public GameObject papy;
+    public TextMeshProUGUI message;
+    private int idMessage = -1;
+    public GameObject nextMessage;
+    private bool isWritting = false;
+    
     private void Awake()
     {
         instance = this;
@@ -24,6 +35,12 @@ public class InteriorSceneManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (isTutoInterior)
+        {
+            NextMessage(true);
+            return;
+        }
+        
         alreadyBubble = false;
         SwapSceneManager.instance.SwapingInteriorScene += Initialize;
     }
@@ -36,6 +53,9 @@ public class InteriorSceneManager : MonoBehaviour
 
     private void Update()
     {
+        if (isTutoInterior)
+            return;
+        
         if (GameData.instance.timer.currentMiniJeuToDo == MiniGames.Tonte && !alreadyBubble)
         {
             alreadyBubble = true;
@@ -199,4 +219,55 @@ public class InteriorSceneManager : MonoBehaviour
 
     #endregion
 
+    #region Tuto
+    
+    private void StopTuto()
+    {
+        isTutoInterior = false;
+        papy.SetActive(false);
+    }
+    
+    public void NextMessage(bool isFirst = false)
+    {
+        if (isWritting) return;
+        
+        nextMessage.SetActive(false);
+        
+        idMessage++;
+        
+        if (idMessage >= messages.Length)
+        {
+             StopTuto();
+            
+            return;
+        }
+        
+        StopAllCoroutines();
+        StartCoroutine(WriteSmooth(messages[idMessage], isFirst));
+    }
+
+
+    IEnumerator WriteSmooth(string fullMessage, bool isFirst = false, float charDelay = 0.025f)
+    {
+        isWritting = true;
+        
+        if(!isFirst)
+        {
+            papy.GetComponent<Animator>().SetTrigger("NextMessage");
+
+            yield return new WaitForSeconds(0.3f);
+        }
+        
+        message.text = "";
+        foreach (char c in fullMessage)
+        {
+            message.text += c;
+            yield return new WaitForSeconds(charDelay);
+        }
+        
+        nextMessage.SetActive(true);
+        isWritting = false;
+    }
+    
+    #endregion
 }
