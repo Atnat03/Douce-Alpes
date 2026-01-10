@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,7 @@ public class DLC : MonoBehaviour
     
     [SerializeField] protected GameObject buyInfo;
     [SerializeField] protected GameObject cantBuyInfo;
+    [SerializeField] protected GameObject Price;
     protected bool isShowingCantBuy = false;
 
     private void Start()
@@ -56,8 +58,9 @@ public class DLC : MonoBehaviour
             SelectAndUnSelect();
             
             Settings.instance.ActivatePlayaToggle();
-            
+
             buyButton.SetActive(false);
+            Price.SetActive(false);
         }
         else
         {
