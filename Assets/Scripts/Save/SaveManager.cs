@@ -70,7 +70,11 @@ public class PlayerData
     public bool canButtonG;
     public bool canButtonT;
     public bool canButtonC;
-
+    
+    public TricotSaveData tricotData;
+    
+    public UpgradesSaveData upgrades;
+    
     public int timeBetweenSave;
     
     public PlayerData(Saving manager)
@@ -89,6 +93,12 @@ public class PlayerData
         wool = PlayerMoney.instance.currentWhool;
 
         happiness = BonheurCalculator.instance.currentBonheur;
+        
+        tricotData = TricotManager.instance?.GetCurrentTricotSaveData() 
+                     ?? new TricotSaveData();
+        
+        upgrades = GameData.instance.GetSaveData()
+                   ?? new UpgradesSaveData();
         
         TimerManager timer = GameData.instance.timer;
         if (timer != null)

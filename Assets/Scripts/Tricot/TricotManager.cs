@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -11,10 +12,11 @@ public enum ModelTricot
 
 public class TricotManager : MonoBehaviour
 {
+    public static TricotManager instance;
+    
     [Header("UI Elements")]
     public GameObject okImage;
     public Image imageProduct;
-    public Text testTxt;
     public UILineDrawer uiLineRenderer;
     public UILineDrawer modelLineRenderer;
     public RectTransform[] _3x3Ui;
@@ -50,7 +52,12 @@ public class TricotManager : MonoBehaviour
     [SerializeField] private GameObject DontBuyWool;
     
     public Dictionary<ModelTricot, bool> ModelPossede = new Dictionary<ModelTricot, bool>();
-    
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     private void Start()
     {
         if (okImage != null) okImage.SetActive(false);
@@ -175,14 +182,11 @@ public class TricotManager : MonoBehaviour
         if (!currentPassagePoint.Contains(id))
         {
             currentPassagePoint.Add(id);
-            if (testTxt != null)
-                testTxt.text += id + " / ";
         }
     }
 
     public void CheckModel()
     {
-        testTxt.text = "";
         modelLinePoints.Clear();
         
         if (!canShowNext || currentModel >= currentPattern.Count)
@@ -406,4 +410,83 @@ public class TricotManager : MonoBehaviour
         sellButton.gameObject.SetActive(false);
         carnetParent.gameObject.SetActive(true);
     }
+    
+    public TricotSaveData GetCurrentTricotSaveData()
+    {
+
+        int patternIndex = -1;
+        for (int i = 0; i < models.listeModel.Count; i++)
+        {
+            if (models.listeModel[i].pattern == currentPattern) 
+            {
+                patternIndex = i;
+                break;
+            }
+        }
+
+        TricotSaveData data = new TricotSaveData
+        {
+            currentPatternIndex = patternIndex,
+            currentModelStep = currentModel,
+        };
+
+        if (visualTricot != null)
+        {
+            data.visualValueVertical   = visualTricot.value_Vertical;
+            data.visualValueHorizontal = visualTricot.value_Horizontal;
+            data.visualGradientDroite  = visualTricot.gradient_Droite;
+        }
+
+        return data;
+    }
+
+
+    public void LoadTricotState(TricotSaveData data)
+    {
+        if (data == null || data.currentPatternIndex < 0)
+        {
+            return;
+        }
+
+        ModelDrawSO patternSO = models.listeModel[data.currentPatternIndex];
+
+        currentPattern = patternSO.pattern;
+        numberModelOfThisPattern = currentPattern.Count;
+        currentModel = Mathf.Clamp(data.currentModelStep, 0, numberModelOfThisPattern);
+
+        if (spawnVisual.transform.childCount > 0)
+            Destroy(spawnVisual.transform.GetChild(0).gameObject);
+
+        GameObject meshVisual = Instantiate(patternSO.prefabVisual, spawnVisual.transform);
+        
+        if (imageProduct != null)
+        {
+            imageProduct.sprite = patternSO.image;
+            imageProduct.fillAmount = (float)currentModel / numberModelOfThisPattern;
+        }
+
+        if (visualTricot != null)
+        {
+            visualTricot.Initialise(meshVisual.GetComponent<MeshRenderer>(), patternSO.pattern.Count);
+
+            visualTricot.value_Vertical   = data.visualValueVertical;
+            visualTricot.value_Horizontal = data.visualValueHorizontal;
+            visualTricot.gradient_Droite  = data.visualGradientDroite;
+        }
+
+        sellButton.gameObject.SetActive(currentModel >= numberModelOfThisPattern);
+
+        carnetParent.gameObject.SetActive(false);
+    }
+}
+
+[Serializable]
+public class TricotSaveData
+{
+    public int currentPatternIndex = -1;        
+    public int currentModelStep = 0;           
+
+    public float visualValueVertical = 1f;
+    public float visualValueHorizontal = 0f;
+    public bool visualGradientDroite = false;
 }

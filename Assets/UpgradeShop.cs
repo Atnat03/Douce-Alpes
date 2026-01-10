@@ -26,6 +26,60 @@ public class UpgradeShop : MonoBehaviour
     [SerializeField] Button buttonBuy;
     public TricotManager tricot;
 
+    private void OnEnable()
+    {
+        RefreshUpgradeUI();
+    }
+    
+    void RefreshUpgradeUI()
+    {
+        for (int i = 0; i < buttonsPrices.Length; i++)
+        {
+            MiniGames game = priceList[i].game;
+
+            TypeAmelioration type = (TypeAmelioration)game;
+
+            bool hasUpgrade = GameData.instance.HasUpgrade(type);
+            bool isMax = GameData.instance.IsUpgradeMax(type);
+
+            buttonsPrices[i].interactable = !isMax;
+
+            Text label = buttonsPrices[i].GetComponentInChildren<Text>();
+            if (label != null)
+            {
+                if (isMax)
+                    label.text = "Niveau max";
+                else if (hasUpgrade)
+                    label.text = "Améliorer";
+                else
+                    label.text = "Acheter";
+            }
+
+            ArticleUpgradeUnit unit = buttonsPrices[i].transform.parent.GetComponent<ArticleUpgradeUnit>();
+            if (unit != null && hasUpgrade)
+                unit.SetActive();
+        }
+
+        for (int i = 0; i < buttonsTricotPrices.Length; i++)
+        {
+            bool owned = tricot.ModelPossede.ContainsKey((ModelTricot)i) &&
+                         tricot.ModelPossede[(ModelTricot)i];
+
+            buttonsTricotPrices[i].interactable = !owned;
+
+            Text label = buttonsTricotPrices[i].GetComponentInChildren<Text>();
+            if (label != null)
+                label.text = owned ? "Déjà possédé" : "Acheter";
+
+            if (owned)
+                buttonsTricotPrices[i]
+                    .transform.parent
+                    .GetComponent<ArticleUpgradeUnit>()
+                    ?.SetActive();
+        }
+    }
+
+    
     public void Awake()
     {
         prices = new Dictionary<MiniGames, int>();
@@ -66,8 +120,6 @@ public class UpgradeShop : MonoBehaviour
     void UpdatePrice(int articlePrice, string articleTitle, MiniGames game = MiniGames.None, int id = 0)
     {
         articleTitle = "Améliorer " + articleTitle;
-        
-        Debug.Log("Update ui price");
         
         barBuy.SetActive(true);
         
@@ -120,9 +172,8 @@ public class UpgradeShop : MonoBehaviour
             
             AudioManager.instance.PlaySound(3);
             
-            buttonsPrices[(int)game].interactable = false;
-            buttonsPrices[(int)game].transform.parent.GetComponent<ArticleUpgradeUnit>().SetActive();
-
+            RefreshUpgradeUI();
+            
             Instantiate(buyInfo, transform);
             
             HideBarInfo();

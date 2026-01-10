@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class InteriorTouchMiniGame : TouchableObject
@@ -6,7 +7,12 @@ public class InteriorTouchMiniGame : TouchableObject
     [SerializeField] private MiniGames minijeu;
     [SerializeField] private bool isTonte;
     [SerializeField] private InteriorSceneManager sceneManager;
-    
+    [SerializeField] private GameObject exclamation;
+
+    private void Update()
+    {
+        exclamation.SetActive(GameData.instance.timer.currentMiniJeuToDo == minijeu);
+    }
 
     public override void TouchEvent()
     {
