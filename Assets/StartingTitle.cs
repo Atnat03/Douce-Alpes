@@ -121,7 +121,7 @@ public class StartingTitle : MonoBehaviour
     }
 
     IEnumerator ButtonSheepAnimation()
-    { 
+    {
         float t = 0f;
         
         buttonSheepCreate.interactable = false;
