@@ -53,6 +53,8 @@ public class Settings : MonoBehaviour
         musicToggle.isOn = MusicActivated;
         musicPlayaToggle.isOn = isPlayaSound;
         
+        musicPlayaToggle.gameObject.SetActive(false);
+        
         SetPlayaSound(false);
         
         if (MusicActivated)
@@ -75,8 +77,6 @@ public class Settings : MonoBehaviour
 
         UpdateMusicVisuals();
     }
-
-
 
     private void UpdateMusicVisuals()
     {
