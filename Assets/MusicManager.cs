@@ -16,6 +16,7 @@ public class MusicManager : MonoBehaviour
     private Coroutine fadeCoroutine;
 
     [SerializeField] private DLC dlc;
+    [SerializeField] private AmbianceManager ambianceManager;
     
     private void Start()
     {
@@ -75,6 +76,7 @@ public class MusicManager : MonoBehaviour
     private void Update()
     {
         audioSource.volume = Settings.instance.MusicActivated ? maxVolume : 0f;
+        ambianceManager.audioSource.volume = Settings.instance.SFXActivated ? ambianceManager.maxVolume : 0f;
     }
 
     void OnEnable()

@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class StartingTitle : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class StartingTitle : MonoBehaviour
     public Camera mainCamera;
     public GameObject titleUI;
 
-    public bool isTesting = false;
     bool isAnimating = false;
 
     public string[] messages;
@@ -110,7 +110,7 @@ public class StartingTitle : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
         }
         
-        AudioManager.instance.PlaySound(43);
+        AudioManager.instance.PlaySound(Random.Range(43, 48));
         
         message.text = "";
         foreach (char c in fullMessage)
@@ -144,6 +144,8 @@ public class StartingTitle : MonoBehaviour
         }
 
         t = 0f;
+
+        AudioManager.instance.PlaySound(22);
         
         yield return new WaitForSeconds(1.5f);
 

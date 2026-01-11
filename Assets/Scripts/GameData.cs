@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public enum TypeAmelioration
 {
@@ -416,7 +417,7 @@ public class GameData : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
         }
         
-        AudioManager.instance.PlaySound(43);
+        AudioManager.instance.PlaySound(Random.Range(43, 48));
         
         message.text = "";
         foreach (char c in fullMessage)

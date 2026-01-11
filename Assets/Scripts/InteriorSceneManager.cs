@@ -263,7 +263,7 @@ public class InteriorSceneManager : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
         }
         
-        AudioManager.instance.PlaySound(43);
+        AudioManager.instance.PlaySound(Random.Range(43, 48));
         
         message.text = "";
         foreach (char c in fullMessage)
