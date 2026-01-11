@@ -114,16 +114,15 @@ public class Grange : Build
     
     private void UpdateCameraZoom()
     {
-        handZommed.SetActive(false);
-        handNotZommed.SetActive(false);
-        
         if (GameData.instance.isSheepInside)
         {
+            handZommed.SetActive(true);
             CloseDoors();
             ZoomCamera();
         }
         else
         {
+            handNotZommed.SetActive(true);
             OpenDoors();
             MiniGameCamera();
         }
@@ -140,8 +139,6 @@ public class Grange : Build
 
     private void MiniGameCamera()
     {
-        handNotZommed.SetActive(true);
-        
         GameManager.instance.ChangeCameraPos(
             GameManager.instance.GetMiniGameCamPos().position,
             GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles,

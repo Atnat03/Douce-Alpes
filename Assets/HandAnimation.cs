@@ -35,6 +35,11 @@ public class HandAnimation : MonoBehaviour
 
     IEnumerator PlayAnimation()
     {
+        print("start animation");
+        
+        yield return new WaitForSeconds(0.5f);
+        
+        print(handImage.gameObject.activeSelf);
         handImage.gameObject.SetActive(true);
 
         while (true)
@@ -42,7 +47,7 @@ public class HandAnimation : MonoBehaviour
             for (int n = 0; n < targets.Length - 1; n++)
             {
                 float t = 0f;
-
+                
                 handImage.rectTransform.anchoredPosition = targets[n];
 
 				if(isAlphaDecrese)
@@ -59,6 +64,8 @@ public class HandAnimation : MonoBehaviour
 
                     t += Time.deltaTime;
                     yield return null;
+                    
+                    print(targets.Length + " / " + t + " / " + handImage.rectTransform.anchoredPosition);
                 }
 
                 yield return new WaitForSeconds(0.5f);

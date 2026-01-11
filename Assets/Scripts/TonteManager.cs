@@ -49,9 +49,13 @@ public class TonteManager : MiniGameParent
     [SerializeField] private float offsetStrength = 1.0f;      
     
     [SerializeField] AudioSource audioSource;
-
+    [SerializeField] private ParticleSystem vfxParticle;
+    
     [SerializeField] private Image logoTool;
     [SerializeField] private Sprite[] levelRasoirSprites;
+    
+    [SerializeField] private float laineRadius = 0.6f;
+    [SerializeField] private float laineThickness = 0.15f;
     
     private void Awake()
     {
@@ -155,6 +159,21 @@ public class TonteManager : MiniGameParent
         yield return new WaitForSeconds(1f);
         SwapSceneManager.instance.SwapScene(1);
     }
+    
+    private bool IsParticleOnLaine(Vector3 particlePos)
+    {
+        Vector3 center = tontePoint.position;
+
+        Vector2 p2D = new Vector2(particlePos.x, particlePos.z);
+        Vector2 c2D = new Vector2(center.x, center.z);
+
+        float horizontalDist = Vector2.Distance(p2D, c2D);
+
+        float heightDiff = Mathf.Abs(particlePos.y - center.y);
+
+        return horizontalDist <= laineRadius && heightDiff <= laineThickness;
+    }
+
 
     private bool isFingerDown = false;
     private void OnFingerPressed(Vector2 screenPos, float timer)
@@ -244,8 +263,20 @@ public class TonteManager : MiniGameParent
             }
 
             particleTonte.transform.position = hitPos;
-        }
+            
+                    
+            bool onLaine = IsParticleOnLaine(particleTonte.transform.position);
 
+            if (onLaine)
+            {
+                if (!vfxParticle.isPlaying)
+                    vfxParticle.Play();
+            }
+            else
+            {
+                vfxParticle.Stop();
+            }
+        }
 
         int r = UnityEngine.Random.Range(0, 50);
         if (r == 0 && isFingerDown && Settings.instance.VibrationsActivated)

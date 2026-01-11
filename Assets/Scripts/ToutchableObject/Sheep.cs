@@ -77,7 +77,7 @@ public class Sheep : TouchableObject
 
     private Coroutine rotationCoroutine;
 
-    private float timerSound = 0;
+    private float timerSound = Random.Range(5, 30);
     
     public Animator animator;
 
@@ -148,8 +148,6 @@ public class Sheep : TouchableObject
         laineDessous.GetComponent<SkinnedMeshRenderer>().materials = mats;
 
         larmes.SetActive(BonheurCalculator.instance.currentBonheur <= 10);
-        
-        print(sheepBoid.velocity.magnitude);
         
         if(!isOpen)
             animator.SetBool("Walk", !sheepBoid.isPaused);
