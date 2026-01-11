@@ -44,7 +44,6 @@ public class Poutre : MonoBehaviour
         grange.handZommed.SetActive(false);
 
         GetComponent<Animator>().enabled = false;
-
         
         rb = gameObject.AddComponent<Rigidbody>();
         rb.useGravity = true;
@@ -90,7 +89,7 @@ public class Poutre : MonoBehaviour
         GetComponent<Animator>().enabled = false;
     }
 
-    private bool CanSwipe()
+    public bool CanSwipe()
     {
         foreach (Cadenas cadena in cadenas)
         {

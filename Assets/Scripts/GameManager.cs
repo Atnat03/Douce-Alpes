@@ -169,6 +169,8 @@ public class GameManager : MonoBehaviour
             SheepWindow.instance.ResetValue();
         }
         
+        grange.isGrangeZoomed = false;
+        
         if(currentCameraState == CamState.MiniGame)
             endMiniGame?.Invoke();
         
@@ -375,7 +377,6 @@ public class GameManager : MonoBehaviour
         BonheurCalculator.instance.AddBonheur(Vector2.zero, GameData.instance.GetLevelUpgrade(TypeAmelioration.Sortie));
 
         grange.OpenDoors();
-        grange.GetPoutre().ResetPoutre();
         grange.AllSheepAreOutside = false;
 
         SheepBoidManager.instance.nbInstantSheep = 0;
@@ -409,6 +410,8 @@ public class GameManager : MonoBehaviour
 
         if(TutoManager.instance != null)
             TutoManager.instance.GoToShop();
+        
+        grange.GetPoutre().ResetPoutre();
         
         AudioManager.instance.PlaySound(9, 1f, 0.2f);
         

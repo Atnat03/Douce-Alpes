@@ -76,6 +76,7 @@ public class GameData : MonoBehaviour
     private int idMessage = -1;
     public GameObject nextMessage;
     private bool isWritting = false;
+    public GameObject buttonAddSheep;
     
     private void Awake()
     {
@@ -362,6 +363,7 @@ public class GameData : MonoBehaviour
 
         if (is2eTuto)
         {
+            buttonAddSheep.SetActive(false);
             IsStatGame = true;
             papy.SetActive(true);
             NextMessage(true);
@@ -379,6 +381,7 @@ public class GameData : MonoBehaviour
     
     private void StopTuto()
     {
+        buttonAddSheep.SetActive(true);
         IsStatGame = false;
         is2eTuto = false;
         papy.SetActive(false);

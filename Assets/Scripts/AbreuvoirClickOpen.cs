@@ -9,9 +9,17 @@ public class AbreuvoirClickOpen : TouchableObject
 
     [SerializeField] private CameraControl cameraControl;
     [SerializeField] private GameObject exclamation;
+    [SerializeField] private GameObject tropdoInfo;
+    [SerializeField] private Transform TtropdoInfo;
 
     public override void TouchEvent()
     {
+        if (!abreuvoir.CanAbreuvoir())
+        {
+            Instantiate(tropdoInfo, TtropdoInfo);
+            return;
+        }
+        
         if(GameManager.instance.currentCameraState != CamState.Default)
             return;
 

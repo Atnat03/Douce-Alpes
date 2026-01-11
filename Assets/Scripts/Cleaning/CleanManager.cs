@@ -353,7 +353,14 @@ public class CleanManager : MiniGameParent
 
     private void CheckShampoo(Vector3 pos)
     {
-        Vector3 spawnPos = pos + showerOffset;
+        Vector3 newShowerOffset = showerOffset;
+        
+        if (currentCleaningSide == CleaningSide.Left)
+        {
+            newShowerOffset.x *= -1;
+        }
+        
+        Vector3 spawnPos = pos + newShowerOffset;
 
         GameObject d = Instantiate(shower, spawnPos, Quaternion.identity);
         d.transform.LookAt(Camera.main.transform);
@@ -478,37 +485,27 @@ public class CleanManager : MiniGameParent
     private void HandleFingerPositionUpdate(Vector2 screenPos)
     {
         currentFingerScreenPos = screenPos;
-
         if (screenPos == Vector2.zero)
             return;
 
         imageTool.transform.parent.GetComponent<Animator>().SetBool("Using", true);
+        imageTool.transform.parent.position = screenPos + screenOffset;
 
-        Vector2 offsetPos = screenPos + screenOffset;
-        imageTool.transform.parent.position = offsetPos;
-
-        Ray ray = camera.ScreenPointToRay(offsetPos);
+        Ray ray = camera.ScreenPointToRay(screenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Vector3 hitPos = hit.point;
+            Vector3 logicalHitPos = hit.point;
 
-            Vector3 center = cleanPoint.position;
-            Vector3 dirFromCenter = hitPos - center;
-            float distanceFromCenter = dirFromCenter.magnitude;
+            Vector3 visualSpawnPos = logicalHitPos + showerOffset;
 
-            if (distanceFromCenter > offsetStartDistance)
-            {
-                float t = Mathf.InverseLerp(
-                    offsetStartDistance,
-                    offsetStartDistance + 0.5f,
-                    distanceFromCenter
-                );
-
-                float offsetAmount = Mathf.Lerp(0f, maxOffset, t) * offsetStrength;
-                hitPos += dirFromCenter.normalized * offsetAmount;
-            }
+            ApplyClean(
+                currentTool == CleaningTool.Shower
+                    ? visualSpawnPos   
+                    : logicalHitPos    
+            );
         }
     }
+
 
 
     private void HandleSwipeEnd()

@@ -25,6 +25,9 @@ public class NameSheepReset : MonoBehaviour
 
     public void CreateSheep()
     {
+        if(value.text == "")
+            return;
+        
         StartCoroutine(Empreinte());
     }
 

@@ -16,7 +16,7 @@ public class Abreuvoir : MiniGameParent
     [SerializeField] private Animator animatorPompe;
     [SerializeField] private Image curDrinkImage;
     [SerializeField] private GameObject ui;
-    private bool IsInAbreuvoir = false;
+    [SerializeField] private bool IsInAbreuvoir = false;
     [SerializeField] private RectTransform uiBonheurSpawn;
     
     [Header("Drink Places")]
@@ -54,7 +54,7 @@ public class Abreuvoir : MiniGameParent
             
         curDrinkImage.GetComponent<Image>().material.SetFloat("_Slider", t);
 
-        if (currentWater >= maximumWater && IsInAbreuvoir)
+        if (currentWater >= maximumWater-10 && IsInAbreuvoir)
         {
             IsInAbreuvoir = false;
             DisableEau();
@@ -103,6 +103,11 @@ public class Abreuvoir : MiniGameParent
 
         EndMiniGame(TypeAmelioration.Abreuvoir);
         GameManager.instance.DisableDinkBubble();
+    }
+
+    public bool CanAbreuvoir()
+    {
+        return currentWater <= maximumWater/2;
     }
 
 

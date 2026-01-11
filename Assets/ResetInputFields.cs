@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,10 +12,10 @@ public class ResetInputFields : MonoBehaviour
         input = GetComponent<InputField>();
     }
 
-    public void OnSelect(BaseEventData eventData)
+    public void OnClick()
     {
+        print("click");
+        input.text = "";
         input.ActivateInputField();
-        input.selectionAnchorPosition = 0;
-        input.selectionFocusPosition = input.text.Length;
     }
 }

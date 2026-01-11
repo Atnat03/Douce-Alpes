@@ -31,6 +31,7 @@ public class Grange : Build
     
     public GameObject handZommed;
     public GameObject handNotZommed;
+    public bool isGrangeZoomed = false;
 
     [SerializeField] private Text textGrange;
     [SerializeField] private BoxCollider boxCollider;
@@ -116,7 +117,7 @@ public class Grange : Build
     {
         if (GameData.instance.isSheepInside)
         {
-            handZommed.SetActive(true);
+            isGrangeZoomed = true;
             CloseDoors();
             ZoomCamera();
         }
@@ -163,6 +164,11 @@ public class Grange : Build
         {
             interiorImageButton.SetActive(false);
             interiorButton.SetActive(false);
+        }
+
+        if (isGrangeZoomed && poutre.CanSwipe())
+        {
+            handZommed.SetActive(true);
         }
         
         zzzzParticle.SetActive(GameData.instance.dayMoment.GetCurrentDayMoment() == WeatherManager.DayMoment.Night);
