@@ -81,6 +81,7 @@ public class Abreuvoir : MiniGameParent
 
         water.transform.localPosition = Vector3.Lerp(noWater, fullWater, currentWater /  maximumWater);
         
+        
         if(splashParticle != null)
             splashParticle.gameObject.transform.position = new Vector3(
                 splashParticle.gameObject.transform.position.x, 
@@ -125,7 +126,10 @@ public class Abreuvoir : MiniGameParent
             eau.SetFloat("_Apparition", value);
             
             if(value < 1 && value > 0.9)
+            {
+                print("Splash");
                 splashParticle.Play();
+            }
             
             yield return null;
         }

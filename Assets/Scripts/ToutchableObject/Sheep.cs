@@ -81,6 +81,8 @@ public class Sheep : TouchableObject
     
     public Animator animator;
 
+    public ParticleSystem comboSetParticle;
+
     private void OnEnable()
     {
         if (SwipeDetection.instance != null)
@@ -441,6 +443,7 @@ public class Sheep : TouchableObject
     {
         if (skinListManager.HasCombo(hatId, clothId))
         {
+            comboSetParticle.Play();
             sheepBoid.SetNature(skinListManager.GetNatureFromCombo(hatId));
         }
         else

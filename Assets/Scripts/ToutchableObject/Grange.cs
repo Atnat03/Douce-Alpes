@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Grange : Build
@@ -28,7 +29,8 @@ public class Grange : Build
     public Transform targetTransiPos;
     public Animator doorAnimator;
     
-    public GameObject hand;
+    public GameObject handZommed;
+    public GameObject handNotZommed;
 
     [SerializeField] private Text textGrange;
     [SerializeField] private BoxCollider boxCollider;
@@ -36,6 +38,7 @@ public class Grange : Build
     [SerializeField] private GameObject interiorButton;
     [SerializeField] private GameObject interiorImageButton;
     [SerializeField] private InteriorSceneManager interiorScene;
+    [SerializeField] private GameObject zzzzParticle;
     
     void Start()
     {
@@ -111,7 +114,8 @@ public class Grange : Build
     
     private void UpdateCameraZoom()
     {
-        hand.SetActive(false);
+        handZommed.SetActive(false);
+        handNotZommed.SetActive(false);
         
         if (GameData.instance.isSheepInside)
         {
@@ -136,11 +140,18 @@ public class Grange : Build
 
     private void MiniGameCamera()
     {
+        handNotZommed.SetActive(true);
+        
         GameManager.instance.ChangeCameraPos(
             GameManager.instance.GetMiniGameCamPos().position,
             GameManager.instance.GetMiniGameCamPos().rotation.eulerAngles,
             targetTransiPos
         );
+    }
+
+    public void DesactivateHand()
+    {
+        handNotZommed.SetActive(false);
     }
 
     private void Update()
@@ -156,6 +167,8 @@ public class Grange : Build
             interiorImageButton.SetActive(false);
             interiorButton.SetActive(false);
         }
+        
+        zzzzParticle.SetActive(GameData.instance.dayMoment.GetCurrentDayMoment() == WeatherManager.DayMoment.Night);
         
         sheepDestroyer.SetActive(GameManager.instance.currentCameraState == CamState.MiniGame && AllSheepAreOutside);
         boxCollider.enabled = GameManager.instance.currentCameraState == CamState.Default;

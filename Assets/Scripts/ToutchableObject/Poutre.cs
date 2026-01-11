@@ -30,7 +30,7 @@ public class Poutre : MonoBehaviour
         if (CanSwipe() && !hasSwipe)
         {
             GetComponent<Animator>().enabled = true;
-            grange.hand.SetActive(true);
+            grange.handZommed.SetActive(true);
         }
     }
 
@@ -41,7 +41,7 @@ public class Poutre : MonoBehaviour
 
         hasSwipe = true;
         
-        grange.hand.SetActive(false);
+        grange.handZommed.SetActive(false);
 
         GetComponent<Animator>().enabled = false;
 
