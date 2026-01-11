@@ -101,9 +101,7 @@ public class PanneauShop : TouchableObject
 
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
-
-        ActivateCenterArrows(false);
-
+        
         moveCoroutine = StartCoroutine(CameraTranslate(startPos, endPos));
     }
 

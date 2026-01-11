@@ -151,8 +151,6 @@ public class SwapSceneManager : MonoBehaviour
     
     void TriggerInitialiseScene(int sceneID)
     {
-        Debug.Log(sceneID);
-        
         switch (sceneID)
         {
             case 0:

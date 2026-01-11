@@ -82,6 +82,10 @@ public class Sheep : TouchableObject
     public Animator animator;
 
     public ParticleSystem comboSetParticle;
+    public ParticleSystem behhhhhParticle;
+
+    public bool isHand = true;
+    public bool isCreated = true;
 
     private void OnEnable()
     {
@@ -183,12 +187,22 @@ public class Sheep : TouchableObject
         if (timerSound <= 0)
         {
             AudioManager.instance.PlaySound(Random.Range(17,20), 1f, 0.1f);
+            behhhhhParticle.Play();
             timerSound = Random.Range(5, 30);
         }
         else
         {
             timerSound -= Time.deltaTime;
         }
+    }
+
+    public void PlaySoundBehhh()
+    {
+        if(behhhhhParticle.isPlaying)
+            return;
+        
+        AudioManager.instance.PlaySound(Random.Range(17,20), 1f, 0.1f);
+        behhhhhParticle.Play();
     }
     
     private void OnSwipeDetected(SwipeType swipe)

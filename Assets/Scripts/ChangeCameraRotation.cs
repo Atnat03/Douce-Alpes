@@ -8,10 +8,11 @@ public class ChangeCameraRotation : MonoBehaviour
     [SerializeField] private float maxY = 33f;
 
     [Header("Bounce")]
-    [SerializeField] private float bounceStrength = 8f;     
-    [SerializeField] private float bounceReturnSpeed = 6f;
+    [SerializeField] private float bounceStrength = 8f;
+    [SerializeField] private float bounceReturnSpeed = 0.15f;
 
     private float currentY;
+    private float velocityY;
 
     private void OnEnable()
     {
@@ -25,16 +26,19 @@ public class ChangeCameraRotation : MonoBehaviour
 
     private void Start()
     {
-        currentY = transform.eulerAngles.y;
+        currentY = NormalizeAngle(transform.eulerAngles.y);
     }
 
     private void Update()
     {
-        if (currentY < minY)
-            currentY = Mathf.Lerp(currentY, minY, Time.deltaTime * bounceReturnSpeed);
+        float targetY = currentY;
 
-        if (currentY > maxY)
-            currentY = Mathf.Lerp(currentY, maxY, Time.deltaTime * bounceReturnSpeed);
+        if (currentY < minY)
+            targetY = minY;
+        else if (currentY > maxY)
+            targetY = maxY;
+
+        currentY = Mathf.SmoothDamp(currentY, targetY, ref velocityY, bounceReturnSpeed);
 
         transform.rotation = Quaternion.Euler(17f, currentY, 0f);
     }
@@ -43,13 +47,19 @@ public class ChangeCameraRotation : MonoBehaviour
     {
         if (points.Count < 2) return;
 
-        Vector2 last = points[points.Count - 1];
-        Vector2 prev = points[points.Count - 2];
+        Vector2 last = points[^1];
+        Vector2 prev = points[^2];
 
         float deltaX = last.x - prev.x;
 
-        currentY += -deltaX * dragSensitivity;
+        currentY -= deltaX * dragSensitivity;
 
         currentY = Mathf.Clamp(currentY, minY - bounceStrength, maxY + bounceStrength);
+    }
+
+    private float NormalizeAngle(float angle)
+    {
+        if (angle > 180f) angle -= 360f;
+        return angle;
     }
 }

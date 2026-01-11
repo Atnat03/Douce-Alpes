@@ -102,6 +102,12 @@ public class SheepWindow : MonoBehaviour
         GameManager.instance.CloseWindowShopAndGoToShop();
     }
 
+    public void PlayBheee()
+    {
+        Sheep sheep = GameManager.instance.GetSheep(sheepId);
+        sheep.PlaySoundBehhh(); 
+    }
+    
     public void ResetValue()
     {
         isOpen = false;

@@ -118,6 +118,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Transform particleSpawn;
     [SerializeField] public GameObject sheepCreatorButton;
     [SerializeField] public PanneauShop panneauShop;
+    [SerializeField] private GameObject handSheepCaresse;
     
     private void Awake()
     {
@@ -221,6 +222,11 @@ public class GameManager : MonoBehaviour
             SheepClicked?.Invoke(sheep);
             curLockSheep = sheep;
             sheep.isFocusing = true;
+            
+            if (curLockSheep.isHand && !curLockSheep.isCreated)
+            {
+                handSheepCaresse.SetActive(true);
+            }
         }
     }
 
@@ -233,6 +239,16 @@ public class GameManager : MonoBehaviour
     public void DelockSheep()
     {
         if (curLockSheep.isOpen) return;
+        
+        if (curLockSheep.isHand && !curLockSheep.isCreated)
+        {
+            handSheepCaresse.SetActive(false);
+            curLockSheep.isHand = false;
+        }
+        
+        if(curLockSheep.isCreated)
+            curLockSheep.isCreated = false;
+
         
         cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetCameraLock(curLockSheep);
         curLockSheep.isFocusing = false;
@@ -524,6 +540,8 @@ public class GameManager : MonoBehaviour
     }
     public void DisableDinkBubble()
     {
+        if (currentSheepAbreuvoir == null) return;
+        
         currentSheepAbreuvoir.DisableBubble();
         currentSheepAbreuvoir = null;
         abreuvoir.alreadyBubble = false;

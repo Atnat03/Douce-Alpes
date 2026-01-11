@@ -35,7 +35,6 @@ public class HandAnimation : MonoBehaviour
 
     IEnumerator PlayAnimation()
     {
-        yield return new WaitForSeconds(1f);
         handImage.gameObject.SetActive(true);
 
         while (true)
@@ -62,7 +61,7 @@ public class HandAnimation : MonoBehaviour
                     yield return null;
                 }
 
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.5f);
             }
         }
     }

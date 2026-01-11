@@ -125,11 +125,7 @@ public class Abreuvoir : MiniGameParent
             value -= 0.6f;
             eau.SetFloat("_Apparition", value);
             
-            if(value < 1 && value > 0.9)
-            {
-                print("Splash");
-                splashParticle.Play();
-            }
+            splashParticle.Play();
             
             yield return null;
         }
