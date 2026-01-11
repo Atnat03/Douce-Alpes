@@ -35,11 +35,8 @@ public class HandAnimation : MonoBehaviour
 
     IEnumerator PlayAnimation()
     {
-        print("start animation");
-        
         yield return new WaitForSeconds(0.5f);
         
-        print(handImage.gameObject.activeSelf);
         handImage.gameObject.SetActive(true);
 
         while (true)

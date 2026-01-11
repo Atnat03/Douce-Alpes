@@ -158,7 +158,7 @@ public class SwipeDetection : MonoBehaviour
 
                         bool isHead = Vector3.Distance(cleanPoint, headCenter)
                                       <= CleanManager.instance.GetHeadDetectionRadius();
-
+                        
                         CleanManager.instance.ApplyClean(cleanPoint, isHead);
                         return;
                     }
@@ -182,6 +182,8 @@ public class SwipeDetection : MonoBehaviour
                 bool isHead = Vector3.Distance(cleanPoint, head.position)
                               <= CleanManager.instance.GetHeadDetectionRadius();
 
+
+                
                 CleanManager.instance.ApplyClean(cleanPoint, isHead);
                 return;
             }

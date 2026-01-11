@@ -95,6 +95,9 @@ public class CleanManager : MiniGameParent
     [SerializeField] private float offsetStartDistance = 0.4f;
     [SerializeField] private float maxOffset = 0.15f;
     [SerializeField] private float offsetStrength = 1.0f;
+    
+    [SerializeField] private float showerInterval = 0.08f;
+    private float lastShowerTime;
 
     
     private void Awake()
@@ -238,10 +241,8 @@ public class CleanManager : MiniGameParent
 
         while (elapsed < duration)
         {
-            // ✅ Vérifier que le target existe toujours
             if (target == null)
             {
-                Debug.LogWarning("⚠️ MoveOverTime interrompu : target détruit");
                 sheepIsMoving = false;
                 yield break;
             }
@@ -304,6 +305,10 @@ public class CleanManager : MiniGameParent
                 TryAddShampoo(pos, isHead);
                 break;
             case CleaningTool.Shower:
+                if (Time.time - lastShowerTime < showerInterval)
+                    return;
+
+                lastShowerTime = Time.time;
                 CheckShampoo(pos);
                 break;
         }
@@ -350,7 +355,7 @@ public class CleanManager : MiniGameParent
         GameObject d = Instantiate(shower, pos, Quaternion.identity);
         Destroy(d, 0.3f);
 
-        float radius = 0.1f;
+        float radius = 0.2f;
         for (int i = shampooList.Count - 1; i >= 0; i--)
         {
             GameObject s = shampooList[i];

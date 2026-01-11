@@ -190,6 +190,7 @@ public class CameraControl : MonoBehaviour
         targetPosition = pos + Vector3.up * targetPosition.y;
         
         grange.UI.SetActive(true);
+        grange.exclamation.SetActive(false);
     }
     
     public void SetRootFocusAbreuvoir()
