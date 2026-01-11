@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -38,7 +39,11 @@ public class Saving : MonoBehaviour
     public void SetSavingDuration()
     {
         int selectedIndex = dropDurations.value;
-        savingDuration = int.Parse(dropDurations.options[selectedIndex].text);
+        string text = dropDurations.options[selectedIndex].text;
+
+        string numberOnly = Regex.Match(text, @"\d+").Value;
+
+        savingDuration = int.Parse(numberOnly);
     }
     
     [ContextMenu("Save Game")]

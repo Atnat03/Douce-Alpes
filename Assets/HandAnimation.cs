@@ -61,8 +61,6 @@ public class HandAnimation : MonoBehaviour
 
                     t += Time.deltaTime;
                     yield return null;
-                    
-                    print(targets.Length + " / " + t + " / " + handImage.rectTransform.anchoredPosition);
                 }
 
                 yield return new WaitForSeconds(0.5f);

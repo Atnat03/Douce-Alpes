@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Settings : MonoBehaviour
 {
     public static Settings instance;
-    private GameObject buttonSheep;
+    public GameObject buttonSheep;
 
     private void Awake()
     {
