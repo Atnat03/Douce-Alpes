@@ -90,6 +90,7 @@ public class CleanManager : MiniGameParent
 
     [Header("Finger Offset")]
     [SerializeField] private Vector2 screenOffset = new Vector2(40f, 60f);
+    [SerializeField] private Vector3 showerOffset = new Vector3(-0.05f, 0.05f, 0f);
 
     [Header("Radial Offset Correction")]
     [SerializeField] private float offsetStartDistance = 0.4f;
@@ -352,7 +353,10 @@ public class CleanManager : MiniGameParent
 
     private void CheckShampoo(Vector3 pos)
     {
-        GameObject d = Instantiate(shower, pos, Quaternion.identity);
+        Vector3 spawnPos = pos + showerOffset;
+
+        GameObject d = Instantiate(shower, spawnPos, Quaternion.identity);
+        d.transform.LookAt(Camera.main.transform);
         Destroy(d, 0.3f);
 
         float radius = 0.2f;

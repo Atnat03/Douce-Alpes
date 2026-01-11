@@ -19,6 +19,9 @@ public class VisualTricot : MonoBehaviour
     [SerializeField] private GameObject pointAccroche;
     [SerializeField] private SplineMaison splineLaine;
     
+    [SerializeField] private ParticleSystem particle;
+    private bool particlePlayed = false;
+    
     public void Initialise(MeshRenderer mesh, int numberVertical)
     {
         shader = new Material(mesh.sharedMaterial);
@@ -37,6 +40,8 @@ public class VisualTricot : MonoBehaviour
 
     IEnumerator SmoothAddedLaine()
     { 
+        particlePlayed = false;
+        
         if (value_Vertical >= maxNumberVertical)
         {
             Debug.Log("Fin du tricot");
@@ -113,5 +118,16 @@ public class VisualTricot : MonoBehaviour
 
         pointAccroche.transform.localPosition = cibleLocal;
         splineLaine.SetDernierPoint(pointAccroche.transform.position);
+        
+        Vector3 secondPoint = splineLaine.points.Count > 1 ? splineLaine.points[1] : splineLaine.points[0];
+
+        if (!particlePlayed)
+        {
+            particle.transform.position = secondPoint;
+            particle.Play();
+            particlePlayed = true;
+        }
+        
+        particle.transform.position = pointAccroche.transform.position;
     }
 }

@@ -12,6 +12,8 @@ public class DuckAnimation : TouchableObject
     public float raduisCircle = 2f;
 
     public AudioClip clip;
+
+    public GameObject particle;
     
     private void Update()
     {
@@ -21,7 +23,7 @@ public class DuckAnimation : TouchableObject
             hasNewDestination = true;
             return;
         }
-
+        
         Vector3 direction = destination - transform.position;
         direction.y = 0;
         Quaternion targetRotation = Quaternion.LookRotation(direction);
@@ -36,11 +38,17 @@ public class DuckAnimation : TouchableObject
         
         if (angle < 5f)
         {
+            particle.SetActive(false);
+
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 destination,
                 speedMove * Time.deltaTime
             );
+        }
+        else
+        {
+            particle.SetActive(true);
         }
 
         if (Vector3.Distance(transform.position, destination) < 0.1f)
@@ -61,10 +69,6 @@ public class DuckAnimation : TouchableObject
 
     public override void TouchEvent()
     {
-        //base.TouchEvent();
-
-        Debug.Log("Canard");
-        
         float pitch = Random.Range(0.8f, 1f);
         
         AudioManager.instance.PlaySound(0, pitch);

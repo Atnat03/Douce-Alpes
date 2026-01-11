@@ -49,7 +49,6 @@ public class TonteManager : MiniGameParent
     [SerializeField] private float offsetStrength = 1.0f;      
     
     [SerializeField] AudioSource audioSource;
-    [SerializeField] private ParticleSystem vfxParticle;
     
     [SerializeField] private Image logoTool;
     [SerializeField] private Sprite[] levelRasoirSprites;
@@ -263,19 +262,6 @@ public class TonteManager : MiniGameParent
             }
 
             particleTonte.transform.position = hitPos;
-            
-                    
-            bool onLaine = IsParticleOnLaine(particleTonte.transform.position);
-
-            if (onLaine)
-            {
-                if (!vfxParticle.isPlaying)
-                    vfxParticle.Play();
-            }
-            else
-            {
-                vfxParticle.Stop();
-            }
         }
 
         int r = UnityEngine.Random.Range(0, 50);

@@ -34,6 +34,9 @@ public class Cadenas : TouchableObject
 
     private void Update()
     {
+        if(GameManager.instance.currentCameraState != CamState.MiniGame)
+            GetComponentInChildren<Outline>().enabled = false;
+        
         if(!fallCadenas)
             animator.enabled = GameManager.instance.currentCameraState == CamState.MiniGame;
         else
