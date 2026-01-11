@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Settings : MonoBehaviour
 {
     public static Settings instance;
-    private CamState previousCamState = CamState.Default;
+    private GameObject buttonSheep;
 
     private void Awake()
     {
@@ -16,8 +16,7 @@ public class Settings : MonoBehaviour
     {
         if (gameManager != null)
         {
-            previousCamState = gameManager.currentCameraState;
-            gameManager.ChangeCameraState(CamState.UI);
+            buttonSheep.SetActive(false);
         }
         
         if(SpecialSoundActivated)
@@ -27,7 +26,7 @@ public class Settings : MonoBehaviour
     public void ExitSettings()
     {
         if(gameManager != null)
-            gameManager.ChangeCameraState(previousCamState);
+            buttonSheep.SetActive(true);
     }
     
     public float globalVolume = 1f;

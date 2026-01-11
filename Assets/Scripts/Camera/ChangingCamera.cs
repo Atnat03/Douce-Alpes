@@ -297,7 +297,7 @@ private IEnumerator SmoothReset()
     float elapsed = 0f;
     float duration = Mathf.Max(0.0001f, timerToTransition);
     
-    AudioManager.instance.PlaySound(33, 1f, 0.1f);
+    AudioManager.instance.PlaySound(33, 1f, 0.25f);
 
     while (elapsed < duration)
     {

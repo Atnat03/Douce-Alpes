@@ -13780,6 +13780,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6036316225081538113, guid: 83b07461995a96842a6ddcb5e5159fdf, type: 3}
   m_PrefabInstance: {fileID: 308502858}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &308552476 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4097477113935147496, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &310537616 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8626556171524285589, guid: 1784eb4ab24447a43bfe6cd4662424c7, type: 3}
@@ -19657,7 +19662,7 @@ MonoBehaviour:
   spawnPosition: {x: -3.5, y: 0.35, z: 2.75}
   spawnDelay: 0.1
   neighborRadius: 3
-  separationRadius: 2
+  separationRadius: 3
   minSpeed: 0.5
   maxSpeed: 0.75
   separationWeight: 3
@@ -27240,7 +27245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -35779,6 +35784,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885861640}
   m_CullTransparentMesh: 1
+--- !u!1 &888837613 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4773226357565576368, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+  m_PrefabInstance: {fileID: 1063991363}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &890370701
 GameObject:
   m_ObjectHideFlags: 0
@@ -42382,6 +42392,10 @@ PrefabInstance:
       propertyPath: m_RaycastPadding.z
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 848232375924108564, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 893016194554545540, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
       propertyPath: points.Array.data[0].x
       value: -1.15
@@ -42790,6 +42804,10 @@ PrefabInstance:
       propertyPath: particle
       value: 
       objectReference: {fileID: 1156643993}
+    - target: {fileID: 4672927398769838699, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: positionMin.x
+      value: -0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 4816102891267926644, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -42838,6 +42856,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 48.330948
       objectReference: {fileID: 0}
+    - target: {fileID: 5001814761042205847, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.b
+      value: 0.6431373
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001814761042205847, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.g
+      value: 0.9490197
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001814761042205847, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001814761042205847, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 5317475074149798932, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
       propertyPath: DontBuyWool
       value: 
@@ -43270,6 +43304,22 @@ PrefabInstance:
       propertyPath: m_RaycastPadding.z
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 8410260282151415989, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8410260282151415989, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8410260282151415989, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.r
+      value: 0.08675194
+      objectReference: {fileID: 0}
+    - target: {fileID: 8410260282151415989, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 8458006652391854787, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -43338,6 +43388,66 @@ PrefabInstance:
       propertyPath: passageColor.r
       value: 0.86274517
       objectReference: {fileID: 0}
+    - target: {fileID: 8596175346782732996, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596175346782732996, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 550
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596175346782732996, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596175346782732996, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 108
+      objectReference: {fileID: 0}
+    - target: {fileID: 8658852127949953123, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Transition
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8658852127949953123, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 82c45794126111940915e5cf5899e073, type: 3}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: bda9b7eb36c5bdc48bbb7da03e6a59e6, type: 3}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836983916235983167, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 8861947847116683276, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -43365,6 +43475,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 345770281183323048, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
+    - {fileID: 2442126800028338064, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1250352832281945855, guid: 5142034a56ad83a43b156d4c1467b679, type: 3}
       insertIndex: -1
@@ -44414,6 +44525,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 7691423440041692185, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+      propertyPath: particle
+      value: 
+      objectReference: {fileID: 308552476}
     - target: {fileID: 8900835279605254865, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
       propertyPath: exclamation
       value: 
@@ -44434,6 +44549,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -5.01
       objectReference: {fileID: 0}
+    - target: {fileID: 9170095353351748951, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
+      propertyPath: particle
+      value: 
+      objectReference: {fileID: 888837613}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2831864211941381447, guid: d005482d805ed974aaa9f46d997a6f98, type: 3}
@@ -48240,6 +48359,10 @@ PrefabInstance:
       propertyPath: lengthInSec
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1350835451600955298, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5025361642821960452, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
       propertyPath: looping
       value: 0
@@ -48251,6 +48374,10 @@ PrefabInstance:
     - target: {fileID: 5025361642821960452, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
       propertyPath: lengthInSec
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5025361642821960452, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5548670842403580229, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
       propertyPath: m_LocalPosition.x
@@ -48300,6 +48427,10 @@ PrefabInstance:
       propertyPath: lengthInSec
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5827433462932597443, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6854767699343399631, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
       propertyPath: m_Name
       value: VFX_Tricot
@@ -48316,6 +48447,10 @@ PrefabInstance:
       propertyPath: lengthInSec
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7910795826199738464, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9099897693026881689, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
       propertyPath: looping
       value: 0
@@ -48323,6 +48458,10 @@ PrefabInstance:
     - target: {fileID: 9099897693026881689, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
       propertyPath: lengthInSec
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9099897693026881689, guid: c4ba75bda8e38ff43933edad03226217, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -51303,7 +51442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -72232,7 +72371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 15, y: 15, z: 15, w: 15}
   m_Maskable: 1
   m_OnCullStateChanged:

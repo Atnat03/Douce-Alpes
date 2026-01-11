@@ -14,7 +14,7 @@ public class VisualTricot : MonoBehaviour
     [SerializeField] float duree = 2f;
     
     [Header("Spline")]
-    private Vector2 positionMin;
+    [SerializeField] private Vector2 positionMin;
     [SerializeField] private Vector2 positionMax;
     [SerializeField] private GameObject pointAccroche;
     [SerializeField] private SplineMaison splineLaine;
@@ -27,7 +27,6 @@ public class VisualTricot : MonoBehaviour
         shader = new Material(mesh.sharedMaterial);
         mesh.material = shader;
         
-        positionMin = mesh.transform.localPosition;
         maxNumberVertical = shader.GetFloat("_MaxVertical")+1;
         maxNumberHorizontal = shader.GetFloat("_MaxHorizontal");
     }
