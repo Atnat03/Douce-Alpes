@@ -47,6 +47,10 @@ public class VisualTricot : MonoBehaviour
         float cible = gradient_Droite ? 0 : maxNumberHorizontal;
         float temps = 0f;
 
+        float pitch = Mathf.Lerp(0.8f, 1.2f, value_Vertical / maxNumberHorizontal);
+        
+        AudioManager.instance.PlaySound(37, pitch);
+
         while (temps < duree)
         {
             value_Horizontal = Mathf.Lerp(depart, cible, temps / duree);

@@ -21,7 +21,7 @@ public class LeftPosState : ICleaningState
         manager.cleanManager.canAddShampoo = false;
         manager.cleanManager.canRotateCamera = false;
         
-        AudioManager.instance.PlaySound(25, 1f, 0.25f);
+        AudioManager.instance.PlaySound(39, 1f, 0.25f);
 
         manager.cleanManager.StartCoroutine(
             RotateAroundSheep(

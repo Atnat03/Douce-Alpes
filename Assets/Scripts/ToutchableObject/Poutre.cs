@@ -45,11 +45,14 @@ public class Poutre : MonoBehaviour
 
         GetComponent<Animator>().enabled = false;
 
+        
         rb = gameObject.AddComponent<Rigidbody>();
         rb.useGravity = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
+        AudioManager.instance.PlaySound(38);
+        
         await Task.Yield();
 
         rb.AddForce(Vector3.up * impulseForce, ForceMode.Impulse);

@@ -16,7 +16,7 @@ public class FrontPosState : ICleaningState
         manager.cleanManager.currentCleaningLayer = frontLayer;
         manager.cleanManager.currentCleaningSide = CleaningSide.Front;
         
-        AudioManager.instance.PlaySound(25, 1.1f, 0.25f);
+        AudioManager.instance.PlaySound(39, 1.1f, 0.25f);
 
         manager.cleanManager.canAddShampoo = false;
         manager.cleanManager.StartCoroutine(ChangePositionCamera(camPos, 1f));

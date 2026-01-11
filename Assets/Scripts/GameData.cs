@@ -407,12 +407,16 @@ public class GameData : MonoBehaviour
     {
         isWritting = true;
         
+        AudioManager.instance.PlaySound(32);
+        
         if(!isFirst)
         {
             papy.GetComponent<Animator>().SetTrigger("NextMessage");
 
             yield return new WaitForSeconds(0.3f);
         }
+        
+        AudioManager.instance.PlaySound(43);
         
         message.text = "";
         foreach (char c in fullMessage)

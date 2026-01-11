@@ -85,6 +85,8 @@ public class PlayerMoney : MonoBehaviour
         
         bonheurUI.DropCanva(pos, value, woolSprite, woolFinalTarget.position);
         
+        AudioManager.instance.PlaySound(35);
+        
         StartCoroutine(AddWoolSmooth(currentWhool + value));
     }
     

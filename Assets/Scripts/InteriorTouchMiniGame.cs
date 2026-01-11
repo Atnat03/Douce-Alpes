@@ -28,7 +28,9 @@ public class InteriorTouchMiniGame : TouchableObject
         if(GameData.instance.timer.currentMiniJeuToDo == minijeu)
         {
             if(isTonte)
+            {
                 sceneManager.DisableTonteBubble();
+            }
             else
                 sceneManager.DisableCleanBubble();
             

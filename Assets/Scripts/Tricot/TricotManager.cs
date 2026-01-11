@@ -98,14 +98,17 @@ public class TricotManager : MonoBehaviour
                 if (!PlayerMoney.instance.isEnoughtWhool(numberTotalWool(model.pattern)))
                 {
                     Debug.Log("Pas assez de laine pour commencer ce modèle !");
+                    AudioManager.instance.PlaySound(5);
                     Instantiate(NotEnougthWool, carnetParent);
                     return;
                 }
 
+                AudioManager.instance.PlaySound(40);
                 InitalizePattern(model);
             }
             else
             {
+                AudioManager.instance.PlaySound(5);
                 Instantiate(DontBuyWool, carnetParent);
             }
         });
@@ -191,6 +194,7 @@ public class TricotManager : MonoBehaviour
         
         if (!canShowNext || currentModel >= currentPattern.Count)
         {
+            AudioManager.instance.PlaySound(42);
             ResetDrawing();
             return;
         }
@@ -198,6 +202,7 @@ public class TricotManager : MonoBehaviour
         List<int> modelPoints = currentPattern[currentModel].pointsList;
         if (currentPassagePoint.Count != modelPoints.Count)
         {
+            AudioManager.instance.PlaySound(42);
             ResetDrawing();
             return;
         }
@@ -206,6 +211,7 @@ public class TricotManager : MonoBehaviour
         {
             if (currentPassagePoint[j] != modelPoints[j])
             {
+                AudioManager.instance.PlaySound(42);
                 ResetDrawing();
                 return;
             }
@@ -220,6 +226,7 @@ public class TricotManager : MonoBehaviour
         
         if (okImage != null) okImage.SetActive(true);
         ResetDrawing();
+        AudioManager.instance.PlaySound(36);
         StartCoroutine(HideOkAndNextModel());
     }
 
@@ -394,6 +401,7 @@ public class TricotManager : MonoBehaviour
         print(currentPriceSell);
         
         PlayerMoney.instance.AddMoney(currentPriceSell, spawnMoney.position);
+        AudioManager.instance.PlaySound(41);
         
         currentPattern = null;
         numberModelOfThisPattern = 0;
