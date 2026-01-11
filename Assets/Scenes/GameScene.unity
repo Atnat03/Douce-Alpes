@@ -33964,14 +33964,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 9
+  - eventID: 4
     callback:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 849810602}
           m_TargetAssemblyTypeName: ResetInputFields, Assembly-CSharp
-          m_MethodName: OnSelect
-          m_Mode: 0
+          m_MethodName: OnClick
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -48918,7 +48918,7 @@ MonoBehaviour:
   sheepPrefab: {fileID: 2722875930628605413, guid: 42efcca6f63cef94ab4521341f5e5a91, type: 3}
   alreadyBubble: 0
   centerGrange: {fileID: 405987985}
-  isTutoInterior: 0
+  isTutoInterior: 1
   messages:
   - "Voici l'int\xE9rieur de votre grange"
   - "C'est ici que vous allez pouvoir cr\xE9er un petit cocon pour vos mouton"
@@ -95575,14 +95575,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 9
+  - eventID: 4
     callback:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2124453184}
           m_TargetAssemblyTypeName: ResetInputFields, Assembly-CSharp
-          m_MethodName: OnSelect
-          m_Mode: 0
+          m_MethodName: OnClick
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
