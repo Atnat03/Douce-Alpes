@@ -77,7 +77,7 @@ public class Sheep : TouchableObject
 
     private Coroutine rotationCoroutine;
 
-    private float timerSound = Random.Range(5, 30);
+    private float timerSound = 0;
     
     public Animator animator;
 
@@ -108,6 +108,7 @@ public class Sheep : TouchableObject
     private void Start()
     {
         laine.GetComponent<Outline>().enabled = false;
+        timerSound = Random.Range(5, 30);
 
         processWool = Random.Range(50, 100);
         curPuanteur = Random.Range(0, 50);
