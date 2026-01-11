@@ -136,6 +136,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &2968625072126695654
 Animator:
   serializedVersion: 7
@@ -681,6 +684,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 4
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &8372491020830619450
 Animator:
   serializedVersion: 7
@@ -1058,6 +1064,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 7
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &580904004983312517
 Animator:
   serializedVersion: 7
@@ -1611,6 +1620,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 6
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &4702576353433147415
 Animator:
   serializedVersion: 7
@@ -1844,6 +1856,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &7306787864197466264
 Animator:
   serializedVersion: 7
@@ -2162,8 +2177,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3829090377692614854}
   - {fileID: 6278983959961168933}
+  - {fileID: 3829090377692614854}
   m_Father: {fileID: 3766156132161427837}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2382,6 +2397,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 9
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &4202632009662421003
 Animator:
   serializedVersion: 7
@@ -2530,7 +2548,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   okImage: {fileID: 4685239366298634711}
   imageProduct: {fileID: 3499570630662480529}
-  testTxt: {fileID: 4438555918648299723}
   uiLineRenderer: {fileID: 8410260282151415989}
   modelLineRenderer: {fileID: 5001814761042205847}
   _3x3Ui:
@@ -2556,6 +2573,7 @@ MonoBehaviour:
   pagePrefab: {fileID: 3262113959040261481, guid: cd8bd822ad010124e9bebf39983e03c5, type: 3}
   models: {fileID: 11400000, guid: f7d805eedf7466148a4ca3b301f99587, type: 2}
   NotEnougthWool: {fileID: 6285299068579769878, guid: 40985473e535143438e86d15863076b3, type: 3}
+  DontBuyWool: {fileID: 0}
 --- !u!114 &4672927398769838699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2572,11 +2590,14 @@ MonoBehaviour:
   value_Vertical: 0
   value_Horizontal: 0
   maxNumberHorizontal: 2
+  maxNumberVertical: 0
   obejctVisual: {fileID: 0}
   duree: 1.5
+  positionMin: {x: 0, y: 0}
   positionMax: {x: 0.85, y: 2.9}
   pointAccroche: {fileID: 756204588363466293}
   splineLaine: {fileID: 893016194554545540}
+  particle: {fileID: 0}
 --- !u!1 &5068837925346804635
 GameObject:
   m_ObjectHideFlags: 0
@@ -3072,6 +3093,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &7507895293706452727
 Animator:
   serializedVersion: 7
@@ -3541,6 +3565,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 8
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &3024019342741600374
 Animator:
   serializedVersion: 7
@@ -3842,6 +3869,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   manager: {fileID: 5317475074149798932}
+  baseColor: {r: 0, g: 0, b: 0, a: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  passageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &4462308565259900982
 Animator:
   serializedVersion: 7

@@ -12,6 +12,8 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     
     Animator animator;
 
+    public RectTransform center;
+
     public Color baseColor;
     public Color startColor;
     public Color passageColor;
@@ -28,9 +30,10 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
 
     void StartHover()
     {
+        print("Hover");
+        
         if (manager == null) return;
         manager.SetHover(true);
-        GetComponent<Image>().color = passageColor;
         SnapLineToButtonCenter();
     }
 
@@ -55,21 +58,23 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
         if (manager == null || manager.uiLineRenderer == null)
             return;
 
+        GetComponent<Image>().color = passageColor;
+
         RectTransform lineRect = manager.uiLineRenderer.rectTransform;
 
-        Vector3 worldCenter = rect.TransformPoint(rect.rect.center);
+        Vector2 localCenter = rect.anchoredPosition;
 
-        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, worldCenter);
-
+        Vector2 localPoint;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             lineRect,
-            screenPoint,
-            Camera.main,
-            out Vector2 localPos
+            RectTransformUtility.WorldToScreenPoint(null, rect.position),
+            null,
+            out localPoint
         );
 
-        manager.AddPointInList(id, localPos);
+        manager.AddPointInList(id, localPoint);
     }
+
 
     
     public void OnPointerUp(PointerEventData eventData)
