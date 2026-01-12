@@ -17,7 +17,8 @@ public class Chien : MonoBehaviour
     [SerializeField] private ParticleSystem barkEffect;
 
     private bool isMiniGameActive = false;
-    
+
+    public int idColor = 0;
     [SerializeField] Material marronMaterial;
     [SerializeField] Material whiteMaterial;
     [SerializeField] SkinnedMeshRenderer mesh;
@@ -30,6 +31,14 @@ public class Chien : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         sheepDest = GameManager.instance.grange.GetSheepDestroyer();
+    }
+
+    public void SetColor(int i)
+    {
+        if(i == 0)
+            SetMarronColor();
+        else if(i == 1)
+            SetWhiteColor();
     }
 
     private void Update()
@@ -144,6 +153,7 @@ public class Chien : MonoBehaviour
         mats[0] = marronMaterial;
         mats[3] = marronMaterial;
         mesh.materials = mats;
+        idColor = 0;
     }
 
     public void SetWhiteColor()
@@ -152,6 +162,7 @@ public class Chien : MonoBehaviour
         mats[0] = whiteMaterial;
         mats[3] = whiteMaterial;
         mesh.materials = mats;
+        idColor = 1;
     }
 
 

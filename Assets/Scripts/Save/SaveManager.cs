@@ -76,6 +76,8 @@ public class PlayerData
     public UpgradesSaveData upgrades;
     public SettingsSaveData settings;
     
+    public ChienDataSave chienData;
+    
     public int timeBetweenSave;
 
     public bool isTuto;
@@ -107,6 +109,8 @@ public class PlayerData
         settings = Settings.instance.SaveSettings();
         
         TimerManager timer = GameData.instance.timer;
+
+        chienData = GameData.instance.nicheManager.SaveData();
         
         if (timer != null)
         {

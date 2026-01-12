@@ -67,7 +67,8 @@ public class GameData : MonoBehaviour
     public PanneauShop PanneauShop;
     public Build bergerie;
     public InteriorSceneManager interiorSceneManager;
-
+    public NicheManager nicheManager;
+    
     [Header("2e Tuto")] 
     public bool is2eTuto = false;
     public string[] messages;
@@ -154,6 +155,9 @@ public class GameData : MonoBehaviour
         timer.UpdateAllButton(true);
         int nextIndex = Array.IndexOf(Enum.GetValues(typeof(MiniGames)), timer.currentMiniJeuToDo);
         timer.StartCoroutine(timer.UpdateHorloge(nextIndex));
+        
+        nicheManager.gameObject.SetActive(data.chienData.isActive);
+        nicheManager.LoadData(data.chienData);
 
         numberDay = data.nbDay;
         

@@ -50,6 +50,7 @@ public class TonteManager : MiniGameParent
     [SerializeField] private float offsetStrength = 1.0f;      
     
     [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip[] tondeuseClip;
     
     [SerializeField] private Image logoTool;
     [SerializeField] private Sprite[] levelRasoirSprites;
@@ -355,5 +356,6 @@ public class TonteManager : MiniGameParent
     private void Update()
     {
         logoTool.sprite = levelRasoirSprites[GameData.instance.GetLevel(TypeAmelioration.Tonte)];
+        audioSource.clip = tondeuseClip[GameData.instance.GetLevel(TypeAmelioration.Tonte)];
     }
 }

@@ -16,21 +16,24 @@ public class NicheManager : TouchableObject
     [SerializeField] private GameObject colorChange;
     [SerializeField] private Collider boxColldier;
     [SerializeField] private GameObject exclamation;
+    [SerializeField] private Transform sortieNichePos;
+    bool isinminigame = false;
     
     [Header("État du chien")]
     [SerializeField] private bool isInNiche = false;
     public string dogName = "";
+    
 
     private void Start()
     {
-        GameManager.instance.startMiniGame += SortirLeChien;
-        GameManager.instance.endMiniGame += RentrerLeChien;
-
         dogNameInput.text = dogName;
     }
 
     private void OnEnable()
     {
+        GameManager.instance.startMiniGame += SortirLeChien;
+        GameManager.instance.endMiniGame += RentrerLeChien;
+        
         RentrerLeChien();
     }
 
@@ -63,17 +66,27 @@ public class NicheManager : TouchableObject
     {
         if (SheepBoidManager.instance.nbInstantSheep == 0)
             return;
+        
+        print("Sortis");
 
         chien.SetMiniGameActive(true);
+
+        agentChien.isStopped = false;
+        agentChien.SetDestination(sortieNichePos.position);
+
         isInNiche = false;
+        isinminigame = true;
     }
+
 
     private void RentrerLeChien()
     {
+        print("rentré");
+        
         chien.SetMiniGameActive(false);
         agentChien.isStopped = false;
         agentChien.SetDestination(nichePos.position);
-        isInNiche = false;
+        isinminigame = false;
     }
 
     private void Update()
@@ -85,8 +98,9 @@ public class NicheManager : TouchableObject
 
         boxColldier.enabled = GameManager.instance.currentCameraState == CamState.Default;
 
-        if (distanceToNiche < 1f && !isInNiche)
+        if (distanceToNiche < 1f && !isInNiche && !isinminigame)
         {
+            print("dans la niche");
             isInNiche = true;
             StartCoroutine(RotateSmoothInNiche());
         }
@@ -116,5 +130,30 @@ public class NicheManager : TouchableObject
     public void ChangeDogName()
     {
         dogName = dogNameInput.text;
+    }
+
+    public void LoadData(ChienDataSave data)
+    {
+        dogName = data.dogName;
+        chien.SetColor(data.idColor);
+    }
+
+    public ChienDataSave SaveData()
+    {
+        return new ChienDataSave(dogName, gameObject.activeInHierarchy, chien.idColor);
+    }
+}
+
+public class ChienDataSave
+{
+    public string dogName;
+    public bool isActive;
+    public int idColor;
+
+    public ChienDataSave(string dogName, bool isActive, int idColor)
+    {
+        this.dogName = dogName;
+        this.isActive = isActive;
+        this.idColor = idColor;
     }
 }
