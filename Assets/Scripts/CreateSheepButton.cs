@@ -17,7 +17,6 @@ public class CreateSheepButton : MonoBehaviour
         
         GetComponent<Image>().color = PlayerMoney.instance.isEnoughtMoney(PlayerMoney.instance.GetCurrentSheepPrice())
             ? Color.white : new Color(0.6f, 0.6f, 0.6f, 1f);
- 
         
         price.text = PlayerMoney.instance.GetCurrentSheepPrice().ToString();
     }

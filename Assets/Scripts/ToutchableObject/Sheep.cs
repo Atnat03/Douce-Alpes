@@ -200,7 +200,7 @@ public class Sheep : TouchableObject
         if(behhhhhParticle.isPlaying)
             return;
         
-        AudioManager.instance.PlaySound(Random.Range(17,20), 1f, 0.1f);
+        AudioManager.instance.PlaySound(Random.Range(17,20), 1f, 0.25f);
         behhhhhParticle.Play();
     }
     

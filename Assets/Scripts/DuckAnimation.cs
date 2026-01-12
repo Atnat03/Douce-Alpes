@@ -38,7 +38,7 @@ public class DuckAnimation : TouchableObject
         
         if (angle < 5f)
         {
-            particle.SetActive(false);
+            particle.SetActive(true);
 
             transform.position = Vector3.MoveTowards(
                 transform.position,
@@ -48,7 +48,7 @@ public class DuckAnimation : TouchableObject
         }
         else
         {
-            particle.SetActive(true);
+            particle.SetActive(false);
         }
 
         if (Vector3.Distance(transform.position, destination) < 0.1f)

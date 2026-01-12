@@ -76,7 +76,7 @@ public class GameData : MonoBehaviour
     private int idMessage = -1;
     public GameObject nextMessage;
     private bool isWritting = false;
-    public GameObject buttonAddSheep;
+    public bool isTutoring2 = false;
     
     private void Awake()
     {
@@ -360,7 +360,6 @@ public class GameData : MonoBehaviour
             numberDay + 1);
     }
     
-    
     public void ResetDayStats()
     {
         if(numberDay == 2)
@@ -374,7 +373,7 @@ public class GameData : MonoBehaviour
 
         if (is2eTuto)
         {
-            buttonAddSheep.SetActive(false);
+            isTutoring2 = true;
             IsStatGame = true;
             papy.SetActive(true);
             NextMessage(true);
@@ -392,7 +391,7 @@ public class GameData : MonoBehaviour
     
     private void StopTuto()
     {
-        buttonAddSheep.SetActive(true);
+        isTutoring2 = false;
         IsStatGame = false;
         is2eTuto = false;
         papy.SetActive(false);

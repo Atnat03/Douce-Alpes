@@ -80,7 +80,10 @@ public class AddSkins : MonoBehaviour
             SkinUnit s = skinGO.GetComponent<SkinUnit>();
             s.id = skin.id;
             s.name = skin.name;
-            s.transform.GetChild(0).GetComponent<Image>().sprite = skin.logo;
+            
+            s.logoImage = s.transform.GetChild(0).GetComponent<Image>();
+            s.logoImage.sprite = skin.logo;
+            
             s.type = skinData.skins.Find(x => x.id == skin.id).type;
 
             scrollSnapBridge.AddExistingPanel(skinGO);

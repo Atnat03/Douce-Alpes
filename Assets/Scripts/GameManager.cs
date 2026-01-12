@@ -295,7 +295,7 @@ public class GameManager : MonoBehaviour
         
         friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
         sheepCreatorButton.SetActive(currentCameraState == CamState.Default 
-        && !GameData.instance.isSheepInside); 
+        && !GameData.instance.isSheepInside && !GameData.instance.isTutoring2); 
 
         if (CheckAllSheepHasWool() && sheepList.Count > 0)
         {
