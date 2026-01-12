@@ -46,6 +46,10 @@ public class VisualTricot : MonoBehaviour
             Debug.Log("Fin du tricot");
             yield break;
         }
+        
+        particlePlayed = true;
+        particle.transform.position = pointAccroche.transform.position;
+        particle.Play();
 
         float depart = value_Horizontal;
         float cible = gradient_Droite ? 0 : maxNumberHorizontal;
@@ -118,15 +122,6 @@ public class VisualTricot : MonoBehaviour
         pointAccroche.transform.localPosition = cibleLocal;
         splineLaine.SetDernierPoint(pointAccroche.transform.position);
         
-        Vector3 secondPoint = splineLaine.points.Count > 1 ? splineLaine.points[1] : splineLaine.points[0];
-
-        if (!particlePlayed)
-        {
-            particle.transform.position = secondPoint;
-            particle.Play();
-            particlePlayed = true;
-        }
-        
-        particle.transform.position = pointAccroche.transform.position;
+        particle.transform.position = pointAccroche.transform.position + (Vector3.back * 0.5f) + (Vector3.up * 0.2f);
     }
 }

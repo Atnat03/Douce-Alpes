@@ -18,6 +18,8 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     public Color startColor;
     public Color passageColor;
 
+    public bool isFirst = false;
+    
     private void Awake()
     {
         rect = GetComponent<RectTransform>();
@@ -40,6 +42,7 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
     public void SetFirstPoint()
     {
         animator.enabled = true;
+        isFirst = true;
         GetComponent<Image>().color = startColor;
     }
 
@@ -74,8 +77,6 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
 
         manager.AddPointInList(id, localPoint);
     }
-
-
     
     public void OnPointerUp(PointerEventData eventData)
     {
@@ -85,6 +86,9 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
 
     public void ResetButton()
     {
+        if (isFirst)
+            return;
+        
         animator.enabled = false;
         transform.localScale = startScale;
         GetComponent<Image>().color = baseColor;

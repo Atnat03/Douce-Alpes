@@ -218,19 +218,14 @@ public class TricotManager : MonoBehaviour
         }
 
         visualTricot.AddLaine();
-
-        foreach (RectTransform r in _3x3Ui)
-        {
-            r.GetComponent<ButtonShapeDrawing>().ResetButton();
-        }
         
         if (okImage != null) okImage.SetActive(true);
-        ResetDrawing();
+        ResetDrawing(true);
         AudioManager.instance.PlaySound(36);
         StartCoroutine(HideOkAndNextModel());
     }
 
-    private void ResetDrawing()
+    private void ResetDrawing(bool sucess = false)
     {
         currentPassagePoint.Clear();
         linePoints.Clear();
@@ -240,6 +235,23 @@ public class TricotManager : MonoBehaviour
             uiLineRenderer.points = linePoints.ToArray();
             uiLineRenderer.SetVerticesDirty();
             uiLineRenderer.enabled = false;
+        }
+
+        foreach (RectTransform b in _3x3Ui)
+        {
+            b.GetComponent<ButtonShapeDrawing>().ResetButton();
+        }
+
+        if (!sucess)
+        {
+            ApplyPrevisualisationLine();
+        }
+        else
+        {
+            foreach (RectTransform b in _3x3Ui)
+            {
+                b.GetComponent<ButtonShapeDrawing>().isFirst = false;
+            }
         }
     }
 
@@ -374,7 +386,7 @@ public class TricotManager : MonoBehaviour
         
         sellButton.gameObject.SetActive(false);
         
-        ResetDrawing();
+        ResetDrawing(true);
         
         visualTricot.Initialise(meshVisual.GetComponent<MeshRenderer>(), patternSO.pattern.Count);
 
@@ -391,7 +403,7 @@ public class TricotManager : MonoBehaviour
     {
         canShowNext = false;
         yield return new WaitForSeconds(0.5f);
-        ResetDrawing();
+        ResetDrawing(true);
         canShowNext = true;
         Debug.Log("Nouveau modèle : " + string.Join(",", model.pointsList));
     }
