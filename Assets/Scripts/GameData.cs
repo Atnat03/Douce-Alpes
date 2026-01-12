@@ -81,18 +81,13 @@ public class GameData : MonoBehaviour
     private void Awake()
     {
         instance = this;
-
-        Saving.instance.savingEvent += SaveMyData;
+        
         Saving.instance.loadingEvent += LoadMyData;
+        Saving.instance.savingEvent += SaveMyData;
         
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
-    }
-
-    private void Start()
-    {
-        papy.SetActive(false);
-        
+                
         dicoAmélioration = new() {
             { TypeAmelioration.Tonte, (soUpgradeList[0], 0)},
             { TypeAmelioration.Sortie, (soUpgradeList[1], 0)},
@@ -101,6 +96,11 @@ public class GameData : MonoBehaviour
             { TypeAmelioration.Abreuvoir, (soUpgradeList[4], 0)},
             //{ TypeAmelioration.Overflow, (soUpgradeList[5], 0)},
         };
+    }
+
+    private void Start()
+    {
+        papy.SetActive(false);
 
         Array.Fill(coolDownTimers, 0);
 
@@ -113,8 +113,12 @@ public class GameData : MonoBehaviour
     }
 
     private void LoadMyData(PlayerData data)
-    {
+    {        
+        print("LOADING...");
+        
         if (data == null) return;
+        
+        print("Data finding");
 
         timeWhenLoad = data.lastTime;
         timeSinceLastLoad =
@@ -155,7 +159,7 @@ public class GameData : MonoBehaviour
         
         LoadUpgrades(data.upgrades);
         
-        tricotManager.LoadTricotState(data.tricotData);
+         tricotManager.LoadTricotState(data.tricotData);
         
         isTuto = data.isTuto;
         interiorSceneManager.isTutoInterior = data.isTutoInterior;
@@ -166,26 +170,31 @@ public class GameData : MonoBehaviour
     public UpgradesSaveData GetSaveData()
     {
         var save = new UpgradesSaveData();
-    
-        foreach (var kvp in dicoAmélioration)
+
+        foreach (KeyValuePair<TypeAmelioration, (AmeliorationValueSO, int)> kvp in dicoAmélioration)
         {
-            save.niveaux[kvp.Key] = kvp.Value.Item2;
+            save.niveaux.Add(new UpgradeEntry
+            {
+                type = kvp.Key,
+                level = kvp.Value.Item2
+            });
         }
-    
+
         return save;
     }
+
 
     public void LoadUpgrades(UpgradesSaveData saveData)
     {
         if (saveData == null || saveData.niveaux == null)
             return;
 
-        foreach (var kvp in saveData.niveaux)
+        foreach (UpgradeEntry entry in saveData.niveaux)
         {
-            if (dicoAmélioration.ContainsKey(kvp.Key))
+            if (dicoAmélioration.ContainsKey(entry.type))
             {
-                var tuple = dicoAmélioration[kvp.Key];
-                dicoAmélioration[kvp.Key] = (tuple.Item1, kvp.Value);
+                (AmeliorationValueSO, int) tuple = dicoAmélioration[entry.type];
+                dicoAmélioration[entry.type] = (tuple.Item1, entry.level);
             }
         }
     }
@@ -436,7 +445,15 @@ public class GameData : MonoBehaviour
     #endregion
 }
 
+[Serializable]
+public class UpgradeEntry
+{
+    public TypeAmelioration type;
+    public int level;
+}
+
+[Serializable]
 public class UpgradesSaveData
 {
-    public Dictionary<TypeAmelioration, int> niveaux =  new Dictionary<TypeAmelioration, int>();
+    public List<UpgradeEntry> niveaux = new();
 }

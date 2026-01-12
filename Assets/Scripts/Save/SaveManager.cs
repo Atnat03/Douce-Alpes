@@ -22,7 +22,7 @@ public static class SaveManager
     {
         if (!File.Exists(SavePath))
         {
-            Debug.LogWarning("No save file found");
+            Debug.Log("No save file found");
             return null;
         }
 

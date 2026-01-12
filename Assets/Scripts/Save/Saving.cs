@@ -20,20 +20,20 @@ public class Saving : MonoBehaviour
     [SerializeField] public float savingDuration = 5f;
     [SerializeField] public GameObject savingUI;
     [SerializeField] public Dropdown dropDurations;
-    
-    
-    
-    private void Start()
-    {
-        if (!hasToLoadSave) return;
-
-        StartWaitSaving();
-        LoadData();
-    }
 
     void Awake()
     {
         instance = this;
+    }
+
+    private void Start()
+    {
+        if (!hasToLoadSave) return;
+        
+        print("loading in Saving script");
+        
+        LoadData();
+        StartWaitSaving();
     }
 
     public void SetSavingDuration()
@@ -69,6 +69,7 @@ public class Saving : MonoBehaviour
 
     public void LoadData()
     {
+        print("load data");
         PlayerData data = SaveManager.LoadPlayer();
         loadingEvent?.Invoke(data);
     }
