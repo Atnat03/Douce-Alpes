@@ -212,7 +212,7 @@ public class CleanManager : MiniGameParent
 
     private IEnumerator InitializeSheep(Transform sheep)
     {
-        yield return StartCoroutine(MoveOverTime(sheep, cleanPoint.position, 2f));
+        yield return StartCoroutine(MoveOverTime(sheep, cleanPoint.position, 2f, true));
     
         sheepIndex++;
     
@@ -227,14 +227,8 @@ public class CleanManager : MiniGameParent
         return skin.bounds.extents.y * headDetectionMultiplier;
     }
 
-    private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration)
+    private IEnumerator MoveOverTime(Transform target, Vector3 destination, float duration, bool isCome = false)
     {
-        if (target == null)
-        {
-            Debug.LogWarning("⚠️ MoveOverTime : target est null");
-            yield break;
-        }
-        
         sheepIsMoving = true;
         Vector3 start = target.position;
         float elapsed = 0f;
@@ -248,6 +242,13 @@ public class CleanManager : MiniGameParent
             {
                 sheepIsMoving = false;
                 yield break;
+            }
+
+            if (isCome && elapsed > duration*0.57f)
+            {
+                print("JUMP");
+                currentSheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
+                isCome = false;
             }
         
             elapsed += Time.deltaTime;
@@ -494,7 +495,6 @@ public class CleanManager : MiniGameParent
         if (screenPos == Vector2.zero)
             return;
 
-        imageTool.transform.parent.GetComponent<Animator>().SetBool("Using", true);
         imageTool.transform.parent.position = screenPos + screenOffset;
 
         Ray ray = camera.ScreenPointToRay(screenPos);

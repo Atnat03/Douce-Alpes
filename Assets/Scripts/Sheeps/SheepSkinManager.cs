@@ -117,6 +117,7 @@ public class SheepSkinManager : MonoBehaviour
 
     public void PlayJumpAnimation()
     {
+        print("Animation jump");
         animator.SetTrigger("Jump");
     }
 

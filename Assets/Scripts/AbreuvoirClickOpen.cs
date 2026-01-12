@@ -26,6 +26,9 @@ public class AbreuvoirClickOpen : TouchableObject
         if (cameraControl.IsCameraMoving)
             return;
         
+        if (cameraControl.gameObject.GetComponent<ChangingCamera>().isInTransition)
+            return;
+        
         if(TutoManager.instance != null)
             TutoManager.instance.Abreuvoir();
         

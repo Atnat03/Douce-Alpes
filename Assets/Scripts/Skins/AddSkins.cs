@@ -152,49 +152,48 @@ public class AddSkins : MonoBehaviour
         }
     }
     
-    private void OnPanelCentered(int newIndex, int previousIndex) 
+private void OnPanelCentered(int newIndex, int previousIndex) 
+{
+    if (snap == null || sheepWindow == null || SkinAgency.instance == null) return;
+    if (newIndex < 0 || newIndex >= snap.Panels.Length) return;
+
+    SkinUnit newSkinUnit = snap.Panels[newIndex].GetComponent<SkinUnit>();
+    if (newSkinUnit == null) return;
+
+    int skinId = newSkinUnit.id;
+
+    Dictionary<int, int> stacksDict = (skinType == SkinType.Hat) ? SkinAgency.instance.dicoHatSkinStack : SkinAgency.instance.dicoClotheSkinStack;
+    int stacks = stacksDict.ContainsKey(skinId) ? stacksDict[skinId] : 0;
+    bool canSelect = (skinType == SkinType.Hat ? sheepWindow.currentSkinHat : sheepWindow.currentSkinClothe) == skinId || stacks > 0;
+
+    if (previousIndex >= 0 && previousIndex < snap.Panels.Length) 
     {
-        if (snap == null || sheepWindow == null || SkinAgency.instance == null) return;
-        if (newIndex < 0 || newIndex >= snap.Panels.Length) return;
-
-        SkinUnit newSkinUnit = snap.Panels[newIndex].GetComponent<SkinUnit>();
-        if (newSkinUnit == null) return;
-
-        int skinId = newSkinUnit.id;
-        int currentSkinId = (skinType == SkinType.Hat) ? sheepWindow.currentSkinHat : sheepWindow.currentSkinClothe;
-
-        // Vérifier les stacks mais ne bloque pas le snap
-        Dictionary<int, int> stacksDict = (skinType == SkinType.Hat) ? SkinAgency.instance.dicoHatSkinStack : SkinAgency.instance.dicoClotheSkinStack;
-        int stacks = stacksDict.ContainsKey(skinId) ? stacksDict[skinId] : 0;
-        bool canSelect = (skinId == currentSkinId) || (stacks > 0);
-
-        // Mettre à jour les visuels (sélection)
-        if (previousIndex >= 0 && previousIndex < snap.Panels.Length) 
-        {
-            Image prevImage = snap.Panels[previousIndex].GetComponent<Image>();
-            if (prevImage != null) prevImage.sprite = unselectedSprite;
-        }
-        Image newImage = snap.Panels[newIndex].GetComponent<Image>();
-        if (newImage != null) newImage.sprite = selectedSprite;
-
-        if (canSelect)
-        {
-            AudioManager.instance.PlaySound(22);
-            
-            switch (skinType) 
-            {
-                case SkinType.Hat:
-                    sheepWindow.SetNewCurrentSkinHat(skinId);
-                    break;
-                case SkinType.Clothe:
-                    sheepWindow.SetNewCurrentSkinClothe(skinId);
-                    break;
-            }
-        }
-        
-        UpdateLockSprites();
-        UpdateStackDisplays();
+        Image prevImage = snap.Panels[previousIndex].GetComponent<Image>();
+        if (prevImage != null) prevImage.sprite = unselectedSprite;
     }
+    Image newImage = snap.Panels[newIndex].GetComponent<Image>();
+    if (newImage != null) newImage.sprite = selectedSprite;
+
+    if (canSelect)
+    {
+        AudioManager.instance.PlaySound(22);
+
+        // ✅ Mettre à jour le skin courant **avant** UpdateStackDisplays
+        switch (skinType) 
+        {
+            case SkinType.Hat:
+                sheepWindow.SetNewCurrentSkinHat(skinId);
+                break;
+            case SkinType.Clothe:
+                sheepWindow.SetNewCurrentSkinClothe(skinId);
+                break;
+        }
+    }
+
+    UpdateStackDisplays();
+    UpdateLockSprites();
+}
+
 
     private bool ShouldLockSkin(int skinId, int stacks, int currentSkinId)
     {
@@ -217,25 +216,33 @@ public class AddSkins : MonoBehaviour
     
     private void UpdateLockSprites()
     {
-        if (snap == null) return;
+        if (snap == null || sheepWindow == null || SkinAgency.instance == null) return;
 
         int centerIndex = snap.CenteredPanel;
+        int currentSkinId = (skinType == SkinType.Hat) ? sheepWindow.currentSkinHat : sheepWindow.currentSkinClothe;
+
+        Dictionary<int, int> stacksDict = (skinType == SkinType.Hat)
+            ? SkinAgency.instance.dicoHatSkinStack
+            : SkinAgency.instance.dicoClotheSkinStack;
 
         for (int i = 0; i < snap.NumberOfPanels; i++)
         {
             SkinUnit s = snap.Panels[i].GetComponent<SkinUnit>();
             if (s == null || s.lockImage == null) continue;
 
-            if (i == centerIndex)
-            {
-                s.lockImage.sprite = centerLockSprite;
-            }
-            else
-            {
-                s.lockImage.sprite = notCenterLockSprite;
-            }
+            int stacks = stacksDict.ContainsKey(s.id) ? stacksDict[s.id] : 0;
+
+            // ✅ La règle :
+            // Lock activé seulement si stacks == 0 ET que ce n'est pas le skin courant
+            bool shouldLock = stacks == 0 && s.id != currentSkinId;
+
+            s.lockImage.gameObject.SetActive(shouldLock);
+
+            // Changement du sprite selon la position centrale
+            s.lockImage.sprite = (i == centerIndex) ? centerLockSprite : notCenterLockSprite;
         }
     }
+
     
     public void SelectPanelVisual(int skinId)
     {

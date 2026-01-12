@@ -224,6 +224,7 @@ public class GameManager : MonoBehaviour
             SheepClicked?.Invoke(sheep);
             curLockSheep = sheep;
             sheep.isFocusing = true;
+            handSheepCaresse.SetActive(true);
         }
     }
 
@@ -243,6 +244,8 @@ public class GameManager : MonoBehaviour
         curLockSheep = null;
         
         isLock = false;
+        
+        handSheepCaresse.SetActive(false);
     }
 
     private Dictionary<int, float> sheepFatigue = new Dictionary<int, float>();
@@ -348,7 +351,6 @@ public class GameManager : MonoBehaviour
             SwapSceneManager.instance.SwapSceneInteriorExterior(1);
         }
     }
-
     
     public void SheepGetOutGrange()
     {

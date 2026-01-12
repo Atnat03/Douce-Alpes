@@ -115,6 +115,8 @@ public class Grange : Build
     
     private void UpdateCameraZoom()
     {
+        handNotZommed.SetActive(false);
+        
         if (GameData.instance.isSheepInside)
         {
             isGrangeZoomed = true;

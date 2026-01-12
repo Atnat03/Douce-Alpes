@@ -13,6 +13,8 @@ public class HandAnimation : MonoBehaviour
 	public bool isAlphaDecrese = true;
     public float duration = 1.5f;
     public float waitBeforeHand = 0.25f;
+
+    public bool isDoubleTouch = false;
     
     void OnEnable()
     {
@@ -37,34 +39,42 @@ public class HandAnimation : MonoBehaviour
     IEnumerator PlayAnimation()
     {
         yield return new WaitForSeconds(waitBeforeHand);
-        
+    
         handImage.gameObject.SetActive(true);
 
         while (true)
         {
             for (int n = 0; n < targets.Length - 1; n++)
             {
-                float t = 0f;
-                
-                handImage.rectTransform.anchoredPosition = targets[n];
+                // Déterminer combien de répétitions pour ce mouvement
+                int repeatCount = isDoubleTouch ? 2 : 1;
 
-				if(isAlphaDecrese)
-                	handImage.GetComponent<CanvasGroup>().alpha = 1f;
-
-                while (t < duration)
+                for (int r = 0; r < repeatCount; r++)
                 {
-                    float normalizedT = t / duration;
+                    float t = 0f;
+                    handImage.rectTransform.anchoredPosition = targets[n];
+                    handImage.GetComponent<CanvasGroup>().alpha = 1f;
 
-                    handImage.rectTransform.anchoredPosition =
-                        Vector2.Lerp(targets[n], targets[n + 1], normalizedT);
+                    while (t < duration)
+                    {
+                        float normalizedT = t / duration;
 
-                    handImage.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(1f, 0f, normalizedT);
+                        handImage.rectTransform.anchoredPosition =
+                            Vector2.Lerp(targets[n], targets[n + 1], normalizedT);
 
-                    t += Time.deltaTime;
-                    yield return null;
+                        if (isAlphaDecrese)
+                            handImage.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(1f, 0f, normalizedT);
+
+                        t += Time.deltaTime;
+                        yield return null;
+                    }
+
+                    // Petite pause entre les répétitions si double touch
+                    if (isDoubleTouch && r < repeatCount - 1)
+                        yield return new WaitForSeconds(0.15f); // ajustable pour effet "double clic"
                 }
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.5f); // pause normale entre mouvements
             }
         }
     }

@@ -91,7 +91,8 @@ public class CameraControl : MonoBehaviour
 
     private void Update()
     {
-        if (ignoreInput) return;
+        if (ignoreInput || GameManager.instance.shopOpen || GetComponent<ChangingCamera>().isInTransition)
+            return;
         
         // Zoom lissé
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, zoom, Time.deltaTime * zoomSmooth);
@@ -108,7 +109,7 @@ public class CameraControl : MonoBehaviour
     
         IsCameraMoving = Vector3.Distance(root.position, targetPosition) > 0.01f;
     }
-
+    
     public void ResetFOV() => zoom = zoomStart;
 
     private void HandleGestures()
