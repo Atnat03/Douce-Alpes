@@ -12,6 +12,7 @@ public class HandAnimation : MonoBehaviour
 
 	public bool isAlphaDecrese = true;
     public float duration = 1.5f;
+    public float waitBeforeHand = 0.25f;
     
     void OnEnable()
     {
@@ -35,7 +36,7 @@ public class HandAnimation : MonoBehaviour
 
     IEnumerator PlayAnimation()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(waitBeforeHand);
         
         handImage.gameObject.SetActive(true);
 

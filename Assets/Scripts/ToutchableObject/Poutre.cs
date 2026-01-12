@@ -15,7 +15,7 @@ public class Poutre : MonoBehaviour
     private Rigidbody rb;
     private Vector3 startPos;
     private Quaternion startRotation;
-    private bool hasSwipe = false;
+    public bool hasSwipe = false;
 
     private void Awake()
     {
@@ -41,8 +41,6 @@ public class Poutre : MonoBehaviour
 
         hasSwipe = true;
         
-        grange.handZommed.SetActive(false);
-
         GetComponent<Animator>().enabled = false;
         
         rb = gameObject.AddComponent<Rigidbody>();
@@ -55,6 +53,8 @@ public class Poutre : MonoBehaviour
         await Task.Yield();
 
         rb.AddForce(Vector3.up * impulseForce, ForceMode.Impulse);
+        
+        grange.handZommed.SetActive(false);
 
         StartCoroutine(WaitALittle());
     }

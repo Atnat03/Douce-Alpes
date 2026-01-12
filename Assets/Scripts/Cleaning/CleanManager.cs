@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -99,7 +100,8 @@ public class CleanManager : MiniGameParent
     
     [SerializeField] private float showerInterval = 0.08f;
     private float lastShowerTime;
-
+    
+    [SerializeField] float cameraOffsetShower = 0.12f;
     
     private void Awake()
     {
@@ -363,8 +365,9 @@ public class CleanManager : MiniGameParent
             newShowerOffset.x *= -1;
         }
         
-        Vector3 spawnPos = pos + newShowerOffset;
+        Vector3 camDir = (Camera.main.transform.position - pos).normalized;
 
+        Vector3 spawnPos = pos + camDir * cameraOffsetShower + newShowerOffset;
         GameObject d = Instantiate(shower, spawnPos, Quaternion.identity);
         d.transform.LookAt(Camera.main.transform);
         Destroy(d, 0.3f);
@@ -456,7 +459,7 @@ public class CleanManager : MiniGameParent
             yield break;
 
         sheep.GetComponent<SheepSkinManager>().PlayJumpAnimation();
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.5f);
 
         yield return StartCoroutine(
             MoveOverTime(sheep.transform, destroyPoint.position, 1f)
