@@ -66,6 +66,18 @@ public class Saving : MonoBehaviour
 
         StartWaitSaving();
     }
+    
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+            SaveManager.SavePlayer(this);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveManager.SavePlayer(this);
+    }
+
 
     public void LoadData()
     {

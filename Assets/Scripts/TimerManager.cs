@@ -51,7 +51,7 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         currentMiniJeuToDo = MiniGames.Rentree;
         canButtonG = true;
@@ -206,5 +206,4 @@ public class TimerManager : MonoBehaviour
         GameData.instance.dayMoment.NextMoment();
         StartCoroutine(UpdateHorloge(nextIndex));
     }
-
 }

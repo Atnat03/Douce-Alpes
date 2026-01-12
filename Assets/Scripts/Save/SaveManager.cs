@@ -107,6 +107,7 @@ public class PlayerData
         settings = Settings.instance.SaveSettings();
         
         TimerManager timer = GameData.instance.timer;
+        
         if (timer != null)
         {
             currentMiniJeuToDo = timer.currentMiniJeuToDo;

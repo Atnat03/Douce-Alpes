@@ -294,6 +294,9 @@ public class CleanManager : MiniGameParent
 
     public void ApplyClean(Vector3 pos, bool isHead = false)
     {
+        if (SwapSceneManager.instance.currentSceneId != 3)
+            return;
+        
         if (!canAddShampoo) return;
         if (totalValueCleaned >= maxShampoo && currentTool == CleaningTool.Shampoo) return;
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -16,8 +17,8 @@ public class TonteManager : MiniGameParent
     [SerializeField] private Transform destroyPoint;
 
     [Header("UI")]
-    [SerializeField] private Text nameText;
-    [SerializeField] private Text nbToCutText;
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private TextMeshProUGUI nbToCutText;
 
     [Header("Particule")]
     [SerializeField] private ParticleSystem particleTonte;

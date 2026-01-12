@@ -22,6 +22,9 @@ public class Chien : MonoBehaviour
     [SerializeField] Material whiteMaterial;
     [SerializeField] SkinnedMeshRenderer mesh;
     [SerializeField] Animator animator;
+    
+    private float smoothSpeed;
+    [SerializeField] private float speedSmoothTime = 0.15f;
 
     private void Start()
     {
@@ -31,7 +34,9 @@ public class Chien : MonoBehaviour
 
     private void Update()
     {
-        animator.SetFloat("Speed", agent.velocity.magnitude);
+        float targetSpeed = agent.velocity.magnitude;
+        smoothSpeed = Mathf.Lerp(smoothSpeed, targetSpeed, Time.deltaTime / speedSmoothTime);
+        animator.SetFloat("Speed", smoothSpeed);
         
         if (!isMiniGameActive) return;
 
