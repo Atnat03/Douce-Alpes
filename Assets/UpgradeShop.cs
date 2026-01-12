@@ -131,6 +131,18 @@ public class UpgradeShop : MonoBehaviour
         
         buttonBuy.onClick.AddListener(() => Buy(articlePrice, game, id));
         buttonBuy.onClick.AddListener(() => AudioManager.instance.ButtonClick());
+        
+        foreach (Transform child in transform.GetChild(0).transform.GetChild(0).transform.GetChild(0))
+        {
+            if (child.GetComponent<ArticleUnit>().id == id)
+            {
+                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(true);
+            }
+            else
+            {
+                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(false);
+            }
+        }
     }
 
     public void Buy(int cost, MiniGames game = MiniGames.None, int id = 0)

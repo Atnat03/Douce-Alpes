@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ public class SheepWindow : MonoBehaviour
     [Header("Skin Selectors")]
     [SerializeField] private AddSkins hatSkinSelector;
     [SerializeField] private AddSkins clotheSkinSelector;
+    public GameObject cadre;
 
     private void Awake()
     {
@@ -114,5 +116,17 @@ public class SheepWindow : MonoBehaviour
         currentSkinHat = -1;
         currentSkinClothe = -1;
         sheepId = -1;
+    }
+
+    public void StartCreiurh()
+    {
+        StartCoroutine(Cadre());
+    }
+
+    IEnumerator Cadre()
+    {
+        cadre.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        cadre.SetActive(false);
     }
 }

@@ -35,7 +35,7 @@ public class UpgradeShopManager : ShopManager
         uiArticle.logoImage.sprite = article.logo;
         uiArticle.backGround.sprite = ChangeBackGroundRarete(article.Rarete);
 
-        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
+        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title, article.id));
         uiArticle.buyBtn.onClick.AddListener(() =>
         {
             selectedArticle = article;

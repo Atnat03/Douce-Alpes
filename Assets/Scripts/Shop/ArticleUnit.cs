@@ -15,4 +15,5 @@ public class ArticleUnit : MonoBehaviour
     public Image backGround;
     public ArticleType articleType;
     public int id;
+    public Image outline;
 }

@@ -231,6 +231,8 @@ public class GameData : MonoBehaviour
 
     #region AMELIORATION
 
+    public void AddLevelRentree() => AddLevelUpgrade(TypeAmelioration.Rentree);
+    
     public void AddLevelTonte() => AddLevelUpgrade(TypeAmelioration.Tonte);
     public void AddLevelClean() => AddLevelUpgrade(TypeAmelioration.Nettoyage);
     public void AddLevelSortie() => AddLevelUpgrade(TypeAmelioration.Sortie);

@@ -454,6 +454,7 @@ public class Sheep : TouchableObject
         if (skinListManager.HasCombo(hatId, clothId))
         {
             comboSetParticle.Play();
+            AudioManager.instance.PlaySound(50);
             sheepBoid.SetNature(skinListManager.GetNatureFromCombo(hatId));
         }
         else

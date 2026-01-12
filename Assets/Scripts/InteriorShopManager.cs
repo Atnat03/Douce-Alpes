@@ -38,7 +38,7 @@ public class InteriorShopManager : ShopManager
 
         SkinAgency.instance.SetSkinInterior(selectedUIArticle.id);
 
-        UpdatePrice(selectedArticle.price, selectedArticle.title);
+        UpdatePrice(selectedArticle.price, selectedArticle.title, selectedUIArticle.id);
     }
 
     private new void Buy()
@@ -80,16 +80,28 @@ public class InteriorShopManager : ShopManager
 
         uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
         uiArticle.buyBtn.onClick.AddListener(() => selectedUIArticle = uiArticle);
-        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
+        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title, article.id));
         
         uiArticle.textPrice.text = article.price.ToString();
     }
 
-    protected new void UpdatePrice(int articlePrice, string articleTitle)
+    protected new void UpdatePrice(int articlePrice, string articleTitle, int id)
     {
         EquipéPannel.SetActive(false);
         buyPannel.SetActive(false);
 
+        foreach (Transform child in listArticleParent)
+        {
+            if (child.GetComponent<ArticleUnit>().id == id)
+            {
+                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(true);
+            }
+            else
+            {
+                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(false);
+            }
+        }
+        
         if (selectedUIArticle.isBuying)
         {
             EquipéPannel.SetActive(true);

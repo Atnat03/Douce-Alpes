@@ -41,11 +41,23 @@ public class ShopManager : MonoBehaviour
     protected virtual void AddItem(Article article)
     { }
 
-    protected void UpdatePrice(int articlePrice, string articleTitle)
+    protected void UpdatePrice(int articlePrice, string articleTitle, int id)
     {
         Debug.Log("Update ui price");
         
         buyPannel.SetActive(true);
+
+        foreach (Transform child in listArticleParent)
+        {
+            if (child.GetComponent<ArticleUnit>().id == id)
+            {
+                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(true);
+            }
+            else
+            {
+                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(false);
+            }
+        }
         
         buyPannel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = articlePrice.ToString();
         buyPannel.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = articleTitle;

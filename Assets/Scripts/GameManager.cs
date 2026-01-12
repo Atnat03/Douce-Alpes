@@ -231,8 +231,8 @@ public class GameManager : MonoBehaviour
     public void ActivatedDog()
     {
         chien.SetActive(true);
+        GameData.instance.AddLevelRentree();
     }
-
 
     public void DelockSheep()
     {
@@ -281,7 +281,7 @@ public class GameManager : MonoBehaviour
     {
         uiMiniGame.SetActive(CamState.MiniGame == currentCameraState);
         
-        friendsUI.gameObject.SetActive(currentCameraState == CamState.Default);
+        friendsUI.gameObject.SetActive(currentCameraState == CamState.Default && GameData.instance.IsStatGame);
         sheepCreatorButton.SetActive(currentCameraState == CamState.Default 
         && !GameData.instance.isSheepInside && !GameData.instance.isTutoring2); 
 

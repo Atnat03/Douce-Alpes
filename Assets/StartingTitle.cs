@@ -32,6 +32,8 @@ public class StartingTitle : MonoBehaviour
 
     private bool isWritting = false;
     
+    public GameObject friendButton;
+    
     private void Start()
     {
         papy.SetActive(false);
@@ -135,6 +137,8 @@ public class StartingTitle : MonoBehaviour
         
         buttonSheepCreate.transform.parent.gameObject.SetActive(true);
         
+        friendButton.SetActive(false);
+        
         while (t <= 0.3f)
         {
             buttonSheepCreate.transform.localScale = Vector3.Lerp(buttonSheepCreate.transform.localScale, Vector3.one*2, t);
@@ -173,6 +177,7 @@ public class StartingTitle : MonoBehaviour
         mainCamera.gameObject.SetActive(true);
         titleUI.SetActive(false);
         titleCamera.gameObject.SetActive(false);
+        friendButton.SetActive(true);
         GameData.instance.StartGame();
 
         Destroy(gameObject);

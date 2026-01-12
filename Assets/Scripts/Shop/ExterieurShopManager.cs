@@ -26,7 +26,6 @@ public class ExterieurShopManager : ShopManager
     {
         base.Start();
         EquipéPannel.SetActive(false);
-
     }
 
     private void Update()
@@ -91,7 +90,7 @@ public class ExterieurShopManager : ShopManager
             currentEquippedTricot = selectedUIArticle;
         }
 
-        UpdatePrice(selectedArticle.price, selectedArticle.title);
+        UpdatePrice(selectedArticle.price, selectedArticle.title, selectedArticle.id);
     }
 
     private new void Buy()
@@ -139,7 +138,7 @@ public class ExterieurShopManager : ShopManager
 
         uiArticle.buyBtn.onClick.AddListener(() => selectedArticle = article);
         uiArticle.buyBtn.onClick.AddListener(() => selectedUIArticle = uiArticle);
-        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title));
+        uiArticle.buyBtn.onClick.AddListener(() => UpdatePrice(article.price, article.title, article.id));
 
         // Si id = 0, on équipe ce skin par défaut
         if (uiArticle.id == 0)
@@ -162,7 +161,7 @@ public class ExterieurShopManager : ShopManager
         uiArticle.textPrice.text = article.price.ToString();
     }
 
-    protected new void UpdatePrice(int articlePrice, string articleTitle)
+    protected new void UpdatePrice(int articlePrice, string articleTitle, int id)
     {
         EquipéPannel.SetActive(false);
         buyPannel.SetActive(false);
