@@ -56,6 +56,8 @@ public class TricotManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        CreateAllCarnet();
+        BuyNewPage(0);
     }
 
     private void Start()
@@ -64,7 +66,6 @@ public class TricotManager : MonoBehaviour
         if (uiLineRenderer != null) uiLineRenderer.enabled = false;
         if (modelLineRenderer != null) modelLineRenderer.enabled = false;
 
-        CreateAllCarnet();
         visualTricot.ResetLaine();
     }
 
@@ -86,10 +87,6 @@ public class TricotManager : MonoBehaviour
         go.transform.SetAsFirstSibling();
         TricotPage page = go.GetComponent<TricotPage>();
         page.Initialize(model, this, id);
-        
-        ModelPossede[(ModelTricot)id] = id == 0;
-
-        page.isBuy = id==0;
 
         page.buttonSelect.onClick.AddListener(() =>
         {
@@ -108,6 +105,11 @@ public class TricotManager : MonoBehaviour
             }
             else
             {
+                foreach (KeyValuePair<ModelTricot, bool> keyValuePair in ModelPossede)
+                {
+                    print(keyValuePair.Key + " : "  + keyValuePair.Value);
+                }
+                
                 AudioManager.instance.PlaySound(5);
                 Instantiate(DontBuyWool, carnetParent);
             }
@@ -119,6 +121,11 @@ public class TricotManager : MonoBehaviour
     public void BuyNewPage(int id)
     {
         ModelPossede[(ModelTricot)id] = true;
+
+        foreach (KeyValuePair<ModelTricot, bool> keyValuePair in ModelPossede)
+        {
+            print(keyValuePair.Key + " : "  + keyValuePair.Value);
+        }
     }
 
     public int numberTotalWool(List<ModelDraw> l)
