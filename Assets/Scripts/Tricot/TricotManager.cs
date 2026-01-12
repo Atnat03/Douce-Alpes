@@ -297,10 +297,14 @@ public class TricotManager : MonoBehaviour
         }
     }
     
+    private Coroutine previewCoroutine;
+    
     private void ApplyPrevisualisationLine()
     {
-        //StopAllCoroutines();
-        StartCoroutine(AnimatePreviewLine());
+        if(previewCoroutine != null)
+            StopCoroutine(previewCoroutine);
+
+        previewCoroutine = StartCoroutine(AnimatePreviewLine());
     }
 
     private IEnumerator AnimatePreviewLine()
