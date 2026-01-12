@@ -52,6 +52,8 @@ public class WeatherManager : MonoBehaviour
     {
         cameraNightVolume.SetActive(currentMoment == DayMoment.Night);
         vfxLucioles.SetActive(currentMoment == DayMoment.Night);
+        
+        directionalLight.gameObject.SetActive(SwapSceneManager.instance.currentSceneId != 1);
     }
 
     public void NextMoment()

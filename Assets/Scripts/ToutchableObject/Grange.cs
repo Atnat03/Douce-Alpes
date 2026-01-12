@@ -165,7 +165,7 @@ public class Grange : Build
             interiorButton.SetActive(true);
         }
 
-        if (isGrangeZoomed && poutre.CanSwipe())
+        if (isGrangeZoomed && poutre.CanSwipe() && poutre.hasSwipe)
         {
             handZommed.SetActive(true);
         }
