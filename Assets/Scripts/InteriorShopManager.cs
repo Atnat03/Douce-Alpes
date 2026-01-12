@@ -11,7 +11,7 @@ public class InteriorShopManager : ShopManager
     public Button buttonEquip;
     ArticleActivableUnit selectedUIArticle;
 
-    public Text TextTitleSelect;
+    public TextMeshProUGUI TextTitleSelect;
     
     [SerializeField] public Sprite[] spriteSelect;
 

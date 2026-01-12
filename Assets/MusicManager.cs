@@ -42,7 +42,7 @@ public class MusicManager : MonoBehaviour
         audioSource.pitch = 1f;
         audioSource.clip = isDehors ? dehorsMusic : dedansMusic;
 
-        if (isDehors && GameData.instance.timer.currentMiniJeuToDo == MiniGames.Sortie)
+        if (isDehors && GameData.instance.dayMoment.GetCurrentDayMoment() == WeatherManager.DayMoment.Night)
         {
             audioSource.pitch = 0.85f;
         }

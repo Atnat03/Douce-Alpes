@@ -357,6 +357,6 @@ public class TonteManager : MiniGameParent
     {
         logoTool.sprite = levelRasoirSprites[GameData.instance.GetLevel(TypeAmelioration.Tonte)];
         audioSource.clip = tondeuseClip[GameData.instance.GetLevel(TypeAmelioration.Tonte)];
-        audioSource.volume = GameData.instance.GetLevel(TypeAmelioration.Tonte) == 0 ? 0.3f : 0.18f;
+        audioSource.volume = GameData.instance.GetLevel(TypeAmelioration.Tonte) == 0 ? 0.6f : 0.18f;
     }
 }
