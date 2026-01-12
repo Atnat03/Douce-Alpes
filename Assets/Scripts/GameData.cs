@@ -159,7 +159,9 @@ public class GameData : MonoBehaviour
         
         LoadUpgrades(data.upgrades);
         
-         tricotManager.LoadTricotState(data.tricotData);
+        tricotManager.LoadTricotState(data.tricotData);
+        
+        Settings.instance.LoadData(data.settings);
         
         isTuto = data.isTuto;
         interiorSceneManager.isTutoInterior = data.isTutoInterior;

@@ -74,6 +74,7 @@ public class PlayerData
     public TricotSaveData tricotData;
     
     public UpgradesSaveData upgrades;
+    public SettingsSaveData settings;
     
     public int timeBetweenSave;
 
@@ -102,6 +103,8 @@ public class PlayerData
         
         upgrades = GameData.instance.GetSaveData()
                    ?? new UpgradesSaveData();
+
+        settings = Settings.instance.SaveSettings();
         
         TimerManager timer = GameData.instance.timer;
         if (timer != null)

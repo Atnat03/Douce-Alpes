@@ -97,4 +97,56 @@ public class Settings : MonoBehaviour
         globalVolume = globalVolumeSlider.value;
         AudioListener.volume = globalVolume;
     }
+
+    public SettingsSaveData SaveSettings()
+    {
+        return new SettingsSaveData(
+            globalVolume,
+            MusicActivated,
+            SFXActivated,
+            VibrationsActivated,
+            SpecialSoundActivated,
+            isPlayaSound
+        );
+    }
+
+    public void LoadData(SettingsSaveData data)
+    {
+        globalVolume = data.globalVolume;
+        MusicActivated = data.MusicActivated;
+        SFXActivated = data.SFXActivated;
+        VibrationsActivated = data.VibrationsActivated;
+        SpecialSoundActivated = data.SpecialSoundActivated;
+        isPlayaSound = data.isPlayaSound;
+
+        globalVolumeSlider.value = globalVolume;
+        AudioListener.volume = globalVolume;
+        musicToggle.isOn = MusicActivated;
+        sfxToggle.isOn = SFXActivated;
+        vibrationsToggle.isOn = VibrationsActivated;
+        specialToggle.isOn = SpecialSoundActivated;
+        musicPlayaToggle.isOn = isPlayaSound;
+    }
+}
+
+[Serializable]
+public class SettingsSaveData
+{
+    public float globalVolume;
+    public bool MusicActivated;
+    public bool SFXActivated;
+    public bool VibrationsActivated;
+    public bool SpecialSoundActivated;
+    public bool isPlayaSound;
+
+    public SettingsSaveData(float globalVolume, bool MusicActivated, bool SFXActivated, bool VibrationsActivated,
+        bool SpecialSoundActivated, bool isPlayaSound)
+    {
+        this.globalVolume = globalVolume;
+        this.MusicActivated = MusicActivated;
+        this.SFXActivated = SFXActivated;
+        this.VibrationsActivated = VibrationsActivated;
+        this.SpecialSoundActivated = SpecialSoundActivated;
+        this.isPlayaSound = true;
+    }
 }
