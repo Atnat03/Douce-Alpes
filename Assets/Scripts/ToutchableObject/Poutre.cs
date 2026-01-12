@@ -47,7 +47,7 @@ public class Poutre : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        AudioManager.instance.PlaySound(38);
+        AudioManager.instance.PlaySound(38, 1f, 0.75f);
         
         await Task.Yield();
 

@@ -63,6 +63,8 @@ public class ButtonShapeDrawing : MonoBehaviour, IPointerDownHandler, IPointerEn
 
         GetComponent<Image>().color = passageColor;
 
+        AudioManager.instance.PlaySound(49);
+
         RectTransform lineRect = manager.uiLineRenderer.rectTransform;
 
         Vector2 localCenter = rect.anchoredPosition;
