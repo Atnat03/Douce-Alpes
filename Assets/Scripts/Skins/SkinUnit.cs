@@ -25,6 +25,7 @@ public class SkinUnit : MonoBehaviour
     [SerializeField] public TextMeshProUGUI stackText;
     public Image lockImage;
     public Image logoImage;
+    
 
     private void Update()
     {

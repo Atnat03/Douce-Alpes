@@ -21,7 +21,7 @@ public class Poutre : MonoBehaviour
     {
         startPos = transform.position;
         startRotation = transform.rotation;
-
+ 
         GetComponent<Animator>().enabled = false;
     }
 
@@ -30,7 +30,6 @@ public class Poutre : MonoBehaviour
         if (CanSwipe() && !hasSwipe)
         {
             GetComponent<Animator>().enabled = true;
-            grange.handZommed.SetActive(true);
         }
     }
 
@@ -54,8 +53,6 @@ public class Poutre : MonoBehaviour
 
         rb.AddForce(Vector3.up * impulseForce, ForceMode.Impulse);
         
-        grange.handZommed.SetActive(false);
-
         StartCoroutine(WaitALittle());
     }
 

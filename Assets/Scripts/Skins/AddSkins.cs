@@ -123,36 +123,35 @@ public class AddSkins : MonoBehaviour
 
     public void UpdateStackDisplays()
     {
-        if (snap == null || skinData == null || sheepWindow == null) return;
+        if (snap == null || skinData == null || sheepWindow == null || SkinAgency.instance == null)
+            return;
 
-        int currentSkinId = (skinType == SkinType.Hat) ? sheepWindow.currentSkinHat : sheepWindow.currentSkinClothe;
+        int currentSkinId = (skinType == SkinType.Hat)
+            ? sheepWindow.currentSkinHat
+            : sheepWindow.currentSkinClothe;
 
-        for (int i = 0; i < snap.NumberOfPanels; i++) 
+        Dictionary<int, int> stacksDict =
+            (skinType == SkinType.Hat)
+                ? SkinAgency.instance.dicoHatSkinStack
+                : SkinAgency.instance.dicoClotheSkinStack;
+
+        for (int i = 0; i < snap.NumberOfPanels; i++)
         {
             SkinUnit s = snap.Panels[i].GetComponent<SkinUnit>();
             if (s == null) continue;
 
-            Dictionary<int, int> stacksDict = (skinType == SkinType.Hat) ? SkinAgency.instance.dicoHatSkinStack : SkinAgency.instance.dicoClotheSkinStack;
             int stacks = stacksDict.ContainsKey(s.id) ? stacksDict[s.id] : 0;
 
-            if (showStackCount && s.stackText != null) 
+            if (showStackCount && s.stackText != null)
                 s.stackText.text = stacks.ToString();
 
-            bool isUnavailable = (stacks == 0 && s.id != currentSkinId);
-
-            Image panelImage = snap.Panels[i].GetComponent<Image>();
-            if (panelImage != null)
-            {
-                panelImage.color = availableColor;
-            }
+            bool shouldLock = ShouldLockSkin(s.id, stacks, currentSkinId);
 
             if (s.lockImage != null)
-            {
-                s.lockImage.gameObject.SetActive(isUnavailable);
-            }
+                s.lockImage.gameObject.SetActive(shouldLock);
         }
     }
-
+    
     private void OnPanelCentered(int newIndex, int previousIndex) 
     {
         if (snap == null || sheepWindow == null || SkinAgency.instance == null) return;
@@ -195,6 +194,11 @@ public class AddSkins : MonoBehaviour
         
         UpdateLockSprites();
         UpdateStackDisplays();
+    }
+
+    private bool ShouldLockSkin(int skinId, int stacks, int currentSkinId)
+    {
+        return stacks == 0 && skinId != currentSkinId;
     }
 
     public void SetStartingPanelToCurrent() 

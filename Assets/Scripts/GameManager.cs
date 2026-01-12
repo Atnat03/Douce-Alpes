@@ -224,11 +224,6 @@ public class GameManager : MonoBehaviour
             SheepClicked?.Invoke(sheep);
             curLockSheep = sheep;
             sheep.isFocusing = true;
-            
-            if (curLockSheep.isHand && !curLockSheep.isCreated)
-            {
-                handSheepCaresse.SetActive(true);
-            }
         }
     }
 
@@ -241,16 +236,6 @@ public class GameManager : MonoBehaviour
     public void DelockSheep()
     {
         if (curLockSheep.isOpen) return;
-        
-        if (curLockSheep.isHand && !curLockSheep.isCreated)
-        {
-            handSheepCaresse.SetActive(false);
-            curLockSheep.isHand = false;
-        }
-        
-        if(curLockSheep.isCreated)
-            curLockSheep.isCreated = false;
-
         
         cameraFollow.gameObject.GetComponent<ChangingCamera>().ResetCameraLock(curLockSheep);
         curLockSheep.isFocusing = false;
@@ -383,7 +368,7 @@ public class GameManager : MonoBehaviour
         
         yield return new WaitForSeconds(1f);
 
-        float delayBetweenSheep = 0.75f; 
+        float delayBetweenSheep = 0.75f;
 
         foreach (SheepData sheepData in GameData.instance.sheepDestroyData)
         {
@@ -397,8 +382,10 @@ public class GameManager : MonoBehaviour
             else
                 sheep.hasLaine = true;
             
+            sheep.animator.SetBool("Walk", true);
+            
             sheep.ResetPuanteur();
-
+            
             newSheep.GetComponent<SheepBoid>().enabled = false;
 
             grange.AnimSheepGetOffGrange(newSheep);
@@ -568,6 +555,5 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         
         panneauShop.OpenUI();
-        
     }
 }

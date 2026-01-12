@@ -35,16 +35,12 @@ public class SwapSceneManager : MonoBehaviour
 
     public void SwapScene(int sceneID)
     {
-        print(sceneID);
-        
         currentSceneId = sceneID;
         
         for (int i = 0; i < scenes.Length; i++)
         {
             if (sceneID == i)
             {
-                print("ANimatted");
-                
                 AnimateSwapingScene(scenes[i], i);
             }
             else

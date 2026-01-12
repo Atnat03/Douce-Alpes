@@ -83,10 +83,7 @@ public class Sheep : TouchableObject
 
     public ParticleSystem comboSetParticle;
     public ParticleSystem behhhhhParticle;
-
-    public bool isHand = true;
-    public bool isCreated = true;
-
+    
     private void OnEnable()
     {
         if (SwipeDetection.instance != null)

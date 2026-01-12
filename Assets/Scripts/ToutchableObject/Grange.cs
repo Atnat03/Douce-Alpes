@@ -164,11 +164,14 @@ public class Grange : Build
             interiorImageButton.SetActive(true);
             interiorButton.SetActive(true);
         }
+        
+        bool canShowHandZoomed =
+            isGrangeZoomed &&
+            poutre.CanSwipe() &&
+            !poutre.hasSwipe;
 
-        if (isGrangeZoomed && poutre.CanSwipe() && poutre.hasSwipe)
-        {
-            handZommed.SetActive(true);
-        }
+        handZommed.SetActive(canShowHandZoomed);
+
         
         zzzzParticle.SetActive(GameData.instance.dayMoment.GetCurrentDayMoment() == WeatherManager.DayMoment.Night);
         
@@ -188,7 +191,7 @@ public class Grange : Build
     //Sortie animé
     public void AnimSheepGetOffGrange(GameObject sheep)
     {
-        float travelTime = 2f;
+        float travelTime = 4f;
         StartCoroutine(SmoothTravelSortie(sheep, endSpawnGetOffTransform.position, travelTime));
     }
 

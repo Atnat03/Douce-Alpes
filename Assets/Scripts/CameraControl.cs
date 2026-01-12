@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -171,27 +172,38 @@ public class CameraControl : MonoBehaviour
     {
         if (root == null) return;
 
-        root.position = startRootPosition;
+        ignoreInput = false;
+        velocity = Vector3.zero;
+
         targetPosition = startRootPosition;
         root.rotation = startRootRotation;
-
         zoom = startZoom;
-        cam.fieldOfView = startZoom;
+    }
+    
+    private IEnumerator WaitCameraResetDone()
+    {
+        while (Vector3.Distance(root.position, targetPosition) > 0.05f)
+            yield return null;
 
+        ignoreInput = false;
+
+        cam.fieldOfView = startZoom;
         grange.CloseUI();
     }
+
     
     public void SetRootFocusGrange()
     {
-        if (root == null) return;
+        if (root == null || grangeFocus == null) return;
 
-        Vector3 pos = new Vector3(grangeFocus.position.x, 0, grangeFocus.position.z);
-        root.position = pos + Vector3.up * root.position.y;
-        targetPosition = pos + Vector3.up * targetPosition.y;
-        
+        Vector3 pos = new Vector3(grangeFocus.position.x, root.position.y, grangeFocus.position.z);
+    
+        targetPosition = pos;
+
         grange.UI.SetActive(true);
         grange.exclamation.SetActive(false);
     }
+
     
     public void SetRootFocusAbreuvoir()
     {

@@ -98,7 +98,7 @@ MonoBehaviour:
   canPutThisSkin: 0
   stackText: {fileID: 9038034002633442336}
   lockImage: {fileID: 9198496164519340934}
-  logo: {fileID: 8708132915257452074}
+  logoImage: {fileID: 0}
 --- !u!225 &-5936225452394370232
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -145,7 +145,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1, y: 0.8}
+  m_AnchoredPosition: {x: -0.37, y: -0.11}
   m_SizeDelta: {x: 20.2088, y: 21.2061}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5830088240294472463
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: x2
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ca827d5e0a9a6894dadf13b7c3d18dde, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: ca827d5e0a9a6894dadf13b7c3d18dde, type: 2}
@@ -203,8 +203,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 11.7
-  m_fontSizeBase: 11.7
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -342,7 +342,7 @@ MonoBehaviour:
   canPutThisSkin: 0
   stackText: {fileID: 0}
   lockImage: {fileID: 0}
-  logo: {fileID: 0}
+  logoImage: {fileID: 0}
 --- !u!225 &4837805208614950796
 CanvasGroup:
   m_ObjectHideFlags: 0
