@@ -151,7 +151,7 @@ public class GameData : MonoBehaviour
         timer.canButtonG = data.canButtonG;
         timer.canButtonT = data.canButtonT;
         timer.canButtonC = data.canButtonC;
-        timer.UpdateAllButton();
+        timer.UpdateAllButton(true);
         int nextIndex = Array.IndexOf(Enum.GetValues(typeof(MiniGames)), timer.currentMiniJeuToDo);
         timer.StartCoroutine(timer.UpdateHorloge(nextIndex));
 

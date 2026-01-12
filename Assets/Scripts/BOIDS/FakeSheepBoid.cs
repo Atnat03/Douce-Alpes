@@ -16,6 +16,8 @@ public class FakeSheepBoid : MonoBehaviour
     [SerializeField] private float fearSpeedMultiplier = 3f;
     private float fearDuration = 1f; 
     private float fearTimer;
+    
+    Animator animator;
 
     private Color[] natureColors = new Color[]
     {
@@ -27,7 +29,6 @@ public class FakeSheepBoid : MonoBehaviour
 
     void Start()
     {
-        // manager doit être assigné avant tout
         if (manager == null)
         {
             manager = FakeSheepBoidManager.instance;
@@ -38,6 +39,9 @@ public class FakeSheepBoid : MonoBehaviour
                 return;
             }
         }
+        
+        animator = transform.GetChild(0).transform.GetChild(0).GetComponent<Animator>();
+        animator.SetBool("Walk", true);
 
         natureStrategy = NatureFactory.Create(natureType);
         ScheduleNextPause();
@@ -52,7 +56,7 @@ public class FakeSheepBoid : MonoBehaviour
 
     void Update()
     {
-        if (manager == null) return; // sécurité
+        if (manager == null) return;
 
         if (isPaused && !isAfraid)
         {
@@ -98,7 +102,7 @@ public class FakeSheepBoid : MonoBehaviour
         }
 
         velocity = velocity.normalized * speed;
-
+        
         // Sécurité finale
         if (float.IsNaN(velocity.x) || float.IsNaN(velocity.y) || float.IsNaN(velocity.z))
             velocity = Random.insideUnitSphere;

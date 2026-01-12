@@ -156,14 +156,13 @@ public class Grange : Build
     {
         if (interiorScene.isTutoInterior)
         {
-            print("Check interior ");
             interiorImageButton.SetActive(false);
             interiorButton.SetActive(false);
         }
         else
         {
-            interiorImageButton.SetActive(false);
-            interiorButton.SetActive(false);
+            interiorImageButton.SetActive(true);
+            interiorButton.SetActive(true);
         }
 
         if (isGrangeZoomed && poutre.CanSwipe())
