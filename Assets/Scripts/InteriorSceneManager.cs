@@ -35,6 +35,9 @@ public class InteriorSceneManager : MonoBehaviour
 
     private void OnEnable()
     {
+        SwapSceneManager.instance.SwapingInteriorScene += Initialize;
+        alreadyBubble = false;
+        
         if (isTutoInterior)
         {
             NextMessage(true);
@@ -43,9 +46,6 @@ public class InteriorSceneManager : MonoBehaviour
         {
             papy.SetActive(false);
         }
-        
-        alreadyBubble = false;
-        SwapSceneManager.instance.SwapingInteriorScene += Initialize;
     }
 
     private void OnDisable()

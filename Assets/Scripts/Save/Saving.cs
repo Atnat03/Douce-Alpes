@@ -78,7 +78,6 @@ public class Saving : MonoBehaviour
         SaveManager.SavePlayer(this);
     }
 
-
     public void LoadData()
     {
         print("load data");

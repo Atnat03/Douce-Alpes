@@ -69,14 +69,16 @@ public class TimerManager : MonoBehaviour
         button.interactable = state && finishTimer;
     }
 
-    public void UpdateAllButton()
+    public void UpdateAllButton(bool isLoad = false)
     {
         print("next mini game ");
         grangeButton.interactable = canButtonG;
         tonteButton.interactable = canButtonT;
         cleanButton.interactable = canButtonC;
         UpdateFills();
-        NextMiniGameToDo();
+        
+        if(!isLoad)
+            NextMiniGameToDo();
     }
 
     private void Update()
