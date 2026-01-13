@@ -54,7 +54,7 @@ public class Settings : MonoBehaviour
         musicToggle.isOn = MusicActivated;
         musicPlayaToggle.isOn = isPlayaSound;
 
-        musicPlayaToggle.gameObject.SetActive(false);
+        musicPlayaToggle.gameObject.SetActive(asDLC);
     }
 
 
@@ -78,7 +78,11 @@ public class Settings : MonoBehaviour
         SpecialSoundActivated = specialToggle.isOn;
     }
 
-    public void ActivatePlayaToggle() => musicPlayaToggle.gameObject.SetActive(true);
+    public void ActivatePlayaToggle()
+    {
+        asDLC = true;
+        musicPlayaToggle.gameObject.SetActive(true);
+    } 
     
     public void SetPlayaSound()
     {
@@ -106,9 +110,12 @@ public class Settings : MonoBehaviour
             SFXActivated,
             VibrationsActivated,
             SpecialSoundActivated,
-            isPlayaSound
+            isPlayaSound,
+            asDLC
         );
     }
+
+    public bool asDLC = false;
 
     public void LoadData(SettingsSaveData data)
     {
@@ -125,6 +132,8 @@ public class Settings : MonoBehaviour
         sfxToggle.isOn = SFXActivated;
         vibrationsToggle.isOn = VibrationsActivated;
         specialToggle.isOn = SpecialSoundActivated;
+        asDLC = data.asDLC;
+        musicPlayaToggle.gameObject.SetActive(asDLC);
         musicPlayaToggle.isOn = isPlayaSound;
     }
 }
@@ -138,9 +147,10 @@ public class SettingsSaveData
     public bool VibrationsActivated;
     public bool SpecialSoundActivated;
     public bool isPlayaSound;
+    public bool asDLC;
 
     public SettingsSaveData(float globalVolume, bool MusicActivated, bool SFXActivated, bool VibrationsActivated,
-        bool SpecialSoundActivated, bool isPlayaSound)
+        bool SpecialSoundActivated, bool isPlayaSound, bool asDLC)
     {
         this.globalVolume = globalVolume;
         this.MusicActivated = MusicActivated;
@@ -148,5 +158,6 @@ public class SettingsSaveData
         this.VibrationsActivated = VibrationsActivated;
         this.SpecialSoundActivated = SpecialSoundActivated;
         this.isPlayaSound = true;
+        this.asDLC = asDLC;
     }
 }

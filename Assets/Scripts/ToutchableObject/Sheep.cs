@@ -449,6 +449,22 @@ public class Sheep : TouchableObject
         CheckCombo(currentSkinHat, currentSkinClothe);
     }
 
+    public void InitializeFromSave(SheepData data)
+    {
+        sheepId = data.id;
+        sheepName = data.name;
+        birthDate = data.birthDate;
+
+        skinListManager.Initialize();
+
+        SetCurrentSkinHat(data.skinHat);
+        SetCurrentSkinClothe(data.skinClothe);
+
+        currentColorID = data.colorID;
+        hasLaine = data.hasWhool;
+    }
+
+    
     void CheckCombo(int hatId, int clothId)
     {
         if (skinListManager.HasCombo(hatId, clothId))

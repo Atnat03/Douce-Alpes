@@ -145,6 +145,7 @@ public class GameData : MonoBehaviour
         }
         
         SkinAgency.instance.ApplySaveData(data.skinAgency);
+        SkinAgency.instance.AddSkinDefault();
         
         PlayerMoney.instance.LoadStats(data.gold, data.wool);
         BonheurCalculator.instance.currentBonheur = data.happiness;
@@ -156,8 +157,7 @@ public class GameData : MonoBehaviour
         timer.UpdateAllButton(true);
         int nextIndex = Array.IndexOf(Enum.GetValues(typeof(MiniGames)), timer.currentMiniJeuToDo);
         timer.StartCoroutine(timer.UpdateHorloge(nextIndex));
-
-
+        
         numberDay = data.nbDay;
         
         LoadUpgrades(data.upgrades);

@@ -232,11 +232,15 @@ public class SheepBoidManager : MonoBehaviour
         sheepScript.currentColorID = data.colorID;
         sheep.natureType = data.nature;
         sheepScript.birthDate = data.birthDate;
+        
+        sheepScript.SetCurrentSkinHat(data.skinHat);
+        sheepScript.SetCurrentSkinClothe(data.skinClothe);
 
         GameManager.instance.sheepList.Add(sheepScript);
         sheep.enabled = false;
 
-        sheepScript.Initialize(nbInstantSheep, data.name);
+        sheepScript.InitializeFromSave(data);
+
         OnListChanged?.Invoke(sheep);
         nbInstantSheep++;
         return go;

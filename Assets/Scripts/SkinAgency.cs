@@ -88,19 +88,37 @@ public class SkinAgency : MonoBehaviour
         dicoInteriorSkin[id] = !dicoInteriorSkin[id];
     }
 
-    private void Start()
+    public void AddSkinDefault()
     {
-        for (int i = 0; i < 20; i++)
-        {
-            AddHatSkinInstance(13);
-            AddClotheSkinInstance(10);
-        }
+        EnsureHatStack(13, 20);
+        EnsureClotheStack(10, 20);
         
         SetSkinGrange(skinGrangeId);
         SetSkinBarriere(skinGrangeId);
         SetSkinShop(skinShopId);
         SetSkinNiche(skinNicheId);
     }
+
+    private void EnsureHatStack(int skinId, int wantedAmount)
+    {
+        if (!dicoHatSkinStack.ContainsKey(skinId))
+            dicoHatSkinStack[skinId] = 0;
+
+        int missing = wantedAmount - dicoHatSkinStack[skinId];
+        if (missing > 0)
+            dicoHatSkinStack[skinId] += missing;
+    }
+
+    private void EnsureClotheStack(int skinId, int wantedAmount)
+    {
+        if (!dicoClotheSkinStack.ContainsKey(skinId))
+            dicoClotheSkinStack[skinId] = 0;
+
+        int missing = wantedAmount - dicoClotheSkinStack[skinId];
+        if (missing > 0)
+            dicoClotheSkinStack[skinId] += missing;
+    }
+
     
     public void InitializeSheepSkin(int sheepId, int hatId, int clotheId)
     {
