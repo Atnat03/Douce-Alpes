@@ -105,11 +105,11 @@ public class UpgradeShop : MonoBehaviour
         }
     }
     
-    public void AddLevelTonte() => UpdatePrice(prices[MiniGames.Tonte], nameof(MiniGames.Tonte),MiniGames.Tonte);
-    public void AddLevelClean() => UpdatePrice(prices[MiniGames.Nettoyage], nameof(MiniGames.Nettoyage),MiniGames.Nettoyage);
-    public void AddLevelSortie() => UpdatePrice(prices[MiniGames.Sortie], nameof(MiniGames.Sortie),MiniGames.Sortie);
-    public void AddLevelRentree() => UpdatePrice(prices[MiniGames.Rentree], nameof(MiniGames.Rentree),MiniGames.Rentree);
-    public void AddLevelAbreuvoir() => UpdatePrice(prices[MiniGames.Abreuvoir], nameof(MiniGames.Abreuvoir),MiniGames.Abreuvoir);
+    public void AddLevelTonte() => UpdatePrice(prices[MiniGames.Tonte], nameof(MiniGames.Tonte),MiniGames.Tonte, 1);
+    public void AddLevelClean() => UpdatePrice(prices[MiniGames.Nettoyage], nameof(MiniGames.Nettoyage),MiniGames.Nettoyage, 2);
+    public void AddLevelSortie() => UpdatePrice(prices[MiniGames.Sortie], nameof(MiniGames.Sortie),MiniGames.Sortie, 3);
+    public void AddLevelRentree() => UpdatePrice(prices[MiniGames.Rentree], nameof(MiniGames.Rentree),MiniGames.Rentree, 0);
+    public void AddLevelAbreuvoir() => UpdatePrice(prices[MiniGames.Abreuvoir], nameof(MiniGames.Abreuvoir),MiniGames.Abreuvoir, 4);
 
     public void AddTricot(int id)
     {
@@ -132,15 +132,32 @@ public class UpgradeShop : MonoBehaviour
         buttonBuy.onClick.AddListener(() => Buy(articlePrice, game, id));
         buttonBuy.onClick.AddListener(() => AudioManager.instance.ButtonClick());
         
-        foreach (Transform child in transform.GetChild(0).transform.GetChild(0).transform.GetChild(0))
+        if(game == MiniGames.None)
         {
-            if (child.GetComponent<ArticleUnit>().id == id)
+            foreach (Transform child in transform.GetChild(0).transform.GetChild(0).transform.GetChild(0))
             {
-                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(true);
+                if (child.GetComponent<ArticleUnit>().id == id)
+                {
+                    child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(false);
+                }
             }
-            else
+        }
+        else
+        {
+            foreach (Transform child in transform.GetChild(0).transform.GetChild(0).transform.GetChild(0))
             {
-                child.GetComponent<ArticleUnit>().outline.gameObject.SetActive(false);
+                if (child.GetComponent<ArticleUpgradeUnit>().idUpgrade == id)
+                {
+                    child.GetComponent<ArticleUpgradeUnit>().outline.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.GetComponent<ArticleUpgradeUnit>().outline.gameObject.SetActive(false);
+                }
             }
         }
     }

@@ -140,7 +140,7 @@ public class NicheManager : TouchableObject
 
     public ChienDataSave SaveData()
     {
-        return new ChienDataSave(dogName, gameObject.activeInHierarchy, chien.idColor);
+        return new ChienDataSave(dogName, gameObject.activeSelf, chien.idColor);
     }
 }
 

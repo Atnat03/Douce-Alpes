@@ -78,6 +78,7 @@ public class GameData : MonoBehaviour
     public GameObject nextMessage;
     private bool isWritting = false;
     public bool isTutoring2 = false;
+    public bool asDog = false;
     
     private void Awake()
     {
@@ -155,9 +156,7 @@ public class GameData : MonoBehaviour
         timer.UpdateAllButton(true);
         int nextIndex = Array.IndexOf(Enum.GetValues(typeof(MiniGames)), timer.currentMiniJeuToDo);
         timer.StartCoroutine(timer.UpdateHorloge(nextIndex));
-        
-        nicheManager.gameObject.SetActive(data.chienData.isActive);
-        nicheManager.LoadData(data.chienData);
+
 
         numberDay = data.nbDay;
         
@@ -232,7 +231,6 @@ public class GameData : MonoBehaviour
     #region AMELIORATION
 
     public void AddLevelRentree() => AddLevelUpgrade(TypeAmelioration.Rentree);
-    
     public void AddLevelTonte() => AddLevelUpgrade(TypeAmelioration.Tonte);
     public void AddLevelClean() => AddLevelUpgrade(TypeAmelioration.Nettoyage);
     public void AddLevelSortie() => AddLevelUpgrade(TypeAmelioration.Sortie);

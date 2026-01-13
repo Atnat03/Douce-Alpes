@@ -3025,6 +3025,10 @@ PrefabInstance:
       value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
+      propertyPath: idUpgrade
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
       propertyPath: IsUpgradeImage
       value: 
       objectReference: {fileID: 21300000, guid: 85237a66bd40d674ca95abef91b90eb6, type: 3}
@@ -19362,6 +19366,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 2026435253}
     m_Modifications:
     - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
+      propertyPath: idUpgrade
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
       propertyPath: IsUpgradeImage
       value: 
       objectReference: {fileID: 21300000, guid: cb7a09b406c95b748a5da82345758616, type: 3}
@@ -19732,9 +19740,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92fe634e86f189048ae1696cde0df1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hasToLoadSave: 0
+  hasToLoadSave: 1
   curTime: 0
-  savingDuration: 5
+  savingDuration: 60
   savingUI: {fileID: 590156709}
   dropDurations: {fileID: 1201603330}
 --- !u!4 &531302363
@@ -49815,6 +49823,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 2026435253}
     m_Modifications:
     - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
+      propertyPath: idUpgrade
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
       propertyPath: IsUpgradeImage
       value: 
       objectReference: {fileID: 21300000, guid: b979eee16b3cb6d4984691f4f90c395f, type: 3}
@@ -68637,13 +68649,14 @@ MonoBehaviour:
   is2eTuto: 1
   messages:
   - "Bravo, vous avez termin\xE9 votre premi\xE8re journ\xE9e"
-  - "Maintenant que vous avez r\xE9cuper\xE9 de la laine, aller pouvoir tricoter
+  - "Maintenant que vous avez r\xE9cup\xE9r\xE9 de la laine, vous allez pouvoir tricoter
     afin de gagner de l'argent !"
   - "Avec cet argent, vous pourrez acheter des cosm\xE9tiques \xE0 la boutique !"
   papy: {fileID: 1881178146}
   message: {fileID: 191171874}
   nextMessage: {fileID: 1817029732}
   isTutoring2: 0
+  asDog: 0
 --- !u!4 &1724283567
 Transform:
   m_ObjectHideFlags: 0
@@ -80303,6 +80316,10 @@ PrefabInstance:
     - target: {fileID: 1521140146997361847, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
       propertyPath: m_SizeDelta.y
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
+      propertyPath: idUpgrade
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2072746744015923798, guid: e4348634d944089498f8ae77d91b4ae7, type: 3}
       propertyPath: IsUpgradeImage

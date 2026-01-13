@@ -11,6 +11,7 @@ public class ArticleUpgradeUnit : ArticleUnit
     public bool isUpgrade = false;
     public GameObject price;
     public Image upgradeEndImage;
+    public int idUpgrade;
 
     public void Update()
     {

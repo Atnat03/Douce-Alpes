@@ -231,6 +231,7 @@ public class GameManager : MonoBehaviour
     public void ActivatedDog()
     {
         chien.SetActive(true);
+        GameData.instance.asDog = true;
         GameData.instance.AddLevelRentree();
     }
 
