@@ -21,6 +21,8 @@ public class Saving : MonoBehaviour
     [SerializeField] public GameObject savingUI;
     [SerializeField] public Dropdown dropDurations;
 
+    private const string FIRST_LAUNCH_KEY = "FirstLaunch";
+    
     void Awake()
     {
         instance = this;
@@ -32,7 +34,20 @@ public class Saving : MonoBehaviour
         
         print("loading in Saving script");
         
-        LoadData();
+        if (!PlayerPrefs.HasKey(FIRST_LAUNCH_KEY))
+        {
+            Debug.Log("Premier lancement du jeu");
+
+            ResetSaving();
+
+            PlayerPrefs.SetInt(FIRST_LAUNCH_KEY, 1);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            LoadData();
+        }
+        
         StartWaitSaving();
     }
 
